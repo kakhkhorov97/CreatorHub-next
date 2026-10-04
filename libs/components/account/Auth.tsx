@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
-import { safeReturnTo, saveSession } from '../../auth';
+import { useEffect, useState } from 'react';
+import { authenticationDestination, safeReturnTo, saveSession } from '../../auth';
 import { useAction } from '../../hooks/useApi';
 import { Button, Feedback, Field, Notice, Password, values } from '../common/UI';
 
@@ -36,6 +36,11 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 	const [showResend, setShowResend] = useState(false);
 	const auth = mode === 'sign-in' || mode === 'register';
 	const registering = mode === 'register';
+	const returnTo = typeof router.query.returnTo === 'string' ? safeReturnTo(router.query.returnTo) : undefined;
+	const authHref = (path: string) => (returnTo ? `${path}?returnTo=${encodeURIComponent(returnTo)}` : path);
+	useEffect(() => {
+		if (returnTo) sessionStorage.setItem('creatorhub.returnTo', returnTo);
+	}, [returnTo]);
 
 	async function submit(form: HTMLFormElement) {
 		const f = values(form);
@@ -59,19 +64,23 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 					? await action.mutate('login', { input: { email: f.email, password: f.password } })
 					: await action.mutate('loginPhone', { input: { phoneNumber: f.phoneNumber, password: f.password } });
 				if (registering && method === 'email') {
-					setMessage('Account created. Check your inbox to verify your email, then sign in.');
+					sessionStorage.setItem('creatorhub.pendingEmail', f.email);
+					await router.push(returnTo || '/');
 					return;
 				}
 				if (payload.accessToken) {
 					saveSession(payload);
 					await action.client.clearStore();
 					await router.push(
-						router.query.returnTo
-							? safeReturnTo(router.query.returnTo)
-							: payload.user.role === 'ADMIN'
-							? '/_admin'
-							: safeReturnTo(undefined),
+						authenticationDestination(
+							returnTo,
+							sessionStorage.getItem('creatorhub.returnTo'),
+							payload.user.role,
+							registering,
+						),
 					);
+					sessionStorage.removeItem('creatorhub.returnTo');
+					sessionStorage.removeItem('creatorhub.pendingEmail');
 				} else setMessage('Check your inbox to verify your email, then sign in.');
 			} else if (mode === 'forgot-password') {
 				await action.mutate('requestPasswordReset', { input: { email: f.email } });
@@ -95,7 +104,7 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 			</Link>
 			<section className="auth-panel panel">
 				<h1>{titles[mode]}</h1>
-				{router.query.passwordChanged === '1' && <Notice>Password updated. Sign in again to continue.</Notice>}
+				{router.query.passwordChanged === '1' && <Notice notify>Password updated. Sign in again to continue.</Notice>}
 				<p className="muted auth-intro">
 					{auth
 						? registering
@@ -105,7 +114,7 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 						? 'Enter the email linked to your account.'
 						: mode === 'verify-email'
 						? 'Use the verification link sent to your inbox.'
-						: 'Use 12–128 characters for your new password.'}
+						: 'Use 6–30 characters for your new password.'}
 				</p>
 				{auth && (
 					<div className="tabs equal">
@@ -155,19 +164,19 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 						<Password
 							name="password"
 							required
-							minLength={registering || mode === 'reset-password' ? 12 : 1}
-							maxLength={128}
+							minLength={6}
+							maxLength={30}
 							autoComplete={registering || mode === 'reset-password' ? 'new-password' : 'current-password'}
 						/>
 					)}{' '}
-					{registering && <small>Use 12–128 characters for your password.</small>}
+					{registering && <small>Use 6–30 characters for your password.</small>}
 					{mode === 'sign-in' && (
-						<Link passHref className="forgot" href="/account/forgot-password">
+						<Link passHref className="forgot" href={authHref('/account/forgot-password')}>
 							Forgot password?
 						</Link>
 					)}
 					<Feedback {...action} />
-					{message && <Notice>{message}</Notice>}
+					{message && <Notice notify>{message}</Notice>}
 					<Button type="submit" disabled={action.busy}>
 						{action.busy
 							? 'Please wait…'
@@ -186,24 +195,27 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 				</form>
 				{auth && <SocialButtons />}
 				{mode === 'verify-email' && (
-					<Button secondary onClick={() => setShowResend(!showResend)}>
-						{showResend ? 'Use a verification token' : 'Resend verification email'}
-					</Button>
+					<div className="verification-resend">
+						<p>Need another verification email?</p>
+						<Button secondary className="resend-button" onClick={() => setShowResend(!showResend)}>
+							{showResend ? 'Use a verification token' : 'Resend email'}
+						</Button>
+					</div>
 				)}
 				<p className="auth-bottom">
 					{mode === 'sign-in' ? (
 						<>
 							Don’t have an account?{' '}
-							<Link passHref href="/account/register">
+							<Link passHref href={authHref('/account/register')}>
 								Create an account
 							</Link>
 							<br />
-							<Link passHref href="/account/verify-email">
+							<Link passHref href={authHref('/account/verify-email')}>
 								Verify your email
 							</Link>
 						</>
 					) : (
-						<Link passHref href="/account/sign-in">
+						<Link passHref href={authHref('/account/sign-in')}>
 							Back to sign in
 						</Link>
 					)}

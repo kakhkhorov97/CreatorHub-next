@@ -522,6 +522,39 @@ export const getInquiryEvents = gql`
 		}
 	}
 `;
+export const getInquiryFeedback = gql`
+	query getInquiryFeedback($inquiryId: ID!) {
+		getInquiryFeedback(inquiryId: $inquiryId) {
+			_id
+			createdAt
+			updatedAt
+			creatorId
+			serviceId
+			rating
+			feedback
+			authorName
+		}
+	}
+`;
+export const getCreatorFeedback = gql`
+	query getCreatorFeedback($creatorId: ID!, $input: PageInput! = {}) {
+		getCreatorFeedback(creatorId: $creatorId, input: $input) {
+			list {
+				_id
+				createdAt
+				updatedAt
+				creatorId
+				serviceId
+				rating
+				feedback
+				authorName
+			}
+			metaCounter {
+				total
+			}
+		}
+	}
+`;
 export const getNotifications = gql`
 	query getNotifications($input: PageInput! = {}, $unreadOnly: Boolean! = false) {
 		getNotifications(input: $input, unreadOnly: $unreadOnly) {

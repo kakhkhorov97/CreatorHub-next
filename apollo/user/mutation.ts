@@ -370,6 +370,86 @@ export const deleteProjectComment = gql`
 		deleteProjectComment(commentId: $commentId)
 	}
 `;
+export const sendInquiry = gql`
+	mutation sendInquiry($input: SendInquiryInput!) {
+		sendInquiry(input: $input) {
+			_id
+			createdAt
+			updatedAt
+			clientId
+			creatorId
+			serviceId
+			subject
+			brief
+			budgetMin
+			budgetMax
+			currency
+			desiredDeadline
+			serviceSnapshot {
+				title
+				pricingType
+				startingPrice
+				currency
+				estimatedDays
+				deliverables
+			}
+			status
+			outcome
+			closedById
+			closedAt
+			submittedAt
+			lastMessageAt
+			version
+		}
+	}
+`;
+export const completeInquiry = gql`
+	mutation completeInquiry($input: InquiryVersionInput!) {
+		completeInquiry(input: $input) {
+			_id
+			createdAt
+			updatedAt
+			clientId
+			creatorId
+			serviceId
+			subject
+			brief
+			budgetMin
+			budgetMax
+			currency
+			desiredDeadline
+			serviceSnapshot {
+				title
+				pricingType
+				startingPrice
+				currency
+				estimatedDays
+				deliverables
+			}
+			status
+			outcome
+			closedById
+			closedAt
+			submittedAt
+			lastMessageAt
+			version
+		}
+	}
+`;
+export const createServiceFeedback = gql`
+	mutation createServiceFeedback($input: CreateServiceFeedbackInput!) {
+		createServiceFeedback(input: $input) {
+			_id
+			createdAt
+			updatedAt
+			creatorId
+			serviceId
+			rating
+			feedback
+			authorName
+		}
+	}
+`;
 export const createInquiry = gql`
 	mutation createInquiry($input: CreateInquiryInput!) {
 		createInquiry(input: $input) {

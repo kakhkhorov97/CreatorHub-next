@@ -1,3 +1,4 @@
+const { approveDemoSubmission } = require('./approve-demo.cjs');
 // Runs against a disposable MongoDB replica set. It never connects to the user's database.
 const path = require('path');
 const fs = require('fs');
@@ -61,7 +62,7 @@ async function op(name, variables = {}, token, expectError = false) {
 	app.useGlobalPipes(
 		new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true, forbidUnknownValues: true }),
 	);
-	app.enableCors({ origin: 'http://localhost:7007' });
+	app.enableCors({ origin: ['http://localhost:7007', 'http://localhost:7017'] });
 	await app.listen(port, '127.0.0.1');
 	const db = app.get(getConnectionToken());
 	for (const model of Object.values(db.models)) await model.createIndexes();
@@ -125,6 +126,7 @@ async function op(name, variables = {}, token, expectError = false) {
 		ct,
 	);
 	await op('setCreatorProfileStatus', { status: 'PUBLISHED' }, ct);
+	await approveDemoSubmission(op, ct, at);
 	await op('myCreatorProfile', {}, ct);
 	await op('creator', { slug: 'studio-test' });
 	const cover = `https://media.example.com/creatorhub/${creator.user._id}/cover.jpg`;
@@ -150,6 +152,7 @@ async function op(name, variables = {}, token, expectError = false) {
 		ct,
 	);
 	await op('setProjectStatus', { projectId: project._id, status: 'PUBLISHED' }, ct);
+	await approveDemoSubmission(op, ct, at);
 	await op('getProject', { projectId: project._id });
 	await op('getMyProjects', {}, ct);
 	await op('getProjects', { input: { query: 'Botanical', limit: 12 } });
@@ -174,6 +177,7 @@ async function op(name, variables = {}, token, expectError = false) {
 		ct,
 	);
 	await op('setServiceStatus', { serviceId: service._id, status: 'ACTIVE' }, ct);
+	await approveDemoSubmission(op, ct, at);
 	await op('getService', { serviceId: service._id });
 	await op('getMyServices', {}, ct);
 	await op('getServices', { input: { creatorId: profile._id } });
@@ -264,7 +268,25 @@ async function op(name, variables = {}, token, expectError = false) {
 	await op('getInquiryMessages', { inquiryId: inquiry._id }, activeClient);
 	await op('getInquiryEvents', { inquiryId: inquiry._id }, ct);
 	inquiry = await op('getInquiry', { inquiryId: inquiry._id }, activeClient);
-	await op('closeInquiry', { input: { ...version(inquiry), outcome: 'AGREED_TO_PROCEED' } }, activeClient);
+	inquiry = await op('closeInquiry', { input: { ...version(inquiry), outcome: 'AGREED_TO_PROCEED' } }, activeClient);
+	inquiry = await op('completeInquiry', { input: version(inquiry) }, activeClient);
+	await op(
+		'createServiceFeedback',
+		{ input: { inquiryId: inquiry._id, rating: 5, feedback: 'Thoughtful work and clear communication.' } },
+		activeClient,
+	);
+	await op('getInquiryFeedback', { inquiryId: inquiry._id }, activeClient);
+	await op('getCreatorFeedback', { creatorId: profile._id });
+	const request = {
+		creatorId: profile._id,
+		subject: 'Direct inquiry',
+		brief: 'Please help design the identity for a new bookstore.',
+		clientRequestKey: randomUUID(),
+	};
+	const direct = await op('sendInquiry', { input: request }, activeClient);
+	assert.equal(direct.status, 'SENT');
+	assert.equal((await op('sendInquiry', { input: request }, activeClient))._id, direct._id);
+
 	let cancel = await draft();
 	cancel = await op('submitInquiry', { input: version(cancel) }, activeClient);
 	await op('cancelInquiry', { input: version(cancel) }, activeClient);

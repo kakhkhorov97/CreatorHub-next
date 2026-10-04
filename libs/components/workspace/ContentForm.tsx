@@ -63,6 +63,7 @@ export function EditorForm({
 	async function save(form: HTMLFormElement) {
 		const f = values(form);
 		await action.run(async () => {
+			setMessage('');
 			let result: PortfolioProject | CreatorService;
 			if (kind === 'project') {
 				const tags = lines(f.tags);
@@ -250,7 +251,7 @@ export function EditorForm({
 										>
 											Move down
 										</Button>
-										<Button secondary onClick={() => setMedia(media.filter((_, i) => i !== index))}>
+										<Button danger secondary onClick={() => setMedia(media.filter((_, i) => i !== index))}>
 											Remove
 										</Button>
 									</div>
@@ -312,9 +313,9 @@ export function EditorForm({
 					</>
 				)}
 				<Feedback {...action} />
-				{message && <Notice>{message}</Notice>}
+				{message && <Notice notify>{message}</Notice>}
 				<Button type="submit" disabled={action.busy}>
-					Save {status === 'DRAFT' ? 'draft' : 'changes'}
+					{status === 'PUBLISHED' || status === 'ACTIVE' ? 'Submit changes for approval' : 'Save draft'}
 				</Button>
 			</section>
 			<aside className="panel publishing">

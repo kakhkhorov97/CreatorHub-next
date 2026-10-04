@@ -1,7 +1,11 @@
+import { useApi } from '../../hooks/useApi';
 import { ContentReview } from '../../types/creatorhub';
 import { label, Picture, safeUrl } from '../common/UI';
 
 export default function ReviewPreview({ review }: { review: ContentReview }) {
+	const categories = useApi('categories');
+	const categoryName = (id: unknown) =>
+		categories.value?.find((item) => item._id === id)?.name || 'Unavailable category';
 	let snapshot: Record<string, unknown> = {};
 	try {
 		snapshot = JSON.parse(review.preview);
@@ -22,10 +26,26 @@ export default function ReviewPreview({ review }: { review: ContentReview }) {
 									Open cover
 								</a>
 							</>
+						) : key === 'categoryId' || key === 'categoryIds' ? (
+							<p>{(Array.isArray(value) ? value : [value]).map(categoryName).join(', ')}</p>
+						) : key === 'socialLinks' && Array.isArray(value) ? (
+							<ul>
+								{value.map((link: { label: string; url: string }, index: number) => (
+									<li key={index}>
+										<a href={safeUrl(link.url)} target="_blank" rel="noreferrer">
+											{link.label || link.url}
+										</a>
+									</li>
+								))}
+							</ul>
 						) : (
 							<p>
 								{Array.isArray(value)
 									? value.map((item) => (typeof item === 'object' ? JSON.stringify(item) : String(item))).join(', ')
+									: typeof value === 'boolean'
+									? value
+										? 'Yes'
+										: 'No'
 									: String(value)}
 							</p>
 						)}

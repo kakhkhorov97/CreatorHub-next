@@ -1,6 +1,7 @@
 import { ArrowLeft, ArrowRight } from 'phosphor-react';
 import React, { ReactNode } from 'react';
 import { label } from '../../utils/format';
+import { ConfirmationPrompt } from './ConfirmationPrompt';
 import { Button } from './Button';
 import { Notice } from './Feedback';
 
@@ -60,11 +61,25 @@ export function Pager({
 }) {
 	return (
 		<nav className="pager" aria-label="Pagination">
-			<Button secondary disabled={!offset || loading} onClick={previous}>
+			<Button
+				secondary
+				disabled={!offset || loading}
+				onClick={() => {
+					previous();
+					window.scrollTo({ top: 0, behavior: 'auto' });
+				}}
+			>
 				<ArrowLeft />
 				Previous
 			</Button>
-			<Button secondary disabled={!canNext || loading} onClick={next}>
+			<Button
+				secondary
+				disabled={!canNext || loading}
+				onClick={() => {
+					next();
+					window.scrollTo({ top: 0, behavior: 'auto' });
+				}}
+			>
 				Next
 				<ArrowRight />
 			</Button>
@@ -87,25 +102,27 @@ export function Confirm({
 	onConfirm,
 	busy,
 	onCancel,
+	danger = true,
 }: {
 	title: string;
 	children: ReactNode;
 	onConfirm: () => void;
 	onCancel: () => void;
 	busy?: boolean;
+	danger?: boolean;
 }) {
 	return (
-		<section className="confirm" role="alert">
+		<ConfirmationPrompt onCancel={onCancel} busy={busy}>
 			<h3>{title}</h3>
 			<p>{children}</p>
 			<div className="actions">
-				<Button danger disabled={busy} onClick={onConfirm}>
+				<Button danger={danger} disabled={busy} onClick={onConfirm}>
 					Confirm
 				</Button>
 				<Button secondary disabled={busy} onClick={onCancel}>
 					Keep it
 				</Button>
 			</div>
-		</section>
+		</ConfirmationPrompt>
 	);
 }

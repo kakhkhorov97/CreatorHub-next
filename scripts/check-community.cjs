@@ -115,12 +115,13 @@ async function op(name, variables = {}, token, rejected = false) {
 			'Popular order matches actual likes and newest tie-break; six recent projects exclude six popular; exclusions validated',
 		);
 		const cities = await op('getCities');
-		assert.ok(cities.some((c) => c.key === 'london'));
-		await op('getCreators', { input: { city: 'london' } });
+		assert.ok(cities.some((c) => c.key === 'gwangju'));
+		assert.ok(!cities.some((c) => c.key === 'london'));
+		await op('getCreators', { input: { city: 'gwangju' } });
 		for (const title of ['Lume, Lisbon', 'Copenhagen', 'FRAME, Tokyo'])
 			assert.ok(recent.list.some((p) => p.title.includes(title)));
 		assert.equal((await op('getEvents', { input: { limit: 50 } })).filter((x) => x.isDemo).length, 3);
-		checks.push('International city accepted, three international studies and three demo events present');
+		checks.push('Korean cities only, three portfolio studies and three Korean or online demo events present');
 		fs.writeFileSync(
 			'docs/verification/community.json',
 			JSON.stringify(

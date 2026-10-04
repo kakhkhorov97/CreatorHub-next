@@ -136,7 +136,7 @@ function CategoryContent() {
 						defaultValue={selected?.sortOrder ?? 0}
 					/>
 					<Feedback {...action} />
-					{saved && <Notice>Category saved.</Notice>}
+					{saved && <Notice notify>Category saved.</Notice>}
 					<Button type="submit" disabled={action.busy}>
 						Save changes
 					</Button>

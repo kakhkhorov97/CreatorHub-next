@@ -1,3 +1,4 @@
+const { approveDemoSubmission } = require('./approve-demo.cjs');
 const fs = require('node:fs');
 const path = require('node:path');
 const { createRequire } = require('node:module');
@@ -157,6 +158,7 @@ async function op(name, variables = {}, token) {
 					account.accessToken,
 				);
 				await op('setCreatorProfileStatus', { status: 'PUBLISHED' }, account.accessToken);
+				await approveDemoSubmission(op, account.accessToken, admin.accessToken);
 			}
 			const services = await op('getMyServices', {}, account.accessToken);
 			if (!services.some((s) => s.title === person.service)) {
@@ -176,6 +178,7 @@ async function op(name, variables = {}, token) {
 					account.accessToken,
 				);
 				await op('setServiceStatus', { serviceId: service._id, status: 'ACTIVE' }, account.accessToken);
+				await approveDemoSubmission(op, account.accessToken, admin.accessToken);
 			}
 		}
 		for (const portrait of manifest.portraits) {

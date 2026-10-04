@@ -1,5 +1,4 @@
 // Generated from docs/schema.graphql. Run npm run contract:generate after a schema update.
-
 export interface ContentReview {
 	_id: string;
 	createdAt: string;
@@ -13,7 +12,6 @@ export interface ContentReview {
 	baseUpdatedAt: string;
 	preview: string;
 }
-
 export interface User {
 	_id: string;
 	createdAt: string;
@@ -26,19 +24,14 @@ export interface User {
 	lastLoginAt?: string | null;
 	deletedAt?: string | null;
 }
-
 export type UserRole = 'USER' | 'CREATOR' | 'ADMIN';
-
 export type UserStatus = 'ACTIVE' | 'SUSPENDED' | 'DELETED';
-
 export type Locale = 'ko' | 'en';
-
 export interface City {
 	key: string;
 	nameEn: string;
 	nameKo: string;
 }
-
 export interface Category {
 	_id: string;
 	createdAt: string;
@@ -49,16 +42,13 @@ export interface Category {
 	sortOrder: number;
 	isActive: boolean;
 }
-
 export interface MetaCounter {
 	total: number;
 }
-
 export interface SocialLink {
 	label: string;
 	url: string;
 }
-
 export interface CreatorProfile {
 	_id: string;
 	createdAt: string;
@@ -78,25 +68,19 @@ export interface CreatorProfile {
 	deletedAt?: string | null;
 	identity: CreatorIdentity;
 }
-
 export type CreatorAvailability = 'AVAILABLE' | 'BUSY' | 'UNAVAILABLE';
-
 export type ProfileStatus = 'DRAFT' | 'PUBLISHED' | 'HIDDEN';
-
 export interface Creators {
 	list: Array<CreatorProfile>;
 	metaCounter: Array<MetaCounter>;
 }
-
 export interface PortfolioMedia {
 	type: MediaType;
 	url: string;
 	altText: string;
 	sortOrder: number;
 }
-
 export type MediaType = 'IMAGE' | 'VIDEO';
-
 export interface PortfolioProject {
 	_id: string;
 	createdAt: string;
@@ -115,14 +99,11 @@ export interface PortfolioProject {
 	publishedAt?: string | null;
 	deletedAt?: string | null;
 }
-
 export type ProjectStatus = 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
-
 export interface Projects {
 	list: Array<PortfolioProject>;
 	metaCounter: Array<MetaCounter>;
 }
-
 export interface CreatorService {
 	_id: string;
 	createdAt: string;
@@ -139,18 +120,13 @@ export interface CreatorService {
 	status: ServiceStatus;
 	deletedAt?: string | null;
 }
-
 export type PricingType = 'STARTING_AT' | 'CUSTOM_QUOTE';
-
 export type Currency = 'KRW';
-
 export type ServiceStatus = 'DRAFT' | 'ACTIVE' | 'PAUSED' | 'ARCHIVED';
-
 export interface Services {
 	list: Array<CreatorService>;
 	metaCounter: Array<MetaCounter>;
 }
-
 export interface ProjectComment {
 	_id: string;
 	createdAt: string;
@@ -163,14 +139,11 @@ export interface ProjectComment {
 	editedAt?: string | null;
 	deletedAt?: string | null;
 }
-
 export type CommentStatus = 'ACTIVE' | 'HIDDEN' | 'DELETED';
-
 export interface Comments {
 	list: Array<ProjectComment>;
 	metaCounter: Array<MetaCounter>;
 }
-
 export interface AdminEntry {
 	_id: string;
 	title: string;
@@ -185,12 +158,10 @@ export interface AdminEntry {
 	service?: CreatorService | null;
 	comment?: ProjectComment | null;
 }
-
 export interface AdminDirectory {
 	list: Array<AdminEntry>;
 	metaCounter: Array<MetaCounter>;
 }
-
 export interface AdminOverview {
 	users: number;
 	creators: number;
@@ -200,7 +171,6 @@ export interface AdminOverview {
 	categories: number;
 	events: number;
 }
-
 export interface SiteContent {
 	homeHeading: string;
 	homeSubheading: string;
@@ -209,7 +179,6 @@ export interface SiteContent {
 	contactText: string;
 	footerCopy: string;
 }
-
 export interface CreativeEvent {
 	_id: string;
 	createdAt: string;
@@ -223,16 +192,13 @@ export interface CreativeEvent {
 	status: EventStatus;
 	isDemo: boolean;
 }
-
 export type EventStatus = 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
-
 export interface AuthPayload {
 	accessToken: string;
 	refreshToken: string;
 	expiresIn: number;
 	user: User;
 }
-
 export interface AuthIdentity {
 	_id: string;
 	createdAt: string;
@@ -244,14 +210,11 @@ export interface AuthIdentity {
 	revokedAt?: string | null;
 	lastLoginAt?: string | null;
 }
-
 export type AuthProvider = 'EMAIL' | 'PHONE' | 'GOOGLE' | 'TELEGRAM' | 'KAKAO';
-
 export interface CreatorIdentity {
 	displayName: string;
 	avatarUrl?: string | null;
 }
-
 export interface DiscoveryResult {
 	mode: string;
 	explanation: string;
@@ -259,7 +222,6 @@ export interface DiscoveryResult {
 	projects: Array<PortfolioProject>;
 	services: Array<CreatorService>;
 }
-
 export interface CreatorFollow {
 	_id: string;
 	createdAt: string;
@@ -269,24 +231,34 @@ export interface CreatorFollow {
 	isActive: boolean;
 	followedAt: string;
 }
-
 export interface Followings {
 	list: Array<CreatorFollow>;
 	metaCounter: Array<MetaCounter>;
 }
-
 export interface SavedProjectResult {
 	projectId: string;
 	savedAt: string;
 	available: boolean;
 	project?: PortfolioProject | null;
 }
-
 export interface SavedProjects {
 	list: Array<SavedProjectResult>;
 	metaCounter: Array<MetaCounter>;
 }
-
+export interface ServiceFeedback {
+	_id: string;
+	createdAt: string;
+	updatedAt: string;
+	creatorId: string;
+	serviceId?: string | null;
+	rating: number;
+	feedback: string;
+	authorName: string;
+}
+export interface ServiceFeedbacks {
+	list: Array<ServiceFeedback>;
+	metaCounter: Array<MetaCounter>;
+}
 export interface InquiryEvent {
 	_id: string;
 	createdAt: string;
@@ -298,16 +270,12 @@ export interface InquiryEvent {
 	messageId?: string | null;
 	version: number;
 }
-
-export type InquiryEventType = 'SUBMITTED' | 'MESSAGE_SENT' | 'DECLINED' | 'CLOSED' | 'CANCELLED';
-
+export type InquiryEventType = 'COMPLETED' | 'SUBMITTED' | 'MESSAGE_SENT' | 'DECLINED' | 'CLOSED' | 'CANCELLED';
 export type InquiryStatus = 'DRAFT' | 'SENT' | 'IN_DISCUSSION' | 'DECLINED' | 'CLOSED' | 'CANCELLED';
-
 export interface InquiryEvents {
 	list: Array<InquiryEvent>;
 	metaCounter: Array<MetaCounter>;
 }
-
 export interface InquiryMessage {
 	_id: string;
 	createdAt: string;
@@ -317,12 +285,10 @@ export interface InquiryMessage {
 	body: string;
 	readAt?: string | null;
 }
-
 export interface InquiryMessages {
 	list: Array<InquiryMessage>;
 	metaCounter: Array<MetaCounter>;
 }
-
 export interface InquiryServiceSnapshot {
 	title: string;
 	pricingType: PricingType;
@@ -331,7 +297,6 @@ export interface InquiryServiceSnapshot {
 	estimatedDays?: number | null;
 	deliverables: Array<string>;
 }
-
 export interface Inquiry {
 	_id: string;
 	createdAt: string;
@@ -354,14 +319,11 @@ export interface Inquiry {
 	lastMessageAt?: string | null;
 	version: number;
 }
-
-export type InquiryOutcome = 'AGREED_TO_PROCEED' | 'NOT_PROCEEDING' | 'NO_RESPONSE';
-
+export type InquiryOutcome = 'AGREED_TO_PROCEED' | 'COMPLETED' | 'NOT_PROCEEDING' | 'NO_RESPONSE';
 export interface Inquiries {
 	list: Array<Inquiry>;
 	metaCounter: Array<MetaCounter>;
 }
-
 export interface ActivityEvent {
 	_id: string;
 	createdAt: string;
@@ -372,9 +334,7 @@ export interface ActivityEvent {
 	projectId?: string | null;
 	commentId?: string | null;
 }
-
 export type ActivityEventType = 'PROJECT_PUBLISHED' | 'PROJECT_LIKED' | 'PROJECT_COMMENTED' | 'CREATOR_FOLLOWED';
-
 export interface NotificationResult {
 	_id: string;
 	createdAt: string;
@@ -386,14 +346,11 @@ export interface NotificationResult {
 	activityEvent?: ActivityEvent | null;
 	unavailable: boolean;
 }
-
 export interface Notifications {
 	list: Array<NotificationResult>;
 	metaCounter: Array<MetaCounter>;
 }
-
 export type AdminKind = 'USERS' | 'CREATORS' | 'PROJECTS' | 'SERVICES' | 'COMMENTS';
-
 export interface AdminDirectoryInput {
 	page?: number | null;
 	limit?: number | null;
@@ -403,13 +360,11 @@ export interface AdminDirectoryInput {
 	removed?: boolean | null;
 	id?: string | null;
 }
-
 export interface EventsInput {
 	upcoming?: boolean | null;
 	page?: number | null;
 	limit?: number | null;
 }
-
 export interface DiscoveryInput {
 	sort?: ProjectSort | null;
 	excludeProjectIds?: Array<string> | null;
@@ -422,25 +377,20 @@ export interface DiscoveryInput {
 	page?: number | null;
 	limit?: number | null;
 }
-
 export type ProjectSort = 'RECENT' | 'POPULAR';
-
 export interface AssistantInput {
 	request: string;
 }
-
 export interface PageInput {
 	page?: number | null;
 	limit?: number | null;
 }
-
 export interface AdminUserUpdateInput {
 	displayName?: string | null;
 	avatarUrl?: string | null;
 	preferredLocale?: Locale | null;
 	role?: UserRole | null;
 }
-
 export interface UpdateCreatorInput {
 	slug?: string | null;
 	headline?: string | null;
@@ -452,12 +402,10 @@ export interface UpdateCreatorInput {
 	skills?: Array<string> | null;
 	socialLinks?: Array<SocialLinkInput> | null;
 }
-
 export interface SocialLinkInput {
 	label: string;
 	url: string;
 }
-
 export interface CreateProjectInput {
 	title: string;
 	slug: string;
@@ -469,14 +417,12 @@ export interface CreateProjectInput {
 	tags?: Array<string> | null;
 	externalUrl?: string | null;
 }
-
 export interface PortfolioMediaInput {
 	type: MediaType;
 	url: string;
 	altText: string;
 	sortOrder: number;
 }
-
 export interface AdminProjectUpdateInput {
 	title?: string | null;
 	slug?: string | null;
@@ -488,14 +434,12 @@ export interface AdminProjectUpdateInput {
 	coverImageUrl?: string | null;
 	media?: Array<AdminPortfolioMediaInput> | null;
 }
-
 export interface AdminPortfolioMediaInput {
 	type: MediaType;
 	altText: string;
 	sortOrder: number;
 	url: string;
 }
-
 export interface CreateServiceInput {
 	title: string;
 	categoryId?: string | null;
@@ -505,7 +449,6 @@ export interface CreateServiceInput {
 	estimatedDays?: number | null;
 	deliverables?: Array<string> | null;
 }
-
 export interface UpdateServiceInput {
 	title?: string | null;
 	categoryId?: string | null;
@@ -515,7 +458,6 @@ export interface UpdateServiceInput {
 	estimatedDays?: number | null;
 	deliverables?: Array<string> | null;
 }
-
 export interface SiteContentInput {
 	homeHeading: string;
 	homeSubheading: string;
@@ -524,7 +466,6 @@ export interface SiteContentInput {
 	contactText: string;
 	footerCopy: string;
 }
-
 export interface EventInput {
 	title: string;
 	description: string;
@@ -535,7 +476,6 @@ export interface EventInput {
 	status: EventStatus;
 	isDemo: boolean;
 }
-
 export interface UpdateEventInput {
 	title: string;
 	description: string;
@@ -546,26 +486,22 @@ export interface UpdateEventInput {
 	status: EventStatus;
 	isDemo: boolean;
 }
-
 export interface RegisterInput {
 	email: string;
 	password: string;
 	displayName: string;
 	preferredLocale?: Locale | null;
 }
-
 export interface PhoneRegisterInput {
 	phoneNumber: string;
 	password: string;
 	displayName: string;
 	preferredLocale?: Locale | null;
 }
-
 export interface PhoneLoginInput {
 	phoneNumber: string;
 	password: string;
 }
-
 export interface SocialLoginInput {
 	provider: AuthProvider;
 	idToken: string;
@@ -573,35 +509,28 @@ export interface SocialLoginInput {
 	displayName?: string | null;
 	preferredLocale?: Locale | null;
 }
-
 export interface LoginInput {
 	email: string;
 	password: string;
 }
-
 export interface EmailInput {
 	email: string;
 }
-
 export interface ResetPasswordInput {
 	token: string;
 	password: string;
 }
-
 export interface LinkEmailInput {
 	email: string;
 	password: string;
 }
-
 export interface LinkPhoneInput {
 	phoneNumber: string;
 	password: string;
 }
-
 export interface ChangePhonePasswordInput {
 	password: string;
 }
-
 export interface CategoryInput {
 	slug: string;
 	name: string;
@@ -609,7 +538,6 @@ export interface CategoryInput {
 	sortOrder?: number | null;
 	isActive?: boolean | null;
 }
-
 export interface UpdateCategoryInput {
 	slug?: string | null;
 	name?: string | null;
@@ -617,7 +545,6 @@ export interface UpdateCategoryInput {
 	sortOrder?: number | null;
 	isActive?: boolean | null;
 }
-
 export interface CreateCreatorInput {
 	slug: string;
 	headline?: string | null;
@@ -629,17 +556,33 @@ export interface CreateCreatorInput {
 	skills?: Array<string> | null;
 	socialLinks?: Array<SocialLinkInput> | null;
 }
-
 export interface CommentInput {
 	clientCommentKey: string;
 	projectId: string;
 	content: string;
 }
-
 export interface EditCommentInput {
 	content: string;
 }
-
+export interface SendInquiryInput {
+	serviceId?: string | null;
+	subject: string;
+	brief: string;
+	budgetMin?: number | null;
+	budgetMax?: number | null;
+	desiredDeadline?: string | null;
+	creatorId: string;
+	clientRequestKey: string;
+}
+export interface InquiryVersionInput {
+	inquiryId: string;
+	expectedVersion: number;
+}
+export interface CreateServiceFeedbackInput {
+	inquiryId: string;
+	rating: number;
+	feedback: string;
+}
 export interface CreateInquiryInput {
 	serviceId?: string | null;
 	subject?: string | null;
@@ -649,7 +592,6 @@ export interface CreateInquiryInput {
 	desiredDeadline?: string | null;
 	creatorId: string;
 }
-
 export interface UpdateInquiryInput {
 	serviceId?: string | null;
 	subject?: string | null;
@@ -661,25 +603,17 @@ export interface UpdateInquiryInput {
 	expectedVersion: number;
 	clearService?: boolean | null;
 }
-
-export interface InquiryVersionInput {
-	inquiryId: string;
-	expectedVersion: number;
-}
-
 export interface SendMessageInput {
 	inquiryId: string;
 	expectedVersion: number;
 	clientMessageKey: string;
 	body: string;
 }
-
 export interface CloseInquiryInput {
 	inquiryId: string;
 	expectedVersion: number;
 	outcome: InquiryOutcome;
 }
-
 export interface UpdateProjectInput {
 	title?: string | null;
 	slug?: string | null;
@@ -691,13 +625,11 @@ export interface UpdateProjectInput {
 	tags?: Array<string> | null;
 	externalUrl?: string | null;
 }
-
 export interface UpdateUserInput {
 	displayName?: string | null;
 	avatarUrl?: string | null;
 	preferredLocale?: Locale | null;
 }
-
 export interface Operations {
 	myContentReviews: { variables: {}; result: Array<ContentReview> };
 	adminContentReviews: { variables: { status?: string }; result: Array<ContentReview> };
@@ -727,6 +659,8 @@ export interface Operations {
 	getInquiries: { variables: { creatorInbox?: boolean; input?: PageInput }; result: Inquiries };
 	getInquiryMessages: { variables: { inquiryId: string; input?: PageInput }; result: InquiryMessages };
 	getInquiryEvents: { variables: { inquiryId: string; input?: PageInput }; result: InquiryEvents };
+	getInquiryFeedback: { variables: { inquiryId: string }; result: ServiceFeedback | null };
+	getCreatorFeedback: { variables: { creatorId: string; input?: PageInput }; result: ServiceFeedbacks };
 	getNotifications: { variables: { input?: PageInput; unreadOnly?: boolean }; result: Notifications };
 	getUnreadNotificationCount: { variables: {}; result: number };
 	getProject: { variables: { projectId: string }; result: PortfolioProject };
@@ -791,6 +725,9 @@ export interface Operations {
 	editProjectComment: { variables: { commentId: string; input: EditCommentInput }; result: ProjectComment };
 	deleteProjectComment: { variables: { commentId: string }; result: boolean };
 	moderateProjectComment: { variables: { commentId: string; hidden: boolean }; result: ProjectComment };
+	sendInquiry: { variables: { input: SendInquiryInput }; result: Inquiry };
+	completeInquiry: { variables: { input: InquiryVersionInput }; result: Inquiry };
+	createServiceFeedback: { variables: { input: CreateServiceFeedbackInput }; result: ServiceFeedback };
 	createInquiry: { variables: { input: CreateInquiryInput }; result: Inquiry };
 	updateInquiry: { variables: { input: UpdateInquiryInput }; result: Inquiry };
 	deleteInquiryDraft: { variables: { input: InquiryVersionInput }; result: boolean };

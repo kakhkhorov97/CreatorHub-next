@@ -340,6 +340,22 @@ type SavedProjects {
   metaCounter: [MetaCounter!]!
 }
 
+type ServiceFeedback {
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creatorId: ID!
+  serviceId: ID
+  rating: Int!
+  feedback: String!
+  authorName: String!
+}
+
+type ServiceFeedbacks {
+  list: [ServiceFeedback!]!
+  metaCounter: [MetaCounter!]!
+}
+
 type InquiryEvent {
   _id: ID!
   createdAt: DateTime!
@@ -353,6 +369,7 @@ type InquiryEvent {
 }
 
 enum InquiryEventType {
+  COMPLETED
   SUBMITTED
   MESSAGE_SENT
   DECLINED
@@ -423,6 +440,7 @@ type Inquiry {
 
 enum InquiryOutcome {
   AGREED_TO_PROCEED
+  COMPLETED
   NOT_PROCEEDING
   NO_RESPONSE
 }
@@ -496,6 +514,8 @@ type Query {
   getInquiries(creatorInbox: Boolean! = false, input: PageInput! = {}): Inquiries!
   getInquiryMessages(inquiryId: ID!, input: PageInput! = {}): InquiryMessages!
   getInquiryEvents(inquiryId: ID!, input: PageInput! = {}): InquiryEvents!
+  getInquiryFeedback(inquiryId: ID!): ServiceFeedback
+  getCreatorFeedback(creatorId: ID!, input: PageInput! = {}): ServiceFeedbacks!
   getNotifications(input: PageInput! = {}, unreadOnly: Boolean! = false): Notifications!
   getUnreadNotificationCount: Int!
   getProject(projectId: ID!): PortfolioProject!
@@ -602,6 +622,9 @@ type Mutation {
   editProjectComment(commentId: ID!, input: EditCommentInput!): ProjectComment!
   deleteProjectComment(commentId: ID!): Boolean!
   moderateProjectComment(commentId: ID!, hidden: Boolean!): ProjectComment!
+  sendInquiry(input: SendInquiryInput!): Inquiry!
+  completeInquiry(input: InquiryVersionInput!): Inquiry!
+  createServiceFeedback(input: CreateServiceFeedbackInput!): ServiceFeedback!
   createInquiry(input: CreateInquiryInput!): Inquiry!
   updateInquiry(input: UpdateInquiryInput!): Inquiry!
   deleteInquiryDraft(input: InquiryVersionInput!): Boolean!
@@ -834,6 +857,28 @@ input EditCommentInput {
   content: String!
 }
 
+input SendInquiryInput {
+  serviceId: ID
+  subject: String!
+  brief: String!
+  budgetMin: Int
+  budgetMax: Int
+  desiredDeadline: DateTime
+  creatorId: ID!
+  clientRequestKey: String!
+}
+
+input InquiryVersionInput {
+  inquiryId: ID!
+  expectedVersion: Int!
+}
+
+input CreateServiceFeedbackInput {
+  inquiryId: ID!
+  rating: Int!
+  feedback: String!
+}
+
 input CreateInquiryInput {
   serviceId: ID
   subject: String
@@ -854,11 +899,6 @@ input UpdateInquiryInput {
   inquiryId: ID!
   expectedVersion: Int!
   clearService: Boolean
-}
-
-input InquiryVersionInput {
-  inquiryId: ID!
-  expectedVersion: Int!
 }
 
 input SendMessageInput {

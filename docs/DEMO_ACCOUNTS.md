@@ -1,5 +1,7 @@
 # Fictional demo accounts
 
+These credentials apply to the disposable demo seed only. The Atlas import did not copy these login identities.
+
 All creators, clients and services are fictional. Creator portraits are AI-generated. Preview password: `CreatorHub-demo-2026!`. Use Email sign-in.
 
 - Joon Lee (Creator): joon-lee@creatorhub.example

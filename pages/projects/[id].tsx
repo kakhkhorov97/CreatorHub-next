@@ -43,6 +43,7 @@ function ProjectDetail() {
 					<Heading title={p.title}>
 						<div className="actions">
 							<Button
+								danger={saved.active}
 								secondary
 								disabled={action.busy || saved.loading}
 								onClick={() => engage('setProjectSaved', !saved.active)}

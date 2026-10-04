@@ -1,3 +1,5 @@
+import { ConfirmationPrompt } from '../common/ConfirmationPrompt';
+import { EngagementFeedback } from './ServiceFeedback';
 import { useReactiveVar } from '@apollo/client';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
@@ -235,7 +237,7 @@ export function Conversation({
 				</aside>
 			</div>
 			{finish && (
-				<section className="confirm">
+				<ConfirmationPrompt onCancel={() => setFinish(null)} busy={action.busy}>
 					<h2>
 						{finish === 'closeInquiry'
 							? 'Close inquiry'
@@ -278,8 +280,9 @@ export function Conversation({
 							Keep open
 						</Button>
 					</div>
-				</section>
+				</ConfirmationPrompt>
 			)}
+			<EngagementFeedback inquiry={inquiry} isClient={isClient} refresh={refresh} />
 		</>
 	);
 }

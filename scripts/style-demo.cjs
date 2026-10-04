@@ -27,20 +27,18 @@ const root = require('path').resolve(__dirname, '..');
 	for (let i = 0; i < samples.length; i++) {
 		const [slug, file, title, summary] = samples[i];
 		const url = '/demo-media/' + file + '.png';
-		await db
-			.collection('portfolioProjects')
-			.updateOne(
-				{ slug },
-				{
-					$set: {
-						title,
-						summary,
-						coverImageUrl: url,
-						media: [{ type: 'IMAGE', url, altText: title, sortOrder: 0 }],
-						publishedAt: new Date(Date.now() - i * 1000),
-					},
+		await db.collection('portfolioProjects').updateOne(
+			{ slug },
+			{
+				$set: {
+					title,
+					summary,
+					coverImageUrl: url,
+					media: [{ type: 'IMAGE', url, altText: title, sortOrder: 0 }],
+					publishedAt: new Date(Date.now() - i * 1000),
 				},
-			);
+			},
+		);
 		const profileSlug = slug.slice(0, -2);
 		await db
 			.collection('creatorProfiles')
@@ -51,18 +49,16 @@ const root = require('path').resolve(__dirname, '..');
 		await db
 			.collection('users')
 			.updateOne({ _id: mina.userId }, { $set: { avatarUrl: '/demo-media/mina-portrait.png' } });
-		await db
-			.collection('portfolioProjects')
-			.updateOne(
-				{ slug: 'mina-park-1' },
-				{
-					$set: {
-						title: 'A Kinder Tomorrow — Print study',
-						coverImageUrl: '/demo-media/kinder-tomorrow.png',
-						'media.0.url': '/demo-media/kinder-tomorrow.png',
-					},
+		await db.collection('portfolioProjects').updateOne(
+			{ slug: 'mina-park-1' },
+			{
+				$set: {
+					title: 'A Kinder Tomorrow — Print study',
+					coverImageUrl: '/demo-media/kinder-tomorrow.png',
+					'media.0.url': '/demo-media/kinder-tomorrow.png',
 				},
-			);
+			},
+		);
 	}
 	console.log('Demo portfolio artwork applied.');
 	await c.close();

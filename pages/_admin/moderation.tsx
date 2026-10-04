@@ -4,13 +4,14 @@ import { toast } from 'sonner';
 import { adminDecideContentReview } from '../../apollo/admin/mutation';
 import { adminContentReviews } from '../../apollo/admin/query';
 import AdminLayout from '../../libs/components/admin/AdminLayout';
-import { Button, Empty, Field, Heading, QueryState, Status } from '../../libs/components/common/UI';
+import { Button, Empty, Field, Heading, QueryState, Status, Notice } from '../../libs/components/common/UI';
 import ReviewPreview from '../../libs/components/review/ReviewPreview';
 import { ContentReview } from '../../libs/types/creatorhub';
 
 export default function Moderation() {
 	const [status, setStatus] = useState('PENDING');
 	const [reasons, setReasons] = useState<Record<string, string>>({});
+	const [errorMessage, setErrorMessage] = useState('');
 	const [pending, setPending] = useState('');
 	const queue = useQuery<{ adminContentReviews: ContentReview[] }>(adminContentReviews, {
 		variables: { status },
@@ -22,6 +23,7 @@ export default function Moderation() {
 	async function review(item: ContentReview, approve: boolean) {
 		if (pending) return;
 		setPending(item._id);
+		setErrorMessage('');
 		try {
 			await decide({
 				variables: {
@@ -34,7 +36,7 @@ export default function Moderation() {
 			toast.success(approve ? 'Submission approved.' : 'Submission rejected.');
 			await queue.refetch();
 		} catch (error) {
-			toast.error(error instanceof Error ? error.message : 'Unable to review. Refresh and try again.');
+			setErrorMessage(error instanceof Error ? error.message : 'Unable to review. Refresh and try again.');
 		} finally {
 			setPending('');
 		}
@@ -42,6 +44,7 @@ export default function Moderation() {
 	return (
 		<AdminLayout title="Content approval">
 			<Heading title="Content approval" />
+			{errorMessage && <Notice error>{errorMessage}</Notice>}
 			<p>Review all submitted text and media before approval. Explicit sexual content is prohibited.</p>
 			<Field label="Review status">
 				<select value={status} onChange={(event) => setStatus(event.target.value)}>

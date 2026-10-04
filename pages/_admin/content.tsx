@@ -102,7 +102,7 @@ function ContentForm() {
 						defaultValue={result.value.footerCopy}
 					/>
 					<Feedback {...action} />
-					{saved && <Notice>Website content saved. The public pages now use this copy.</Notice>}
+					{saved && <Notice notify>Website content saved. The public pages now use this copy.</Notice>}
 					<Button type="submit" disabled={action.busy}>
 						Save website content
 					</Button>

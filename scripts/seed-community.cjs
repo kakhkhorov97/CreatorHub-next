@@ -1,3 +1,4 @@
+const { approveDemoSubmission } = require('./approve-demo.cjs');
 // Fictional fixtures only. Never writes to a production database.
 const fs = require('node:fs');
 const path = require('node:path');
@@ -64,24 +65,24 @@ const eventInputs = [
 	{
 		title: 'Independent design conversations',
 		description:
-			'Fictional demo event. A sample online conversation about independent practice, sharing work, and collaborating across borders. This is not a real scheduled event and registration is unavailable.',
-		location: 'Online • worldwide',
+			'Fictional demo event. A sample online conversation about independent practice, sharing work, and collaborating across Korea. This is not a real scheduled event and registration is unavailable.',
+		location: 'Online • Korea',
 		startsAt: '2026-11-07T14:00:00Z',
 		endsAt: '2026-11-07T15:30:00Z',
 	},
 	{
-		title: 'Portfolio exchange in London',
+		title: 'Portfolio exchange in Seoul',
 		description:
-			'Fictional demo event. A sample peer session for discussing portfolios and creative briefs in London. No actual venue or organizer is associated with this listing.',
-		location: 'London, United Kingdom • demo venue',
+			'Fictional demo event. A sample peer session for discussing portfolios and creative briefs in Seoul. No actual venue or organizer is associated with this listing.',
+		location: 'Seoul, Korea • demo venue',
 		startsAt: '2026-11-14T10:00:00Z',
 		endsAt: '2026-11-14T12:00:00Z',
 	},
 	{
-		title: 'Editorial workshop in Tokyo',
+		title: 'Editorial workshop in Gwangju',
 		description:
-			'Fictional demo event. A sample workshop about typography, print, and editorial layouts in Tokyo. This listing demonstrates the event page and is not open for registration.',
-		location: 'Tokyo, Japan • demo venue',
+			'Fictional demo event. A sample workshop about typography, print, and editorial layouts in Gwangju. This listing demonstrates the event page and is not open for registration.',
+		location: 'Gwangju, Korea • demo venue',
 		startsAt: '2026-11-21T04:00:00Z',
 		endsAt: '2026-11-21T06:00:00Z',
 	},
@@ -126,6 +127,7 @@ const eventInputs = [
 					session.accessToken,
 				);
 				await op('setProjectStatus', { projectId: record._id, status: 'PUBLISHED' }, session.accessToken);
+				await approveDemoSubmission(op, session.accessToken, admin.accessToken);
 			}
 			const local = '/demo-media/' + p.file + '.png';
 			await db

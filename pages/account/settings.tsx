@@ -70,7 +70,7 @@ function AccountForm() {
 				</Field>
 				<small>This preference is stored with your account. The current interface is in English.</small>
 				<Feedback {...action} />
-				{saved && <Notice>Account updated.</Notice>}
+				{saved && <Notice notify>Account updated.</Notice>}
 				<Button type="submit" disabled={action.busy}>
 					Save changes
 				</Button>
@@ -78,7 +78,7 @@ function AccountForm() {
 			<section className="danger-zone">
 				<h2>Delete account</h2>
 				<p>Your profile will no longer be publicly available and your sessions will be revoked.</p>
-				<Button secondary onClick={() => setRemove(true)}>
+				<Button danger secondary onClick={() => setRemove(true)}>
 					Delete my account
 				</Button>
 				{remove && (

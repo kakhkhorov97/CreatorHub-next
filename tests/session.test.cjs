@@ -40,8 +40,8 @@ const payload = {
 };
 test('return path prevents external and protocol-relative redirects', () => {
 	const { api } = harness();
-	for (const path of ['https://evil.test', '//evil.test', '/\\evil.test', null])
-		assert.equal(api.safeReturnTo(path), '/workspace');
+	for (const path of ['https://evil.test', '//evil.test', '/\\evil.test', '/\n/evil.test', '/\t/evil.test', null])
+		assert.equal(api.safeReturnTo(path), '/');
 	assert.equal(api.safeReturnTo('/projects/123?tab=work'), '/projects/123?tab=work');
 });
 test('valid access token is reused without refresh', async () => {
@@ -86,4 +86,20 @@ test('invalid refresh clears the session', async () => {
 	api.saveSession({ ...payload, expiresIn: 0 });
 	await assert.rejects(api.accessToken(), /session expired/);
 	assert.equal(api.readSession(), null);
+});
+
+test('registration defaults home and authentication resumes the requested activity', () => {
+	const { api } = harness();
+	assert.equal(api.authenticationDestination(undefined, '/workspace', 'USER', true), '/');
+	assert.equal(
+		api.authenticationDestination('/inquiries/new?creatorId=123', undefined, 'USER', true),
+		'/inquiries/new?creatorId=123',
+	);
+	assert.equal(
+		api.authenticationDestination(undefined, '/inquiries/new?creatorId=123', 'USER'),
+		'/inquiries/new?creatorId=123',
+	);
+	assert.equal(api.authenticationDestination(undefined, undefined, 'USER'), '/');
+	assert.equal(api.authenticationDestination(undefined, undefined, 'ADMIN'), '/_admin');
+	assert.equal(api.authenticationDestination('//evil.test', undefined, 'USER'), '/');
 });

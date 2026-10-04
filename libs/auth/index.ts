@@ -70,7 +70,20 @@ export function finishSessionCheck() {
 }
 
 export function safeReturnTo(value: unknown) {
-	return typeof value === 'string' && value.startsWith('/') && !value.startsWith('//') && !value.includes('\\')
+	return typeof value === 'string' &&
+		value.startsWith('/') &&
+		!value.startsWith('//') &&
+		!/[\u0000-\u0020\\]/.test(value)
 		? value
-		: '/workspace';
+		: '/';
+}
+
+export function authenticationDestination(
+	returnTo: unknown,
+	storedReturnTo: unknown,
+	role: string,
+	registering = false,
+) {
+	const resume = returnTo || (!registering ? storedReturnTo : undefined);
+	return resume ? safeReturnTo(resume) : !registering && role === 'ADMIN' ? '/_admin' : '/';
 }

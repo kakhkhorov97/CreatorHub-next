@@ -408,3 +408,22 @@ A record editor separates content fields from publication, account access and re
 - Don't add invented service thumbnails or unsupported payment and booking flows.
 - Don't treat generated demo artwork as real client work.
 - Don't propagate admin styling into public discovery, profiles, inbox or creator workspace pages.
+
+
+## Approved October adjustments
+
+The hero search groups keyword, category, Korean location and a blue search button in one segmented control. On phones the keyword and button occupy full rows, with category/location between them. Category shortcuts sit below search and above Popular projects.
+
+After the homepage search leaves the viewport, the sticky header uses a compact logo, project search and a horizontally scrolling row of navigation/category links. It expands again near the top. Unfollow uses the existing red danger color. Sonner displays action feedback; inline form errors and confirmation regions remain visible.
+
+The footer has five desktop columns including Gwangju, Korea and labeled demo social icons, then adapts to fewer columns on smaller screens. The assistant panel fits phone widths and preserves keyboard focus. The stylesheet entry is scss/main.scss, which fixes base/reference/admin/change ordering in one place.
+
+## Approved account and interaction refinements, 5 October 2026
+
+Main discovery links occupy the logo/search row, with creative categories below. Unrelated pages use the logo and account actions without discovery controls. At 1100px main links move onto their own scrolling row. The account menu uses compact 14px entries, a saved icon and a 32px sign-out control. Fallback avatars remain visible on phones.
+
+Sign-in method panels have a 640px maximum width, smaller content tabs and compact social-provider controls. Email verification offers a blue outlined resend action beneath a divider. Confirmation prompts use a fixed top position, up to 460px width, 17px titles and 34px actions. Destructive controls use red throughout both app and administration. Errors remain inline.
+
+Clickable portfolio, creator and service cards lift 3px on hover, show pointer cursors, and retain normal links for keyboard access. Focus outlines use the existing blue. Reduced-motion preferences disable lifts. Creator profile actions use smaller aligned controls. Customer reviews use star icons and readable feedback with author/date.
+
+The chatbot uses a compact launcher, a 360px panel with a 480px maximum height, a pale-blue header and a smaller composer. It fits the viewport on phones. Existing white-and-blue visual authority remains unchanged.

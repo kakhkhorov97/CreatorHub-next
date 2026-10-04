@@ -1,6 +1,6 @@
 # Backend operation coverage
 
-All 98 generated GraphQL documents validate against the backend schema. The existing integration suite executed 75 operations. Community checks exercised five additional event operations, and administrator checks exercised all 12 new operations, for 92 operations across the runs. Four social operations require configured provider browser flows; imageUploader and imagesUploader are not tested by these frontend integration runs. Checked rows indicate API integration execution, not complete browser end-to-end coverage.
+All 106 generated GraphQL documents validate against the backend schema. The current disposable generated-document workflow executes 83 operations, including all three manual review APIs. The event and admin rows below also retain evidence from earlier dedicated checks; they do not claim every operation was rerun in this batch. Four social flows need configured providers, and the two upload operations remain outside these frontend integration runs. Checked rows indicate API execution, not complete browser coverage.
 
 | API tested | Area | Kind | Operation | Screen |
 | --- | --- | --- | --- | --- |
@@ -112,3 +112,15 @@ The community checks also verified getProjects actual-like sorting, publication 
 | [x] | admin | Mutation | `adminUpdateService` | Dedicated administration / saved public copy |
 | [x] | admin | Mutation | `adminSetRemoved` | Dedicated administration / saved public copy |
 | [x] | admin | Mutation | `adminUpdateSiteContent` | Dedicated administration / saved public copy |
+| [x] | review | Query | `myContentReviews` | Owner submission status and preview |
+| [x] | review | Query | `adminContentReviews` | Admin content approval queue |
+| [x] | review | Mutation | `adminDecideContentReview` | Approve/reject a submitted revision |
+
+
+| API tested | Area | Kind | Operation | Screen |
+| --- | --- | --- | --- | --- |
+| [x] | inquiry | Mutation | `sendInquiry` | Direct inquiry form |
+| [x] | inquiry | Mutation | `completeInquiry` | Completed engagement confirmation |
+| [x] | feedback | Mutation | `createServiceFeedback` | Customer review form |
+| [x] | feedback | Query | `getInquiryFeedback` | Private inquiry feedback |
+| [x] | feedback | Query | `getCreatorFeedback` | Creator profile Reviews tab |

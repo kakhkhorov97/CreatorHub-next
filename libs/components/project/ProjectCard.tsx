@@ -1,3 +1,4 @@
+import { useCardNavigation } from '../../hooks/useCardNavigation';
 import { useReactiveVar } from '@apollo/client';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -24,8 +25,9 @@ export function ProjectCard({
 	const action = useAction();
 	const user = useReactiveVar(userVar);
 	const router = useRouter();
+	const openCard = useCardNavigation(`/projects/${project._id}`);
 	return (
-		<article className="project-card">
+		<article className="project-card" onClick={openCard}>
 			<Link passHref href={`/projects/${project._id}`} className="cover-link">
 				<Picture src={project.coverImageUrl} alt={project.title} />
 			</Link>
@@ -51,6 +53,7 @@ export function ProjectCard({
 				</div>
 				<Button
 					secondary
+					danger={isSaved}
 					className="icon-button"
 					aria-label={isSaved ? `Remove ${project.title} from saved projects` : `Save ${project.title}`}
 					disabled={action.busy}

@@ -1,6 +1,5 @@
 import { useApolloClient, useQuery } from '@apollo/client';
 import { useRef, useState } from 'react';
-import { toast } from 'sonner';
 import * as adminMutations from '../../apollo/admin/mutation';
 import * as adminQueries from '../../apollo/admin/query';
 import * as mutations from '../../apollo/user/mutation';
@@ -46,7 +45,6 @@ export function useAction() {
 		} catch (e) {
 			const message = e instanceof Error ? e.message : 'Something went wrong. Please try again.';
 			setError(message);
-			toast.error(message);
 			return undefined;
 		} finally {
 			lock.current = false;

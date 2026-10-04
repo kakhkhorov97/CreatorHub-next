@@ -1,3 +1,4 @@
+const { approveDemoSubmission } = require('./approve-demo.cjs');
 const fs = require('fs'),
 	path = require('path'),
 	{ createRequire } = require('module'),
@@ -196,6 +197,7 @@ function svg(title, sub, bg, ink, variant = 0) {
 					a.accessToken,
 				);
 				await op('setCreatorProfileStatus', { status: 'PUBLISHED' }, a.accessToken);
+				await approveDemoSubmission(op, a.accessToken, admin.accessToken);
 			}
 			const avatar = `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160"><rect width="160" height="160" rx="80" fill="${bg}"/><text x="80" y="99" text-anchor="middle" font-family="Arial,sans-serif" font-size="53" fill="${ink}">${name
 				.split(' ')
@@ -239,6 +241,7 @@ function svg(title, sub, bg, ink, variant = 0) {
 						a.accessToken,
 					);
 					await op('setProjectStatus', { projectId: p._id, status: 'PUBLISHED' }, a.accessToken);
+					await approveDemoSubmission(op, a.accessToken, admin.accessToken);
 				}
 				const local = `/demo-media/${ps}.svg`;
 				await db
@@ -271,6 +274,7 @@ function svg(title, sub, bg, ink, variant = 0) {
 						a.accessToken,
 					);
 					await op('setServiceStatus', { serviceId: service._id, status: 'ACTIVE' }, a.accessToken);
+					await approveDemoSubmission(op, a.accessToken, admin.accessToken);
 				}
 				madeServices.push(service);
 			}

@@ -14,16 +14,19 @@ export function ProfileForm({ profile, refresh }: { profile?: CreatorProfile; re
 	const [links, setLinks] = useState<SocialLink[]>(profile?.socialLinks || []);
 	const [remove, setRemove] = useState(false);
 	const [message, setMessage] = useState('');
+	const [dirty, setDirty] = useState(false);
 	return (
 		<>
 			<form
 				className="editor-layout"
+				onChange={() => setDirty(true)}
 				onSubmit={(e) => {
 					e.preventDefault();
 					const form = e.currentTarget;
 					const f = values(form);
 					const categoryIds = new FormData(form).getAll('categoryIds') as string[];
 					action.run(async () => {
+						setMessage('');
 						if (categoryIds.length > 5) throw new Error('Choose up to five categories.');
 						const input = {
 							slug: f.slug,
@@ -44,6 +47,7 @@ export function ProfileForm({ profile, refresh }: { profile?: CreatorProfile; re
 						);
 						await action.client.refetchQueries({ include: ['myContentReviews'] });
 						await refresh();
+						setDirty(false);
 					});
 				}}
 			>
@@ -128,7 +132,7 @@ export function ProfileForm({ profile, refresh }: { profile?: CreatorProfile; re
 								value={l.url}
 								onChange={(e) => setLinks(links.map((v, i) => (i === index ? { ...v, url: e.target.value } : v)))}
 							/>
-							<Button secondary onClick={() => setLinks(links.filter((_, i) => i !== index))}>
+							<Button danger secondary onClick={() => setLinks(links.filter((_, i) => i !== index))}>
 								Remove
 							</Button>
 						</div>
@@ -137,20 +141,25 @@ export function ProfileForm({ profile, refresh }: { profile?: CreatorProfile; re
 						Add link
 					</Button>
 					<Feedback {...action} />
-					{message && <Notice>{message}</Notice>}
+					{message && <Notice notify>{message}</Notice>}
 					<Button type="submit" disabled={action.busy}>
-						Save {profile ? 'changes' : 'draft'}
+						{profile?.status === 'PUBLISHED' ? 'Submit changes for approval' : 'Save draft'}
 					</Button>
 				</section>
 				<aside className="panel publishing">
 					<ReviewStatus kind="PROFILE" targetId={profile?._id} />
 					<h2>Submit your profile</h2>
 					<p>A headline, city, and at least one active category are required.</p>
-					<p>Save your changes, then submit for admin approval. Explicit sexual content is not allowed.</p>
+					<p>
+						{profile?.status === 'PUBLISHED'
+							? 'Submit changes for approval to update your public profile.'
+							: 'Save your changes, then submit for admin approval.'}{' '}
+						Explicit sexual content is not allowed.
+					</p>
 					{profile && (
 						<>
 							<Button
-								disabled={action.busy || profile.status === 'PUBLISHED'}
+								disabled={action.busy || dirty || profile.status === 'PUBLISHED'}
 								onClick={() =>
 									action.run(async () => {
 										await action.mutate('setCreatorProfileStatus', { status: 'PUBLISHED' });
@@ -183,7 +192,7 @@ export function ProfileForm({ profile, refresh }: { profile?: CreatorProfile; re
 									</Button>
 								</>
 							)}
-							<Button secondary onClick={() => setRemove(true)}>
+							<Button danger secondary onClick={() => setRemove(true)}>
 								Delete profile
 							</Button>
 						</>

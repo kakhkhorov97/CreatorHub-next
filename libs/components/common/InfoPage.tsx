@@ -23,7 +23,10 @@ export default function InfoPage({ kind }: { kind: 'help' | 'privacy' | 'terms' 
 						<p>Explore projects, find creators, and start a private inquiry about your work.</p>
 						<details open>
 							<summary>How do I contact a creator?</summary>
-							<p>Open their profile or service, choose Send inquiry, save a draft, and review it before sending.</p>
+							<p>
+								Open their profile or service, choose Send inquiry, write your brief, and send it directly to their
+								inbox.
+							</p>
 						</details>
 						<details>
 							<summary>How do I publish my work?</summary>

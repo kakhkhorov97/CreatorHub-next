@@ -168,6 +168,18 @@
     "document": "query getInquiryEvents($inquiryId: ID!, $input: PageInput! = {}) { getInquiryEvents(inquiryId: $inquiryId, input: $input) { list { _id  createdAt  inquiryId  performedById  type  fromStatus  toStatus  messageId  version  } metaCounter { total  } } }"
   },
   {
+    "name": "getInquiryFeedback",
+    "kind": "query",
+    "admin": false,
+    "document": "query getInquiryFeedback($inquiryId: ID!) { getInquiryFeedback(inquiryId: $inquiryId) { _id  createdAt  updatedAt  creatorId  serviceId  rating  feedback  authorName  } }"
+  },
+  {
+    "name": "getCreatorFeedback",
+    "kind": "query",
+    "admin": false,
+    "document": "query getCreatorFeedback($creatorId: ID!, $input: PageInput! = {}) { getCreatorFeedback(creatorId: $creatorId, input: $input) { list { _id  createdAt  updatedAt  creatorId  serviceId  rating  feedback  authorName  } metaCounter { total  } } }"
+  },
+  {
     "name": "getNotifications",
     "kind": "query",
     "admin": false,
@@ -478,6 +490,24 @@
     "kind": "mutation",
     "admin": true,
     "document": "mutation moderateProjectComment($commentId: ID!, $hidden: Boolean!) { moderateProjectComment(commentId: $commentId, hidden: $hidden) { _id  createdAt  updatedAt  clientCommentKey  userId  projectId  content  status  editedAt  deletedAt  } }"
+  },
+  {
+    "name": "sendInquiry",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation sendInquiry($input: SendInquiryInput!) { sendInquiry(input: $input) { _id  createdAt  updatedAt  clientId  creatorId  serviceId  subject  brief  budgetMin  budgetMax  currency  desiredDeadline  serviceSnapshot { title  pricingType  startingPrice  currency  estimatedDays  deliverables  } status  outcome  closedById  closedAt  submittedAt  lastMessageAt  version  } }"
+  },
+  {
+    "name": "completeInquiry",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation completeInquiry($input: InquiryVersionInput!) { completeInquiry(input: $input) { _id  createdAt  updatedAt  clientId  creatorId  serviceId  subject  brief  budgetMin  budgetMax  currency  desiredDeadline  serviceSnapshot { title  pricingType  startingPrice  currency  estimatedDays  deliverables  } status  outcome  closedById  closedAt  submittedAt  lastMessageAt  version  } }"
+  },
+  {
+    "name": "createServiceFeedback",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation createServiceFeedback($input: CreateServiceFeedbackInput!) { createServiceFeedback(input: $input) { _id  createdAt  updatedAt  creatorId  serviceId  rating  feedback  authorName  } }"
   },
   {
     "name": "createInquiry",

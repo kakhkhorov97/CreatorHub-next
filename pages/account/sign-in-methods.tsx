@@ -38,7 +38,7 @@ function IdentitySettings() {
 			<Heading title="Sign-in methods" />
 			<p className="muted">Manage the ways you sign in. Sign in again before linking or removing a method.</p>
 			<QueryIdentities />
-			<section className="panel">
+			<section className="panel identity-panel">
 				<h2>Linked methods</h2>
 				{identities.value
 					?.filter((i) => !i.revokedAt)
@@ -49,7 +49,7 @@ function IdentitySettings() {
 								<p>{['EMAIL', 'PHONE'].includes(i.provider) ? i.providerSubject : 'Connected account'}</p>
 								<small>{i.verifiedAt ? `Verified ${date(i.verifiedAt)}` : 'Not verified'}</small>
 							</div>
-							<Button secondary onClick={() => setUnlink(i._id)}>
+							<Button danger onClick={() => setUnlink(i._id)}>
 								Remove
 							</Button>
 						</div>
@@ -71,7 +71,7 @@ function IdentitySettings() {
 					</Confirm>
 				)}
 			</section>
-			<section className="panel">
+			<section className="panel identity-panel">
 				<h2>Add a sign-in method</h2>
 				<div className="tabs equal">
 					{['email', 'phone'].map((m) => (
@@ -102,14 +102,14 @@ function IdentitySettings() {
 						maxLength={254}
 						placeholder={method === 'phone' ? '+821012345678' : undefined}
 					/>
-					<Password name="password" required minLength={12} maxLength={128} autoComplete="new-password" />
+					<Password name="password" required minLength={6} maxLength={30} autoComplete="new-password" />
 					<Button type="submit" disabled={action.busy}>
 						Link {method}
 					</Button>
 				</form>
 				<SocialButtons />
 			</section>
-			<section className="panel">
+			<section className="panel identity-panel">
 				<h2>Change phone password</h2>
 				<p>You need another linked sign-in method to change this password.</p>
 				<form
@@ -128,8 +128,8 @@ function IdentitySettings() {
 						label="New phone password"
 						name="password"
 						required
-						minLength={12}
-						maxLength={128}
+						minLength={6}
+						maxLength={30}
 						autoComplete="new-password"
 					/>
 					<Button type="submit" disabled={action.busy}>
@@ -138,7 +138,7 @@ function IdentitySettings() {
 				</form>
 			</section>
 			<Feedback {...action} />
-			{message && <Notice>{message}</Notice>}
+			{message && <Notice notify>{message}</Notice>}
 		</>
 	);
 

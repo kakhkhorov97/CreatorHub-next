@@ -30,6 +30,7 @@ function SavedContent() {
 							<h2>Project unavailable</h2>
 							<p>This project is no longer publicly available.</p>
 							<Button
+								danger
 								secondary
 								disabled={action.busy}
 								onClick={() =>

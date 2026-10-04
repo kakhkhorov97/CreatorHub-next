@@ -5,6 +5,7 @@ import { Heading, QueryState, safeUrl } from '../../libs/components/common/UI';
 import { eventTime } from '../../libs/components/events/Events';
 import Layout from '../../libs/components/layout/LayoutBasic';
 import { useApi } from '../../libs/hooks/useApi';
+import { koreaCopy } from '../../libs/utils/korea';
 
 export default function EventDetail() {
 	const router = useRouter();
@@ -37,9 +38,9 @@ export default function EventDetail() {
 								<time dateTime={event.endsAt}>{eventTime(event.endsAt)}</time>
 							</dd>
 							<dt>Location</dt>
-							<dd>{event.location}</dd>
+							<dd>{koreaCopy(event.location)}</dd>
 						</dl>
-						<p className="preserve-lines">{event.description}</p>
+						<p className="preserve-lines">{koreaCopy(event.description)}</p>
 						{url && !event.isDemo && (
 							<a className="button" href={url} target="_blank" rel="noopener noreferrer">
 								Visit event website <ArrowUpRight />

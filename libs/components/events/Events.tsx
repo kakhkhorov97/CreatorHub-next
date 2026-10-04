@@ -1,25 +1,30 @@
 import Link from 'next/link';
 import { ArrowUpRight, MapPin } from 'phosphor-react';
+import { useCardNavigation } from '../../hooks/useCardNavigation';
 import { usePaged } from '../../hooks/usePaged';
 import { CreativeEvent } from '../../types/creatorhub';
+import { koreaCopy } from '../../utils/korea';
 import { Empty, Pager, QueryState } from '../common/UI';
 
 export function eventTime(value: string) {
 	return (
-		new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC' }).format(
+		new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Seoul' }).format(
 			new Date(value),
-		) + ' UTC'
+		) + ' KST'
 	);
 }
 
 function EventCard({ event }: { event: CreativeEvent }) {
 	const d = new Date(event.startsAt);
+	const openCard = useCardNavigation(`/events/${event._id}`);
 	return (
-		<article className="event-card">
+		<article className="event-card" onClick={openCard}>
 			<div className="event-date" aria-hidden="true">
-				<span>{d.toLocaleDateString('en-GB', { month: 'short', timeZone: 'UTC' })}</span>
-				<strong>{d.getUTCDate()}</strong>
-				<span>{d.getUTCFullYear()}</span>
+				<span>{d.toLocaleDateString('en-GB', { month: 'short', timeZone: 'Asia/Seoul' })}</span>
+				<strong>
+					{Number(new Intl.DateTimeFormat('en-GB', { day: 'numeric', timeZone: 'Asia/Seoul' }).format(d))}
+				</strong>
+				<span>{new Intl.DateTimeFormat('en-GB', { year: 'numeric', timeZone: 'Asia/Seoul' }).format(d)}</span>
 			</div>
 			<div>
 				{event.isDemo && <span className="demo-label">Fictional demo event</span>}
@@ -31,9 +36,9 @@ function EventCard({ event }: { event: CreativeEvent }) {
 				<time dateTime={event.startsAt}>{eventTime(event.startsAt)}</time>
 				<p className="event-location">
 					<MapPin size={18} />
-					{event.location}
+					{koreaCopy(event.location)}
 				</p>
-				<p>{event.description}</p>
+				<p>{koreaCopy(event.description)}</p>
 				<Link passHref href={`/events/${event._id}`}>
 					View event <ArrowUpRight size={18} />
 				</Link>

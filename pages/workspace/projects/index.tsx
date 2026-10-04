@@ -1,4 +1,3 @@
-const kind: 'projects' | 'services' = 'projects';
 import Link from 'next/link';
 import { useState } from 'react';
 import {
@@ -19,7 +18,7 @@ import { usePaged } from '../../../libs/hooks/usePaged';
 
 function Manager() {
 	return (
-		<Layout title={kind === 'projects' ? 'Your projects' : 'Your services'} area="workspace">
+		<Layout title={'Your projects'} area="workspace">
 			<Guard creatorOnly>
 				<ManagerContent />
 			</Guard>
@@ -29,13 +28,13 @@ function Manager() {
 
 function ManagerContent() {
 	const profile = useApi('myCreatorProfile');
-	const result = usePaged(kind === 'projects' ? 'getMyProjects' : 'getMyServices', {}, !profile.value);
+	const result = usePaged('getMyProjects', {}, !profile.value);
 	const action = useAction();
 	const [remove, setRemove] = useState<string | null>(null);
 	return (
 		<>
-			<Heading title={kind === 'projects' ? 'Your projects' : 'Your services'}>
-				<LinkButton href={`/workspace/${kind}/new`}>{kind === 'projects' ? 'New project' : 'Add service'}</LinkButton>
+			<Heading title={'Your projects'}>
+				<LinkButton href={`/workspace/projects/new`}>{'New project'}</LinkButton>
 			</Heading>
 			{profile.error && !profile.value ? (
 				<Empty title="Create your creator profile first">
@@ -50,7 +49,7 @@ function ManagerContent() {
 						<table>
 							<thead>
 								<tr>
-									<th>{kind === 'projects' ? 'Project' : 'Service'}</th>
+									<th>{'Project'}</th>
 									<th>Status</th>
 									<th>Last updated</th>
 									<th>Actions</th>
@@ -66,10 +65,10 @@ function ManagerContent() {
 										<td>{date(item.updatedAt)}</td>
 										<td>
 											<div className="actions">
-												<Link passHref href={`/workspace/${kind}/${item._id}`} className="button secondary">
+												<Link passHref href={`/workspace/projects/${item._id}`} className="button secondary">
 													Edit
 												</Link>
-												<Button secondary onClick={() => setRemove(item._id)}>
+												<Button danger secondary onClick={() => setRemove(item._id)}>
 													Delete
 												</Button>
 											</div>
@@ -80,20 +79,19 @@ function ManagerContent() {
 						</table>
 					</div>
 					{!result.loading && !result.rows.length && (
-						<Empty title={`No ${kind} yet`}>Save a draft, then publish when it is ready.</Empty>
+						<Empty title={`No projects yet`}>Save a draft, then submit it for approval when it is ready.</Empty>
 					)}
 					<Pager {...result} />
 				</>
 			)}
 			{remove && (
 				<Confirm
-					title={`Delete this ${kind === 'projects' ? 'project' : 'service'}?`}
+					title={`Delete this ${'project'}?`}
 					busy={action.busy}
 					onCancel={() => setRemove(null)}
 					onConfirm={() =>
 						action.run(async () => {
-							if (kind === 'projects') await action.mutate('deleteProject', { projectId: remove });
-							else await action.mutate('deleteService', { serviceId: remove });
+							await action.mutate('deleteProject', { projectId: remove });
 							setRemove(null);
 							await result.refetch();
 						})

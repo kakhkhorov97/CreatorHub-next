@@ -21,7 +21,17 @@ export default function Top() {
 	const action = useAction();
 	const count = useApi('getUnreadNotificationCount', {}, !user, 30000);
 	const categories = useApi('categories');
+	const discovery =
+		router.pathname === '/' ||
+		['/projects', '/services', '/creators'].some(
+			(path) => router.pathname === path || router.pathname.startsWith(path + '/'),
+		);
+	const profile = useApi('myCreatorProfile', {}, !user || user.role === 'USER');
 	const [compact, setCompact] = useState(false);
+	const [pendingEmail, setPendingEmail] = useState('');
+	useEffect(() => {
+		setPendingEmail(sessionStorage.getItem('creatorhub.pendingEmail') || '');
+	}, [router.asPath, user]);
 	useEffect(() => {
 		let observer: IntersectionObserver | undefined;
 		const target = router.pathname === '/' ? document.getElementById('homepage-search') : null;
@@ -36,13 +46,27 @@ export default function Top() {
 	}, [router.pathname]);
 	return (
 		<>
-			{' '}
-			<div className={`site-header ${compact ? 'is-compact' : ''}`}>
+			<div className={`site-header ${compact ? 'is-compact' : ''} ${!discovery ? 'is-simple' : ''}`}>
 				<header className="top">
 					<Link passHref href="/" className="brand">
 						CreatorHub
 					</Link>
-					{compact && (
+					{discovery && (
+						<nav className="primary-nav" aria-label="Main navigation">
+							{navigation.map(([href, text]) => (
+								<Link
+									passHref
+									key={href}
+									href={href}
+									className={router.pathname === href || router.pathname.startsWith(href + '/') ? 'active' : ''}
+									aria-current={router.pathname === href || router.pathname.startsWith(href + '/') ? 'page' : undefined}
+								>
+									{text}
+								</Link>
+							))}
+						</nav>
+					)}
+					{discovery && compact && (
 						<form className="header-search" action="/projects">
 							<label className="sr-only" htmlFor="header-query">
 								Search projects
@@ -53,26 +77,9 @@ export default function Top() {
 							</Button>
 						</form>
 					)}
-					<nav className="primary-nav" aria-label="Main navigation">
-						{navigation.map(([href, text]) => (
-							<Link
-								passHref
-								key={href}
-								href={href}
-								className={router.pathname === href || router.pathname.startsWith(href + '/') ? 'active' : ''}
-								aria-current={router.pathname === href || router.pathname.startsWith(href + '/') ? 'page' : undefined}
-							>
-								{text}
-							</Link>
-						))}
-					</nav>
 					<div className="header-actions">
 						{user ? (
 							<>
-								<Link passHref href="/saved" className="header-text-link" aria-label="Saved projects">
-									<BookmarkSimple size={23} />
-									<span>Saved</span>
-								</Link>
 								<Link passHref href="/inquiries" className="header-text-link" aria-label="Inbox">
 									<EnvelopeSimple size={23} />
 									<span>Inbox</span>
@@ -87,7 +94,7 @@ export default function Top() {
 									{!!count.value && <span className="dot" />}
 								</Link>
 								<details className="user-menu">
-									<summary>
+									<summary aria-label="Account menu">
 										<Picture avatar src={user.avatarUrl} alt={user.displayName} />
 										<span>{user.displayName}</span>
 									</summary>
@@ -99,7 +106,18 @@ export default function Top() {
 											Account settings
 										</Link>
 										<Link passHref href="/saved">
-											Saved projects
+											<BookmarkSimple size={18} /> Saved projects
+										</Link>
+										{profile.value && (
+											<Link passHref href={`/creators/${profile.value.slug}`}>
+												My profile
+											</Link>
+										)}
+										<Link passHref href="/inquiries">
+											Inquiries
+										</Link>
+										<Link passHref href="/following">
+											Following
 										</Link>
 										{user.role === 'ADMIN' && (
 											<Link passHref href="/_admin">
@@ -108,6 +126,7 @@ export default function Top() {
 										)}
 										<Button
 											secondary
+											className="signout-button"
 											disabled={action.busy}
 											onClick={() =>
 												action.run(async () => {
@@ -134,7 +153,7 @@ export default function Top() {
 						)}
 					</div>
 				</header>
-				{compact && (
+				{discovery && compact && (
 					<nav className="header-categories" aria-label="Creative categories">
 						{categories.value?.map((category) => (
 							<Link passHref key={category._id} href={`/projects?categoryId=${category._id}`}>
@@ -144,6 +163,12 @@ export default function Top() {
 					</nav>
 				)}
 			</div>
+			{!user && pendingEmail && (
+				<Notice>
+					Account created. Verify the email sent to {pendingEmail} before signing in.{' '}
+					<Link href="/account/verify-email">Verify email or resend</Link>
+				</Notice>
+			)}
 			{action.error && <Notice error>{action.error}</Notice>}
 		</>
 	);

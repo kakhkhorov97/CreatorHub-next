@@ -1,11 +1,13 @@
+import { useCardNavigation } from '../../hooks/useCardNavigation';
 import Link from 'next/link';
 import { ArrowUpRight, MapPin } from 'phosphor-react';
 import { CreatorProfile } from '../../types/creatorhub';
 import { label, Picture } from '../common/UI';
 
 export function CreatorCard({ creator }: { creator: CreatorProfile }) {
+	const openCard = useCardNavigation(`/creators/${creator.slug}`);
 	return (
-		<article className="creator-card">
+		<article className="creator-card" onClick={openCard}>
 			<div className="creator-top">
 				<Picture avatar src={creator.identity.avatarUrl} alt={creator.identity.displayName} />
 				<div>

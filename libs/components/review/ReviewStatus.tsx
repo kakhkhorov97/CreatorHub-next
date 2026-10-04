@@ -1,5 +1,6 @@
 import { useApi } from '../../hooks/useApi';
 import { Status } from '../common/UI';
+import ReviewPreview from './ReviewPreview';
 
 export default function ReviewStatus({
 	kind,
@@ -25,7 +26,7 @@ export default function ReviewStatus({
 			{review.status !== 'APPROVED' && (
 				<details>
 					<summary>View your submitted changes</summary>
-					<pre>{review.preview}</pre>
+					<ReviewPreview review={review} />
 				</details>
 			)}
 			<p>

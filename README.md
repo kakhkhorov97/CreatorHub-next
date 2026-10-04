@@ -21,7 +21,7 @@ The normal frontend reads real backend data. It does not seed accounts or insert
 
 `docs/operations.json` contains all 81 schema-validated GraphQL operations. `docs/API_COVERAGE.md` records where they are used. The schema was copied from the backend's `docs/schema.graphql`. To regenerate documents and types after replacing that schema, run `npm run contract:generate`.
 
-For isolated backend checks, set `CREATORHUB_BACKEND_PATH` to the backend checkout and run `node scripts/integration.cjs`. The script uses a disposable MongoDB replica set and the backend's existing test dependencies. On this machine it uses the cached macOS ARM MongoDB 7.0.24 binary. It never uses the configured application database. It exercises 75 operations. Four provider-specific social operations and two upload operations remain untested.
+For isolated backend checks, set `CREATORHUB_BACKEND_PATH` to the backend checkout and run `node scripts/integration.cjs`. The script uses a disposable MongoDB replica set and the backend's existing test dependencies. On this machine it uses the cached macOS ARM MongoDB 7.0.24 binary. It never uses the configured application database. It exercises 83 operations, including the manual review APIs. Four provider-specific social operations and two upload operations remain untested.
 
 ## Current limits
 
@@ -41,7 +41,7 @@ See `docs/verification/` for the actual check results and captured browser evide
 
 The approved September 25 white-and-blue references replace the earlier warm palette. `scss/reference.scss` loads after shared, desktop, and mobile styles. The homepage shows Popular projects, distinct Recently added projects, an introduction video, categories, and demo events. See `DESIGN.md`, `docs/REFERENCE_BRIEF.md`, and `docs/MEDIA_PROVENANCE.md`.
 
-The local frontend runs on port 7007 and backend on 7001. List responses use the backend list/metaCounter wrappers; frontend hooks normalize those responses and page-based requests. The 98-operation contract includes the protected admin APIs, `getMyProjectLike` and both upload operations, although direct-upload UI remains unavailable.
+The local frontend runs on port 7007 and backend on 7001. List responses use the backend list/metaCounter wrappers; frontend hooks normalize those responses and page-based requests. The 101-operation contract includes the protected admin APIs, `getMyProjectLike` and both upload operations, although direct-upload UI remains unavailable.
 
 ### Expanded fictional demo content
 
@@ -49,11 +49,11 @@ After the existing seed and style scripts, run `node scripts/expand-demo.cjs` to
 
 ### Community preview additions
 
-The homepage shows six Popular projects, the looping introduction video, six distinct Recently added projects, category links, three fictional demo events, and About/join content. The navbar links separate Projects, Creators, Services, Events, and Contact pages. About and Contact pages and the expanded footer use drafted factual product copy. Public team contact details are intentionally unset.
+The homepage shows six Popular projects, the looping introduction video, six distinct Recently added projects, category links, three fictional demo events, and About/join content. The navbar links separate Projects, Creators, Services, Events, and Contact pages. About and Contact pages and the expanded footer use drafted factual product copy. The footer address is Gwangju, Korea. Social icons are clearly marked as demos.
 
 After restoring the original demo and running scripts/expand-demo.cjs, run `node scripts/seed-community.cjs` to add the three international concepts and demo events. This script only accepts the local disposable creatorhub_frontend_test database and is idempotent. Run `node scripts/check-community.cjs` against that preview to exercise the new operations. See docs/verification/community.json. A preview backend restart normally resets the disposable database; fixtures must be restored or seeded again.
 
-Seven additional city keys allow international profiles; the supported list is not exhaustive. Service prices remain in KRW. Event dates explicitly use UTC. No event registration or payment flow is implemented.
+The supported city list currently includes 17 Korean cities. Public discovery excludes creators outside Korea and their work. Service prices remain in KRW. Public event times use KST; admin date inputs explicitly use UTC. No event registration or payment flow is implemented.
 
 ## Administration
 
@@ -70,3 +70,10 @@ Website content controls save the homepage heading/subheading, About text, conta
 The local frontend at http://localhost:7007 calls the backend on port 7001. The running backend uses the configured Atlas `CreatorHub` database. On 4 October 2026, the user approved importing the fictional preview profiles and public content into Atlas while preserving its existing records. The imported public user profiles, creator profiles, services, projects, categories, events, likes, comment and website text are now persistent there. The current administrator account uses a newly generated credential supplied in chat; it is not stored in this repository.
 
 The fictional imported profiles have no copied sign-in identities. They appear in discovery and administration, but their old disposable-preview passwords do not grant access to Atlas. New visitors can register normally. The backend configuration currently names the same Atlas database for development and production, so changes made through the local admin panel affect that shared database. See `docs/verification/atlas-import.md`.
+
+
+## Approved October changes
+
+See [the implementation notes](docs/APPROVED_CHANGES.md) for page/component organization, manual approval, the segmented homepage search, compact sticky navigation, Sonner feedback, and Gemini setup. The current local API uses the configured Atlas database. Existing foreign records remain stored but are hidden from public discovery. Demo seeding instructions above target disposable databases only; their old demo login identities were not imported into Atlas.
+
+The Gemini assistant needs server-only `GEMINI_API_KEY` and `GEMINI_MODEL` in `.env.local`, followed by a frontend restart. Never use a `NEXT_PUBLIC_` prefix for the key. The interface handles missing configuration, and mocked API tests passed; a live Gemini response has not been verified.

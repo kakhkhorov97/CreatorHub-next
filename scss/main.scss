@@ -1,0 +1,7 @@
+// Keep the approved reference theme after the base styles, with current changes last.
+@import './app';
+@import './pc/main';
+@import './mobile/main';
+@import './reference';
+@import './admin';
+@import './changes';

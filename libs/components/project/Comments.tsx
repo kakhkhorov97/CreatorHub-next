@@ -38,7 +38,7 @@ export function Comments({ projectId }: { projectId: string }) {
 							>
 								Edit
 							</Button>
-							<Button secondary onClick={() => setRemove(c._id)}>
+							<Button danger secondary onClick={() => setRemove(c._id)}>
 								Delete
 							</Button>
 						</div>

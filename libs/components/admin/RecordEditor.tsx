@@ -356,6 +356,7 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 												onChange={(e) => setLinks(links.map((v, n) => (n === i ? { ...v, url: e.target.value } : v)))}
 											/>
 											<Button
+												danger
 												secondary
 												onClick={() => {
 													setLinks(links.filter((_, n) => n !== i));
@@ -459,6 +460,7 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 												}
 											/>
 											<Button
+												danger
 												secondary
 												onClick={() => {
 													setMedia(media.filter((_, n) => n !== i));
@@ -530,7 +532,7 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 							)}
 							<p className="admin-help">Blank optional text fields keep their saved value.</p>
 							<Feedback {...action} />
-							{message && <Notice>{message}</Notice>}
+							{message && <Notice notify>{message}</Notice>}
 							<div className="actions">
 								<Button type="submit" disabled={action.busy || (!!record?.deletedAt && kind !== 'USERS')}>
 									{record ? 'Save changes' : 'Create draft'}
@@ -568,7 +570,13 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 								allowed
 									.filter((v) => v !== record.status)
 									.map((v) => (
-										<Button secondary key={v} disabled={action.busy || dirty} onClick={() => transition(v)}>
+										<Button
+											danger={v === 'DELETED'}
+											secondary
+											key={v}
+											disabled={action.busy || dirty}
+											onClick={() => transition(v)}
+										>
 											{v === 'DELETED'
 												? 'Remove account'
 												: v === 'ACTIVE'
@@ -628,7 +636,7 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 						</Confirm>
 					)}
 					<Feedback {...action} />
-					{message && kind === 'COMMENTS' && <Notice>{message}</Notice>}
+					{message && kind === 'COMMENTS' && <Notice notify>{message}</Notice>}
 				</aside>
 			</div>
 		</>

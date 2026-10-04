@@ -1,3 +1,4 @@
+import { Rating } from '../../libs/components/inquiry/ServiceFeedback';
 import { useReactiveVar } from '@apollo/client';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -28,6 +29,7 @@ function CreatorDetail() {
 	const creator = profile.value;
 	const projects = usePaged('getProjects', { input: { creatorId: creator?._id } }, !creator);
 	const services = usePaged('getServices', { input: { creatorId: creator?._id } }, !creator);
+	const reviews = usePaged('getCreatorFeedback', { creatorId: creator?._id || '' }, !creator);
 	const [tab, setTab] = useState('Work');
 	const user = useReactiveVar(userVar);
 	const action = useAction();
@@ -68,7 +70,7 @@ function CreatorDetail() {
 							</div>
 						</div>
 						{user?._id !== creator.userId && (
-							<div className="actions">
+							<div className="actions creator-profile-actions">
 								<LinkButton href={`/inquiries/new?creatorId=${creator._id}`}>Send inquiry</LinkButton>
 								<Button
 									secondary
@@ -93,7 +95,7 @@ function CreatorDetail() {
 					</section>
 					<Feedback error={action.error} />
 					<nav className="tabs">
-						{['Work', 'Services', 'About'].map((t) => (
+						{['Work', 'Services', 'About', 'Reviews'].map((t) => (
 							<button key={t} onClick={() => setTab(t)} className={tab === t ? 'active' : ''}>
 								{t}
 							</button>
@@ -123,6 +125,22 @@ function CreatorDetail() {
 									</div>
 									{!services.loading && !services.rows.length && <Empty title="No active services yet" />}
 									<Pager {...services} />
+								</>
+							)}
+							{tab === 'Reviews' && (
+								<>
+									<QueryState loading={reviews.loading} error={reviews.error} />
+									{reviews.rows.map((review) => (
+										<article className="customer-review" key={review._id}>
+											<Rating value={review.rating} />
+											<p className="prose-text">{review.feedback}</p>
+											<small>
+												{review.authorName} · {new Date(review.createdAt).toLocaleDateString()}
+											</small>
+										</article>
+									))}
+									{!reviews.loading && !reviews.rows.length && <Empty title="No customer reviews yet" />}
+									<Pager {...reviews} />
 								</>
 							)}
 							{tab === 'About' && (

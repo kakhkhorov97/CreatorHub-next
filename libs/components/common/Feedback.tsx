@@ -1,14 +1,27 @@
 import React, { ReactNode, useEffect } from 'react';
 import { toast } from 'sonner';
 
-export function Notice({ children, error = false }: { children: ReactNode; error?: boolean }) {
+export function Notice({
+	children,
+	error = false,
+	notify = false,
+}: {
+	children: ReactNode;
+	error?: boolean;
+	notify?: boolean;
+}) {
 	useEffect(() => {
-		if (!error && typeof children === 'string') {
-			if (/saved|updated|sent|removed|published|activated|approved|rejected/i.test(children)) toast.success(children);
+		if (notify && !error && typeof children === 'string') {
+			if (
+				/saved|updated|sent|removed|published|activated|approved|rejected|submitted|created|added|verified|changed/i.test(
+					children,
+				)
+			)
+				toast.success(children);
 			else toast.info(children);
 		}
-	}, [children, error]);
-	if (!error && typeof children === 'string') return null;
+	}, [children, error, notify]);
+	if (notify && !error && typeof children === 'string') return null;
 	return (
 		<div role={error ? 'alert' : 'status'} className={`notice ${error ? 'error' : ''}`}>
 			{children}

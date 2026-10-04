@@ -164,7 +164,7 @@ function EventContent() {
 						Fictional demo event
 					</label>
 					<Feedback {...action} />
-					{saved && <Notice>Event saved.</Notice>}
+					{saved && <Notice notify>Event saved.</Notice>}
 					<Button type="submit" disabled={action.busy}>
 						Save event
 					</Button>

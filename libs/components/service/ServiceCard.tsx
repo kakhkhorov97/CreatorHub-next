@@ -1,11 +1,13 @@
+import { useCardNavigation } from '../../hooks/useCardNavigation';
 import Link from 'next/link';
 import { ArrowUpRight } from 'phosphor-react';
 import { CreatorProfile, CreatorService } from '../../types/creatorhub';
 import { money, Picture } from '../common/UI';
 
 export function ServiceCard({ service, creator }: { service: CreatorService; creator?: CreatorProfile }) {
+	const openCard = useCardNavigation(`/services/${service._id}`);
 	return (
-		<article className="service-card">
+		<article className="service-card" onClick={openCard}>
 			<Link passHref href={`/services/${service._id}`} className="card-title">
 				{service.title}
 			</Link>
