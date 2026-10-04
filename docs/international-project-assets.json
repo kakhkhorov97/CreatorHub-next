@@ -1,0 +1,23 @@
+[
+  {
+    "file": "public/demo-media/lume-lisbon.png",
+    "source": "/Users/kakhkhorov/.codex/generated_images/01a0e7ae-da5a-7293-923a-04036a1a0f2e/exec-98d095b9-3395-4223-b5d6-ce33aa0bde43.png",
+    "prompt": "Use case: product-mockup. Asset: landscape portfolio project cover for CreatorHub. Create a photorealistic editorial product photograph for a fictional Lisbon artisan olive oil brand called 'Lume'. Two dark olive glass bottles with cream labels with exact small serif text 'Lume', an open cream packaging carton, olive branches, sunlit limestone tabletop, Portuguese tiled wall softly blurred in background. Restrained olive green and warm cream, authentic paper textures, professional contemporary brand design portfolio, natural sunlight, wide 3:2 composition, no people, no watermark, no other brands. This is fictional concept artwork, not an existing business.",
+    "generator": "built-in image_gen",
+    "fictional": true
+  },
+  {
+    "file": "public/demo-media/copenhagen-reading-room.png",
+    "source": "/Users/kakhkhorov/.codex/generated_images/01a0e7ae-da5a-7293-923a-04036a1a0f2e/exec-18b7c972-bd99-460a-9014-06555b7b3042.png",
+    "prompt": "Use case: photorealistic-natural. Asset: landscape architectural photography portfolio project cover for CreatorHub. A fictional Copenhagen reading room interior, beautifully designed quiet contemporary Nordic public reading space with pale oak shelving, curved chairs, linen upholstered bench, tall windows, soft overcast daylight, a few neutral books and sculptural pendant lights, authentic wood texture, subtly lived-in but no people, professional magazine architecture photograph with careful perspective, 3:2 wide composition, no text, no watermarks. Fictional concept design not an actual building.",
+    "generator": "built-in image_gen",
+    "fictional": true
+  },
+  {
+    "file": "public/demo-media/frame-tokyo.png",
+    "source": "/Users/kakhkhorov/.codex/generated_images/01a0e7ae-da5a-7293-923a-04036a1a0f2e/exec-0cc93bc0-5eab-411a-9068-14f096294f5a.png",
+    "prompt": "Use case: product-mockup. Asset: landscape editorial design portfolio project cover for CreatorHub. Photorealistic studio photograph of a fictional Tokyo independent design journal titled 'FRAME' in exact clean sans-serif lettering. An open editorial spread, a navy and soft ivory magazine cover, minimal Japanese-inspired photography of architecture printed on pages, cream paper, thoughtful asymmetric typography and grid, light gray tabletop, soft window light, tactile paper with authentic shadows, refined professional graphic design portfolio, wide 3:2 composition, no people, no watermark or real trademarks. Fictional concept publication.",
+    "generator": "built-in image_gen",
+    "fictional": true
+  }
+]

@@ -1,0 +1,85 @@
+{
+	"tool": "built-in image_gen",
+	"generatedAt": "2026-10-04",
+	"fictional": true,
+	"portraits": [
+		{
+			"slug": "joon-lee",
+			"source": "/Users/kakhkhorov/.codex/generated_images/01a0e7ae-da5a-7293-923a-04036a1a0f2e/exec-6345c5e7-ce82-420e-91e4-4284f2213c8d.png",
+			"asset": "public/demo-media/joon-lee-portrait.png",
+			"prompt": "Use case: photorealistic-natural. Asset type: CreatorHub fictional creator profile portrait. Subject: A Korean man aged 32, short wavy dark hair, thin round glasses, navy overshirt, thoughtful relaxed expression. Original invented adult person, not a real public figure. A single person in an authentic professional head-and-shoulders editorial photograph, looking toward the camera, centered face with generous room above hair and around shoulders for a circular avatar crop. Neutral light gray studio background, soft natural window light, realistic skin texture and individual features, understated Korean creative professional styling. Square composition. No text, no logo, no watermark, no collage, no border, no beauty retouching, no illustration."
+		},
+		{
+			"slug": "sora-kim",
+			"source": "/Users/kakhkhorov/.codex/generated_images/01a0e7ae-da5a-7293-923a-04036a1a0f2e/exec-9ad0530c-cca5-4f02-bdf5-1d1100ca738a.png",
+			"asset": "public/demo-media/sora-kim-portrait.png",
+			"prompt": "Use case: photorealistic-natural. Asset type: CreatorHub fictional creator profile portrait. Subject: A Korean woman aged 28, shoulder-length dark hair with soft bangs, charcoal knit top, relaxed confident expression. Original invented adult person, not a real public figure. A single person in an authentic professional head-and-shoulders editorial photograph, looking toward the camera, centered face with generous room above hair and around shoulders for a circular avatar crop. Neutral light gray studio background, soft natural window light, realistic skin texture and individual features, understated Korean creative professional styling. Square composition. No text, no logo, no watermark, no collage, no border, no beauty retouching, no illustration."
+		},
+		{
+			"slug": "hana-choi",
+			"source": "/Users/kakhkhorov/.codex/generated_images/01a0e7ae-da5a-7293-923a-04036a1a0f2e/exec-473ba236-86ff-4a8a-bb35-ab42b9f7c229.png",
+			"asset": "public/demo-media/hana-choi-portrait.png",
+			"prompt": "Use case: photorealistic-natural. Asset type: CreatorHub fictional creator profile portrait. Subject: A Korean woman aged 35, dark hair loosely tied back, cream linen shirt, warm natural smile. Original invented adult person, not a real public figure. A single person in an authentic professional head-and-shoulders editorial photograph, looking toward the camera, centered face with generous room above hair and around shoulders for a circular avatar crop. Neutral light gray studio background, soft natural window light, realistic skin texture and individual features, understated Korean creative professional styling. Square composition. No text, no logo, no watermark, no collage, no border, no beauty retouching, no illustration."
+		},
+		{
+			"slug": "noah-han",
+			"source": "/Users/kakhkhorov/.codex/generated_images/01a0e7ae-da5a-7293-923a-04036a1a0f2e/exec-b7762cfa-7c99-473a-80c6-32b902c599b8.png",
+			"asset": "public/demo-media/noah-han-portrait.png",
+			"prompt": "Use case: photorealistic-natural. Asset type: CreatorHub fictional creator profile portrait. Subject: A Korean man aged 29, cropped black hair, olive cotton jacket over white tee, friendly calm expression. Original invented adult person, not a real public figure. A single person in an authentic professional head-and-shoulders editorial photograph, looking toward the camera, centered face with generous room above hair and around shoulders for a circular avatar crop. Neutral light gray studio background, soft natural window light, realistic skin texture and individual features, understated Korean creative professional styling. Square composition. No text, no logo, no watermark, no collage, no border, no beauty retouching, no illustration."
+		},
+		{
+			"slug": "yuna-seo",
+			"source": "/Users/kakhkhorov/.codex/generated_images/01a0e7ae-da5a-7293-923a-04036a1a0f2e/exec-e7ada8c8-b768-4d56-818f-20bccfc4cb63.png",
+			"asset": "public/demo-media/yuna-seo-portrait.png",
+			"prompt": "Use case: photorealistic-natural. Asset type: CreatorHub fictional creator profile portrait. Subject: A Korean woman aged 31, straight dark bob, terracotta knit top, understated natural smile. Original invented adult person, not a real public figure. A single person in an authentic professional head-and-shoulders editorial photograph, looking toward the camera, centered face with generous room above hair and around shoulders for a circular avatar crop. Neutral light gray studio background, soft natural window light, realistic skin texture and individual features, understated Korean creative professional styling. Square composition. No text, no logo, no watermark, no collage, no border, no beauty retouching, no illustration."
+		},
+		{
+			"slug": "jiho-moon",
+			"source": "/Users/kakhkhorov/.codex/generated_images/01a0e7ae-da5a-7293-923a-04036a1a0f2e/exec-e5949558-7d42-438f-8dc1-bd08cfb74d77.png",
+			"asset": "public/demo-media/jiho-moon-portrait.png",
+			"prompt": "Use case: photorealistic-natural. Asset type: CreatorHub fictional creator profile portrait. Subject: A Korean man aged 38, short side-parted dark hair, gray textured sweater, relaxed expression. Original invented adult person, not a real public figure. A single person in an authentic professional head-and-shoulders editorial photograph, looking toward the camera, centered face with generous room above hair and around shoulders for a circular avatar crop. Neutral light gray studio background, soft natural window light, realistic skin texture and individual features, understated Korean creative professional styling. Square composition. No text, no logo, no watermark, no collage, no border, no beauty retouching, no illustration."
+		},
+		{
+			"slug": "eun-lim",
+			"source": "/Users/kakhkhorov/.codex/generated_images/01a0e7ae-da5a-7293-923a-04036a1a0f2e/exec-0aac7935-e131-489b-954b-9f8af5a56311.png",
+			"asset": "public/demo-media/eun-lim-portrait.png",
+			"prompt": "Use case: photorealistic-natural. Asset type: CreatorHub fictional creator profile portrait. Subject: A Korean woman aged 33, long dark hair tucked behind ears, round dark glasses, black casual blazer, gentle smile. Original invented adult person, not a real public figure. A single person in an authentic professional head-and-shoulders editorial photograph, looking toward the camera, centered face with generous room above hair and around shoulders for a circular avatar crop. Neutral light gray studio background, soft natural window light, realistic skin texture and individual features, understated Korean creative professional styling. Square composition. No text, no logo, no watermark, no collage, no border, no beauty retouching, no illustration."
+		},
+		{
+			"slug": "seo-jun-kang",
+			"source": "/Users/kakhkhorov/.codex/generated_images/01a0e7ae-da5a-7293-923a-04036a1a0f2e/exec-b95a193b-a79d-402a-8647-9505083e0f38.png",
+			"asset": "public/demo-media/seo-jun-kang-portrait.png",
+			"prompt": "Use case: photorealistic-natural. Asset type: CreatorHub fictional creator profile portrait. Subject: A Korean man aged 30, slightly tousled black hair, dark denim shirt, approachable smile. Original invented adult person, not a real public figure. A single person in an authentic professional head-and-shoulders editorial photograph, looking toward the camera, centered face with generous room above hair and around shoulders for a circular avatar crop. Neutral light gray studio background, soft natural window light, realistic skin texture and individual features, understated Korean creative professional styling. Square composition. No text, no logo, no watermark, no collage, no border, no beauty retouching, no illustration."
+		},
+		{
+			"slug": "hae-won-lee",
+			"source": "/Users/kakhkhorov/.codex/generated_images/01a0e7ae-da5a-7293-923a-04036a1a0f2e/exec-532c4fcd-f26e-4c87-9fd0-cfa7ad9e123f.png",
+			"asset": "public/demo-media/hae-won-lee-portrait.png",
+			"prompt": "Use case: photorealistic-natural. Asset type: CreatorHub fictional creator profile portrait. Subject: A Korean woman aged 27, short dark pixie cut, muted blue cotton top, friendly confident expression. Original invented adult person, not a real public figure. A single person in an authentic professional head-and-shoulders editorial photograph, looking toward the camera, centered face with generous room above hair and around shoulders for a circular avatar crop. Neutral light gray studio background, soft natural window light, realistic skin texture and individual features, understated Korean creative professional styling. Square composition. No text, no logo, no watermark, no collage, no border, no beauty retouching, no illustration."
+		},
+		{
+			"slug": "min-jae-song",
+			"source": "/Users/kakhkhorov/.codex/generated_images/01a0e7ae-da5a-7293-923a-04036a1a0f2e/exec-3ff93f03-944a-4a2c-acab-1df4149fe2d7.png",
+			"asset": "public/demo-media/min-jae-song-portrait.png",
+			"prompt": "Use case: photorealistic-natural. Asset type: CreatorHub fictional creator profile portrait. Subject: A Korean man aged 34, medium-length wavy dark hair, charcoal crewneck, calm expression. Original invented adult person, not a real public figure. A single person in an authentic professional head-and-shoulders editorial photograph, looking toward the camera, centered face with generous room above hair and around shoulders for a circular avatar crop. Neutral light gray studio background, soft natural window light, realistic skin texture and individual features, understated Korean creative professional styling. Square composition. No text, no logo, no watermark, no collage, no border, no beauty retouching, no illustration."
+		},
+		{
+			"slug": "da-eun-yoo",
+			"source": "/Users/kakhkhorov/.codex/generated_images/01a0e7ae-da5a-7293-923a-04036a1a0f2e/exec-1f4a778c-13b3-41c5-a03c-4cf4e69ae5f5.png",
+			"asset": "public/demo-media/da-eun-yoo-portrait.png",
+			"prompt": "Use case: photorealistic-natural. Asset type: CreatorHub fictional creator profile portrait. Subject: A Korean woman aged 29, dark hair in a low ponytail, sage green shirt, gentle smile. Original invented adult person, not a real public figure. A single person in an authentic professional head-and-shoulders editorial photograph, looking toward the camera, centered face with generous room above hair and around shoulders for a circular avatar crop. Neutral light gray studio background, soft natural window light, realistic skin texture and individual features, understated Korean creative professional styling. Square composition. No text, no logo, no watermark, no collage, no border, no beauty retouching, no illustration."
+		},
+		{
+			"slug": "tae-ho-kim",
+			"source": "/Users/kakhkhorov/.codex/generated_images/01a0e7ae-da5a-7293-923a-04036a1a0f2e/exec-058102b2-b007-41b4-aa6b-161a61e6b25e.png",
+			"asset": "public/demo-media/tae-ho-kim-portrait.png",
+			"prompt": "Use case: photorealistic-natural. Asset type: CreatorHub fictional creator profile portrait. Subject: A Korean man aged 37, close-cropped dark hair, casual brown overshirt, natural relaxed smile. Original invented adult person, not a real public figure. A single person in an authentic professional head-and-shoulders editorial photograph, looking toward the camera, centered face with generous room above hair and around shoulders for a circular avatar crop. Neutral light gray studio background, soft natural window light, realistic skin texture and individual features, understated Korean creative professional styling. Square composition. No text, no logo, no watermark, no collage, no border, no beauty retouching, no illustration."
+		},
+		{
+			"slug": "soo-bin-jung",
+			"source": "/Users/kakhkhorov/.codex/generated_images/01a0e7ae-da5a-7293-923a-04036a1a0f2e/exec-7dd83fc7-d3c7-4208-b00c-7fc8d87fc21a.png",
+			"asset": "public/demo-media/soo-bin-jung-portrait.png",
+			"prompt": "Use case: photorealistic-natural. Asset type: CreatorHub fictional creator profile portrait. Subject: A Korean woman aged 32, long wavy black hair, ivory cotton blouse, approachable expression. Original invented adult person, not a real public figure. A single person in an authentic professional head-and-shoulders editorial photograph, looking toward the camera, centered face with generous room above hair and around shoulders for a circular avatar crop. Neutral light gray studio background, soft natural window light, realistic skin texture and individual features, understated Korean creative professional styling. Square composition. No text, no logo, no watermark, no collage, no border, no beauty retouching, no illustration."
+		}
+	]
+}

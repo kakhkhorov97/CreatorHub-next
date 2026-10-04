@@ -1,0 +1,893 @@
+type ContentReview {
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  kind: String!
+  targetId: ID!
+  ownerId: ID!
+  title: String!
+  status: String!
+  reason: String
+  baseUpdatedAt: DateTime!
+  preview: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type User {
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  displayName: String!
+  avatarUrl: String
+  role: UserRole!
+  status: UserStatus!
+  preferredLocale: Locale!
+  lastLoginAt: DateTime
+  deletedAt: DateTime
+}
+
+enum UserRole {
+  USER
+  CREATOR
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  DELETED
+}
+
+enum Locale {
+  ko
+  en
+}
+
+type City {
+  key: String!
+  nameEn: String!
+  nameKo: String!
+}
+
+type Category {
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  slug: String!
+  name: String!
+  description: String
+  sortOrder: Int!
+  isActive: Boolean!
+}
+
+type MetaCounter {
+  total: Int!
+}
+
+type SocialLink {
+  label: String!
+  url: String!
+}
+
+type CreatorProfile {
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  userId: ID!
+  slug: String!
+  headline: String
+  bio: String
+  city: String
+  remoteAvailable: Boolean!
+  availability: CreatorAvailability!
+  categoryIds: [ID!]!
+  skills: [String!]!
+  socialLinks: [SocialLink!]!
+  status: ProfileStatus!
+  publishedAt: DateTime
+  deletedAt: DateTime
+  identity: CreatorIdentity!
+}
+
+enum CreatorAvailability {
+  AVAILABLE
+  BUSY
+  UNAVAILABLE
+}
+
+enum ProfileStatus {
+  DRAFT
+  PUBLISHED
+  HIDDEN
+}
+
+type Creators {
+  list: [CreatorProfile!]!
+  metaCounter: [MetaCounter!]!
+}
+
+type PortfolioMedia {
+  type: MediaType!
+  url: String!
+  altText: String!
+  sortOrder: Int!
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+type PortfolioProject {
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creatorId: ID!
+  categoryId: ID
+  title: String!
+  slug: String!
+  summary: String
+  description: String
+  coverImageUrl: String
+  media: [PortfolioMedia!]!
+  tags: [String!]!
+  externalUrl: String
+  status: ProjectStatus!
+  publishedAt: DateTime
+  deletedAt: DateTime
+}
+
+enum ProjectStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+type Projects {
+  list: [PortfolioProject!]!
+  metaCounter: [MetaCounter!]!
+}
+
+type CreatorService {
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  creatorId: ID!
+  categoryId: ID
+  title: String!
+  description: String
+  pricingType: PricingType!
+  startingPrice: Int
+  currency: Currency!
+  estimatedDays: Int
+  deliverables: [String!]!
+  status: ServiceStatus!
+  deletedAt: DateTime
+}
+
+enum PricingType {
+  STARTING_AT
+  CUSTOM_QUOTE
+}
+
+enum Currency {
+  KRW
+}
+
+enum ServiceStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  ARCHIVED
+}
+
+type Services {
+  list: [CreatorService!]!
+  metaCounter: [MetaCounter!]!
+}
+
+type ProjectComment {
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  clientCommentKey: String!
+  userId: ID!
+  projectId: ID!
+  content: String!
+  status: CommentStatus!
+  editedAt: DateTime
+  deletedAt: DateTime
+}
+
+enum CommentStatus {
+  ACTIVE
+  HIDDEN
+  DELETED
+}
+
+type Comments {
+  list: [ProjectComment!]!
+  metaCounter: [MetaCounter!]!
+}
+
+type AdminEntry {
+  _id: ID!
+  title: String!
+  status: String!
+  updatedAt: DateTime!
+  deletedAt: DateTime
+  ownerName: String
+  projectTitle: String
+  user: User
+  creator: CreatorProfile
+  project: PortfolioProject
+  service: CreatorService
+  comment: ProjectComment
+}
+
+type AdminDirectory {
+  list: [AdminEntry!]!
+  metaCounter: [MetaCounter!]!
+}
+
+type AdminOverview {
+  users: Int!
+  creators: Int!
+  projects: Int!
+  services: Int!
+  comments: Int!
+  categories: Int!
+  events: Int!
+}
+
+type SiteContent {
+  homeHeading: String!
+  homeSubheading: String!
+  aboutText: String!
+  contactEmail: String!
+  contactText: String!
+  footerCopy: String!
+}
+
+type CreativeEvent {
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  title: String!
+  description: String!
+  startsAt: DateTime!
+  endsAt: DateTime!
+  location: String!
+  eventUrl: String
+  status: EventStatus!
+  isDemo: Boolean!
+}
+
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+type AuthPayload {
+  accessToken: String!
+  refreshToken: String!
+  expiresIn: Int!
+  user: User!
+}
+
+type AuthIdentity {
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  userId: ID!
+  provider: AuthProvider!
+  providerSubject: String!
+  verifiedAt: DateTime
+  revokedAt: DateTime
+  lastLoginAt: DateTime
+}
+
+enum AuthProvider {
+  EMAIL
+  PHONE
+  GOOGLE
+  TELEGRAM
+  KAKAO
+}
+
+type CreatorIdentity {
+  displayName: String!
+  avatarUrl: String
+}
+
+type DiscoveryResult {
+  mode: String!
+  explanation: String!
+  creators: [CreatorProfile!]!
+  projects: [PortfolioProject!]!
+  services: [CreatorService!]!
+}
+
+type CreatorFollow {
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  followerId: ID!
+  creatorId: ID!
+  isActive: Boolean!
+  followedAt: DateTime!
+}
+
+type Followings {
+  list: [CreatorFollow!]!
+  metaCounter: [MetaCounter!]!
+}
+
+type SavedProjectResult {
+  projectId: ID!
+  savedAt: DateTime!
+  available: Boolean!
+  project: PortfolioProject
+}
+
+type SavedProjects {
+  list: [SavedProjectResult!]!
+  metaCounter: [MetaCounter!]!
+}
+
+type InquiryEvent {
+  _id: ID!
+  createdAt: DateTime!
+  inquiryId: ID!
+  performedById: ID!
+  type: InquiryEventType!
+  fromStatus: InquiryStatus!
+  toStatus: InquiryStatus!
+  messageId: ID
+  version: Int!
+}
+
+enum InquiryEventType {
+  SUBMITTED
+  MESSAGE_SENT
+  DECLINED
+  CLOSED
+  CANCELLED
+}
+
+enum InquiryStatus {
+  DRAFT
+  SENT
+  IN_DISCUSSION
+  DECLINED
+  CLOSED
+  CANCELLED
+}
+
+type InquiryEvents {
+  list: [InquiryEvent!]!
+  metaCounter: [MetaCounter!]!
+}
+
+type InquiryMessage {
+  _id: ID!
+  createdAt: DateTime!
+  inquiryId: ID!
+  senderId: ID!
+  clientMessageKey: String!
+  body: String!
+  readAt: DateTime
+}
+
+type InquiryMessages {
+  list: [InquiryMessage!]!
+  metaCounter: [MetaCounter!]!
+}
+
+type InquiryServiceSnapshot {
+  title: String!
+  pricingType: PricingType!
+  startingPrice: Int
+  currency: Currency!
+  estimatedDays: Int
+  deliverables: [String!]!
+}
+
+type Inquiry {
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  clientId: ID!
+  creatorId: ID!
+  serviceId: ID
+  subject: String
+  brief: String
+  budgetMin: Int
+  budgetMax: Int
+  currency: Currency!
+  desiredDeadline: DateTime
+  serviceSnapshot: InquiryServiceSnapshot
+  status: InquiryStatus!
+  outcome: InquiryOutcome
+  closedById: ID
+  closedAt: DateTime
+  submittedAt: DateTime
+  lastMessageAt: DateTime
+  version: Int!
+}
+
+enum InquiryOutcome {
+  AGREED_TO_PROCEED
+  NOT_PROCEEDING
+  NO_RESPONSE
+}
+
+type Inquiries {
+  list: [Inquiry!]!
+  metaCounter: [MetaCounter!]!
+}
+
+type ActivityEvent {
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  performedById: ID!
+  creatorId: ID!
+  type: ActivityEventType!
+  projectId: ID
+  commentId: ID
+}
+
+enum ActivityEventType {
+  PROJECT_PUBLISHED
+  PROJECT_LIKED
+  PROJECT_COMMENTED
+  CREATOR_FOLLOWED
+}
+
+type NotificationResult {
+  _id: ID!
+  createdAt: DateTime!
+  recipientId: ID!
+  inquiryEventId: ID
+  activityEventId: ID
+  readAt: DateTime
+  event: InquiryEvent
+  activityEvent: ActivityEvent
+  unavailable: Boolean!
+}
+
+type Notifications {
+  list: [NotificationResult!]!
+  metaCounter: [MetaCounter!]!
+}
+
+type Query {
+  myContentReviews: [ContentReview!]!
+  adminContentReviews(status: String! = "PENDING"): [ContentReview!]!
+  adminOverview: AdminOverview!
+  adminDirectory(kind: AdminKind!, input: AdminDirectoryInput! = {}): AdminDirectory!
+  getSiteContent: SiteContent!
+  getEvents(input: EventsInput! = {}): [CreativeEvent!]!
+  getEvent(id: ID!): CreativeEvent!
+  adminEvents(input: EventsInput! = {}): [CreativeEvent!]!
+  apiName: String!
+  getMyAuthIdentities: [AuthIdentity!]!
+  categories: [Category!]!
+  adminCategories: [Category!]!
+  creator(slug: String!): CreatorProfile!
+  myCreatorProfile: CreatorProfile!
+  getCities: [City!]!
+  getCreators(input: DiscoveryInput! = {}): Creators!
+  getProjects(input: DiscoveryInput! = {}): Projects!
+  getServices(input: DiscoveryInput! = {}): Services!
+  discoverCreators(input: AssistantInput!): DiscoveryResult!
+  getMyProjectLike(projectId: ID!): Boolean!
+  getProjectLikeCount(projectId: ID!): Int!
+  getMyFollows(input: PageInput! = {}): Followings!
+  getSavedProjects(input: PageInput! = {}): SavedProjects!
+  getProjectComments(projectId: ID!, input: PageInput! = {}): Comments!
+  getInquiry(inquiryId: ID!): Inquiry!
+  getInquiries(creatorInbox: Boolean! = false, input: PageInput! = {}): Inquiries!
+  getInquiryMessages(inquiryId: ID!, input: PageInput! = {}): InquiryMessages!
+  getInquiryEvents(inquiryId: ID!, input: PageInput! = {}): InquiryEvents!
+  getNotifications(input: PageInput! = {}, unreadOnly: Boolean! = false): Notifications!
+  getUnreadNotificationCount: Int!
+  getProject(projectId: ID!): PortfolioProject!
+  getMyProjects(input: PageInput! = {}): Projects!
+  getService(serviceId: ID!): CreatorService!
+  getMyServices(input: PageInput! = {}): Services!
+  me: User!
+}
+
+enum AdminKind {
+  USERS
+  CREATORS
+  PROJECTS
+  SERVICES
+  COMMENTS
+}
+
+input AdminDirectoryInput {
+  page: Int
+  limit: Int
+  search: String
+  status: String
+  role: UserRole
+  removed: Boolean
+  id: ID
+}
+
+input EventsInput {
+  upcoming: Boolean
+  page: Int
+  limit: Int
+}
+
+input DiscoveryInput {
+  sort: ProjectSort
+  excludeProjectIds: [ID!]
+  creatorId: ID
+  categoryId: ID
+  city: String
+  remoteAvailable: Boolean
+  query: String
+  budgetMax: Int
+  page: Int
+  limit: Int
+}
+
+enum ProjectSort {
+  RECENT
+  POPULAR
+}
+
+input AssistantInput {
+  request: String!
+}
+
+input PageInput {
+  page: Int
+  limit: Int
+}
+
+type Mutation {
+  adminDecideContentReview(id: ID!, approve: Boolean!, revision: DateTime!, reason: String): ContentReview!
+  adminUpdateUser(id: ID!, input: AdminUserUpdateInput!): User!
+  adminSetUserStatus(id: ID!, status: UserStatus!): User!
+  adminUpdateCreator(id: ID!, input: UpdateCreatorInput!, status: ProfileStatus): CreatorProfile!
+  adminCreateProject(creatorId: ID!, input: CreateProjectInput!): PortfolioProject!
+  adminUpdateProject(id: ID!, input: AdminProjectUpdateInput!, status: ProjectStatus): PortfolioProject!
+  adminCreateService(creatorId: ID!, input: CreateServiceInput!): CreatorService!
+  adminUpdateService(id: ID!, input: UpdateServiceInput!, status: ServiceStatus): CreatorService!
+  adminSetRemoved(kind: AdminKind!, id: ID!, removed: Boolean!): Boolean!
+  adminUpdateSiteContent(input: SiteContentInput!): SiteContent!
+  imageUploader(file: Upload!, target: String! = "project"): String!
+  imagesUploader(files: [Upload!]!, target: String! = "project"): [String!]!
+  createEvent(input: EventInput!): CreativeEvent!
+  updateEvent(id: ID!, input: UpdateEventInput!): CreativeEvent!
+  register(input: RegisterInput!): AuthPayload!
+  registerPhone(input: PhoneRegisterInput!): AuthPayload!
+  loginPhone(input: PhoneLoginInput!): AuthPayload!
+  beginSocialLogin(provider: AuthProvider!): String!
+  loginSocial(input: SocialLoginInput!): AuthPayload!
+  login(input: LoginInput!): AuthPayload!
+  refreshSession(refreshToken: String!): AuthPayload!
+  verifyEmail(token: String!): Boolean!
+  requestEmailVerification(input: EmailInput!): Boolean!
+  requestPasswordReset(input: EmailInput!): Boolean!
+  resetPassword(input: ResetPasswordInput!): Boolean!
+  linkEmail(input: LinkEmailInput!): AuthIdentity!
+  linkPhone(input: LinkPhoneInput!): AuthIdentity!
+  beginSocialLink(provider: AuthProvider!): String!
+  linkSocial(input: SocialLoginInput!): AuthIdentity!
+  unlinkAuthIdentity(authIdentityId: ID!): Boolean!
+  changePhonePassword(input: ChangePhonePasswordInput!): Boolean!
+  logout: Boolean!
+  createCategory(input: CategoryInput!): Category!
+  updateCategory(id: ID!, input: UpdateCategoryInput!): Category!
+  createCreatorProfile(input: CreateCreatorInput!): CreatorProfile!
+  updateCreatorProfile(input: UpdateCreatorInput!): CreatorProfile!
+  setCreatorProfileStatus(status: ProfileStatus!): CreatorProfile!
+  deleteCreatorProfile: Boolean!
+  setProjectLike(projectId: ID!, liked: Boolean!): Boolean!
+  setCreatorFollow(creatorId: ID!, following: Boolean!): Boolean!
+  setProjectSaved(projectId: ID!, saved: Boolean!): Boolean!
+  createProjectComment(input: CommentInput!): ProjectComment!
+  editProjectComment(commentId: ID!, input: EditCommentInput!): ProjectComment!
+  deleteProjectComment(commentId: ID!): Boolean!
+  moderateProjectComment(commentId: ID!, hidden: Boolean!): ProjectComment!
+  createInquiry(input: CreateInquiryInput!): Inquiry!
+  updateInquiry(input: UpdateInquiryInput!): Inquiry!
+  deleteInquiryDraft(input: InquiryVersionInput!): Boolean!
+  submitInquiry(input: InquiryVersionInput!): Inquiry!
+  sendInquiryMessage(input: SendMessageInput!): InquiryMessage!
+  markInquiryMessageRead(messageId: ID!): Boolean!
+  declineInquiry(input: InquiryVersionInput!): Inquiry!
+  cancelInquiry(input: InquiryVersionInput!): Inquiry!
+  closeInquiry(input: CloseInquiryInput!): Inquiry!
+  markNotificationRead(notificationId: ID!): Boolean!
+  createProject(input: CreateProjectInput!): PortfolioProject!
+  updateProject(projectId: ID!, input: UpdateProjectInput!): PortfolioProject!
+  setProjectStatus(projectId: ID!, status: ProjectStatus!): PortfolioProject!
+  deleteProject(projectId: ID!): Boolean!
+  createService(input: CreateServiceInput!): CreatorService!
+  updateService(serviceId: ID!, input: UpdateServiceInput!): CreatorService!
+  setServiceStatus(serviceId: ID!, status: ServiceStatus!): CreatorService!
+  deleteService(serviceId: ID!): Boolean!
+  updateMe(input: UpdateUserInput!): User!
+  deleteMyAccount: Boolean!
+  setAccountSuspended(userId: ID!, suspended: Boolean!): User!
+}
+
+input AdminUserUpdateInput {
+  displayName: String
+  avatarUrl: String
+  preferredLocale: Locale
+  role: UserRole
+}
+
+input UpdateCreatorInput {
+  slug: String
+  headline: String
+  bio: String
+  city: String
+  remoteAvailable: Boolean
+  availability: CreatorAvailability
+  categoryIds: [ID!]
+  skills: [String!]
+  socialLinks: [SocialLinkInput!]
+}
+
+input SocialLinkInput {
+  label: String!
+  url: String!
+}
+
+input CreateProjectInput {
+  title: String!
+  slug: String!
+  categoryId: ID
+  summary: String
+  description: String
+  coverImageUrl: String
+  media: [PortfolioMediaInput!]
+  tags: [String!]
+  externalUrl: String
+}
+
+input PortfolioMediaInput {
+  type: MediaType!
+  url: String!
+  altText: String!
+  sortOrder: Int!
+}
+
+input AdminProjectUpdateInput {
+  title: String
+  slug: String
+  categoryId: ID
+  summary: String
+  description: String
+  tags: [String!]
+  externalUrl: String
+  coverImageUrl: String
+  media: [AdminPortfolioMediaInput!]
+}
+
+input AdminPortfolioMediaInput {
+  type: MediaType!
+  altText: String!
+  sortOrder: Int!
+  url: String!
+}
+
+input CreateServiceInput {
+  title: String!
+  categoryId: ID
+  description: String
+  pricingType: PricingType
+  startingPrice: Int
+  estimatedDays: Int
+  deliverables: [String!]
+}
+
+input UpdateServiceInput {
+  title: String
+  categoryId: ID
+  description: String
+  pricingType: PricingType
+  startingPrice: Int
+  estimatedDays: Int
+  deliverables: [String!]
+}
+
+input SiteContentInput {
+  homeHeading: String!
+  homeSubheading: String!
+  aboutText: String!
+  contactEmail: String!
+  contactText: String!
+  footerCopy: String!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+input EventInput {
+  title: String!
+  description: String!
+  startsAt: DateTime!
+  endsAt: DateTime!
+  location: String!
+  eventUrl: String
+  status: EventStatus!
+  isDemo: Boolean!
+}
+
+input UpdateEventInput {
+  title: String!
+  description: String!
+  startsAt: DateTime!
+  endsAt: DateTime!
+  location: String!
+  eventUrl: String
+  status: EventStatus!
+  isDemo: Boolean!
+}
+
+input RegisterInput {
+  email: String!
+  password: String!
+  displayName: String!
+  preferredLocale: Locale
+}
+
+input PhoneRegisterInput {
+  phoneNumber: String!
+  password: String!
+  displayName: String!
+  preferredLocale: Locale
+}
+
+input PhoneLoginInput {
+  phoneNumber: String!
+  password: String!
+}
+
+input SocialLoginInput {
+  provider: AuthProvider!
+  idToken: String!
+  nonce: String!
+  displayName: String
+  preferredLocale: Locale
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input EmailInput {
+  email: String!
+}
+
+input ResetPasswordInput {
+  token: String!
+  password: String!
+}
+
+input LinkEmailInput {
+  email: String!
+  password: String!
+}
+
+input LinkPhoneInput {
+  phoneNumber: String!
+  password: String!
+}
+
+input ChangePhonePasswordInput {
+  password: String!
+}
+
+input CategoryInput {
+  slug: String!
+  name: String!
+  description: String
+  sortOrder: Int
+  isActive: Boolean
+}
+
+input UpdateCategoryInput {
+  slug: String
+  name: String
+  description: String
+  sortOrder: Int
+  isActive: Boolean
+}
+
+input CreateCreatorInput {
+  slug: String!
+  headline: String
+  bio: String
+  city: String
+  remoteAvailable: Boolean
+  availability: CreatorAvailability
+  categoryIds: [ID!]
+  skills: [String!]
+  socialLinks: [SocialLinkInput!]
+}
+
+input CommentInput {
+  clientCommentKey: String!
+  projectId: ID!
+  content: String!
+}
+
+input EditCommentInput {
+  content: String!
+}
+
+input CreateInquiryInput {
+  serviceId: ID
+  subject: String
+  brief: String
+  budgetMin: Int
+  budgetMax: Int
+  desiredDeadline: DateTime
+  creatorId: ID!
+}
+
+input UpdateInquiryInput {
+  serviceId: ID
+  subject: String
+  brief: String
+  budgetMin: Int
+  budgetMax: Int
+  desiredDeadline: DateTime
+  inquiryId: ID!
+  expectedVersion: Int!
+  clearService: Boolean
+}
+
+input InquiryVersionInput {
+  inquiryId: ID!
+  expectedVersion: Int!
+}
+
+input SendMessageInput {
+  inquiryId: ID!
+  expectedVersion: Int!
+  clientMessageKey: String!
+  body: String!
+}
+
+input CloseInquiryInput {
+  inquiryId: ID!
+  expectedVersion: Int!
+  outcome: InquiryOutcome!
+}
+
+input UpdateProjectInput {
+  title: String
+  slug: String
+  categoryId: ID
+  summary: String
+  description: String
+  coverImageUrl: String
+  media: [PortfolioMediaInput!]
+  tags: [String!]
+  externalUrl: String
+}
+
+input UpdateUserInput {
+  displayName: String
+  avatarUrl: String
+  preferredLocale: Locale
+}

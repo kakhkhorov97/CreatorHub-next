@@ -1,0 +1,11 @@
+# CreatorHub
+
+CreatorHub lets clients discover published creator profiles, portfolio projects, and services, then discuss work through private inquiries. Creators maintain their own profiles, projects, and services. Administrators use a separate protected dashboard to manage user accounts and roles, creator profiles, projects, services, categories, events, comment visibility, and saved website copy. Removed user/content records remain recoverable.
+
+The source architecture follows Nestar-next: Next.js Pages Router, TypeScript, Apollo, MUI, shared layout wrappers, feature components in libs, and desktop/mobile SCSS. The backend contract in docs/schema.graphql controls every field and action. No payments, bookings, attachments, service thumbnails, or unsupported moderation queues are introduced.
+
+The user approved the conversion plan and requested the supplied screen references in Desktop/CreatorHub Frontend Images. The user explicitly selected the original September 25 white-and-blue screens to replace the earlier warm direction. Those selected images are the visual authority; generated sample text is not a data contract. Actual portfolio imagery must come from backend records. A missing image has a visible fallback. Synthetic test accounts and generated portfolio artwork exist only for a disposable demo database. See docs/MEDIA_PROVENANCE.md.
+
+Authentication supports email and phone/password with refresh rotation. Social authorization needs configured provider adapters. Media publishing accepts account-storage HTTPS URLs; direct uploads require backend storage integration. Email delivery depends on backend configuration. Legal copy is explicitly unfinished.
+
+Main surfaces operate as follows: public discovery supports finding relevant work; account/workspace forms support editing and publishing; inquiries support private versioned discussions. The homepage also includes the approved discovery hero, six Popular projects ranked by actual likes, the looping introduction video, six different Recently added projects, categories, demo events, and an About/join section. Projects, Creators, Services, and Events use separate pages; Contact us is in the navbar. About and Contact copy addresses creators and collaborators worldwide. Public team contact details remain unset. Workspace and inquiry pages remain task-focused.

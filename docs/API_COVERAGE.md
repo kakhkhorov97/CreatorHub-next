@@ -1,0 +1,114 @@
+# Backend operation coverage
+
+All 98 generated GraphQL documents validate against the backend schema. The existing integration suite executed 75 operations. Community checks exercised five additional event operations, and administrator checks exercised all 12 new operations, for 92 operations across the runs. Four social operations require configured provider browser flows; imageUploader and imagesUploader are not tested by these frontend integration runs. Checked rows indicate API integration execution, not complete browser end-to-end coverage.
+
+| API tested | Area | Kind | Operation | Screen |
+| --- | --- | --- | --- | --- |
+| [x] | health | Query | `apiName` | Connection diagnostics |
+| [x] | auth | Mutation | `register` | Sign in, register, verify/reset password, sign-in methods |
+| [x] | auth | Mutation | `registerPhone` | Sign in, register, verify/reset password, sign-in methods |
+| [x] | auth | Mutation | `loginPhone` | Sign in, register, verify/reset password, sign-in methods |
+| Blocked | auth | Mutation | `beginSocialLogin` | Sign in, register, verify/reset password, sign-in methods |
+| Blocked | auth | Mutation | `loginSocial` | Sign in, register, verify/reset password, sign-in methods |
+| [x] | auth | Mutation | `login` | Sign in, register, verify/reset password, sign-in methods |
+| [x] | auth | Mutation | `refreshSession` | Sign in, register, verify/reset password, sign-in methods |
+| [x] | auth | Mutation | `verifyEmail` | Sign in, register, verify/reset password, sign-in methods |
+| [x] | auth | Mutation | `requestEmailVerification` | Sign in, register, verify/reset password, sign-in methods |
+| [x] | auth | Mutation | `requestPasswordReset` | Sign in, register, verify/reset password, sign-in methods |
+| [x] | auth | Mutation | `resetPassword` | Sign in, register, verify/reset password, sign-in methods |
+| [x] | auth | Query | `getMyAuthIdentities` | Sign in, register, verify/reset password, sign-in methods |
+| [x] | auth | Mutation | `linkEmail` | Sign in, register, verify/reset password, sign-in methods |
+| [x] | auth | Mutation | `linkPhone` | Sign in, register, verify/reset password, sign-in methods |
+| Blocked | auth | Mutation | `beginSocialLink` | Sign in, register, verify/reset password, sign-in methods |
+| Blocked | auth | Mutation | `linkSocial` | Sign in, register, verify/reset password, sign-in methods |
+| [x] | auth | Mutation | `unlinkAuthIdentity` | Sign in, register, verify/reset password, sign-in methods |
+| [x] | auth | Mutation | `changePhonePassword` | Sign in, register, verify/reset password, sign-in methods |
+| [x] | auth | Mutation | `logout` | Sign in, register, verify/reset password, sign-in methods |
+| [x] | category | Query | `categories` | Discovery filters and admin categories |
+| [x] | category | Query | `adminCategories` | Discovery filters and admin categories |
+| [x] | category | Mutation | `createCategory` | Discovery filters and admin categories |
+| [x] | category | Mutation | `updateCategory` | Discovery filters and admin categories |
+| [x] | creator | Query | `creator` | Creator profile and profile editor |
+| [x] | creator | Query | `myCreatorProfile` | Creator profile and profile editor |
+| [x] | creator | Mutation | `createCreatorProfile` | Creator profile and profile editor |
+| [x] | creator | Mutation | `updateCreatorProfile` | Creator profile and profile editor |
+| [x] | creator | Mutation | `setCreatorProfileStatus` | Creator profile and profile editor |
+| [x] | creator | Mutation | `deleteCreatorProfile` | Creator profile and profile editor |
+| [x] | discovery | Query | `getCities` | Explore, creators, services, AI finder |
+| [x] | discovery | Query | `getCreators` | Explore, creators, services, AI finder |
+| [x] | discovery | Query | `getProjects` | Explore, creators, services, AI finder |
+| [x] | discovery | Query | `getServices` | Explore, creators, services, AI finder |
+| [x] | discovery | Query | `discoverCreators` | Explore, creators, services, AI finder |
+| [x] | engagement | Mutation | `setCreatorFollow` | Project likes/comments, saved projects, following |
+| [x] | engagement | Query | `getMyFollows` | Project likes/comments, saved projects, following |
+| [x] | engagement | Mutation | `setProjectLike` | Project likes/comments, saved projects, following |
+| [x] | engagement | Mutation | `setProjectSaved` | Project likes/comments, saved projects, following |
+| [x] | engagement | Query | `getSavedProjects` | Project likes/comments, saved projects, following |
+| [x] | engagement | Query | `getProjectComments` | Project likes/comments, saved projects, following |
+| [x] | engagement | Query | `getProjectLikeCount` | Project likes/comments, saved projects, following |
+| [x] | engagement | Mutation | `createProjectComment` | Project likes/comments, saved projects, following |
+| [x] | engagement | Mutation | `editProjectComment` | Project likes/comments, saved projects, following |
+| [x] | engagement | Mutation | `deleteProjectComment` | Project likes/comments, saved projects, following |
+| [x] | engagement | Mutation | `moderateProjectComment` | Project likes/comments, saved projects, following |
+| [x] | inquiry | Query | `getInquiry` | Inbox, draft, review, conversation |
+| [x] | inquiry | Query | `getInquiries` | Inbox, draft, review, conversation |
+| [x] | inquiry | Query | `getInquiryMessages` | Inbox, draft, review, conversation |
+| [x] | inquiry | Query | `getInquiryEvents` | Inbox, draft, review, conversation |
+| [x] | inquiry | Mutation | `createInquiry` | Inbox, draft, review, conversation |
+| [x] | inquiry | Mutation | `updateInquiry` | Inbox, draft, review, conversation |
+| [x] | inquiry | Mutation | `deleteInquiryDraft` | Inbox, draft, review, conversation |
+| [x] | inquiry | Mutation | `submitInquiry` | Inbox, draft, review, conversation |
+| [x] | inquiry | Mutation | `sendInquiryMessage` | Inbox, draft, review, conversation |
+| [x] | inquiry | Mutation | `markInquiryMessageRead` | Inbox, draft, review, conversation |
+| [x] | inquiry | Mutation | `declineInquiry` | Inbox, draft, review, conversation |
+| [x] | inquiry | Mutation | `cancelInquiry` | Inbox, draft, review, conversation |
+| [x] | inquiry | Mutation | `closeInquiry` | Inbox, draft, review, conversation |
+| [x] | notification | Query | `getNotifications` | Notifications |
+| [x] | notification | Query | `getUnreadNotificationCount` | Notifications |
+| [x] | notification | Mutation | `markNotificationRead` | Notifications |
+| [x] | project | Query | `getProject` | Project detail and projects manager/editor |
+| [x] | project | Query | `getMyProjects` | Project detail and projects manager/editor |
+| [x] | project | Mutation | `createProject` | Project detail and projects manager/editor |
+| [x] | project | Mutation | `updateProject` | Project detail and projects manager/editor |
+| [x] | project | Mutation | `setProjectStatus` | Project detail and projects manager/editor |
+| [x] | project | Mutation | `deleteProject` | Project detail and projects manager/editor |
+| [x] | service | Query | `getService` | Service detail and services manager/editor |
+| [x] | service | Query | `getMyServices` | Service detail and services manager/editor |
+| [x] | service | Mutation | `createService` | Service detail and services manager/editor |
+| [x] | service | Mutation | `updateService` | Service detail and services manager/editor |
+| [x] | service | Mutation | `setServiceStatus` | Service detail and services manager/editor |
+| [x] | service | Mutation | `deleteService` | Service detail and services manager/editor |
+| [x] | user | Query | `me` | Account settings and admin moderation |
+| [x] | user | Mutation | `updateMe` | Account settings and admin moderation |
+| [x] | user | Mutation | `deleteMyAccount` | Account settings and admin moderation |
+| [x] | user | Mutation | `setAccountSuspended` | Account settings and admin moderation |
+| [x] | media/likes | Query | `getMyProjectLike` | Project heart state |
+| Not tested | media/likes | Mutation | `imageUploader` | No upload UI |
+| Not tested | media/likes | Mutation | `imagesUploader` | No upload UI |
+
+## Public creative events
+
+All five new operations passed the real-resolver community checks in docs/verification/community.json.
+
+| API tested | Area | Kind | Operation | Screen |
+| --- | --- | --- | --- | --- |
+| [x] | event | Query | `getEvents` | Homepage and Events directory |
+| [x] | event | Query | `getEvent` | Event detail |
+| [x] | event | Query | `adminEvents` | Admin events |
+| [x] | event | Mutation | `createEvent` | Admin event editor |
+| [x] | event | Mutation | `updateEvent` | Admin event editor |
+
+The community checks also verified getProjects actual-like sorting, publication tie-breaks, exclusion of Popular IDs from Recently added, and bounded identifier validation.
+
+| [x] | admin | Query | `adminOverview` | Dedicated administration / saved public copy |
+| [x] | admin | Query | `adminDirectory` | Dedicated administration / saved public copy |
+| [x] | admin | Query | `getSiteContent` | Dedicated administration / saved public copy |
+| [x] | admin | Mutation | `adminUpdateUser` | Dedicated administration / saved public copy |
+| [x] | admin | Mutation | `adminSetUserStatus` | Dedicated administration / saved public copy |
+| [x] | admin | Mutation | `adminUpdateCreator` | Dedicated administration / saved public copy |
+| [x] | admin | Mutation | `adminCreateProject` | Dedicated administration / saved public copy |
+| [x] | admin | Mutation | `adminUpdateProject` | Dedicated administration / saved public copy |
+| [x] | admin | Mutation | `adminCreateService` | Dedicated administration / saved public copy |
+| [x] | admin | Mutation | `adminUpdateService` | Dedicated administration / saved public copy |
+| [x] | admin | Mutation | `adminSetRemoved` | Dedicated administration / saved public copy |
+| [x] | admin | Mutation | `adminUpdateSiteContent` | Dedicated administration / saved public copy |

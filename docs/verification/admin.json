@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "checks": [
+    "Protected directories, actual counts, pagination, literal search, valid filters and safe user fields",
+    "Every new administrator mutation rejects anonymous and non-admin callers",
+    "Account edit, role changes, suspension, removal and recovery; self-lockout rejected",
+    "Foreign creator edit, hide/republication and supported-city validation",
+    "Foreign project CRUD/publication/recovery; retained-media edits; replacement ownership and creator ownership remain enforced",
+    "Service activation, pause, archive and recoverable removal; creator recovery remains unpublished",
+    "Comment directory provides project context and hide/restore moderation",
+    "Saved public CMS copy; invalid email, empty heading and null About rejected"
+  ],
+  "operations": [
+    "adminCreateProject",
+    "adminCreateService",
+    "adminDirectory",
+    "adminOverview",
+    "adminSetRemoved",
+    "adminSetUserStatus",
+    "adminUpdateCreator",
+    "adminUpdateProject",
+    "adminUpdateService",
+    "adminUpdateSiteContent",
+    "adminUpdateUser",
+    "creator",
+    "getProject",
+    "getSiteContent",
+    "login",
+    "moderateProjectComment"
+  ]
+}

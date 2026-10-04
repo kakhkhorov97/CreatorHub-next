@@ -1,0 +1,9 @@
+# Atlas import verification — 4 October 2026
+
+The user approved importing fictional preview records into the configured Atlas `CreatorHub` database and connecting the local website to it. Existing Atlas records were preserved. A restricted backup of only the public collections affected by the import is stored locally at `/private/tmp/creatorhub-atlas-public-backup-2026-10-04` with owner-only permissions. No authentication sessions, tokens, or private messages were copied into the backup or imported.
+
+The dry run reported inserts of 24 users, 15 creator profiles, 23 services, 20 projects, 10 new categories (four matching category slugs mapped to existing Atlas IDs), three events, one website-content record, 26 project likes and one public comment. One new administrator email identity was created with a fresh password; its plaintext is not stored in project files. Disposable removed records were excluded. Other imported fictional users were deliberately not given preview sign-in identities.
+
+The local backend on port 7001 was restarted with its configured Atlas connection. Its GraphQL API responded, and browser sign-in with the new administrator credential succeeded. The administrator dashboard displayed 26 retained users, 16 creators, 22 projects, 25 services, 16 categories and three events. The user and service directories showed imported rows. A direct Atlas check found zero missing creator-to-user, service-to-creator, project-to-creator or service/project-to-category references. The public site continues to use the backend through `NEXT_PUBLIC_API_GRAPHQL_URL=http://localhost:7001/graphql`.
+
+Both `MONGO_DEV` and `MONGO_PROD` in the backend's current private configuration reference the same Atlas `CreatorHub` database. This is the active shared store for the local website, not the disposable `creatorhub_frontend_test` database used by integration scripts.
