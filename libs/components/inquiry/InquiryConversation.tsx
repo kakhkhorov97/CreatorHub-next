@@ -2,22 +2,21 @@ import { ConfirmationPrompt } from '../common/ConfirmationPrompt';
 import { EngagementFeedback } from './ServiceFeedback';
 import { useReactiveVar } from '@apollo/client';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { ArrowLeft, CaretDown, PaperPlaneTilt } from 'phosphor-react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { userVar } from '../../../apollo/store';
-import { useAction } from '../../hooks/useApi';
-import { useCreatorDirectory } from '../../hooks/useCreatorDirectory';
-import { usePaged } from '../../hooks/usePaged';
+import { useAction, documents } from '../../hooks/useApi';
+import { useInquiryHistory } from '../../hooks/useInquiryHistory';
+import { handleMessageKey } from '../../utils/messageKeyboard';
 import { Inquiry, InquiryOutcome } from '../../types/creatorhub';
 import {
 	Button,
 	date,
 	Feedback,
 	Field,
-	Heading,
 	label,
 	money,
 	Notice,
-	Pager,
 	Picture,
 	QueryState,
 	Status,
@@ -34,13 +33,39 @@ export function Conversation({
 	refresh: () => Promise<unknown>;
 }) {
 	const action = useAction();
-	const inbox = usePaged('getInquiries', { creatorInbox: !isClient });
-	const directory = useCreatorDirectory([inquiry.creatorId]);
-	const creator = directory[inquiry.creatorId];
-	const messages = usePaged('getInquiryMessages', { inquiryId: inquiry._id });
-	const events = usePaged('getInquiryEvents', { inquiryId: inquiry._id });
+	const messages = useInquiryHistory(inquiry._id, inquiry.version);
 	const user = useReactiveVar(userVar)!;
 	const [body, setBody] = useState('');
+	const [detailsOpen, setDetailsOpen] = useState(false);
+	const followMessages = useRef(true);
+	const messagePane = useRef<HTMLDivElement>(null);
+	const olderSentinel = useRef<HTMLDivElement>(null);
+	const scrollAnchor = useRef<{ height: number; top: number } | null>(null);
+	useLayoutEffect(() => {
+		const pane = messagePane.current;
+		if (!pane) return;
+		if (scrollAnchor.current) {
+			pane.scrollTop = scrollAnchor.current.top + pane.scrollHeight - scrollAnchor.current.height;
+			scrollAnchor.current = null;
+		} else if (followMessages.current) pane.scrollTop = pane.scrollHeight;
+	}, [messages.rows.length, messages.rows[messages.rows.length - 1]?._id]);
+	useEffect(() => {
+		if (!messages.hasOlder || messages.loadingOlder || messages.error || !olderSentinel.current) return;
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				const pane = messagePane.current;
+				if (!entry.isIntersecting || !pane) return;
+				scrollAnchor.current = { height: pane.scrollHeight, top: pane.scrollTop };
+				messages.loadOlder();
+			},
+			{ root: messagePane.current, rootMargin: '80px 0px 0px' },
+		);
+		observer.observe(olderSentinel.current);
+		return () => observer.disconnect();
+	}, [messages.hasOlder, messages.loadingOlder, messages.error, messages.loadOlder]);
+	useEffect(() => {
+		if (messages.error) scrollAnchor.current = null;
+	}, [messages.error]);
 	const [finish, setFinish] = useState<'cancelInquiry' | 'declineInquiry' | 'closeInquiry' | null>(null);
 	const [outcome, setOutcome] = useState<InquiryOutcome>('NOT_PROCEEDING');
 	const key = useRef<string | null>(null);
@@ -49,97 +74,133 @@ export function Conversation({
 	useEffect(() => {
 		const timer = setInterval(() => {
 			refresh().catch(() => {});
-			messages.refetch().catch(() => {});
-			events.refetch().catch(() => {});
+			messages.refresh().catch(() => {});
 		}, 15000);
 		return () => clearInterval(timer);
-	}, [inquiry._id, messages.offset, events.offset]);
+	}, [inquiry._id, inquiry.version]);
+	useEffect(() => {
+		if (
+			messages.loading ||
+			messages.error ||
+			messages.observedVersion < inquiry.version ||
+			!inquiry.unreadCount ||
+			document.visibilityState !== 'visible'
+		)
+			return;
+		let cancelled = false;
+		action
+			.mutate('markInquiryRead', { input: { inquiryId: inquiry._id, expectedVersion: inquiry.version } })
+			.then(async () => {
+				if (cancelled) return;
+				await action.client.refetchQueries({
+					include: [documents.getUnreadInquiryCount, documents.getUnreadNotificationCount],
+				});
+				await refresh();
+			})
+			.catch(() => {});
+		return () => {
+			cancelled = true;
+		};
+	}, [inquiry._id, inquiry.version, inquiry.unreadCount, messages.loading, messages.error, messages.observedVersion]);
+
 	return (
 		<>
-			<Heading title="Inbox" />
-			<p className="inbox-intro">Have private conversations with creators about your projects.</p>
-			<div className="conversation-layout">
-				<aside className="conversation-inbox panel">
-					<h2>Your conversations</h2>
-					<Link passHref href={isClient ? '/inquiries' : '/inquiries?inbox=creator'}>
-						View all inquiries
-					</Link>
-					<QueryState loading={inbox.loading} error={inbox.error} />
-					{inbox.rows.map((row) => (
-						<Link
-							passHref
-							className={`inbox-item ${row._id === inquiry._id ? 'active' : ''}`}
-							key={row._id}
-							href={`/inquiries/${row._id}`}
-							aria-current={row._id === inquiry._id ? 'page' : undefined}
-						>
-							<strong>{row.subject || 'Untitled inquiry'}</strong>
-							<span>{label(row.status)}</span>
-							<time>{date(row.updatedAt)}</time>
-						</Link>
-					))}
-					<Pager {...inbox} />
-				</aside>
-				<section className="conversation panel">
+			<div className="chat-thread">
+				<section className="conversation" aria-label="Messages">
 					<div className="conversation-heading">
-						<Picture avatar src={creator?.identity.avatarUrl} alt={creator?.identity.displayName || 'Creator'} />
-						<div>
-							<h2>{inquiry.subject || 'Private inquiry'}</h2>
-							<p>{creator?.identity.displayName || 'Private conversation'}</p>
+						<Link passHref className="mobile-inbox-back" href="/inquiries" aria-label="Back to inbox">
+							<ArrowLeft size={21} />
+						</Link>
+						<Picture avatar src={inquiry.counterpartyAvatarUrl} alt="" />
+						<div className="chat-heading-copy">
+							<h2>{inquiry.counterpartyName || 'Member'}</h2>
+							<p>{inquiry.subject || 'Private inquiry'}</p>
 						</div>
-						<Status value={inquiry.status} />
+						<button
+							type="button"
+							className={`chat-details-toggle ${detailsOpen ? 'active' : ''}`}
+							aria-expanded={detailsOpen}
+							aria-controls={`inquiry-details-${inquiry._id}`}
+							onClick={() => setDetailsOpen(!detailsOpen)}
+						>
+							Details <CaretDown size={16} />
+						</button>
 					</div>
-					<QueryState loading={messages.loading} error={messages.error} retry={() => messages.refetch()} />
-					<div className="message-list">
+					<QueryState
+						loading={messages.loading && !messages.rows.length}
+						error={messages.error}
+						retry={() => messages.refresh()}
+					/>
+					<div
+						className="message-list"
+						ref={messagePane}
+						onScroll={(event) => {
+							const pane = event.currentTarget;
+							followMessages.current = pane.scrollHeight - pane.scrollTop - pane.clientHeight < 80;
+						}}
+						role="log"
+						aria-label="Conversation messages"
+						aria-live="polite"
+						aria-relevant="additions"
+					>
+						<div ref={olderSentinel} className="chat-older-sentinel">
+							<QueryState loading={messages.loadingOlder} />
+						</div>
+						<div className="chat-start">
+							<span>{date(inquiry.submittedAt)}</span>
+							<p>{isClient ? 'You sent an inquiry' : 'You received an inquiry'}</p>
+							<button type="button" onClick={() => setDetailsOpen(true)}>
+								View original brief
+							</button>
+						</div>
+						{!messages.loading && !messages.error && !messages.rows.length && (
+							<p className="chat-no-replies">
+								No replies yet. {active ? 'Start the conversation below.' : 'This conversation is closed.'}
+							</p>
+						)}
 						{messages.rows.map((m) => (
 							<article key={m._id} className={`message ${m.senderId === user._id ? 'mine' : ''}`}>
 								<div className="row">
-									<strong>{m.senderId === user._id ? 'You' : isClient ? 'Creator' : 'Client'}</strong>
-									<time>{date(m.createdAt)}</time>
+									<strong>{m.senderId === user._id ? 'You' : inquiry.counterpartyName || 'Member'}</strong>
+									<time dateTime={m.createdAt}>
+										{new Intl.DateTimeFormat('en', {
+											month: 'short',
+											day: 'numeric',
+											hour: 'numeric',
+											minute: '2-digit',
+										}).format(new Date(m.createdAt))}
+									</time>
 								</div>
 								<p>{m.body}</p>
-								{m.readAt ? (
-									<small>Read</small>
-								) : (
-									m.senderId !== user._id && (
-										<Button
-											secondary
-											disabled={action.busy}
-											onClick={() =>
-												action.run(async () => {
-													await action.mutate('markInquiryMessageRead', { messageId: m._id });
-													await messages.refetch();
-												})
-											}
-										>
-											Mark as read
-										</Button>
-									)
-								)}
+								{m.senderId === user._id && <small>{m.readAt ? 'Read' : 'Sent'}</small>}
 							</article>
 						))}
 					</div>
-					<Pager {...messages} />
 					{active ? (
 						<form
 							className="message-form"
 							onSubmit={(e) => {
 								e.preventDefault();
+								if (!body.trim()) return;
 								action.run(async () => {
 									key.current ??= crypto.randomUUID();
 									await action.mutate('sendInquiryMessage', {
-										input: { ...input, clientMessageKey: key.current, body },
+										input: { ...input, clientMessageKey: key.current, body: body.trim() },
 									});
 									key.current = null;
 									setBody('');
+									followMessages.current = true;
 									await refresh();
-									await messages.refetch();
-									await events.refetch();
+									await messages.refresh();
 								});
 							}}
 						>
 							<TextArea
 								label="Message"
+								rows={2}
+								readOnly={action.busy}
+								aria-describedby={`message-hint-${inquiry._id}`}
+								onKeyDown={(event) => handleMessageKey(event, !action.busy && !!body.trim())}
 								value={body}
 								onChange={(e) => {
 									setBody(e.target.value);
@@ -150,9 +211,13 @@ export function Conversation({
 								maxLength={5000}
 								placeholder="Write a message…"
 							/>
-							<Button type="submit" disabled={action.busy}>
-								Send
+							<Button type="submit" disabled={action.busy || !body.trim()}>
+								<PaperPlaneTilt size={19} />
+								{action.busy ? 'Sending…' : 'Send'}
 							</Button>
+							<small className="chat-key-hint" id={`message-hint-${inquiry._id}`}>
+								Enter to send · Shift+Enter for a new line
+							</small>
 						</form>
 					) : (
 						<Notice>This conversation is {label(inquiry.status).toLowerCase()}.</Notice>
@@ -164,7 +229,7 @@ export function Conversation({
 							onClick={() =>
 								action.run(async () => {
 									await refresh();
-									await messages.refetch();
+									await messages.refresh();
 								})
 							}
 						>
@@ -172,8 +237,11 @@ export function Conversation({
 						</Button>
 					)}
 				</section>
-				<aside className="panel inquiry-details">
-					<h2>Original inquiry</h2>
+				<aside className="inquiry-details" id={`inquiry-details-${inquiry._id}`} hidden={!detailsOpen}>
+					<div className="chat-brief-heading">
+						<h3>Original inquiry</h3>
+						<Status value={inquiry.status} />
+					</div>
 					<dl>
 						<dt>Project brief</dt>
 						<dd className="prose-text">{inquiry.brief}</dd>
@@ -208,17 +276,6 @@ export function Conversation({
 							</>
 						)}
 					</dl>
-					<details className="conversation-history">
-						<summary>Conversation history</summary>
-						<QueryState loading={events.loading} error={events.error} />
-						{events.rows.map((e) => (
-							<div className="timeline-event" key={e._id}>
-								<small>{date(e.createdAt)}</small>
-								<p>{label(e.type)}</p>
-							</div>
-						))}
-						<Pager {...events} />
-					</details>
 					{inquiry.outcome && <p>Outcome: {label(inquiry.outcome)}</p>}
 					{active && (
 						<div className="stack-actions">
@@ -234,6 +291,7 @@ export function Conversation({
 							)}
 						</div>
 					)}
+					<EngagementFeedback inquiry={inquiry} isClient={isClient} refresh={refresh} />
 				</aside>
 			</div>
 			{finish && (
@@ -270,7 +328,6 @@ export function Conversation({
 									else await action.mutate(finish, { input });
 									setFinish(null);
 									await refresh();
-									await events.refetch();
 								})
 							}
 						>
@@ -282,7 +339,6 @@ export function Conversation({
 					</div>
 				</ConfirmationPrompt>
 			)}
-			<EngagementFeedback inquiry={inquiry} isClient={isClient} refresh={refresh} />
 		</>
 	);
 }

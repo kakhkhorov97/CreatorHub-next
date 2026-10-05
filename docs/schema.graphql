@@ -419,6 +419,9 @@ type Inquiry {
   _id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
+  counterpartyName: String
+  counterpartyAvatarUrl: String
+  unreadCount: Int
   clientId: ID!
   creatorId: ID!
   serviceId: ID
@@ -510,8 +513,9 @@ type Query {
   getMyFollows(input: PageInput! = {}): Followings!
   getSavedProjects(input: PageInput! = {}): SavedProjects!
   getProjectComments(projectId: ID!, input: PageInput! = {}): Comments!
+  getUnreadInquiryCount: Int!
   getInquiry(inquiryId: ID!): Inquiry!
-  getInquiries(creatorInbox: Boolean! = false, input: PageInput! = {}): Inquiries!
+  getInquiries(creatorInbox: Boolean! = false, allConversations: Boolean! = false, input: PageInput! = {}): Inquiries!
   getInquiryMessages(inquiryId: ID!, input: PageInput! = {}): InquiryMessages!
   getInquiryEvents(inquiryId: ID!, input: PageInput! = {}): InquiryEvents!
   getInquiryFeedback(inquiryId: ID!): ServiceFeedback
@@ -622,6 +626,7 @@ type Mutation {
   editProjectComment(commentId: ID!, input: EditCommentInput!): ProjectComment!
   deleteProjectComment(commentId: ID!): Boolean!
   moderateProjectComment(commentId: ID!, hidden: Boolean!): ProjectComment!
+  markInquiryRead(input: InquiryVersionInput!): Boolean!
   sendInquiry(input: SendInquiryInput!): Inquiry!
   completeInquiry(input: InquiryVersionInput!): Inquiry!
   createServiceFeedback(input: CreateServiceFeedbackInput!): ServiceFeedback!
@@ -857,6 +862,11 @@ input EditCommentInput {
   content: String!
 }
 
+input InquiryVersionInput {
+  inquiryId: ID!
+  expectedVersion: Int!
+}
+
 input SendInquiryInput {
   serviceId: ID
   subject: String!
@@ -866,11 +876,6 @@ input SendInquiryInput {
   desiredDeadline: DateTime
   creatorId: ID!
   clientRequestKey: String!
-}
-
-input InquiryVersionInput {
-  inquiryId: ID!
-  expectedVersion: Int!
 }
 
 input CreateServiceFeedbackInput {

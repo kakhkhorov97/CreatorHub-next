@@ -1,12 +1,16 @@
 import { useReactiveVar } from '@apollo/client';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { ChatsCircle } from 'phosphor-react';
+import { useEffect, useRef } from 'react';
 import { userVar } from '../../apollo/store';
-import { date, Empty, Heading, Pager, QueryState, Status } from '../../libs/components/common/UI';
+import { date, Empty, Picture, QueryState, Status } from '../../libs/components/common/UI';
+import { Conversation } from '../../libs/components/inquiry/InquiryConversation';
+import { Draft } from '../../libs/components/inquiry/InquiryDraft';
 import Layout, { Guard } from '../../libs/components/layout/LayoutBasic';
-import { usePaged } from '../../libs/hooks/usePaged';
+import { useApi } from '../../libs/hooks/useApi';
+import { useConversationList } from '../../libs/hooks/useInquiryHistory';
 
-function InquiryInbox() {
+export default function InquiryInbox() {
 	return (
 		<Layout title="Inbox">
 			<Guard>
@@ -16,46 +20,119 @@ function InquiryInbox() {
 	);
 }
 
-function Inbox() {
-	const router = useRouter();
-	const creatorInbox = router.query.inbox === 'creator';
-	const setCreatorInbox = (value: boolean) =>
-		router.replace(value ? '/inquiries?inbox=creator' : '/inquiries', undefined, { shallow: true });
-	const result = usePaged('getInquiries', { creatorInbox });
-	const user = useReactiveVar(userVar);
+export function Inbox({ selectedId = '' }: { selectedId?: string }) {
+	const user = useReactiveVar(userVar)!;
+	const selected = useApi('getInquiry', { inquiryId: selectedId }, !selectedId);
+	const result = useConversationList(user._id);
+	const listPane = useRef<HTMLDivElement>(null);
+	const moreSentinel = useRef<HTMLDivElement>(null);
+	const { hasMore, loadingMore, error, loadMore } = result;
+	useEffect(() => {
+		if (!hasMore || loadingMore || error || !moreSentinel.current) return;
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				if (entry.isIntersecting) loadMore();
+			},
+			{ root: listPane.current, rootMargin: '120px' },
+		);
+		observer.observe(moreSentinel.current);
+		return () => observer.disconnect();
+	}, [hasMore, loadingMore, error, loadMore]);
+	const refresh = async () => {
+		await selected.refetch();
+		await result.refresh();
+	};
 	return (
-		<>
-			<Heading title="Inbox" />
-			<p className="muted">Have private conversations with creators about your projects.</p>
-			<nav className="tabs">
-				<button className={!creatorInbox ? 'active' : ''} onClick={() => setCreatorInbox(false)}>
-					Sent inquiries
-				</button>
-				{user?.role !== 'USER' && (
-					<button className={creatorInbox ? 'active' : ''} onClick={() => setCreatorInbox(true)}>
-						Creator inbox
-					</button>
-				)}
-			</nav>
-			<QueryState loading={result.loading} error={result.error} retry={() => result.refetch()} />
-			<div className="inquiry-list">
-				{result.rows.map((i) => (
-					<Link passHref className="list-row" key={i._id} href={`/inquiries/${i._id}`}>
-						<div>
-							<h3>{i.subject || 'Untitled draft'}</h3>
-							<p className="muted">{i.brief?.slice(0, 150) || 'Continue writing your inquiry.'}</p>
+		<div className={`messaging-inbox ${selectedId ? 'has-selection' : ''}`}>
+			<header className="inbox-page-heading">
+				<h1>Inbox</h1>
+				<p>Your project conversations</p>
+			</header>
+			<div className="messaging-shell">
+				<aside className="inbox-sidebar" aria-label="Conversations">
+					<div className="inbox-list-heading">
+						<h2>Messages</h2>
+						<span>{result.total} conversations</span>
+					</div>
+					<div className="inbox-list-scroll" ref={listPane}>
+						<QueryState loading={result.loading && !result.rows.length} error={result.error} retry={result.refresh} />
+						{result.rows.map((i) => (
+							<Link
+								passHref
+								key={i._id}
+								href={`/inquiries/${i._id}`}
+								aria-current={i._id === selectedId ? 'page' : undefined}
+								className={`conversation-preview ${i._id === selectedId ? 'selected' : ''} ${
+									i.unreadCount ? 'unread' : ''
+								}`}
+							>
+								<Picture avatar src={i.counterpartyAvatarUrl} alt="" />
+								<div className="preview-copy">
+									<div className="preview-top">
+										<strong>{i.counterpartyName || 'Member'}</strong>
+										<time dateTime={i.updatedAt}>{date(i.updatedAt)}</time>
+									</div>
+									<p className="preview-subject">{i.subject || 'Untitled draft'}</p>
+									<p className="preview-brief">{i.brief || 'Continue writing your inquiry.'}</p>
+									<div className="preview-meta">
+										<span>{i.clientId === user._id ? 'You contacted them' : 'They contacted you'}</span>
+										<Status value={i.status} />
+										{!!i.unreadCount && <span className="preview-unread" aria-label="Unread conversation" />}
+									</div>
+								</div>
+							</Link>
+						))}
+						{!result.loading && !result.error && !result.rows.length && (
+							<Empty title="No conversations yet">
+								Find a creator and send an inquiry. Replies and received inquiries will appear here.
+							</Empty>
+						)}
+						<div ref={moreSentinel} className="inbox-more-sentinel">
+							<QueryState loading={result.loadingMore} />
 						</div>
-						<Status value={i.status} />
-						<time>{date(i.updatedAt)}</time>
-					</Link>
-				))}
+					</div>
+				</aside>
+				<section className="inbox-conversation" aria-label="Selected conversation">
+					{selectedId ? (
+						<>
+							<QueryState
+								loading={selected.loading && !selected.value}
+								error={selected.error}
+								retry={() => selected.refetch()}
+							/>
+							{selected.value &&
+								(selected.value.status === 'DRAFT' ? (
+									<div className="inbox-draft">
+										<Link passHref className="mobile-inbox-back" href="/inquiries">
+											Back to inbox
+										</Link>
+										<Draft
+											key={selectedId}
+											inquiry={selected.value}
+											creatorId={selected.value.creatorId}
+											serviceId={selected.value.serviceId || undefined}
+											refresh={refresh}
+										/>
+									</div>
+								) : (
+									<Conversation
+										key={selectedId}
+										inquiry={selected.value}
+										isClient={selected.value.clientId === user._id}
+										refresh={refresh}
+									/>
+								))}
+						</>
+					) : (
+						<div className="inbox-welcome">
+							<ChatsCircle size={42} weight="light" aria-hidden="true" />
+							<h2>Your conversations</h2>
+							<p>Select an inquiry to read messages and reply.</p>
+							<span>Project briefs and details stay with each conversation.</span>
+						</div>
+					)}
+				</section>
 			</div>
-			{!result.loading && !result.error && !result.rows.length && (
-				<Empty title="No inquiries yet">Explore creators and send an inquiry when you find a good fit.</Empty>
-			)}
-			<Pager {...result} />
-		</>
+		</div>
 	);
 }
-
-export default InquiryInbox;

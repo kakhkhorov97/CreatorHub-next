@@ -19,9 +19,9 @@ The normal frontend reads real backend data. It does not seed accounts or insert
 - `npm test`
 - `npm run contract:check`
 
-`docs/operations.json` contains all 81 schema-validated GraphQL operations. `docs/API_COVERAGE.md` records where they are used. The schema was copied from the backend's `docs/schema.graphql`. To regenerate documents and types after replacing that schema, run `npm run contract:generate`.
+`docs/operations.json` contains all 108 schema-validated GraphQL operations. `docs/API_COVERAGE.md` records where they are used. The schema was copied from the backend's `docs/schema.graphql`. To regenerate documents and types after replacing that schema, run `npm run contract:generate`.
 
-For isolated backend checks, set `CREATORHUB_BACKEND_PATH` to the backend checkout and run `node scripts/integration.cjs`. The script uses a disposable MongoDB replica set and the backend's existing test dependencies. On this machine it uses the cached macOS ARM MongoDB 7.0.24 binary. It never uses the configured application database. It exercises 83 operations, including the manual review APIs. Four provider-specific social operations and two upload operations remain untested.
+For isolated backend checks, set `CREATORHUB_BACKEND_PATH` to the backend checkout and run `node scripts/integration.cjs`. The script uses a disposable MongoDB replica set and the backend's existing test dependencies. On this machine it uses the cached macOS ARM MongoDB 7.0.24 binary. It never uses the configured application database. It exercises 85 operations, including the manual review APIs. Four provider-specific social operations and two upload operations remain untested.
 
 ## Current limits
 
@@ -41,7 +41,7 @@ See `docs/verification/` for the actual check results and captured browser evide
 
 The approved September 25 white-and-blue references replace the earlier warm palette. `scss/reference.scss` loads after shared, desktop, and mobile styles. The homepage shows Popular projects, distinct Recently added projects, an introduction video, categories, and demo events. See `DESIGN.md`, `docs/REFERENCE_BRIEF.md`, and `docs/MEDIA_PROVENANCE.md`.
 
-The local frontend runs on port 7007 and backend on 7001. List responses use the backend list/metaCounter wrappers; frontend hooks normalize those responses and page-based requests. The 101-operation contract includes the protected admin APIs, `getMyProjectLike` and both upload operations, although direct-upload UI remains unavailable.
+The local frontend runs on port 7007 and backend on 7001. List responses use the backend list/metaCounter wrappers; frontend hooks normalize those responses and page-based requests. The 108-operation contract includes the protected admin APIs, `getMyProjectLike` and both upload operations, although direct-upload UI remains unavailable.
 
 ### Expanded fictional demo content
 
@@ -77,3 +77,7 @@ The fictional imported profiles have no copied sign-in identities. They appear i
 See [the implementation notes](docs/APPROVED_CHANGES.md) for page/component organization, manual approval, the segmented homepage search, compact sticky navigation, Sonner feedback, and Gemini setup. The current local API uses the configured Atlas database. Existing foreign records remain stored but are hidden from public discovery. Demo seeding instructions above target disposable databases only; their old demo login identities were not imported into Atlas.
 
 The Gemini assistant needs server-only `GEMINI_API_KEY` and `GEMINI_MODEL` in `.env.local`, followed by a frontend restart. Never use a `NEXT_PUBLIC_` prefix for the key. The interface handles missing configuration, and mocked API tests passed; a live Gemini response has not been verified.
+
+### Backend-served demo images
+
+The 51 approved demo portraits and project images are included in the CreatorHub backend's `public/demo-media/` folder and packaged with its API build. The frontend keeps the same `/demo-media/<filename>` paths in its database records. A Next.js `beforeFiles` rewrite forwards those requests to the backend origin derived from `NEXT_PUBLIC_API_GRAPHQL_URL`. Set that variable to the deployed backend's HTTPS GraphQL URL before building and starting the frontend. Deploy the backend's bundled media folder with the API. The backend folder is the only project copy of these images; local demo seed scripts also use that folder. Creator-uploaded files use the separate backend `uploads/` directory and still need persistent storage on the deployment host.

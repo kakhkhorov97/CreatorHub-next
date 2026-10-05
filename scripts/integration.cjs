@@ -59,6 +59,8 @@ async function op(name, variables = {}, token, expectError = false) {
 		.useValue({ sendToken: async (email, purpose, token) => mail.set(email + ':' + purpose, token) })
 		.compile();
 	app = module.createNestApplication({ logger: false });
+	const { configureUploads } = req(path.join(backend, 'apps/Creator-api/src/components/upload/upload.middleware.ts'));
+	configureUploads(app);
 	app.useGlobalPipes(
 		new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true, forbidUnknownValues: true }),
 	);
@@ -234,6 +236,14 @@ async function op(name, variables = {}, token, expectError = false) {
 	await op('getInquiry', { inquiryId: inquiry._id }, activeClient);
 	await op('getInquiries', {}, activeClient);
 	inquiry = await op('submitInquiry', { input: version(inquiry) }, activeClient);
+	assert.equal(await op('getUnreadInquiryCount', {}, ct), 1, 'recipient inbox badge');
+	assert.equal(await op('getUnreadInquiryCount', {}, activeClient), 0, 'sender has no incoming alert');
+	const received = await op('getInquiries', { creatorInbox: true }, ct);
+	assert.ok(received.some((row) => row._id === inquiry._id && row.unreadCount === 1 && row.counterpartyName));
+	await op('markInquiryRead', { input: version(inquiry) }, admin.accessToken, true);
+	await op('markInquiryRead', { input: version(inquiry) }, ct);
+	assert.equal(await op('getUnreadInquiryCount', {}, ct), 0);
+
 	await op(
 		'updateInquiry',
 		{ input: { ...version(inquiry), subject: 'Cannot edit sent inquiry' } },
@@ -264,6 +274,13 @@ async function op(name, variables = {}, token, expectError = false) {
 		ct,
 	);
 	assert.equal(m._id, duplicate._id, 'message retry must not duplicate');
+	assert.equal(await op('getUnreadInquiryCount', {}, activeClient), 1, 'reply alerts customer');
+	await op('markInquiryRead', { input: version(inquiry) }, activeClient);
+	assert.equal(await op('getUnreadInquiryCount', {}, activeClient), 1, 'stale read keeps newer reply unread');
+	const latest = await op('getInquiry', { inquiryId: inquiry._id }, activeClient);
+	await op('markInquiryRead', { input: version(latest) }, activeClient);
+	assert.equal(await op('getUnreadInquiryCount', {}, activeClient), 0);
+
 	await op('markInquiryMessageRead', { messageId: m._id }, activeClient);
 	await op('getInquiryMessages', { inquiryId: inquiry._id }, activeClient);
 	await op('getInquiryEvents', { inquiryId: inquiry._id }, ct);
@@ -286,6 +303,62 @@ async function op(name, variables = {}, token, expectError = false) {
 	const direct = await op('sendInquiry', { input: request }, activeClient);
 	assert.equal(direct.status, 'SENT');
 	assert.equal((await op('sendInquiry', { input: request }, activeClient))._id, direct._id);
+
+	const secondProfile = await op(
+		'createCreatorProfile',
+		{
+			input: { slug: 'preview-creator', headline: 'Editorial designer', city: 'gwangju', categoryIds: [category._id] },
+		},
+		phone.accessToken,
+	);
+	await op(
+		'updateCreatorProfile',
+		{
+			input: {
+				bio: 'Independent editorial designer for clear, thoughtful publications.',
+				skills: ['Editorial design'],
+				remoteAvailable: true,
+			},
+		},
+		phone.accessToken,
+	);
+	await op('setCreatorProfileStatus', { status: 'PUBLISHED' }, phone.accessToken);
+	await approveDemoSubmission(op, phone.accessToken, at);
+	const outgoing = await op(
+		'sendInquiry',
+		{
+			input: {
+				creatorId: secondProfile._id,
+				subject: 'Editorial collaboration',
+				brief: 'Could you help our studio design a small portfolio booklet?',
+				clientRequestKey: randomUUID(),
+			},
+		},
+		ct,
+	);
+	const privateDraft = await op(
+		'createInquiry',
+		{ input: { creatorId: profile._id, subject: 'Private unsubmitted brief' } },
+		phone.accessToken,
+	);
+	const combined = await op('getInquiries', { allConversations: true }, ct);
+	assert.ok(
+		combined.some((i) => i._id === direct._id),
+		'combined inbox includes received inquiries',
+	);
+	assert.ok(
+		combined.some((i) => i._id === outgoing._id),
+		'combined inbox includes sent inquiries',
+	);
+	assert.ok(!combined.some((i) => i._id === privateDraft._id), 'recipient cannot see unsubmitted drafts');
+	const phoneInbox = await op('getInquiries', { allConversations: true }, phone.accessToken);
+	assert.ok(phoneInbox.some((i) => i._id === outgoing._id));
+	assert.ok(!phoneInbox.some((i) => i._id === direct._id), 'combined inbox excludes unrelated conversations');
+	assert.equal(
+		(await op('getInquiries', { allConversations: true }, at)).length,
+		0,
+		'admin does not gain private inbox access',
+	);
 
 	let cancel = await draft();
 	cancel = await op('submitInquiry', { input: version(cancel) }, activeClient);

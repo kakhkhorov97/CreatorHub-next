@@ -413,12 +413,20 @@ export const getProjectComments = gql`
 		}
 	}
 `;
+export const getUnreadInquiryCount = gql`
+	query getUnreadInquiryCount {
+		getUnreadInquiryCount
+	}
+`;
 export const getInquiry = gql`
 	query getInquiry($inquiryId: ID!) {
 		getInquiry(inquiryId: $inquiryId) {
 			_id
 			createdAt
 			updatedAt
+			counterpartyName
+			counterpartyAvatarUrl
+			unreadCount
 			clientId
 			creatorId
 			serviceId
@@ -447,12 +455,15 @@ export const getInquiry = gql`
 	}
 `;
 export const getInquiries = gql`
-	query getInquiries($creatorInbox: Boolean! = false, $input: PageInput! = {}) {
-		getInquiries(creatorInbox: $creatorInbox, input: $input) {
+	query getInquiries($creatorInbox: Boolean! = false, $allConversations: Boolean! = false, $input: PageInput! = {}) {
+		getInquiries(creatorInbox: $creatorInbox, allConversations: $allConversations, input: $input) {
 			list {
 				_id
 				createdAt
 				updatedAt
+				counterpartyName
+				counterpartyAvatarUrl
+				unreadCount
 				clientId
 				creatorId
 				serviceId

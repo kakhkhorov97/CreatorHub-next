@@ -146,7 +146,7 @@ function svg(title, sub, bg, ink, variant = 0) {
 			input: { email: 'admin@frontend.test', password: 'Frontend-test-password-123' },
 		});
 		let cats = await op('categories');
-		const folder = path.join(root, 'public/demo-media');
+		const folder = path.resolve(root, '../creatorhub-backend-starter/public/demo-media');
 		fs.mkdirSync(folder, { recursive: true });
 		const all = [];
 		const accounts = [];
@@ -346,7 +346,7 @@ function svg(title, sub, bg, ink, variant = 0) {
 				password +
 				'`. Use Email sign-in.\n\n' +
 				accounts.map((a) => `- ${a.name} (${a.role}): ${a.email}`).join('\n') +
-				'\n\nSeed targets only creatorhub_frontend_test. Artwork lives in public/demo-media. Local fixture URLs are inserted directly into this disposable database; production upload validation is unchanged. The database is temporary and these records disappear when the disposable backend shuts down.\n',
+				'\n\nSeed targets only creatorhub_frontend_test. Artwork lives in the backend public/demo-media folder. Local fixture URLs are inserted directly into this disposable database; production upload validation is unchanged. The database is temporary and these records disappear when the disposable backend shuts down.\n',
 		);
 		console.log('Seeded 8 creators, 16 projects, 16 active services and 4 client accounts.');
 	} finally {

@@ -184,7 +184,7 @@ async function op(name, variables = {}, token) {
 		for (const portrait of manifest.portraits) {
 			const profile = await db.collection('creatorProfiles').findOne({ slug: portrait.slug });
 			if (!profile) throw new Error('Missing profile: ' + portrait.slug);
-			const file = path.join(root, 'public/demo-media', portrait.slug + '-portrait.png');
+			const file = path.resolve(root, '../creatorhub-backend-starter/public/demo-media', portrait.slug + '-portrait.png');
 			if (!fs.existsSync(file)) throw new Error('Missing portrait: ' + file);
 			await db
 				.collection('users')

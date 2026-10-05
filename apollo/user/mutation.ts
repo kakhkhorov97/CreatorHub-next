@@ -370,12 +370,20 @@ export const deleteProjectComment = gql`
 		deleteProjectComment(commentId: $commentId)
 	}
 `;
+export const markInquiryRead = gql`
+	mutation markInquiryRead($input: InquiryVersionInput!) {
+		markInquiryRead(input: $input)
+	}
+`;
 export const sendInquiry = gql`
 	mutation sendInquiry($input: SendInquiryInput!) {
 		sendInquiry(input: $input) {
 			_id
 			createdAt
 			updatedAt
+			counterpartyName
+			counterpartyAvatarUrl
+			unreadCount
 			clientId
 			creatorId
 			serviceId
@@ -409,6 +417,9 @@ export const completeInquiry = gql`
 			_id
 			createdAt
 			updatedAt
+			counterpartyName
+			counterpartyAvatarUrl
+			unreadCount
 			clientId
 			creatorId
 			serviceId
@@ -456,6 +467,9 @@ export const createInquiry = gql`
 			_id
 			createdAt
 			updatedAt
+			counterpartyName
+			counterpartyAvatarUrl
+			unreadCount
 			clientId
 			creatorId
 			serviceId
@@ -489,6 +503,9 @@ export const updateInquiry = gql`
 			_id
 			createdAt
 			updatedAt
+			counterpartyName
+			counterpartyAvatarUrl
+			unreadCount
 			clientId
 			creatorId
 			serviceId
@@ -527,6 +544,9 @@ export const submitInquiry = gql`
 			_id
 			createdAt
 			updatedAt
+			counterpartyName
+			counterpartyAvatarUrl
+			unreadCount
 			clientId
 			creatorId
 			serviceId
@@ -578,6 +598,9 @@ export const declineInquiry = gql`
 			_id
 			createdAt
 			updatedAt
+			counterpartyName
+			counterpartyAvatarUrl
+			unreadCount
 			clientId
 			creatorId
 			serviceId
@@ -611,6 +634,9 @@ export const cancelInquiry = gql`
 			_id
 			createdAt
 			updatedAt
+			counterpartyName
+			counterpartyAvatarUrl
+			unreadCount
 			clientId
 			creatorId
 			serviceId
@@ -644,6 +670,9 @@ export const closeInquiry = gql`
 			_id
 			createdAt
 			updatedAt
+			counterpartyName
+			counterpartyAvatarUrl
+			unreadCount
 			clientId
 			creatorId
 			serviceId

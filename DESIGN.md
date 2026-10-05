@@ -265,7 +265,7 @@
 
 CreatorHub follows the user-approved September 25 white-and-blue discovery, profile, and inbox references. Near-white pages, white content regions, dark navy text, and blue actions replace the earlier warm coral direction. Thin dividers and generous public-page spacing frame portfolio imagery.
 
-The homepage combines centered discovery search with Popular projects, a looping introduction video, Recently added projects, category links, creative events, and an About/join section. Profiles give work imagery priority; inquiries join inbox, discussion, and details inside one bordered frame. Workspace editing retains its established functional layout.
+The homepage combines centered discovery search with Popular projects, a looping introduction video, Recently added projects, category links, creative events, and an About/join section. Profiles give work imagery priority; inquiries join a conversation sidebar and selected chat inside one bordered frame. Details opens from the chat header. Workspace editing retains its established functional layout.
 
 **Key Characteristics:**
 
@@ -282,7 +282,7 @@ Administration has its own visual scope under `/_admin`. A fixed navy sidebar an
 
 ## Colors
 
-Blue is the primary action and selected-navigation color. Dark navy carries primary text; muted slate carries supporting text. White fills content regions against a near-white page. Pale blue identifies the active inbox item and sent messages. Received messages retain a light warm neutral. Red marks a liked heart and destructive actions; green and amber retain their status meanings.
+Blue is the primary action and selected-navigation color. Dark navy carries primary text; muted slate carries supporting text. White fills content regions against a near-white page. Pale blue identifies the active inbox item and sent messages. Current chat received bubbles use white against a pale neutral message area. Shared message tokens elsewhere retain their earlier warm neutral. Red marks a liked heart and destructive actions; green and amber retain their status meanings.
 
 Frontmatter records implemented values. The source variables still call the primary accent `$coral` and `$coral-hover`; those names now resolve to blue. They are legacy identifiers, not palette guidance. Neutral field borders and secondary-button hover fills retain some earlier warm values in shared controls.
 
@@ -312,7 +312,7 @@ Project grids retain three desktop columns, change to two at 1200px, and use 26p
 
 Profiles use a 3:1 main/detail split with a minimum 260px detail column and 32px gap. Their work gallery uses a 1.5:1 split and 390px-tall images. At 900px the detail column stacks and gallery images become 300px tall; below 560px the gallery becomes one column with a 1.5 image ratio. Profile avatars step from 144px to 100px to 84px at those breakpoints.
 
-The inquiry frame joins three columns with no gaps: inbox, conversation, and details. At 1100px it uses a 220px inbox plus conversation, with details below both. At 900px it becomes one column and hides the inbox list. The conversation remains above its details. On phones, the composer stacks its field and action.
+The current inquiry frame joins a 340px sidebar and flexible chat column, with no gap. It has a 540px minimum height, viewport-relative height and an 820px maximum. The sidebar narrows to 290px below 900px. Below 700px the list and selected chat occupy separate views; Back to inbox restores the list. Details opens over the right side of the chat, up to 360px wide, and fills the chat width on phones. The header and composer stay visible while messages scroll between them.
 
 Workspace navigation, editor forms, and publishing panels preserve the established layouts. The 215px workspace rail becomes horizontal navigation below 900px. The editor's publishing panel stacks at that breakpoint. Fields become single-column below 600px. Public page padding becomes 30px 22px 40px below 900px and uses 20px horizontal insets below 560px.
 
@@ -372,7 +372,9 @@ The local introduction video uses a 16:9 contain frame with a poster image. The 
 
 ### Private conversation
 
-The conversation header groups avatar, participant text, and status. The message area has a 330px minimum height, with neutral received bubbles and pale-blue sent bubbles. Timestamps use 12px. Messages have an 88% maximum width in the reference override. The textarea has a 66px minimum height. Details and expandable history remain in the joined frame.
+The conversation header groups an avatar, counterpart name, inquiry context and a Details toggle. Received bubbles align left on white; pale-blue sent bubbles align right. Desktop bubbles use at most 78% of the message area or 540px, with 12px corners and a smaller corner toward their sender. Below 900px they may use 90% width. Message text uses 14px with a 1.55 line height; existing 10px timestamps record the implemented chat treatment rather than a global type rule.
+
+The composer has a labeled textarea and blue Send action in one row. The field starts at 58px tall and allows vertical resizing up to 140px. Enter sends and Shift+Enter inserts a newline. IME composition and held Enter keys cannot send accidentally. Details contains the original brief, workflow actions and event history. Downward sidebar scrolling loads more conversations; upward message scrolling loads older messages and preserves the reading position. A newly opened conversation shows the latest messages at the bottom. There are no conversation or message page controls and no pins.
 
 ### Administration controls and fields
 
@@ -389,6 +391,30 @@ White bordered panels group filters, real records and pagination. Tables use pal
 A record editor separates content fields from publication, account access and recovery controls. Unsaved edits disable state actions. A pending action opens an inline confirmation region with confirm/cancel controls. Restoring a retained record does not publish it automatically.
 
 **The explicit state rule.** Keep publication, access and removal actions separate from saving content, with visible confirmation and disabled state controls while edits are unsaved.
+
+### Approved October adjustments
+
+The hero search groups keyword, category, Korean location and a blue search button in one segmented control. On phones the keyword and button occupy full rows, with category/location between them. Category shortcuts sit below search and above Popular projects.
+
+After the homepage search leaves the viewport, the sticky header uses a compact logo, project search and a horizontally scrolling row of navigation/category links. It expands again near the top. Unfollow uses the existing red danger color. Sonner displays action feedback; inline form errors and confirmation regions remain visible.
+
+The footer has five desktop columns including Gwangju, Korea and labeled demo social icons, then adapts to fewer columns on smaller screens. The assistant panel fits phone widths and preserves keyboard focus. The stylesheet entry is scss/main.scss, which fixes base/reference/admin/change ordering in one place.
+
+### Approved account and interaction refinements, 5 October 2026
+
+Main discovery links occupy the logo/search row, with creative categories below. Unrelated pages use the logo and account actions without discovery controls. At 1100px main links move onto their own scrolling row. The account menu uses compact 14px entries, text-only Saved projects and a red 32px sign-out control. Fallback avatars remain visible on phones.
+
+Sign-in method panels have a 640px maximum width, smaller content tabs and compact social-provider controls. Email verification offers a blue outlined resend action beneath a divider. Confirmation prompts use a fixed top position, up to 460px width, 17px titles and 34px actions. Destructive controls use red throughout both app and administration. Errors remain inline.
+
+Clickable portfolio, creator and service cards lift 3px on hover, show pointer cursors, and retain normal links for keyboard access. Focus outlines use the existing blue. Reduced-motion preferences disable lifts. Creator profile actions use smaller aligned controls. Customer reviews use star icons and readable feedback with author/date.
+
+The chatbot uses a compact launcher, a 360px panel with a 480px maximum height, a pale-blue header and a smaller composer. It fits the viewport on phones. Existing white-and-blue visual authority remains unchanged.
+
+### Approved inbox and navigation refinements, 5 October 2026
+
+Main navigation uses bold 14px links, blue hover/active states and padded hit areas. The category rail uses regular 13px gray text on a pale background. The Inbox badge remains visible when text labels hide on phones. Account sign out has red text and a pale red background; Saved projects has no icon.
+
+The current inbox uses one sidebar for sent and received conversations. Rows show counterpart avatars and names, subject, brief preview, status, date and a text description of who contacted whom. A dot marks unread conversations; the selected row uses pale blue. The latest approved chat layout and scrolling behavior are documented in Layout and Private conversation above. Inquiry composition keeps its bounded form and creator context. This replaces the earlier Received/Sent tabs and permanent original-brief column.
 
 ## Do's and Don'ts
 
@@ -409,21 +435,6 @@ A record editor separates content fields from publication, account access and re
 - Don't treat generated demo artwork as real client work.
 - Don't propagate admin styling into public discovery, profiles, inbox or creator workspace pages.
 
+### Account photo and Following refinements, 5 October 2026
 
-## Approved October adjustments
-
-The hero search groups keyword, category, Korean location and a blue search button in one segmented control. On phones the keyword and button occupy full rows, with category/location between them. Category shortcuts sit below search and above Popular projects.
-
-After the homepage search leaves the viewport, the sticky header uses a compact logo, project search and a horizontally scrolling row of navigation/category links. It expands again near the top. Unfollow uses the existing red danger color. Sonner displays action feedback; inline form errors and confirmation regions remain visible.
-
-The footer has five desktop columns including Gwangju, Korea and labeled demo social icons, then adapts to fewer columns on smaller screens. The assistant panel fits phone widths and preserves keyboard focus. The stylesheet entry is scss/main.scss, which fixes base/reference/admin/change ordering in one place.
-
-## Approved account and interaction refinements, 5 October 2026
-
-Main discovery links occupy the logo/search row, with creative categories below. Unrelated pages use the logo and account actions without discovery controls. At 1100px main links move onto their own scrolling row. The account menu uses compact 14px entries, a saved icon and a 32px sign-out control. Fallback avatars remain visible on phones.
-
-Sign-in method panels have a 640px maximum width, smaller content tabs and compact social-provider controls. Email verification offers a blue outlined resend action beneath a divider. Confirmation prompts use a fixed top position, up to 460px width, 17px titles and 34px actions. Destructive controls use red throughout both app and administration. Errors remain inline.
-
-Clickable portfolio, creator and service cards lift 3px on hover, show pointer cursors, and retain normal links for keyboard access. Focus outlines use the existing blue. Reduced-motion preferences disable lifts. Creator profile actions use smaller aligned controls. Customer reviews use star icons and readable feedback with author/date.
-
-The chatbot uses a compact launcher, a 360px panel with a 480px maximum height, a pale-blue header and a smaller composer. It fits the viewport on phones. Existing white-and-blue visual authority remains unchanged.
+Account settings uses a 72px photo preview beside an Upload photo action and format/size hint. Following uses a single list of 48px avatars, linked creator names and headlines, and compact red Unfollow actions. The account menu dismisses on outside pointer input and route changes. Messaging Details keeps the brief and workflow actions, without the audit history disclosure. These changes retain existing color and type tokens.

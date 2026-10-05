@@ -1,6 +1,6 @@
 # Backend operation coverage
 
-All 106 generated GraphQL documents validate against the backend schema. The current disposable generated-document workflow executes 83 operations, including all three manual review APIs. The event and admin rows below also retain evidence from earlier dedicated checks; they do not claim every operation was rerun in this batch. Four social flows need configured providers, and the two upload operations remain outside these frontend integration runs. Checked rows indicate API execution, not complete browser coverage.
+All 108 generated GraphQL documents validate against the backend schema. The current disposable generated-document workflow executes 85 operations, including all three manual review APIs. The event and admin rows below also retain evidence from earlier dedicated checks; they do not claim every operation was rerun in this batch. Four social flows need configured providers, and the two upload operations remain outside these frontend integration runs. Checked rows indicate API execution, not complete browser coverage.
 
 | API tested | Area | Kind | Operation | Screen |
 | --- | --- | --- | --- | --- |
@@ -50,19 +50,19 @@ All 106 generated GraphQL documents validate against the backend schema. The cur
 | [x] | engagement | Mutation | `editProjectComment` | Project likes/comments, saved projects, following |
 | [x] | engagement | Mutation | `deleteProjectComment` | Project likes/comments, saved projects, following |
 | [x] | engagement | Mutation | `moderateProjectComment` | Project likes/comments, saved projects, following |
-| [x] | inquiry | Query | `getInquiry` | Inbox, draft, review, conversation |
-| [x] | inquiry | Query | `getInquiries` | Inbox, draft, review, conversation |
-| [x] | inquiry | Query | `getInquiryMessages` | Inbox, draft, review, conversation |
-| [x] | inquiry | Query | `getInquiryEvents` | Inbox, draft, review, conversation |
-| [x] | inquiry | Mutation | `createInquiry` | Inbox, draft, review, conversation |
-| [x] | inquiry | Mutation | `updateInquiry` | Inbox, draft, review, conversation |
-| [x] | inquiry | Mutation | `deleteInquiryDraft` | Inbox, draft, review, conversation |
-| [x] | inquiry | Mutation | `submitInquiry` | Inbox, draft, review, conversation |
-| [x] | inquiry | Mutation | `sendInquiryMessage` | Inbox, draft, review, conversation |
-| [x] | inquiry | Mutation | `markInquiryMessageRead` | Inbox, draft, review, conversation |
-| [x] | inquiry | Mutation | `declineInquiry` | Inbox, draft, review, conversation |
-| [x] | inquiry | Mutation | `cancelInquiry` | Inbox, draft, review, conversation |
-| [x] | inquiry | Mutation | `closeInquiry` | Inbox, draft, review, conversation |
+| [x] | inquiry | Query | `getInquiry` | Unified inbox, retained drafts, conversation and Details |
+| [x] | inquiry | Query | `getInquiries` | Unified inbox, retained drafts, conversation and Details |
+| [x] | inquiry | Query | `getInquiryMessages` | Unified inbox, retained drafts, conversation and Details |
+| [x] | inquiry | Query | `getInquiryEvents` | Unified inbox, retained drafts, conversation and Details |
+| [x] | inquiry | Mutation | `createInquiry` | Unified inbox, retained drafts, conversation and Details |
+| [x] | inquiry | Mutation | `updateInquiry` | Unified inbox, retained drafts, conversation and Details |
+| [x] | inquiry | Mutation | `deleteInquiryDraft` | Unified inbox, retained drafts, conversation and Details |
+| [x] | inquiry | Mutation | `submitInquiry` | Unified inbox, retained drafts, conversation and Details |
+| [x] | inquiry | Mutation | `sendInquiryMessage` | Unified inbox, retained drafts, conversation and Details |
+| [x] | inquiry | Mutation | `markInquiryMessageRead` | Unified inbox, retained drafts, conversation and Details |
+| [x] | inquiry | Mutation | `declineInquiry` | Unified inbox, retained drafts, conversation and Details |
+| [x] | inquiry | Mutation | `cancelInquiry` | Unified inbox, retained drafts, conversation and Details |
+| [x] | inquiry | Mutation | `closeInquiry` | Unified inbox, retained drafts, conversation and Details |
 | [x] | notification | Query | `getNotifications` | Notifications |
 | [x] | notification | Query | `getUnreadNotificationCount` | Notifications |
 | [x] | notification | Mutation | `markNotificationRead` | Notifications |
@@ -124,3 +124,11 @@ The community checks also verified getProjects actual-like sorting, publication 
 | [x] | feedback | Mutation | `createServiceFeedback` | Customer review form |
 | [x] | feedback | Query | `getInquiryFeedback` | Private inquiry feedback |
 | [x] | feedback | Query | `getCreatorFeedback` | Creator profile Reviews tab |
+| [x] | inquiry | Query | `getUnreadInquiryCount` | Inbox unread conversation badge |
+| [x] | inquiry | Mutation | `markInquiryRead` | Version-bounded reading of incoming inquiry events |
+
+## Messaging refinement, 5 October 2026
+
+`getInquiries` now accepts optional `allConversations: Boolean = false`. The inbox requests `true` to merge participant sent and received conversations. Existing callers retain their directional behavior. Private drafts stay with their author, and an administrator receives only their own participant conversations through this inbox query. This adds an argument to an existing operation, so the generated-document count remains 108.
+
+The disposable integration executed 85/108 operations and checked unified participant merging, draft privacy and admin isolation. All 108 documents validate against the schema. Conversation and message loading continue to use the existing paged HTTP queries internally; the interface loads more records on scroll. HTTP polling remains at 15 seconds. WebSockets are deferred. See [messaging verification](verification/messaging-redesign.md).

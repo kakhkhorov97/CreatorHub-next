@@ -1,8 +1,8 @@
 import { useReactiveVar } from '@apollo/client';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Bell, BookmarkSimple, EnvelopeSimple, MagnifyingGlass, SignOut } from 'phosphor-react';
-import { useEffect, useState } from 'react';
+import { Bell, EnvelopeSimple, MagnifyingGlass, SignOut } from 'phosphor-react';
+import { useEffect, useRef, useState } from 'react';
 import { userVar } from '../../apollo/store';
 import { clearSession } from '../auth';
 import { useAction, useApi } from '../hooks/useApi';
@@ -20,6 +20,7 @@ export default function Top() {
 	const user = useReactiveVar(userVar);
 	const action = useAction();
 	const count = useApi('getUnreadNotificationCount', {}, !user, 30000);
+	const inbox = useApi('getUnreadInquiryCount', {}, !user, 15000);
 	const categories = useApi('categories');
 	const discovery =
 		router.pathname === '/' ||
@@ -27,6 +28,18 @@ export default function Top() {
 			(path) => router.pathname === path || router.pathname.startsWith(path + '/'),
 		);
 	const profile = useApi('myCreatorProfile', {}, !user || user.role === 'USER');
+	const accountMenu = useRef<HTMLDetailsElement>(null);
+	useEffect(() => {
+		const closeOutside = (event: PointerEvent) => {
+			if (event.target instanceof Node && !accountMenu.current?.contains(event.target) && accountMenu.current)
+				accountMenu.current.open = false;
+		};
+		document.addEventListener('pointerdown', closeOutside);
+		return () => document.removeEventListener('pointerdown', closeOutside);
+	}, []);
+	useEffect(() => {
+		if (accountMenu.current) accountMenu.current.open = false;
+	}, [router.asPath]);
 	const [compact, setCompact] = useState(false);
 	const [pendingEmail, setPendingEmail] = useState('');
 	useEffect(() => {
@@ -80,9 +93,15 @@ export default function Top() {
 					<div className="header-actions">
 						{user ? (
 							<>
-								<Link passHref href="/inquiries" className="header-text-link" aria-label="Inbox">
+								<Link
+									passHref
+									href="/inquiries"
+									className="header-text-link"
+									aria-label={`Inbox, ${inbox.value || 0} unread conversations`}
+								>
 									<EnvelopeSimple size={23} />
 									<span>Inbox</span>
+									{!!inbox.value && <span className="inbox-badge">{inbox.value > 99 ? '99+' : inbox.value}</span>}
 								</Link>
 								<Link
 									passHref
@@ -93,7 +112,7 @@ export default function Top() {
 									<Bell size={23} />
 									{!!count.value && <span className="dot" />}
 								</Link>
-								<details className="user-menu">
+								<details className="user-menu" ref={accountMenu}>
 									<summary aria-label="Account menu">
 										<Picture avatar src={user.avatarUrl} alt={user.displayName} />
 										<span>{user.displayName}</span>
@@ -106,7 +125,7 @@ export default function Top() {
 											Account settings
 										</Link>
 										<Link passHref href="/saved">
-											<BookmarkSimple size={18} /> Saved projects
+											Saved projects
 										</Link>
 										{profile.value && (
 											<Link passHref href={`/creators/${profile.value.slug}`}>

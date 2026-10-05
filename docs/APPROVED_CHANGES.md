@@ -64,3 +64,43 @@ Completed the later account and interaction changes after the user approved the 
 Verification: frontend production build, typecheck and lint passed; 12 frontend tests and 67 backend tests passed. All 106 generated API documents validate; the disposable frontend integration exercised 83 operations, including all five new inquiry/review operations. Browser checks covered desktop/mobile navigation, sign-in return routing, compact account settings, account menu, top confirmation, inline-only errors, direct inquiry sending, public customer reviews and pagination returning to the top. Authenticated browser writes used only disposable test data.
 
 The tested backend changes were applied and rebuilt. Review and inquiry retry indexes were activated in the configured database without editing existing content records. The main frontend preview is port 7007 and its API is port 7001. Gemini still needs the previously documented local key/model configuration; this batch does not add credentials.
+
+
+## Third approved batch, 5 October 2026
+
+This section records that earlier approved batch. The messaging refinement below supersedes its Received/Sent tabs and permanent brief-column layout.
+
+Completed the approved inbox, login, navigation and demo-content changes.
+
+- Creators default to Received inquiries. Sent and Received use direction icons, From/To labels and separate active states. Lists show counterpart names, subjects, brief previews, status and dates instead of record identifiers.
+- The Inbox icon shows unread incoming conversations and refreshes every 15 seconds. Opening a visible conversation marks only observed incoming events/messages read. A later reply stays unread. Notifications remain supplementary and do not control the Inbox badge.
+- Messages, the original brief and inquiry composition have separate layouts. The brief keeps service, budget and deadline information apart from replies. Both list and conversation adapt to phone widths.
+- Sign-in has one Email or phone number input. Registration keeps its separate methods. Sign out is compact and red, and Saved projects is text-only in the account menu.
+- Main navigation uses stronger text and blue active/hover states. Categories use smaller regular text on a pale lower rail, including when the header compacts.
+- Added Seoul, Gwangju and Busan fictional demo events. The online demo now identifies Korea. The homepage shows three cards; four Korean/online events are publicly available. Foreign demo records remain stored.
+- Replaced twelve demo SVG project covers and matching galleries with seven realistic AI-generated portfolio concepts. Each updated record identifies fictional AI artwork. Asset sources and prompts are recorded in PORTFOLIO_ASSETS_OCT5.json.
+
+Validation: frontend lint, typecheck, production build, twelve tests and all 108 GraphQL document checks passed. Backend API build, typecheck, lint and 67 tests across eight suites passed. The disposable generated-document workflow exercised 85/108 operations, including recipient isolation, unread replies and a stale read/reply race. Browser checks covered the unified login, creator Received default, unread clearing, separated conversation/brief, mobile conversation with no horizontal overflow, compact navigation, new artwork and three homepage events. The final frontend/API are available at ports 7007/7001. No public deployment was performed.
+
+Backend source backups are in /private/tmp/creatorhub-before-inbox-batch. Restricted demo-record backups are /private/tmp/creatorhub-inbox-events-backup.json and /private/tmp/creatorhub-inbox-media-backup.json. Tests used a disposable database; private configured inquiries/accounts were not altered for testing.
+
+## Approved messaging refinement, 5 October 2026
+
+The latest approved inbox has one participant-only conversation sidebar and a selected chat on the right. Rows show counterpart names, inquiry previews, status, dates and unread indicators. Received and sent messages use left/right bubbles. The composer stays visible beneath the scrolling thread. Details contains the original brief and existing inquiry workflow actions. Phones show the list and selected chat separately with Back to inbox.
+
+Enter sends and Shift+Enter inserts a newline. IME composition, empty messages, busy submissions and held Enter keys cannot cause an unintended or duplicate send. Version-bounded read acknowledgements retain the existing protection for replies that arrive after the observed inquiry version.
+
+The user then approved removing pagination controls only. Downward scrolling loads more conversations. Upward scrolling loads older messages while preserving the reading position. Conversations open at their latest messages. There are no pinned conversations. The interface uses the existing HTTP GraphQL transport with 15-second polling; WebSockets remain deferred.
+
+The optional `allConversations` argument on `getInquiries` merges participant sent and received records. Private drafts stay private, and the participant inbox does not expose other records to admins. Existing directional callers keep their previous behavior. The generated contract remains 108 operations.
+
+Validation: frontend typecheck and lint passed, with 17 frontend tests. The backend passed 67 tests across eight suites. All 108 GraphQL documents validate, and the disposable integration exercised 85 operations with participant merging, draft privacy and admin isolation checks. Desktop and phone browser checks captured the new list/chat layout and Details. A 52-message history opened at the latest messages with no message pagination controls. Frontend and backend production builds passed. See [messaging verification](verification/messaging-redesign.md).
+
+
+## Account photo and list refinements, 5 October 2026
+
+Implemented the four approved changes: an Upload photo button replaces the avatar URL field; Following uses compact creator rows; clicking outside the account menu closes it; messaging Details no longer displays or requests conversation audit history. The original brief and workflow actions remain in Details.
+
+Avatar uploads accept JPG, PNG and WebP up to 10 MB, preview the selected image, save the returned URL through updateMe and update the current header avatar. The Apollo transport supports multipart uploads with the required preflight header. Errors remain inline. Existing imageUploader and updateMe APIs are reused without backend changes.
+
+Verification: production build, typecheck, lint and all 17 frontend tests passed. Disposable integration exercised 85/108 generated operations. A separate authenticated multipart check passed upload, account save and image delivery. Browser checks confirmed saved avatar display, menu outside-click dismissal, desktop/phone Following rows and history removal from Details. Browser file selection itself was blocked by the extension's file-URL permission, so the chooser-to-upload interaction was not verified end to end. All writes used disposable accounts.

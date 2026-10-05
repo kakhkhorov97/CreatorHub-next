@@ -35,7 +35,7 @@ export function Draft({
 					Choose a creator or service first. <Link href="/creators">Browse creators</Link>
 				</Notice>
 			) : (
-				<div className="editor-layout">
+				<div className="inquiry-compose-layout">
 					<section className="panel">
 						{creator && (
 							<p className="inquiry-recipient">

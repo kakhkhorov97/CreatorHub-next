@@ -3,7 +3,8 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { userVar } from '../../apollo/store';
 import { clearSession } from '../../libs/auth';
-import { Button, Confirm, Feedback, Field, Heading, Notice, optional, values } from '../../libs/components/common/UI';
+import { Button, Confirm, Feedback, Field, Heading, Notice, values } from '../../libs/components/common/UI';
+import { AvatarUpload } from '../../libs/components/account/AvatarUpload';
 import Layout, { Guard } from '../../libs/components/layout/LayoutBasic';
 import { useAction } from '../../libs/hooks/useApi';
 
@@ -35,7 +36,6 @@ function AccountForm() {
 						const updated = await action.mutate('updateMe', {
 							input: {
 								displayName: f.displayName,
-								avatarUrl: optional(f.avatarUrl),
 								preferredLocale: f.preferredLocale === 'ko' ? 'ko' : 'en',
 							},
 						});
@@ -53,15 +53,7 @@ function AccountForm() {
 					minLength={2}
 					maxLength={60}
 				/>
-				<Field
-					label="Avatar URL"
-					name="avatarUrl"
-					type="url"
-					defaultValue={user.avatarUrl || ''}
-					maxLength={2048}
-					pattern="https://.*"
-					hint="Use an HTTPS image URL. Direct uploads are not available yet."
-				/>
+				<AvatarUpload />
 				<Field label="Preferred language">
 					<select name="preferredLocale" defaultValue={user.preferredLocale}>
 						<option value="en">English</option>
@@ -71,9 +63,11 @@ function AccountForm() {
 				<small>This preference is stored with your account. The current interface is in English.</small>
 				<Feedback {...action} />
 				{saved && <Notice notify>Account updated.</Notice>}
-				<Button type="submit" disabled={action.busy}>
-					Save changes
-				</Button>
+				<div className="account-save-actions">
+					<Button type="submit" disabled={action.busy}>
+						Save changes
+					</Button>
+				</div>
 			</form>
 			<section className="danger-zone">
 				<h2>Delete account</h2>

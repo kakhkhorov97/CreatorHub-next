@@ -1,4 +1,5 @@
-import { ApolloClient, ApolloLink, HttpLink, InMemoryCache, Observable } from '@apollo/client';
+import { ApolloClient, ApolloLink, InMemoryCache, Observable } from '@apollo/client';
+import { createUploadLink } from 'apollo-upload-client';
 import { onError } from '@apollo/client/link/error';
 import { useMemo } from 'react';
 import { accessToken, clearSession, endpoint } from '../libs/auth';
@@ -27,7 +28,11 @@ function createClient() {
 	});
 	return new ApolloClient({
 		ssrMode: typeof window === 'undefined',
-		link: ApolloLink.from([errors, auth, new HttpLink({ uri: endpoint })]),
+		link: ApolloLink.from([
+			errors,
+			auth,
+			createUploadLink({ uri: endpoint, headers: { 'Apollo-Require-Preflight': 'true' } }),
+		]),
 		cache: new InMemoryCache({
 			dataIdFromObject: (object) => (object._id ? `${object.__typename}:${object._id}` : undefined),
 		}),

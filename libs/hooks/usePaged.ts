@@ -7,6 +7,7 @@ export function usePaged<K extends QueryName>(
 	variables: Operations[K]['variables'],
 	skip = false,
 	limit = 12,
+	pollInterval = 0,
 ) {
 	const [offset, setOffset] = useState(0);
 	const key = JSON.stringify(variables);
@@ -18,6 +19,7 @@ export function usePaged<K extends QueryName>(
 			input: { ...('input' in variables ? variables.input : {}), page: Math.floor(offset / limit) + 1, limit },
 		} as Operations[K]['variables'],
 		skip,
+		pollInterval,
 	);
 	const rows = (Array.isArray(result.value) ? result.value : []) as ApiValue<Operations[K]['result']> extends Array<
 		infer T

@@ -77,7 +77,7 @@ export default function Chatbot() {
 				>
 					<header>
 						<div>
-							<h2 id="chat-title">Ask CreatorHub</h2>
+							<h2 id="chat-title">Ask CreatorHub AI</h2>
 							<p>Find creative work and get help in Korea</p>
 						</div>
 						<button className="icon-button" aria-label="Close assistant" onClick={close}>

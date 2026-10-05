@@ -1,5 +1,5 @@
-import { Button, Empty, Feedback, Heading, Pager, QueryState } from '../libs/components/common/UI';
-import { CreatorCard } from '../libs/components/discovery/Cards';
+import Link from 'next/link';
+import { Button, Empty, Feedback, Heading, Pager, Picture, QueryState } from '../libs/components/common/UI';
 import Layout, { Guard } from '../libs/components/layout/LayoutBasic';
 import { useAction } from '../libs/hooks/useApi';
 import { useCreatorDirectory } from '../libs/hooks/useCreatorDirectory';
@@ -23,14 +23,20 @@ function FollowingContent() {
 		<>
 			<Heading title="Following" />
 			<QueryState loading={result.loading} error={result.error} retry={() => result.refetch()} />
-			<div className="grid">
+			<ul className="following-list">
 				{result.rows.map((f) => (
-					<section key={f._id}>
+					<li className="following-row" key={f._id}>
 						{creators[f.creatorId] ? (
-							<CreatorCard creator={creators[f.creatorId]} />
+							<Link passHref className="following-profile" href={`/creators/${creators[f.creatorId].slug}`}>
+								<Picture avatar src={creators[f.creatorId].identity.avatarUrl} alt="" />
+								<div>
+									<strong>{creators[f.creatorId].identity.displayName}</strong>
+									<p>{creators[f.creatorId].headline}</p>
+								</div>
+							</Link>
 						) : (
-							<div className="panel">
-								<h2>Followed creator</h2>
+							<div className="following-profile">
+								<strong>Followed creator</strong>
 								<p>The public profile may be unavailable.</p>
 							</div>
 						)}
@@ -46,9 +52,9 @@ function FollowingContent() {
 						>
 							Unfollow
 						</Button>
-					</section>
+					</li>
 				))}
-			</div>
+			</ul>
 			{!result.loading && !result.error && !result.rows.length && (
 				<Empty title="You aren’t following anyone yet">Find a creator and follow their work.</Empty>
 			)}

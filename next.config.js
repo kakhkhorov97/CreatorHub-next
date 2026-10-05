@@ -1,2 +1,14 @@
 /** @type {import('next').NextConfig} */
-module.exports = { reactStrictMode: true, poweredByHeader: false };
+const apiOrigin = new URL(process.env.NEXT_PUBLIC_API_GRAPHQL_URL || 'http://localhost:7001/graphql').origin;
+
+module.exports = {
+	reactStrictMode: true,
+	poweredByHeader: false,
+	async rewrites() {
+		return {
+			beforeFiles: [{ source: '/demo-media/:asset*', destination: `${apiOrigin}/demo-media/:asset*` }],
+			afterFiles: [],
+			fallback: [],
+		};
+	},
+};

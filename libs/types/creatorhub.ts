@@ -301,6 +301,9 @@ export interface Inquiry {
 	_id: string;
 	createdAt: string;
 	updatedAt: string;
+	counterpartyName?: string | null;
+	counterpartyAvatarUrl?: string | null;
+	unreadCount?: number | null;
 	clientId: string;
 	creatorId: string;
 	serviceId?: string | null;
@@ -564,6 +567,10 @@ export interface CommentInput {
 export interface EditCommentInput {
 	content: string;
 }
+export interface InquiryVersionInput {
+	inquiryId: string;
+	expectedVersion: number;
+}
 export interface SendInquiryInput {
 	serviceId?: string | null;
 	subject: string;
@@ -573,10 +580,6 @@ export interface SendInquiryInput {
 	desiredDeadline?: string | null;
 	creatorId: string;
 	clientRequestKey: string;
-}
-export interface InquiryVersionInput {
-	inquiryId: string;
-	expectedVersion: number;
 }
 export interface CreateServiceFeedbackInput {
 	inquiryId: string;
@@ -655,8 +658,12 @@ export interface Operations {
 	getMyFollows: { variables: { input?: PageInput }; result: Followings };
 	getSavedProjects: { variables: { input?: PageInput }; result: SavedProjects };
 	getProjectComments: { variables: { projectId: string; input?: PageInput }; result: Comments };
+	getUnreadInquiryCount: { variables: {}; result: number };
 	getInquiry: { variables: { inquiryId: string }; result: Inquiry };
-	getInquiries: { variables: { creatorInbox?: boolean; input?: PageInput }; result: Inquiries };
+	getInquiries: {
+		variables: { creatorInbox?: boolean; allConversations?: boolean; input?: PageInput };
+		result: Inquiries;
+	};
 	getInquiryMessages: { variables: { inquiryId: string; input?: PageInput }; result: InquiryMessages };
 	getInquiryEvents: { variables: { inquiryId: string; input?: PageInput }; result: InquiryEvents };
 	getInquiryFeedback: { variables: { inquiryId: string }; result: ServiceFeedback | null };
@@ -725,6 +732,7 @@ export interface Operations {
 	editProjectComment: { variables: { commentId: string; input: EditCommentInput }; result: ProjectComment };
 	deleteProjectComment: { variables: { commentId: string }; result: boolean };
 	moderateProjectComment: { variables: { commentId: string; hidden: boolean }; result: ProjectComment };
+	markInquiryRead: { variables: { input: InquiryVersionInput }; result: boolean };
 	sendInquiry: { variables: { input: SendInquiryInput }; result: Inquiry };
 	completeInquiry: { variables: { input: InquiryVersionInput }; result: Inquiry };
 	createServiceFeedback: { variables: { input: CreateServiceFeedbackInput }; result: ServiceFeedback };

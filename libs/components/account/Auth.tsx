@@ -60,9 +60,11 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 									preferredLocale: 'en',
 								},
 						  })
-					: method === 'email'
-					? await action.mutate('login', { input: { email: f.email, password: f.password } })
-					: await action.mutate('loginPhone', { input: { phoneNumber: f.phoneNumber, password: f.password } });
+					: f.identifier.trim().includes('@')
+					? await action.mutate('login', { input: { email: f.identifier.trim(), password: f.password } })
+					: await action.mutate('loginPhone', {
+							input: { phoneNumber: f.identifier.trim().replace(/[\s()-]/g, ''), password: f.password },
+					  });
 				if (registering && method === 'email') {
 					sessionStorage.setItem('creatorhub.pendingEmail', f.email);
 					await router.push(returnTo || '/');
@@ -116,7 +118,7 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 						? 'Use the verification link sent to your inbox.'
 						: 'Use 6–30 characters for your new password.'}
 				</p>
-				{auth && (
+				{registering && (
 					<div className="tabs equal">
 						{['email', 'phone'].map((m) => (
 							<button type="button" key={m} className={method === m ? 'active' : ''} onClick={() => setMethod(m)}>
@@ -132,13 +134,24 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 						submit(e.currentTarget);
 					}}
 				>
-					{registering && (
-						<Field label="Display name" name="displayName" autoComplete="name" required minLength={2} maxLength={60} />
+					{mode === 'sign-in' && (
+						<Field
+							label="Email or phone number"
+							name="identifier"
+							autoComplete="username"
+							required
+							maxLength={30}
+							placeholder="Email or Phone Number"
+							hint="Include the country code when signing in with a phone number."
+						/>
 					)}
-					{((auth && method === 'email') || mode === 'forgot-password' || showResend) && (
+					{registering && (
+						<Field label="Display name" name="displayName" autoComplete="name" required minLength={3} maxLength={40} />
+					)}
+					{((registering && method === 'email') || mode === 'forgot-password' || showResend) && (
 						<Field label="Email" name="email" type="email" autoComplete="email" required maxLength={254} />
 					)}{' '}
-					{auth && method === 'phone' && (
+					{registering && method === 'phone' && (
 						<Field
 							label="Phone number"
 							name="phoneNumber"
@@ -146,7 +159,7 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 							autoComplete="tel"
 							required
 							pattern="\+[1-9][0-9]{7,14}"
-							placeholder="+821012345678"
+							placeholder="Phone number"
 							hint="Include your country code. Phone registration does not verify ownership of the number."
 						/>
 					)}
