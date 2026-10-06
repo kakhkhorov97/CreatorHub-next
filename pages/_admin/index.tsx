@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { ArrowRight } from 'phosphor-react';
 import AdminLayout from '../../libs/components/admin/AdminLayout';
@@ -5,14 +6,18 @@ import { Picture, QueryState, Status } from '../../libs/components/common/UI';
 import { useApi } from '../../libs/hooks/useApi';
 
 function Overview() {
+	const { t: translate } = useSiteTranslation('common');
+
 	return (
-		<AdminLayout title="Overview">
+		<AdminLayout title={translate('Overview')}>
 			<OverviewContent />
 		</AdminLayout>
 	);
 }
 
 function OverviewContent() {
+	const { t: translate } = useSiteTranslation('common');
+
 	const result = useApi('adminOverview'),
 		recent = useApi('adminDirectory', { kind: 'PROJECTS', input: { limit: 5, removed: false } });
 	const titles = {
@@ -28,11 +33,11 @@ function OverviewContent() {
 		<>
 			<div className="admin-page-heading">
 				<div>
-					<h1>Website overview</h1>
-					<p>Manage the people, work and content behind CreatorHub.</p>
+					<h1>{translate('Website overview')}</h1>
+					<p>{translate('Manage the people, work and content behind CreatorHub.')}</p>
 				</div>
 				<Link passHref href="/" className="admin-text-link">
-					Open website <ArrowRight size={18} />
+					{translate('Open website')} <ArrowRight size={18} />
 				</Link>
 			</div>
 			<QueryState loading={result.loading} error={result.error} retry={() => result.refetch()} />
@@ -45,7 +50,7 @@ function OverviewContent() {
 								<span>{titles[key as keyof typeof titles]}</span>
 								<strong>{String(value)}</strong>
 								<small>
-									Manage {key} <ArrowRight size={15} />
+									{translate('Manage')} {key} <ArrowRight size={15} />
 								</small>
 							</Link>
 						))}
@@ -53,9 +58,9 @@ function OverviewContent() {
 			<div className="admin-overview-grid">
 				<section className="admin-panel">
 					<div className="admin-panel-heading">
-						<h2>Recently updated projects</h2>
+						<h2>{translate('Recently updated projects')}</h2>
 						<Link passHref href="/_admin/projects">
-							All projects →
+							{translate('All projects →')}
 						</Link>
 					</div>
 					<QueryState loading={recent.loading} error={recent.error} retry={() => recent.refetch()} />
@@ -64,32 +69,36 @@ function OverviewContent() {
 							<Picture src={row.project?.coverImageUrl} alt="" />
 							<div>
 								<strong>{row.title}</strong>
-								<small>{row.ownerName || 'Creator'}</small>
+								<small>{row.ownerName || translate('Creator')}</small>
 							</div>
 							<Status value={row.status} />
 						</div>
 					))}
-					{recent.value?.length === 0 && <p>No projects yet. Create the first project from the Projects page.</p>}
+					{recent.value?.length === 0 && (
+						<p>{translate('No projects yet. Create the first project from the Projects page.')}</p>
+					)}
 				</section>
 				<section className="admin-panel admin-quick">
-					<h2>Publishing & settings</h2>
+					<h2>{translate('Publishing & settings')}</h2>
 					<p>
-						Keep public content current. Draft, hidden and removed records remain available in their management pages.
+						{translate(
+							'Keep public content current. Draft, hidden and removed records remain available in their management pages.',
+						)}
 					</p>
 					<Link passHref href="/_admin/projects">
-						Publish or archive projects <ArrowRight size={18} />
+						{translate('Publish or archive projects')} <ArrowRight size={18} />
 					</Link>
 					<Link passHref href="/_admin/events">
-						Manage community events <ArrowRight size={18} />
+						{translate('Manage community events')} <ArrowRight size={18} />
 					</Link>
 					<Link passHref href="/_admin/content">
-						Edit website copy & contact <ArrowRight size={18} />
+						{translate('Edit website copy & contact')} <ArrowRight size={18} />
 					</Link>
 					<Link passHref href="/_admin/users">
-						Review account access <ArrowRight size={18} />
+						{translate('Review account access')} <ArrowRight size={18} />
 					</Link>
 					<div className="admin-note">
-						Counts include retained records across all publication states. Removed records are excluded.
+						{translate('Counts include retained records across all publication states. Removed records are excluded.')}
 					</div>
 				</section>
 			</div>

@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { ArrowUpRight, MagnifyingGlass } from 'phosphor-react';
 import { useState } from 'react';
@@ -6,13 +7,15 @@ import { Button, Empty, Notice, QueryState, TextArea } from '../common/UI';
 import { CreatorCard, ProjectCard, ServiceCard } from './Cards';
 
 export default function Finder({ compact = false }: { compact?: boolean }) {
+	const { t: translate } = useSiteTranslation('common');
+
 	const [request, setRequest] = useState('');
 	const [submitted, setSubmitted] = useState('');
 	const result = useApi('discoverCreators', { input: { request: submitted } }, submitted.length < 3);
 	return (
 		<section className={compact ? 'finder panel' : 'finder'}>
-			<h2>{compact ? 'AI creator finder' : 'Find the right creator'}</h2>
-			<p className="muted">Describe what you’re looking for and we’ll help you find creators.</p>
+			<h2>{compact ? translate('AI creator finder') : translate('Find the right creator')}</h2>
+			<p className="muted">{translate('Describe what you’re looking for and we’ll help you find creators.')}</p>
 			<form
 				onSubmit={(e) => {
 					e.preventDefault();
@@ -20,8 +23,8 @@ export default function Finder({ compact = false }: { compact?: boolean }) {
 				}}
 			>
 				<TextArea
-					label="Your project"
-					placeholder="Brand designer in Seoul under ₩1,000,000"
+					label={translate('Your project')}
+					placeholder={translate('Brand designer in Seoul under ₩1,000,000')}
 					minLength={3}
 					maxLength={1000}
 					required
@@ -29,7 +32,7 @@ export default function Finder({ compact = false }: { compact?: boolean }) {
 					onChange={(e) => setRequest(e.target.value)}
 				/>
 				<Button type="submit" disabled={result.loading}>
-					Find creators
+					{translate('Find creators')}
 				</Button>
 			</form>
 			<QueryState loading={result.loading} error={result.error} retry={() => result.refetch()} />
@@ -39,7 +42,7 @@ export default function Finder({ compact = false }: { compact?: boolean }) {
 					{result.value.creators.length === 0 &&
 						result.value.projects.length === 0 &&
 						result.value.services.length === 0 && (
-							<Empty title="No matches found">Try a different description or budget.</Empty>
+							<Empty title={translate('No matches found')}>{translate('Try a different description or budget.')}</Empty>
 						)}
 					<div className={compact ? 'finder-results' : 'grid'}>
 						{result.value.creators.map((c) => (
@@ -50,14 +53,14 @@ export default function Finder({ compact = false }: { compact?: boolean }) {
 					</div>
 					{compact && (
 						<Link passHref href="/ai-finder">
-							Open AI finder <ArrowUpRight />
+							{translate('Open AI finder')} <ArrowUpRight />
 						</Link>
 					)}
 				</>
 			)}
 			<Link passHref className="finder-footer" href="/creators">
 				<MagnifyingGlass />
-				Search published creator profiles
+				{translate('Search published creator profiles')}
 			</Link>
 		</section>
 	);

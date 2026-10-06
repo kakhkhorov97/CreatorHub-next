@@ -1,4 +1,6 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { useReactiveVar } from '@apollo/client';
+import LanguageSelector from './LanguageSelector';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Bell, EnvelopeSimple, MagnifyingGlass, SignOut } from 'phosphor-react';
@@ -16,6 +18,8 @@ const navigation = [
 ];
 
 export default function Top() {
+	const { t: translate } = useSiteTranslation('common');
+
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 	const action = useAction();
@@ -27,6 +31,11 @@ export default function Top() {
 		['/projects', '/services', '/creators'].some(
 			(path) => router.pathname === path || router.pathname.startsWith(path + '/'),
 		);
+	const showNavigation =
+		discovery ||
+		router.pathname === '/events' ||
+		router.pathname.startsWith('/events/') ||
+		router.pathname === '/contact';
 	const profile = useApi('myCreatorProfile', {}, !user || user.role === 'USER');
 	const accountMenu = useRef<HTMLDetailsElement>(null);
 	useEffect(() => {
@@ -59,13 +68,13 @@ export default function Top() {
 	}, [router.pathname]);
 	return (
 		<>
-			<div className={`site-header ${compact ? 'is-compact' : ''} ${!discovery ? 'is-simple' : ''}`}>
+			<div className={`site-header ${compact ? 'is-compact' : ''} ${!showNavigation ? 'is-simple' : ''}`}>
 				<header className="top">
 					<Link passHref href="/" className="brand">
-						CreatorHub
+						{translate('CreatorHub')}
 					</Link>
-					{discovery && (
-						<nav className="primary-nav" aria-label="Main navigation">
+					{showNavigation && (
+						<nav className="primary-nav" aria-label={translate('Main navigation')}>
 							{navigation.map(([href, text]) => (
 								<Link
 									passHref
@@ -74,23 +83,31 @@ export default function Top() {
 									className={router.pathname === href || router.pathname.startsWith(href + '/') ? 'active' : ''}
 									aria-current={router.pathname === href || router.pathname.startsWith(href + '/') ? 'page' : undefined}
 								>
-									{text}
+									{translate(text)}
 								</Link>
 							))}
 						</nav>
 					)}
 					{discovery && compact && (
-						<form className="header-search" action="/projects">
+						<form
+							className="header-search"
+							onSubmit={(event) => {
+								event.preventDefault();
+								const query = new FormData(event.currentTarget).get('query');
+								router.push({ pathname: '/projects', query: { query: String(query || '') } });
+							}}
+						>
 							<label className="sr-only" htmlFor="header-query">
-								Search projects
+								{translate('Search projects')}
 							</label>
-							<input id="header-query" name="query" maxLength={200} placeholder="Search creative work…" />
-							<Button type="submit" aria-label="Search projects">
+							<input id="header-query" name="query" maxLength={200} placeholder={translate('Search creative work…')} />
+							<Button type="submit" aria-label={translate('Search projects')}>
 								<MagnifyingGlass size={20} />
 							</Button>
 						</form>
 					)}
 					<div className="header-actions">
+						<LanguageSelector />
 						{user ? (
 							<>
 								<Link
@@ -100,7 +117,7 @@ export default function Top() {
 									aria-label={`Inbox, ${inbox.value || 0} unread conversations`}
 								>
 									<EnvelopeSimple size={23} />
-									<span>Inbox</span>
+									<span>{translate('Inbox')}</span>
 									{!!inbox.value && <span className="inbox-badge">{inbox.value > 99 ? '99+' : inbox.value}</span>}
 								</Link>
 								<Link
@@ -113,34 +130,34 @@ export default function Top() {
 									{!!count.value && <span className="dot" />}
 								</Link>
 								<details className="user-menu" ref={accountMenu}>
-									<summary aria-label="Account menu">
+									<summary aria-label={translate('Account menu')}>
 										<Picture avatar src={user.avatarUrl} alt={user.displayName} />
 										<span>{user.displayName}</span>
 									</summary>
 									<div>
 										<Link passHref href="/workspace">
-											Workspace
+											{translate('Workspace')}
 										</Link>
 										<Link passHref href="/account/settings">
-											Account settings
+											{translate('Account settings')}
 										</Link>
 										<Link passHref href="/saved">
-											Saved projects
+											{translate('Saved projects')}
 										</Link>
 										{profile.value && (
 											<Link passHref href={`/creators/${profile.value.slug}`}>
-												My profile
+												{translate('My profile')}
 											</Link>
 										)}
 										<Link passHref href="/inquiries">
-											Inquiries
+											{translate('Inquiries')}
 										</Link>
 										<Link passHref href="/following">
-											Following
+											{translate('Following')}
 										</Link>
 										{user.role === 'ADMIN' && (
 											<Link passHref href="/_admin">
-												Administration
+												{translate('Administration')}
 											</Link>
 										)}
 										<Button
@@ -157,7 +174,7 @@ export default function Top() {
 											}
 										>
 											<SignOut />
-											Sign out
+											{translate('Sign out')}
 										</Button>
 									</div>
 								</details>
@@ -165,18 +182,18 @@ export default function Top() {
 						) : (
 							<>
 								<LinkButton secondary href="/account/sign-in">
-									Sign in
+									{translate('Sign in')}
 								</LinkButton>
-								<LinkButton href="/account/register">Sign up</LinkButton>
+								<LinkButton href="/account/register">{translate('Sign up')}</LinkButton>
 							</>
 						)}
 					</div>
 				</header>
 				{discovery && compact && (
-					<nav className="header-categories" aria-label="Creative categories">
+					<nav className="header-categories" aria-label={translate('Creative categories')}>
 						{categories.value?.map((category) => (
 							<Link passHref key={category._id} href={`/projects?categoryId=${category._id}`}>
-								{category.name}
+								{translate(category.name)}
 							</Link>
 						))}
 					</nav>
@@ -184,8 +201,8 @@ export default function Top() {
 			</div>
 			{!user && pendingEmail && (
 				<Notice>
-					Account created. Verify the email sent to {pendingEmail} before signing in.{' '}
-					<Link href="/account/verify-email">Verify email or resend</Link>
+					{translate('Account created. Verify the email sent to')} {pendingEmail} {translate('before signing in.')}{' '}
+					<Link href="/account/verify-email">{translate('Verify email or resend')}</Link>
 				</Notice>
 			)}
 			{action.error && <Notice error>{action.error}</Notice>}

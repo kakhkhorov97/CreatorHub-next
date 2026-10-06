@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { useReactiveVar } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -9,8 +10,10 @@ import Layout, { Guard } from '../../libs/components/layout/LayoutBasic';
 import { useAction } from '../../libs/hooks/useApi';
 
 function AccountSettings() {
+	const { t: translate } = useSiteTranslation('common');
+
 	return (
-		<Layout title="Account settings" area="account">
+		<Layout title={translate('Account settings')} area="account">
 			<Guard>
 				<AccountForm />
 			</Guard>
@@ -19,6 +22,8 @@ function AccountSettings() {
 }
 
 function AccountForm() {
+	const { t: translate } = useSiteTranslation('common');
+
 	const user = useReactiveVar(userVar)!;
 	const action = useAction();
 	const router = useRouter();
@@ -26,7 +31,7 @@ function AccountForm() {
 	const [saved, setSaved] = useState(false);
 	return (
 		<>
-			<Heading title="Account settings" />
+			<Heading title={translate('Account settings')} />
 			<form
 				className="panel editor-form"
 				onSubmit={(e) => {
@@ -36,17 +41,19 @@ function AccountForm() {
 						const updated = await action.mutate('updateMe', {
 							input: {
 								displayName: f.displayName,
-								preferredLocale: f.preferredLocale === 'ko' ? 'ko' : 'en',
+								preferredLocale: f.preferredLocale === 'ko' ? 'ko' : f.preferredLocale === 'uz' ? 'uz' : 'en',
 							},
 						});
 						userVar(updated);
 						setSaved(true);
+						await router.push(router.asPath, router.asPath, { locale: updated.preferredLocale, scroll: false });
+						document.cookie = `NEXT_LOCALE=${updated.preferredLocale}; Path=/; Max-Age=31536000; SameSite=Lax`;
 					});
 				}}
 			>
-				<h2>Your profile</h2>
+				<h2>{translate('Your profile')}</h2>
 				<Field
-					label="Display name"
+					label={translate('Display name')}
 					name="displayName"
 					defaultValue={user.displayName}
 					required
@@ -54,30 +61,31 @@ function AccountForm() {
 					maxLength={60}
 				/>
 				<AvatarUpload />
-				<Field label="Preferred language">
+				<Field label={translate('Preferred language')}>
 					<select name="preferredLocale" defaultValue={user.preferredLocale}>
-						<option value="en">English</option>
-						<option value="ko">Korean</option>
+						<option value="uz">{translate('Uzbek')}</option>
+						<option value="en">{translate('English')}</option>
+						<option value="ko">{translate('Korean')}</option>
 					</select>
 				</Field>
-				<small>This preference is stored with your account. The current interface is in English.</small>
+				<small>{translate('Your language preference is saved with your account.')}</small>
 				<Feedback {...action} />
-				{saved && <Notice notify>Account updated.</Notice>}
+				{saved && <Notice notify>{translate('Account updated.')}</Notice>}
 				<div className="account-save-actions">
 					<Button type="submit" disabled={action.busy}>
-						Save changes
+						{translate('Save changes')}
 					</Button>
 				</div>
 			</form>
 			<section className="danger-zone">
-				<h2>Delete account</h2>
-				<p>Your profile will no longer be publicly available and your sessions will be revoked.</p>
+				<h2>{translate('Delete account')}</h2>
+				<p>{translate('Your profile will no longer be publicly available and your sessions will be revoked.')}</p>
 				<Button danger secondary onClick={() => setRemove(true)}>
-					Delete my account
+					{translate('Delete my account')}
 				</Button>
 				{remove && (
 					<Confirm
-						title="Delete your account?"
+						title={translate('Delete your account?')}
 						busy={action.busy}
 						onCancel={() => setRemove(false)}
 						onConfirm={() =>
@@ -89,7 +97,7 @@ function AccountForm() {
 							})
 						}
 					>
-						This action cannot be undone from the website.
+						{translate('This action cannot be undone from the website.')}
 					</Confirm>
 				)}
 			</section>

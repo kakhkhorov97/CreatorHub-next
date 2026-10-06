@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import React, { ReactNode, useEffect } from 'react';
 import { toast } from 'sonner';
 
@@ -10,6 +11,8 @@ export function Notice({
 	error?: boolean;
 	notify?: boolean;
 }) {
+	const { t: translate } = useSiteTranslation('common');
+	const content = typeof children === 'string' ? translate(children) : children;
 	useEffect(() => {
 		if (notify && !error && typeof children === 'string') {
 			if (
@@ -17,23 +20,25 @@ export function Notice({
 					children,
 				)
 			)
-				toast.success(children);
-			else toast.info(children);
+				toast.success(content as string);
+			else toast.info(content as string);
 		}
-	}, [children, error, notify]);
+	}, [children, content, error, notify]);
 	if (notify && !error && typeof children === 'string') return null;
 	return (
 		<div role={error ? 'alert' : 'status'} className={`notice ${error ? 'error' : ''}`}>
-			{children}
+			{content}
 		</div>
 	);
 }
 
 export function Feedback({ busy, error }: { busy?: boolean; error?: string }) {
+	const { t: translate } = useSiteTranslation('common');
+
 	return (
 		<>
-			{busy && <p role="status">Saving…</p>}
-			{error && <Notice error>{error}</Notice>}
+			{busy && <p role="status">{translate('Saving…')}</p>}
+			{error && <Notice error>{translate(error)}</Notice>}
 		</>
 	);
 }

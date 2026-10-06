@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useState } from 'react';
 import { Button, date, Empty, Feedback, Heading, label, Pager, QueryState } from '../libs/components/common/UI';
@@ -6,8 +7,10 @@ import { useAction, useApi } from '../libs/hooks/useApi';
 import { usePaged } from '../libs/hooks/usePaged';
 
 function Notifications() {
+	const { t: translate } = useSiteTranslation('common');
+
 	return (
-		<Layout title="Notifications" area="account">
+		<Layout title={translate('Notifications')} area="account">
 			<Guard>
 				<NotificationContent />
 			</Guard>
@@ -16,19 +19,22 @@ function Notifications() {
 }
 
 function NotificationContent() {
+	const { t: translate } = useSiteTranslation('common');
+
 	const [unreadOnly, setUnreadOnly] = useState(false);
 	const result = usePaged('getNotifications', { unreadOnly });
 	const count = useApi('getUnreadNotificationCount', {}, false, 30000);
 	const action = useAction();
 	return (
 		<>
-			<Heading title="Notifications" />
+			<Heading title={translate('Notifications')} />
 			<nav className="tabs">
 				<button className={!unreadOnly ? 'active' : ''} onClick={() => setUnreadOnly(false)}>
-					All
+					{translate('All')}
 				</button>
 				<button className={unreadOnly ? 'active' : ''} onClick={() => setUnreadOnly(true)}>
-					Unread ({count.value || 0})
+					{translate('Unread (')}
+					{count.value || 0})
 				</button>
 			</nav>
 			<QueryState loading={result.loading} error={result.error} retry={() => result.refetch()} />
@@ -44,11 +50,15 @@ function NotificationContent() {
 					return (
 						<article className={`list-row ${n.readAt ? '' : 'unread'}`} key={n._id}>
 							<div>
-								<h3>{n.unavailable ? 'This activity is no longer available' : label(event?.type || activity?.type)}</h3>
+								<h3>
+									{n.unavailable
+										? translate('This activity is no longer available')
+										: label(event?.type || activity?.type)}
+								</h3>
 								<time>{date(n.createdAt)}</time>
 								{!n.unavailable && href && (
 									<Link passHref href={href}>
-										View {event ? 'inquiry' : 'project'}
+										{translate('View')} {event ? translate('inquiry') : translate('project')}
 									</Link>
 								)}
 							</div>
@@ -64,14 +74,14 @@ function NotificationContent() {
 										})
 									}
 								>
-									Mark as read
+									{translate('Mark as read')}
 								</Button>
 							)}
 						</article>
 					);
 				})}
 			</div>
-			{!result.loading && !result.error && !result.rows.length && <Empty title="You’re all caught up" />}
+			{!result.loading && !result.error && !result.rows.length && <Empty title={translate('You’re all caught up')} />}
 			<Pager {...result} />
 			<Feedback {...action} />
 		</>

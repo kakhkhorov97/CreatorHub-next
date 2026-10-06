@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -10,6 +11,8 @@ export function ConfirmationPrompt({
 	onCancel: () => void;
 	busy?: boolean;
 }) {
+	const { t: translate } = useSiteTranslation('common');
+
 	const [mounted, setMounted] = useState(false);
 	const panel = useRef<HTMLElement>(null);
 	const cancel = useRef(onCancel);
@@ -38,7 +41,7 @@ export function ConfirmationPrompt({
 			className="confirm confirmation-prompt"
 			role="alertdialog"
 			aria-modal="true"
-			aria-label="Confirm action"
+			aria-label={translate('Confirm action')}
 			onKeyDown={(event) => {
 				if (event.key === 'Escape' && !busy) {
 					event.preventDefault();

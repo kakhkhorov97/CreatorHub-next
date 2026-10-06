@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { MagnifyingGlass, Plus } from 'phosphor-react';
 import { FormEvent, useState } from 'react';
 import { useApi } from '../../hooks/useApi';
@@ -16,6 +17,8 @@ export function Management({ kind }: { kind: AdminKind }) {
 }
 
 export function Directory({ kind }: { kind: AdminKind }) {
+	const { t: translate } = useSiteTranslation('common');
+
 	const [filter, setFilter] = useState<AdminDirectoryInput>({ page: 1, limit: 20 });
 	const result = useApi('adminDirectory', { kind, input: filter });
 	const [selected, setSelected] = useState<AdminEntry | 'new' | null>(null);
@@ -53,31 +56,35 @@ export function Directory({ kind }: { kind: AdminKind }) {
 					<h1>{labels[kind]}</h1>
 					<p>
 						{kind === 'USERS'
-							? 'Manage accounts, roles and access.'
+							? translate('Manage accounts, roles and access.')
 							: kind === 'COMMENTS'
-							? 'Review project conversations and moderate public comments.'
+							? translate('Review project conversations and moderate public comments.')
 							: `Manage every ${kind.toLowerCase().slice(0, -1)}, including unpublished work.`}
 					</p>
 				</div>
 				{['PROJECTS', 'SERVICES'].includes(kind) && (
 					<Button onClick={() => setSelected('new')}>
-						<Plus size={18} /> New {kind === 'PROJECTS' ? 'project' : 'service'}
+						<Plus size={18} /> {translate('New')} {kind === 'PROJECTS' ? translate('project') : translate('service')}
 					</Button>
 				)}
 			</div>
 			<section className="admin-panel">
 				<form className="admin-filters" onSubmit={search}>
 					<Field
-						label="Search"
+						label={translate('Search')}
 						name="search"
 						placeholder={
-							kind === 'USERS' ? 'Search names…' : kind === 'CREATORS' ? 'Search profile, city…' : 'Search content…'
+							kind === 'USERS'
+								? translate('Search names…')
+								: kind === 'CREATORS'
+								? translate('Search profile, city…')
+								: translate('Search content…')
 						}
 						maxLength={100}
 					/>
-					<Field label="Status">
+					<Field label={translate('Status')}>
 						<select name="status">
-							<option value="">All statuses</option>
+							<option value="">{translate('All statuses')}</option>
 							{states[kind].map((s) => (
 								<option key={s} value={s}>
 									{s.toLowerCase()}
@@ -86,38 +93,50 @@ export function Directory({ kind }: { kind: AdminKind }) {
 						</select>
 					</Field>
 					{kind === 'USERS' && (
-						<Field label="Role">
+						<Field label={translate('Role')}>
 							<select name="role">
-								<option value="">All roles</option>
+								<option value="">{translate('All roles')}</option>
 								{['USER', 'CREATOR', 'ADMIN'].map((s) => (
 									<option key={s}>{s}</option>
 								))}
 							</select>
 						</Field>
 					)}
-					<Field label="Records">
+					<Field label={translate('Records')}>
 						<select name="removed" defaultValue="all">
-							<option value="all">All records</option>
-							<option value="no">Retained</option>
-							<option value="yes">Removed</option>
+							<option value="all">{translate('All records')}</option>
+							<option value="no">{translate('Retained')}</option>
+							<option value="yes">{translate('Removed')}</option>
 						</select>
 					</Field>
 					<Button type="submit" secondary>
-						<MagnifyingGlass size={18} /> Search
+						<MagnifyingGlass size={18} /> {translate('Search')}
 					</Button>
 				</form>
 				<QueryState loading={result.loading} error={result.error} retry={() => result.refetch()} />
-				<p className="admin-table-hint">Scroll the table sideways to see all controls.</p>
+				<p className="admin-table-hint">{translate('Scroll the table sideways to see all controls.')}</p>
 				<div className="admin-table-scroll">
 					<table className="admin-table">
 						<thead>
 							<tr>
-								<th>{kind === 'USERS' ? 'Account' : kind === 'COMMENTS' ? 'Comment' : 'Name'}</th>
-								<th>{kind === 'USERS' ? 'Role' : kind === 'COMMENTS' ? 'Project' : 'Creator'}</th>
-								<th>Status</th>
-								<th>Updated</th>
 								<th>
-									<span className="sr-only">Actions</span>
+									{kind === 'USERS'
+										? translate('Account')
+										: kind === 'COMMENTS'
+										? translate('Comment')
+										: translate('Name')}
+								</th>
+								<th>
+									{kind === 'USERS'
+										? translate('Role')
+										: kind === 'COMMENTS'
+										? translate('Project')
+										: translate('Creator')}
+								</th>
+								<th>{translate('Status')}</th>
+								<th>{translate('Updated')}</th>
+								<th>
+									<span className="sr-only">{translate('Actions')}</span>
 								</th>
 							</tr>
 						</thead>
@@ -153,7 +172,7 @@ export function Directory({ kind }: { kind: AdminKind }) {
 									</td>
 									<td>
 										<Button secondary onClick={() => setSelected(row)}>
-											{kind === 'COMMENTS' ? 'Review' : 'Manage'}
+											{kind === 'COMMENTS' ? translate('Review') : translate('Manage')}
 										</Button>
 									</td>
 								</tr>
@@ -163,13 +182,15 @@ export function Directory({ kind }: { kind: AdminKind }) {
 				</div>
 				{!result.loading && result.value?.length === 0 && (
 					<div className="admin-empty">
-						<h2>No matching {labels[kind].toLowerCase()}</h2>
-						<p>Try another search or status. Choose All records to include removed content.</p>
+						<h2>
+							{translate('No matching')} {labels[kind].toLowerCase()}
+						</h2>
+						<p>{translate('Try another search or status. Choose All records to include removed content.')}</p>
 					</div>
 				)}
 				<div className="admin-pagination">
 					<span>
-						{total} records · Page {page}
+						{total} {translate('records · Page')} {page}
 					</span>
 					<div>
 						<Button
@@ -177,14 +198,14 @@ export function Directory({ kind }: { kind: AdminKind }) {
 							disabled={page === 1 || result.loading}
 							onClick={() => setFilter({ ...filter, page: page - 1 })}
 						>
-							Previous
+							{translate('Previous')}
 						</Button>
 						<Button
 							secondary
 							disabled={page * 20 >= total || result.loading}
 							onClick={() => setFilter({ ...filter, page: page + 1 })}
 						>
-							Next
+							{translate('Next')}
 						</Button>
 					</div>
 				</div>

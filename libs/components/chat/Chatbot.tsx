@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ChatCircle, PaperPlaneRight, X } from 'phosphor-react';
@@ -11,6 +12,8 @@ type Message = {
 };
 
 export default function Chatbot() {
+	const { t: translate } = useSiteTranslation('common');
+
 	const router = useRouter();
 	const [open, setOpen] = useState(false);
 	const [messages, setMessages] = useState<Message[]>([]);
@@ -48,7 +51,7 @@ export default function Chatbot() {
 			const response = await fetch('/api/chat', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ message, history }),
+				body: JSON.stringify({ message, history, locale: router.locale }),
 			});
 			const result = await response.json();
 			if (!response.ok) throw new Error(result.error || 'The assistant could not respond.');
@@ -77,17 +80,17 @@ export default function Chatbot() {
 				>
 					<header>
 						<div>
-							<h2 id="chat-title">Ask CreatorHub AI</h2>
-							<p>Find creative work and get help in Korea</p>
+							<h2 id="chat-title">{translate('How can I help you?')}</h2>
+							<p>{translate('Find creative work and get help in Korea')}</p>
 						</div>
-						<button className="icon-button" aria-label="Close assistant" onClick={close}>
+						<button className="icon-button" aria-label={translate('Close assistant')} onClick={close}>
 							<X size={22} />
 						</button>
 					</header>
 					<div className="chat-transcript" ref={transcript} role="log" aria-live="polite" aria-relevant="additions">
 						{!messages.length && (
 							<div className="chat-welcome">
-								<p>How can I help you with CreatorHub?</p>
+								<p>{translate('How can I help you with CreatorHub?')}</p>
 								<div>
 									{['How do I find a creator?', 'How do I publish my work?', 'Find designers in Gwangju'].map(
 										(question) => (
@@ -103,16 +106,16 @@ export default function Chatbot() {
 										),
 									)}
 								</div>
-								<small>AI answers may be incomplete. Check the linked profiles and services.</small>
+								<small>{translate('AI answers may be incomplete. Check the linked profiles and services.')}</small>
 							</div>
 						)}
 						{messages.map((message, index) => (
 							<div key={index} className={`chat-message ${message.role}`}>
-								<small>{message.role === 'user' ? 'You' : 'CreatorHub'}</small>
+								<small>{message.role === 'user' ? translate('You') : translate('CreatorHub')}</small>
 								<p>{message.text}</p>
 								{!!message.links?.length && (
 									<details>
-										<summary>Browse matching website results</summary>
+										<summary>{translate('Browse matching website results')}</summary>
 										{message.links.map((link) => (
 											<Link passHref key={link.href} href={link.href} onClick={close}>
 												{link.title}
@@ -123,19 +126,19 @@ export default function Chatbot() {
 								)}
 							</div>
 						))}
-						{busy && <p role="status">Looking into that…</p>}
+						{busy && <p role="status">{translate('Looking into that…')}</p>}
 					</div>
 					{error && (
 						<p className="chat-error" role="alert">
-							{error}{' '}
+							{translate(error)}{' '}
 							<Link passHref href="/help">
-								Visit Help
+								{translate('Visit Help')}
 							</Link>
 						</p>
 					)}
 					<form onSubmit={submit}>
 						<label className="sr-only" htmlFor="chat-message">
-							Your message
+							{translate('Your message')}
 						</label>
 						<textarea
 							ref={input}
@@ -144,10 +147,10 @@ export default function Chatbot() {
 							onChange={(event) => setDraft(event.target.value)}
 							maxLength={1500}
 							rows={2}
-							placeholder="Ask about CreatorHub…"
+							placeholder={translate('Ask about CreatorHub…')}
 							required
 						/>
-						<Button type="submit" disabled={busy || !draft.trim()} aria-label="Send message">
+						<Button type="submit" disabled={busy || !draft.trim()} aria-label={translate('Send message')}>
 							<PaperPlaneRight size={21} />
 						</Button>
 					</form>
@@ -157,11 +160,11 @@ export default function Chatbot() {
 				ref={trigger}
 				className="chat-trigger"
 				aria-expanded={open}
-				aria-label={open ? 'Close CreatorHub assistant' : 'Open CreatorHub assistant'}
+				aria-label={open ? translate('Close CreatorHub assistant') : translate('Open CreatorHub assistant')}
 				onClick={() => (open ? close() : setOpen(true))}
 			>
 				<ChatCircle size={25} />
-				<span>Ask CreatorHub</span>
+				<span>{translate('Ask CreatorHub AI')}</span>
 			</button>
 		</div>
 	);

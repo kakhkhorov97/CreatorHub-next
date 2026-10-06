@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { useEffect, useRef, useState } from 'react';
 import {
 	Button,
@@ -15,8 +16,10 @@ import { useAction, useApi } from '../../libs/hooks/useApi';
 import { Category } from '../../libs/types/creatorhub';
 
 export default function Categories() {
+	const { t: translate } = useSiteTranslation('common');
+
 	return (
-		<Layout title="Categories" area="admin">
+		<Layout title={translate('Categories')} area="admin">
 			<Guard adminOnly>
 				<CategoryContent />
 			</Guard>
@@ -25,6 +28,8 @@ export default function Categories() {
 }
 
 function CategoryContent() {
+	const { t: translate } = useSiteTranslation('common');
+
 	const result = useApi('adminCategories');
 	const [selected, setSelected] = useState<Category | null>(null);
 	const action = useAction();
@@ -38,7 +43,7 @@ function CategoryContent() {
 	}, [activation]);
 	return (
 		<>
-			<Heading title="Categories">
+			<Heading title={translate('Categories')}>
 				<Button
 					onClick={() => {
 						setSelected(null);
@@ -46,7 +51,7 @@ function CategoryContent() {
 						setActivation((value) => value + 1);
 					}}
 				>
-					New category
+					{translate('New category')}
 				</Button>
 			</Heading>
 			<div className="admin-layout">
@@ -56,19 +61,19 @@ function CategoryContent() {
 						<table>
 							<thead>
 								<tr>
-									<th>Name</th>
-									<th>Slug</th>
-									<th>Active</th>
-									<th>Order</th>
-									<th>Actions</th>
+									<th>{translate('Name')}</th>
+									<th>{translate('Slug')}</th>
+									<th>{translate('Active')}</th>
+									<th>{translate('Order')}</th>
+									<th>{translate('Actions')}</th>
 								</tr>
 							</thead>
 							<tbody>
 								{result.value?.map((c) => (
 									<tr key={c._id}>
-										<td>{c.name}</td>
+										<td>{translate(c.name)}</td>
 										<td>{c.slug}</td>
-										<td>{c.isActive ? 'Yes' : 'No'}</td>
+										<td>{c.isActive ? translate('Yes') : translate('No')}</td>
 										<td>{c.sortOrder}</td>
 										<td>
 											<Button
@@ -79,7 +84,7 @@ function CategoryContent() {
 													setActivation((value) => value + 1);
 												}}
 											>
-												Edit
+												{translate('Edit')}
 											</Button>
 										</td>
 									</tr>
@@ -110,10 +115,10 @@ function CategoryContent() {
 						});
 					}}
 				>
-					<h2>{selected ? 'Edit category' : 'New category'}</h2>
-					<Field label="Name" name="name" required maxLength={80} defaultValue={selected?.name} />
+					<h2>{selected ? translate('Edit category') : translate('New category')}</h2>
+					<Field label={translate('Name')} name="name" required maxLength={80} defaultValue={selected?.name} />
 					<Field
-						label="Slug"
+						label={translate('Slug')}
 						name="slug"
 						required
 						minLength={2}
@@ -121,13 +126,18 @@ function CategoryContent() {
 						pattern="[a-z0-9]+(-[a-z0-9]+)*"
 						defaultValue={selected?.slug}
 					/>
-					<TextArea label="Description" name="description" maxLength={500} defaultValue={selected?.description || ''} />
+					<TextArea
+						label={translate('Description')}
+						name="description"
+						maxLength={500}
+						defaultValue={selected?.description || ''}
+					/>
 					<label className="checkbox">
 						<input type="checkbox" name="isActive" defaultChecked={selected?.isActive ?? true} />
-						Active
+						{translate('Active')}
 					</label>
 					<Field
-						label="Sort order"
+						label={translate('Sort order')}
 						name="sortOrder"
 						type="number"
 						required
@@ -136,9 +146,9 @@ function CategoryContent() {
 						defaultValue={selected?.sortOrder ?? 0}
 					/>
 					<Feedback {...action} />
-					{saved && <Notice notify>Category saved.</Notice>}
+					{saved && <Notice notify>{translate('Category saved.')}</Notice>}
 					<Button type="submit" disabled={action.busy}>
-						Save changes
+						{translate('Save changes')}
 					</Button>
 				</form>
 			</div>

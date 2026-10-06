@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { useReactiveVar } from '@apollo/client';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -12,6 +13,8 @@ import { useCreatorDirectory } from '../../libs/hooks/useCreatorDirectory';
 import { useMembership } from '../../libs/hooks/useMembership';
 
 function ProjectDetail() {
+	const { t: translate } = useSiteTranslation('common');
+
 	const router = useRouter();
 	const id = String(router.query.id || '');
 	const result = useApi('getProject', { projectId: id }, !id);
@@ -33,9 +36,9 @@ function ProjectDetail() {
 		});
 	}
 	return (
-		<Layout title={p?.title || 'Project'}>
+		<Layout title={p?.title || translate('Project')}>
 			<Link passHref href="/" className="back-link">
-				Back to explore
+				{translate('Back to explore')}
 			</Link>
 			<QueryState loading={result.loading} error={result.error} retry={() => result.refetch()} />
 			{p && (
@@ -48,7 +51,7 @@ function ProjectDetail() {
 								disabled={action.busy || saved.loading}
 								onClick={() => engage('setProjectSaved', !saved.active)}
 							>
-								{saved.active ? 'Remove from saved' : 'Save project'}
+								{saved.active ? translate('Remove from saved') : translate('Save project')}
 							</Button>
 						</div>
 					</Heading>
@@ -65,7 +68,7 @@ function ProjectDetail() {
 							</div>
 							<p className="lead">{p.summary}</p>
 							<div className="prose">
-								<h2>About the project</h2>
+								<h2>{translate('About the project')}</h2>
 								<p>{p.description}</p>
 							</div>
 							<div className="project-media">
@@ -83,7 +86,7 @@ function ProjectDetail() {
 							<Comments projectId={id} />
 						</section>
 						<aside className="detail-sidebar">
-							<h2>Project details</h2>
+							<h2>{translate('Project details')}</h2>
 							<div className="tags">
 								{p.tags.map((t) => (
 									<span key={t}>{t}</span>
@@ -93,11 +96,11 @@ function ProjectDetail() {
 							<Feedback {...action} />
 							{safeUrl(p.externalUrl) && (
 								<a className="external-link" href={p.externalUrl!} target="_blank" rel="noreferrer">
-									Visit project
+									{translate('Visit project')}
 									<ArrowUpRight />
 								</a>
 							)}
-							<LinkButton href={`/inquiries/new?creatorId=${p.creatorId}`}>Send inquiry</LinkButton>
+							<LinkButton href={`/inquiries/new?creatorId=${p.creatorId}`}>{translate('Send inquiry')}</LinkButton>
 						</aside>
 					</div>
 				</>

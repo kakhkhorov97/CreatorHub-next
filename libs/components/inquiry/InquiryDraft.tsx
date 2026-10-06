@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useRef, useState } from 'react';
@@ -18,6 +19,8 @@ export function Draft({
 	serviceId?: string;
 	refresh?: () => Promise<unknown>;
 }) {
+	const { t: translate } = useSiteTranslation('common');
+
 	const action = useAction();
 	const router = useRouter();
 	const [selectedService, setSelectedService] = useState(serviceId || '');
@@ -29,19 +32,19 @@ export function Draft({
 	const services = useApi('getServices', { input: { creatorId, limit: 50 } }, !creatorId);
 	return (
 		<>
-			<Heading title="Send an inquiry" />
+			<Heading title={translate('Send an inquiry')} />
 			{!creatorId ? (
 				<Notice error>
-					Choose a creator or service first. <Link href="/creators">Browse creators</Link>
+					{translate('Choose a creator or service first.')} <Link href="/creators">{translate('Browse creators')}</Link>
 				</Notice>
 			) : (
 				<div className="inquiry-compose-layout">
 					<section className="panel">
 						{creator && (
 							<p className="inquiry-recipient">
-								To{' '}
+								{translate('To')}{' '}
 								<a href={`/creators/${creator.slug}`} target="_blank" rel="noreferrer">
-									{creator.identity.displayName} · View profile
+									{creator.identity.displayName} {translate('· View profile')}
 								</a>
 							</p>
 						)}
@@ -87,9 +90,15 @@ export function Draft({
 								});
 							}}
 						>
-							<Field label="Subject" name="subject" required maxLength={150} defaultValue={inquiry?.subject || ''} />
+							<Field
+								label={translate('Subject')}
+								name="subject"
+								required
+								maxLength={150}
+								defaultValue={inquiry?.subject || ''}
+							/>
 							<TextArea
-								label="Project brief"
+								label={translate('Project brief')}
 								name="brief"
 								required
 								minLength={20}
@@ -97,13 +106,13 @@ export function Draft({
 								rows={7}
 								defaultValue={inquiry?.brief || ''}
 							/>
-							<Field label="Service">
+							<Field label={translate('Service')}>
 								<select
 									name="serviceId"
 									value={selectedService}
 									onChange={(event) => setSelectedService(event.target.value)}
 								>
-									<option value="">General inquiry</option>
+									<option value="">{translate('General inquiry')}</option>
 									{services.value?.map((service) => (
 										<option key={service._id} value={service._id}>
 											{service.title}
@@ -113,7 +122,7 @@ export function Draft({
 							</Field>
 							<div className="form-row">
 								<Field
-									label="Minimum budget (KRW)"
+									label={translate('Minimum budget (KRW)')}
 									name="budgetMin"
 									type="number"
 									min={0}
@@ -121,7 +130,7 @@ export function Draft({
 									defaultValue={inquiry?.budgetMin ?? ''}
 								/>
 								<Field
-									label="Maximum budget (KRW)"
+									label={translate('Maximum budget (KRW)')}
 									name="budgetMax"
 									type="number"
 									min={0}
@@ -130,28 +139,30 @@ export function Draft({
 								/>
 							</div>
 							<Field
-								label="Desired deadline"
+								label={translate('Desired deadline')}
 								name="desiredDeadline"
 								type="date"
 								defaultValue={inquiry?.desiredDeadline?.slice(0, 10) || ''}
 							/>
 							<Feedback error={action.error} />
 							<Button type="submit" disabled={action.busy}>
-								{action.busy ? 'Sending…' : 'Send inquiry'}
+								{action.busy ? translate('Sending…') : translate('Send inquiry')}
 							</Button>
 						</form>
 					</section>
 					<aside className="panel publishing">
-						<h2>Contact the creator</h2>
-						<p>Your inquiry goes directly to their private inbox. You cannot edit the brief after sending.</p>
+						<h2>{translate('Contact the creator')}</h2>
+						<p>
+							{translate('Your inquiry goes directly to their private inbox. You cannot edit the brief after sending.')}
+						</p>
 						{creator && (
 							<a href={`/creators/${creator.slug}`} target="_blank" rel="noreferrer">
-								View creator profile in a new tab
+								{translate('View creator profile in a new tab')}
 							</a>
 						)}
 						{inquiry && (
 							<Button danger disabled={action.busy} onClick={() => setRemove(true)}>
-								Delete draft
+								{translate('Delete draft')}
 							</Button>
 						)}
 					</aside>
@@ -159,7 +170,7 @@ export function Draft({
 			)}
 			{remove && inquiry && (
 				<Confirm
-					title="Delete this draft?"
+					title={translate('Delete this draft?')}
 					busy={action.busy}
 					onCancel={() => setRemove(false)}
 					onConfirm={() =>
@@ -171,7 +182,7 @@ export function Draft({
 						})
 					}
 				>
-					The unsent inquiry will be removed.
+					{translate('The unsent inquiry will be removed.')}
 				</Confirm>
 			)}
 		</>

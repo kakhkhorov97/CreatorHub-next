@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { FormEvent, useState } from 'react';
 import { useAction, useApi } from '../../hooks/useApi';
@@ -27,6 +28,8 @@ import {
 import { labels, states } from './directoryConfig';
 
 export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: AdminEntry; onClose: () => void }) {
+	const { t: translate } = useSiteTranslation('common');
+
 	const action = useAction(),
 		cats = useApi('adminCategories'),
 		cities = useApi('getCities');
@@ -184,33 +187,33 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 	return (
 		<>
 			<Button secondary onClick={onClose}>
-				← Back to {labels[kind].toLowerCase()}
+				{translate('← Back to')} {labels[kind].toLowerCase()}
 			</Button>
 			<div className="admin-page-heading">
 				<div>
-					<h1>{record ? record.title : `New ${kind === 'PROJECTS' ? 'project' : 'service'}`}</h1>
+					<h1>{record ? record.title : kind === 'PROJECTS' ? translate('New project') : translate('New service')}</h1>
 					<p>
 						{record
 							? `Record ${record._id}`
-							: 'Create a draft for an existing creator, then review it before publication.'}
+							: translate('Create a draft for an existing creator, then review it before publication.')}
 					</p>
 				</div>
 				{record && <Status value={record.deletedAt ? 'REMOVED' : record.status} />}
 			</div>
 			<div className="admin-editor-grid">
 				<section className="admin-panel">
-					<h2>{kind === 'COMMENTS' ? 'Comment details' : 'Details'}</h2>
+					<h2>{kind === 'COMMENTS' ? translate('Comment details') : translate('Details')}</h2>
 					{kind === 'COMMENTS' ? (
 						<>
 							<p className="admin-comment-body">{record?.comment?.content}</p>
 							<dl className="admin-detail-list">
-								<dt>Author</dt>
+								<dt>{translate('Author')}</dt>
 								<dd>{record?.ownerName}</dd>
-								<dt>Project</dt>
+								<dt>{translate('Project')}</dt>
 								<dd>
 									{record?.projectTitle}{' '}
 									<Link passHref href={`/projects/${record?.comment?.projectId}`}>
-										View project →
+										{translate('View project →')}
 									</Link>
 								</dd>
 							</dl>
@@ -227,14 +230,14 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 							{!record && (
 								<>
 									<Field
-										label="Find creator"
+										label={translate('Find creator')}
 										value={creatorFilter}
 										onChange={(e) => setCreatorFilter(e.target.value)}
-										placeholder="Search profiles…"
+										placeholder={translate('Search profiles…')}
 									/>
-									<Field label="Creator">
+									<Field label={translate('Creator')}>
 										<select name="creatorId" required>
-											<option value="">Select a creator</option>
+											<option value="">{translate('Select a creator')}</option>
 											{creatorList.value?.map((r) => (
 												<option value={r._id} key={r._id}>
 													{r.ownerName} · {r.creator?.slug}
@@ -248,7 +251,7 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 							{kind === 'USERS' && (
 								<>
 									<Field
-										label="Display name"
+										label={translate('Display name')}
 										name="displayName"
 										required
 										minLength={2}
@@ -256,24 +259,24 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 										defaultValue={u?.displayName}
 									/>
 									<Field
-										label="Avatar URL"
+										label={translate('Avatar URL')}
 										name="avatarUrl"
 										maxLength={2048}
 										defaultValue={u?.avatarUrl || ''}
-										hint="A replacement must use this account's media folder."
+										hint={translate("A replacement must use this account's media folder.")}
 									/>
 									<div className="form-grid">
-										<Field label="Role">
+										<Field label={translate('Role')}>
 											<select name="role" defaultValue={u?.role}>
 												{['USER', 'CREATOR', 'ADMIN'].map((v) => (
 													<option key={v}>{v}</option>
 												))}
 											</select>
 										</Field>
-										<Field label="Preferred language">
+										<Field label={translate('Preferred language')}>
 											<select name="preferredLocale" defaultValue={u?.preferredLocale}>
-												<option value="en">English</option>
-												<option value="ko">Korean</option>
+												<option value="en">{translate('English')}</option>
+												<option value="ko">{translate('Korean')}</option>
 											</select>
 										</Field>
 									</div>
@@ -282,7 +285,7 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 							{kind === 'CREATORS' && (
 								<>
 									<Field
-										label="Profile slug"
+										label={translate('Profile slug')}
 										name="slug"
 										required
 										minLength={3}
@@ -290,12 +293,17 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 										pattern="[a-z0-9]+(-[a-z0-9]+)*"
 										defaultValue={c?.slug}
 									/>
-									<Field label="Headline" name="headline" maxLength={120} defaultValue={c?.headline || ''} />
-									<TextArea label="Bio" name="bio" rows={5} maxLength={3000} defaultValue={c?.bio || ''} />
+									<Field
+										label={translate('Headline')}
+										name="headline"
+										maxLength={120}
+										defaultValue={c?.headline || ''}
+									/>
+									<TextArea label={translate('Bio')} name="bio" rows={5} maxLength={3000} defaultValue={c?.bio || ''} />
 									<div className="form-grid">
-										<Field label="City">
+										<Field label={translate('City')}>
 											<select name="city" value={city} onChange={(e) => setCity(e.target.value)}>
-												<option value="">Select city</option>
+												<option value="">{translate('Select city')}</option>
 												{cities.value?.map((v) => (
 													<option key={v.key} value={v.key}>
 														{v.nameEn}
@@ -303,7 +311,7 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 												))}
 											</select>
 										</Field>
-										<Field label="Availability">
+										<Field label={translate('Availability')}>
 											<select name="availability" defaultValue={c?.availability}>
 												{['AVAILABLE', 'BUSY', 'UNAVAILABLE'].map((v) => (
 													<option key={v}>{v}</option>
@@ -312,11 +320,11 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 										</Field>
 									</div>
 									<label className="admin-checkbox">
-										<input type="checkbox" name="remoteAvailable" defaultChecked={c?.remoteAvailable} /> Remote
-										available
+										<input type="checkbox" name="remoteAvailable" defaultChecked={c?.remoteAvailable} />{' '}
+										{translate('Remote available')}
 									</label>
 									<fieldset className="admin-categories">
-										<legend>Categories, up to five</legend>
+										<legend>{translate('Categories, up to five')}</legend>
 										{cats.value?.map((cat) => (
 											<label key={cat._id}>
 												<input
@@ -326,28 +334,28 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 													defaultChecked={c?.categoryIds.includes(cat._id)}
 												/>{' '}
 												{cat.name}
-												{!cat.isActive ? ' (inactive)' : ''}
+												{!cat.isActive ? translate(' (inactive)') : ''}
 											</label>
 										))}
 									</fieldset>
 									<TextArea
-										label="Skills, one per line"
+										label={translate('Skills, one per line')}
 										name="skills"
 										defaultValue={c?.skills.join('\n')}
 										maxLength={1100}
 									/>
-									<h3>Social links</h3>
+									<h3>{translate('Social links')}</h3>
 									{links.map((l, i) => (
 										<div className="admin-media-row" key={i}>
 											<Field
-												label="Link label"
+												label={translate('Link label')}
 												required
 												maxLength={40}
 												value={l.label}
 												onChange={(e) => setLinks(links.map((v, n) => (n === i ? { ...v, label: e.target.value } : v)))}
 											/>
 											<Field
-												label="HTTPS URL"
+												label={translate('HTTPS URL')}
 												required
 												type="url"
 												pattern="https://.*"
@@ -363,7 +371,7 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 													setDirty(true);
 												}}
 											>
-												Remove link
+												{translate('Remove link')}
 											</Button>
 										</div>
 									))}
@@ -375,17 +383,23 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 											setDirty(true);
 										}}
 									>
-										Add social link
+										{translate('Add social link')}
 									</Button>
 								</>
 							)}
 							{['PROJECTS', 'SERVICES'].includes(kind) && (
 								<>
-									<Field label="Title" name="title" required maxLength={150} defaultValue={p?.title || s?.title} />
+									<Field
+										label={translate('Title')}
+										name="title"
+										required
+										maxLength={150}
+										defaultValue={p?.title || s?.title}
+									/>
 									{kind === 'PROJECTS' && (
 										<>
 											<Field
-												label="Project slug"
+												label={translate('Project slug')}
 												name="slug"
 												required
 												minLength={3}
@@ -393,22 +407,27 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 												pattern="[a-z0-9]+(-[a-z0-9]+)*"
 												defaultValue={p?.slug}
 											/>
-											<Field label="Summary" name="summary" maxLength={300} defaultValue={p?.summary || ''} />
+											<Field
+												label={translate('Summary')}
+												name="summary"
+												maxLength={300}
+												defaultValue={p?.summary || ''}
+											/>
 										</>
 									)}
-									<Field label="Category">
+									<Field label={translate('Category')}>
 										<select name="categoryId" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
-											<option value="">Select category</option>
+											<option value="">{translate('Select category')}</option>
 											{cats.value?.map((v) => (
 												<option key={v._id} value={v._id}>
 													{v.name}
-													{!v.isActive ? ' (inactive)' : ''}
+													{!v.isActive ? translate(' (inactive)') : ''}
 												</option>
 											))}
 										</select>
 									</Field>
 									<TextArea
-										label="Description"
+										label={translate('Description')}
 										name="description"
 										rows={6}
 										maxLength={kind === 'PROJECTS' ? 20000 : 10000}
@@ -419,18 +438,20 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 							{kind === 'PROJECTS' && (
 								<>
 									<Field
-										label="Cover image URL"
+										label={translate('Cover image URL')}
 										name="coverImageUrl"
 										maxLength={2048}
 										defaultValue={p?.coverImageUrl || ''}
 									/>
 									<p className="admin-help">
-										Existing demo images are retained. New media must use the creator account's storage folder.
+										{translate(
+											"Existing demo images are retained. New media must use the creator account's storage folder.",
+										)}
 									</p>
-									<h3>Portfolio media</h3>
+									<h3>{translate('Portfolio media')}</h3>
 									{media.map((m, i) => (
 										<div className="admin-media-row" key={i}>
-											<Field label="Type">
+											<Field label={translate('Type')}>
 												<select
 													value={m.type}
 													onChange={(e) =>
@@ -439,19 +460,19 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 														)
 													}
 												>
-													<option>IMAGE</option>
-													<option>VIDEO</option>
+													<option value="IMAGE">{translate('IMAGE')}</option>
+													<option value="VIDEO">{translate('VIDEO')}</option>
 												</select>
 											</Field>
 											<Field
-												label="Media URL"
+												label={translate('Media URL')}
 												required
 												maxLength={2048}
 												value={m.url}
 												onChange={(e) => setMedia(media.map((v, n) => (n === i ? { ...v, url: e.target.value } : v)))}
 											/>
 											<Field
-												label="Alt text"
+												label={translate('Alt text')}
 												required
 												maxLength={300}
 												value={m.altText}
@@ -467,7 +488,7 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 													setDirty(true);
 												}}
 											>
-												Remove media
+												{translate('Remove media')}
 											</Button>
 										</div>
 									))}
@@ -479,11 +500,16 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 											setDirty(true);
 										}}
 									>
-										Add media
+										{translate('Add media')}
 									</Button>
-									<TextArea label="Tags, one per line" name="tags" defaultValue={p?.tags.join('\n')} maxLength={450} />
+									<TextArea
+										label={translate('Tags, one per line')}
+										name="tags"
+										defaultValue={p?.tags.join('\n')}
+										maxLength={450}
+									/>
 									<Field
-										label="External project URL"
+										label={translate('External project URL')}
 										type="url"
 										pattern="https://.*"
 										name="externalUrl"
@@ -495,14 +521,14 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 							{kind === 'SERVICES' && (
 								<>
 									<div className="form-grid">
-										<Field label="Pricing">
+										<Field label={translate('Pricing')}>
 											<select name="pricingType" defaultValue={s?.pricingType || 'CUSTOM_QUOTE'}>
-												<option value="CUSTOM_QUOTE">Custom quote</option>
-												<option value="STARTING_AT">Starting at</option>
+												<option value="CUSTOM_QUOTE">{translate('Custom quote')}</option>
+												<option value="STARTING_AT">{translate('Starting at')}</option>
 											</select>
 										</Field>
 										<Field
-											label="Starting price, KRW"
+											label={translate('Starting price, KRW')}
 											name="startingPrice"
 											type="number"
 											min={0}
@@ -510,7 +536,7 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 											defaultValue={s?.startingPrice ?? ''}
 										/>
 										<Field
-											label="Estimated days"
+											label={translate('Estimated days')}
 											name="estimatedDays"
 											type="number"
 											min={1}
@@ -519,7 +545,7 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 										/>
 									</div>
 									<TextArea
-										label="Deliverables, one per line"
+										label={translate('Deliverables, one per line')}
 										name="deliverables"
 										rows={5}
 										defaultValue={s?.deliverables.join('\n')}
@@ -528,44 +554,44 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 								</>
 							)}
 							{record?.deletedAt && kind !== 'USERS' && (
-								<Notice>Restore this record before editing its details.</Notice>
+								<Notice>{translate('Restore this record before editing its details.')}</Notice>
 							)}
-							<p className="admin-help">Blank optional text fields keep their saved value.</p>
+							<p className="admin-help">{translate('Blank optional text fields keep their saved value.')}</p>
 							<Feedback {...action} />
 							{message && <Notice notify>{message}</Notice>}
 							<div className="actions">
 								<Button type="submit" disabled={action.busy || (!!record?.deletedAt && kind !== 'USERS')}>
-									{record ? 'Save changes' : 'Create draft'}
+									{record ? translate('Save changes') : translate('Create draft')}
 								</Button>
 								<Button secondary onClick={onClose}>
-									Cancel
+									{translate('Cancel')}
 								</Button>
 							</div>
 						</form>
 					)}
 				</section>
 				<aside className="admin-panel admin-record-controls">
-					<h2>{kind === 'USERS' ? 'Account access' : 'Publication & moderation'}</h2>
+					<h2>{kind === 'USERS' ? translate('Account access') : translate('Publication & moderation')}</h2>
 					<p>
 						{record
-							? 'Status changes affect what visitors can see. Removal retains the record for recovery.'
-							: 'Save the draft first to manage its publication.'}
+							? translate('Status changes affect what visitors can see. Removal retains the record for recovery.')
+							: translate('Save the draft first to manage its publication.')}
 					</p>
 					{record && (
 						<>
 							<dl className="admin-detail-list">
-								<dt>Current status</dt>
+								<dt>{translate('Current status')}</dt>
 								<dd>
 									<Status value={record.deletedAt ? 'REMOVED' : record.status} />
 								</dd>
 								{record.ownerName && (
 									<>
-										<dt>Owner</dt>
+										<dt>{translate('Owner')}</dt>
 										<dd>{record.ownerName}</dd>
 									</>
 								)}
 							</dl>
-							{dirty && <Notice>Save or cancel your edits before changing the status.</Notice>}
+							{dirty && <Notice>{translate('Save or cancel your edits before changing the status.')}</Notice>}
 							{!record.deletedAt &&
 								allowed
 									.filter((v) => v !== record.status)
@@ -578,23 +604,23 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 											onClick={() => transition(v)}
 										>
 											{v === 'DELETED'
-												? 'Remove account'
+												? translate('Remove account')
 												: v === 'ACTIVE'
-												? 'Activate / restore'
+												? translate('Activate / restore')
 												: v === 'PUBLISHED'
-												? 'Publish'
+												? translate('Publish')
 												: v === 'HIDDEN'
-												? 'Hide'
+												? translate('Hide')
 												: v === 'SUSPENDED'
-												? 'Suspend'
+												? translate('Suspend')
 												: v === 'PAUSED'
-												? 'Pause'
-												: 'Archive'}
+												? translate('Pause')
+												: translate('Archive')}
 										</Button>
 									))}
 							{kind === 'USERS' && record.deletedAt && (
 								<Button disabled={action.busy || dirty} onClick={() => transition('ACTIVE')}>
-									Restore account
+									{translate('Restore account')}
 								</Button>
 							)}
 							{['CREATORS', 'PROJECTS', 'SERVICES'].includes(kind) && (
@@ -612,11 +638,13 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 										})
 									}
 								>
-									{record.deletedAt ? 'Restore record' : 'Remove record'}
+									{record.deletedAt ? translate('Restore record') : translate('Remove record')}
 								</Button>
 							)}
 							{record.deletedAt && (
-								<p className="admin-help">Restored content stays unpublished until you publish or activate it again.</p>
+								<p className="admin-help">
+									{translate('Restored content stays unpublished until you publish or activate it again.')}
+								</p>
 							)}
 						</>
 					)}
@@ -632,7 +660,7 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 								})
 							}
 						>
-							This change will be saved to CreatorHub. Review the selected record before confirming.
+							{translate('This change will be saved to CreatorHub. Review the selected record before confirming.')}
 						</Confirm>
 					)}
 					<Feedback {...action} />

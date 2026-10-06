@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { Star } from 'phosphor-react';
 import { useState } from 'react';
 import { useAction, useApi } from '../../hooks/useApi';
@@ -13,13 +14,15 @@ export function EngagementFeedback({
 	isClient: boolean;
 	refresh: () => Promise<unknown>;
 }) {
+	const { t: translate } = useSiteTranslation('common');
+
 	const existing = useApi('getInquiryFeedback', { inquiryId: inquiry._id });
 	const action = useAction();
 	const [complete, setComplete] = useState(false);
 	if (inquiry.status !== 'CLOSED') return null;
 	return (
 		<section className="panel engagement-feedback">
-			<h2>Service feedback</h2>
+			<h2>{translate('Service feedback')}</h2>
 			<QueryState loading={existing.loading} error={existing.error} retry={() => existing.refetch()} />
 			{existing.value ? (
 				<>
@@ -43,38 +46,42 @@ export function EngagementFeedback({
 						});
 					}}
 				>
-					<p>How was the completed work? Your rating and feedback will appear on the creator’s profile.</p>
-					<Field label="Rating">
+					<p>
+						{translate('How was the completed work? Your rating and feedback will appear on the creator’s profile.')}
+					</p>
+					<Field label={translate('Rating')}>
 						<select name="rating" required defaultValue="">
 							<option value="" disabled>
-								Choose a rating
+								{translate('Choose a rating')}
 							</option>
 							{[5, 4, 3, 2, 1].map((n) => (
 								<option key={n} value={n}>
-									{n} {n === 1 ? 'star' : 'stars'}
+									{n} {n === 1 ? translate('star') : translate('stars')}
 								</option>
 							))}
 						</select>
 					</Field>
-					<TextArea label="Your feedback" name="feedback" required maxLength={2000} rows={3} />
+					<TextArea label={translate('Your feedback')} name="feedback" required maxLength={2000} rows={3} />
 					<Button type="submit" disabled={action.busy}>
-						Post review
+						{translate('Post review')}
 					</Button>
 				</form>
 			) : isClient && inquiry.outcome === 'AGREED_TO_PROCEED' ? (
 				<>
-					<p>When the agreed work is finished, mark it completed to leave a review.</p>
+					<p>{translate('When the agreed work is finished, mark it completed to leave a review.')}</p>
 					<Button disabled={action.busy} onClick={() => setComplete(true)}>
-						Mark work completed
+						{translate('Mark work completed')}
 					</Button>
 				</>
 			) : (
-				<p className="muted">Feedback is available after the customer confirms that the work is completed.</p>
+				<p className="muted">
+					{translate('Feedback is available after the customer confirms that the work is completed.')}
+				</p>
 			)}
 			<Feedback error={action.error} />
 			{complete && (
 				<Confirm
-					title="Is the work completed?"
+					title={translate('Is the work completed?')}
 					danger={false}
 					busy={action.busy}
 					onCancel={() => setComplete(false)}
@@ -88,7 +95,7 @@ export function EngagementFeedback({
 						})
 					}
 				>
-					Confirm once you have received the completed work. You can then leave your review.
+					{translate('Confirm once you have received the completed work. You can then leave your review.')}
 				</Confirm>
 			)}
 		</section>

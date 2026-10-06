@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useState } from 'react';
 import { userVar } from '../../../apollo/store';
@@ -7,6 +8,8 @@ import { Button, Confirm, Feedback, Field, lines, Notice, optional, Status, Text
 import ReviewStatus from '../review/ReviewStatus';
 
 export function ProfileForm({ profile, refresh }: { profile?: CreatorProfile; refresh: () => Promise<unknown> }) {
+	const { t: translate } = useSiteTranslation('common');
+
 	const action = useAction();
 	const cats = useApi('categories');
 	const cities = useApi('getCities');
@@ -53,25 +56,25 @@ export function ProfileForm({ profile, refresh }: { profile?: CreatorProfile; re
 			>
 				<section className="panel editor-form">
 					<div className="row">
-						<h2>Profile details</h2>
+						<h2>{translate('Profile details')}</h2>
 						<Status value={profile?.status || 'DRAFT'} />
 					</div>
 					<Field
-						label="Profile address"
+						label={translate('Profile address')}
 						name="slug"
 						required
 						minLength={3}
 						maxLength={80}
 						pattern="[a-z0-9]+(-[a-z0-9]+)*"
 						defaultValue={profile?.slug}
-						hint="Use lowercase letters, numbers, and hyphens."
+						hint={translate('Use lowercase letters, numbers, and hyphens.')}
 					/>
-					<Field label="Headline" name="headline" maxLength={120} defaultValue={profile?.headline || ''} />
-					<TextArea label="Bio" name="bio" maxLength={3000} defaultValue={profile?.bio || ''} />
+					<Field label={translate('Headline')} name="headline" maxLength={120} defaultValue={profile?.headline || ''} />
+					<TextArea label={translate('Bio')} name="bio" maxLength={3000} defaultValue={profile?.bio || ''} />
 					<div className="form-grid">
-						<Field label="City">
+						<Field label={translate('City')}>
 							<select name="city" value={city} onChange={(e) => setCity(e.target.value)}>
-								<option value="">Choose a city</option>
+								<option value="">{translate('Choose a city')}</option>
 								{cities.value?.map((c) => (
 									<option key={c.key} value={c.key}>
 										{c.nameEn}
@@ -79,7 +82,7 @@ export function ProfileForm({ profile, refresh }: { profile?: CreatorProfile; re
 								))}
 							</select>
 						</Field>
-						<Field label="Availability">
+						<Field label={translate('Availability')}>
 							<select name="availability" defaultValue={profile?.availability || 'AVAILABLE'}>
 								{['AVAILABLE', 'BUSY', 'UNAVAILABLE'].map((s) => (
 									<option key={s}>{s}</option>
@@ -89,10 +92,10 @@ export function ProfileForm({ profile, refresh }: { profile?: CreatorProfile; re
 					</div>
 					<label className="checkbox">
 						<input type="checkbox" name="remoteAvailable" defaultChecked={profile?.remoteAvailable} />
-						Remote available
+						{translate('Remote available')}
 					</label>
 					<fieldset>
-						<legend>Categories, up to 5</legend>
+						<legend>{translate('Categories, up to 5')}</legend>
 						<div className="check-grid">
 							{cats.value?.map((c) => (
 								<label className="checkbox" key={c._id}>
@@ -102,29 +105,29 @@ export function ProfileForm({ profile, refresh }: { profile?: CreatorProfile; re
 										value={c._id}
 										defaultChecked={profile?.categoryIds.includes(c._id)}
 									/>
-									{c.name}
+									{translate(c.name)}
 								</label>
 							))}
 						</div>
 					</fieldset>
 					<TextArea
-						label="Skills, one per line"
+						label={translate('Skills, one per line')}
 						name="skills"
 						defaultValue={profile?.skills.join('\n')}
-						placeholder="Brand identity&#10;Art direction"
+						placeholder={translate('Brand identity\nArt direction')}
 					/>
-					<h2>External links</h2>
+					<h2>{translate('External links')}</h2>
 					{links.map((l, index) => (
 						<div className="repeat-row" key={index}>
 							<Field
-								label="Label"
+								label={translate('Label')}
 								required
 								maxLength={40}
 								value={l.label}
 								onChange={(e) => setLinks(links.map((v, i) => (i === index ? { ...v, label: e.target.value } : v)))}
 							/>
 							<Field
-								label="HTTPS URL"
+								label={translate('HTTPS URL')}
 								type="url"
 								pattern="https://.*"
 								required
@@ -133,28 +136,28 @@ export function ProfileForm({ profile, refresh }: { profile?: CreatorProfile; re
 								onChange={(e) => setLinks(links.map((v, i) => (i === index ? { ...v, url: e.target.value } : v)))}
 							/>
 							<Button danger secondary onClick={() => setLinks(links.filter((_, i) => i !== index))}>
-								Remove
+								{translate('Remove')}
 							</Button>
 						</div>
 					))}
 					<Button secondary disabled={links.length >= 8} onClick={() => setLinks([...links, { label: '', url: '' }])}>
-						Add link
+						{translate('Add link')}
 					</Button>
 					<Feedback {...action} />
 					{message && <Notice notify>{message}</Notice>}
 					<Button type="submit" disabled={action.busy}>
-						{profile?.status === 'PUBLISHED' ? 'Submit changes for approval' : 'Save draft'}
+						{profile?.status === 'PUBLISHED' ? translate('Submit changes for approval') : translate('Save draft')}
 					</Button>
 				</section>
 				<aside className="panel publishing">
 					<ReviewStatus kind="PROFILE" targetId={profile?._id} />
-					<h2>Submit your profile</h2>
-					<p>A headline, city, and at least one active category are required.</p>
+					<h2>{translate('Submit your profile')}</h2>
+					<p>{translate('A headline, city, and at least one active category are required.')}</p>
 					<p>
 						{profile?.status === 'PUBLISHED'
-							? 'Submit changes for approval to update your public profile.'
-							: 'Save your changes, then submit for admin approval.'}{' '}
-						Explicit sexual content is not allowed.
+							? translate('Submit changes for approval to update your public profile.')
+							: translate('Save your changes, then submit for admin approval.')}{' '}
+						{translate('Explicit sexual content is not allowed.')}
 					</p>
 					{profile && (
 						<>
@@ -171,12 +174,12 @@ export function ProfileForm({ profile, refresh }: { profile?: CreatorProfile; re
 									})
 								}
 							>
-								Submit for approval
+								{translate('Submit for approval')}
 							</Button>
 							{profile.status === 'PUBLISHED' && (
 								<>
 									<Link passHref href={`/creators/${profile.slug}`}>
-										View public profile
+										{translate('View public profile')}
 									</Link>
 									<Button
 										secondary
@@ -188,12 +191,12 @@ export function ProfileForm({ profile, refresh }: { profile?: CreatorProfile; re
 											})
 										}
 									>
-										Hide profile
+										{translate('Hide profile')}
 									</Button>
 								</>
 							)}
 							<Button danger secondary onClick={() => setRemove(true)}>
-								Delete profile
+								{translate('Delete profile')}
 							</Button>
 						</>
 					)}
@@ -201,7 +204,7 @@ export function ProfileForm({ profile, refresh }: { profile?: CreatorProfile; re
 			</form>
 			{remove && (
 				<Confirm
-					title="Delete your creator profile?"
+					title={translate('Delete your creator profile?')}
 					busy={action.busy}
 					onCancel={() => setRemove(false)}
 					onConfirm={() =>
@@ -212,7 +215,7 @@ export function ProfileForm({ profile, refresh }: { profile?: CreatorProfile; re
 						})
 					}
 				>
-					Your profile and its work will no longer be publicly visible.
+					{translate('Your profile and its work will no longer be publicly visible.')}
 				</Confirm>
 			)}
 		</>

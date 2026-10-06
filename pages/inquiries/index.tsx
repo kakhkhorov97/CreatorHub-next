@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { useReactiveVar } from '@apollo/client';
 import Link from 'next/link';
 import { ChatsCircle } from 'phosphor-react';
@@ -11,8 +12,10 @@ import { useApi } from '../../libs/hooks/useApi';
 import { useConversationList } from '../../libs/hooks/useInquiryHistory';
 
 export default function InquiryInbox() {
+	const { t: translate } = useSiteTranslation('common');
+
 	return (
-		<Layout title="Inbox">
+		<Layout title={translate('Inbox')}>
 			<Guard>
 				<Inbox />
 			</Guard>
@@ -21,6 +24,8 @@ export default function InquiryInbox() {
 }
 
 export function Inbox({ selectedId = '' }: { selectedId?: string }) {
+	const { t: translate } = useSiteTranslation('common');
+
 	const user = useReactiveVar(userVar)!;
 	const selected = useApi('getInquiry', { inquiryId: selectedId }, !selectedId);
 	const result = useConversationList(user._id);
@@ -45,14 +50,16 @@ export function Inbox({ selectedId = '' }: { selectedId?: string }) {
 	return (
 		<div className={`messaging-inbox ${selectedId ? 'has-selection' : ''}`}>
 			<header className="inbox-page-heading">
-				<h1>Inbox</h1>
-				<p>Your project conversations</p>
+				<h1>{translate('Inbox')}</h1>
+				<p>{translate('Your project conversations')}</p>
 			</header>
 			<div className="messaging-shell">
-				<aside className="inbox-sidebar" aria-label="Conversations">
+				<aside className="inbox-sidebar" aria-label={translate('Conversations')}>
 					<div className="inbox-list-heading">
-						<h2>Messages</h2>
-						<span>{result.total} conversations</span>
+						<h2>{translate('Messages')}</h2>
+						<span>
+							{result.total} {translate('conversations')}
+						</span>
 					</div>
 					<div className="inbox-list-scroll" ref={listPane}>
 						<QueryState loading={result.loading && !result.rows.length} error={result.error} retry={result.refresh} />
@@ -69,22 +76,26 @@ export function Inbox({ selectedId = '' }: { selectedId?: string }) {
 								<Picture avatar src={i.counterpartyAvatarUrl} alt="" />
 								<div className="preview-copy">
 									<div className="preview-top">
-										<strong>{i.counterpartyName || 'Member'}</strong>
+										<strong>{i.counterpartyName || translate('Member')}</strong>
 										<time dateTime={i.updatedAt}>{date(i.updatedAt)}</time>
 									</div>
-									<p className="preview-subject">{i.subject || 'Untitled draft'}</p>
-									<p className="preview-brief">{i.brief || 'Continue writing your inquiry.'}</p>
+									<p className="preview-subject">{i.subject || translate('Untitled draft')}</p>
+									<p className="preview-brief">{i.brief || translate('Continue writing your inquiry.')}</p>
 									<div className="preview-meta">
-										<span>{i.clientId === user._id ? 'You contacted them' : 'They contacted you'}</span>
+										<span>
+											{i.clientId === user._id ? translate('You contacted them') : translate('They contacted you')}
+										</span>
 										<Status value={i.status} />
-										{!!i.unreadCount && <span className="preview-unread" aria-label="Unread conversation" />}
+										{!!i.unreadCount && (
+											<span className="preview-unread" aria-label={translate('Unread conversation')} />
+										)}
 									</div>
 								</div>
 							</Link>
 						))}
 						{!result.loading && !result.error && !result.rows.length && (
-							<Empty title="No conversations yet">
-								Find a creator and send an inquiry. Replies and received inquiries will appear here.
+							<Empty title={translate('No conversations yet')}>
+								{translate('Find a creator and send an inquiry. Replies and received inquiries will appear here.')}
 							</Empty>
 						)}
 						<div ref={moreSentinel} className="inbox-more-sentinel">
@@ -92,7 +103,7 @@ export function Inbox({ selectedId = '' }: { selectedId?: string }) {
 						</div>
 					</div>
 				</aside>
-				<section className="inbox-conversation" aria-label="Selected conversation">
+				<section className="inbox-conversation" aria-label={translate('Selected conversation')}>
 					{selectedId ? (
 						<>
 							<QueryState
@@ -104,7 +115,7 @@ export function Inbox({ selectedId = '' }: { selectedId?: string }) {
 								(selected.value.status === 'DRAFT' ? (
 									<div className="inbox-draft">
 										<Link passHref className="mobile-inbox-back" href="/inquiries">
-											Back to inbox
+											{translate('Back to inbox')}
 										</Link>
 										<Draft
 											key={selectedId}
@@ -126,9 +137,9 @@ export function Inbox({ selectedId = '' }: { selectedId?: string }) {
 					) : (
 						<div className="inbox-welcome">
 							<ChatsCircle size={42} weight="light" aria-hidden="true" />
-							<h2>Your conversations</h2>
-							<p>Select an inquiry to read messages and reply.</p>
-							<span>Project briefs and details stay with each conversation.</span>
+							<h2>{translate('Your conversations')}</h2>
+							<p>{translate('Select an inquiry to read messages and reply.')}</p>
+							<span>{translate('Project briefs and details stay with each conversation.')}</span>
 						</div>
 					)}
 				</section>

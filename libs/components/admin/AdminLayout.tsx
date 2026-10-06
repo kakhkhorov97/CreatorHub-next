@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { useReactiveVar } from '@apollo/client';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -36,6 +37,8 @@ export const adminLinks = [
 ] as const;
 
 export default function AdminLayout({ title, children }: { title: string; children: ReactNode }) {
+	const { t: translate } = useSiteTranslation('common');
+
 	const user = useReactiveVar(userVar),
 		ready = useReactiveVar(sessionReadyVar),
 		router = useRouter(),
@@ -77,24 +80,33 @@ export default function AdminLayout({ title, children }: { title: string; childr
 	return (
 		<div className="admin-shell">
 			<Head>
-				<title>{title} | CreatorHub administration</title>
-				<meta name="robots" content="noindex,nofollow" />
+				<title>
+					{translate(title)} {translate('| CreatorHub administration')}
+				</title>
+				<meta name="robots" content={translate('noindex,nofollow')} />
 			</Head>
 			<a className="skip" href="#admin-main">
-				Skip to administration
+				{translate('Skip to administration')}
 			</a>
-			{open && <button className="admin-scrim" aria-label="Close navigation" onClick={() => setOpen(false)} />}
-			<aside ref={sidebarRef} className={`admin-sidebar ${open ? 'open' : ''}`} aria-label="Administrator navigation">
+			{open && (
+				<button className="admin-scrim" aria-label={translate('Close navigation')} onClick={() => setOpen(false)} />
+			)}
+			<aside
+				ref={sidebarRef}
+				className={`admin-sidebar ${open ? 'open' : ''}`}
+				aria-label={translate('Administrator navigation')}
+			>
 				<div className="admin-brand">
 					<Link passHref href="/_admin">
-						CreatorHub<span>ADMINISTRATION</span>
+						{translate('CreatorHub')}
+						<span>{translate('ADMINISTRATION')}</span>
 					</Link>
-					<button className="admin-close" aria-label="Close navigation" onClick={() => setOpen(false)}>
+					<button className="admin-close" aria-label={translate('Close navigation')} onClick={() => setOpen(false)}>
 						<X size={24} />
 					</button>
 				</div>
-				<span className="admin-nav-label">MANAGE</span>
-				<nav aria-label="Administration">
+				<span className="admin-nav-label">{translate('MANAGE')}</span>
+				<nav aria-label={translate('Administration')}>
 					{adminLinks.map(([href, label, Icon]) => (
 						<Link
 							passHref
@@ -104,15 +116,15 @@ export default function AdminLayout({ title, children }: { title: string; childr
 							onClick={() => setOpen(false)}
 						>
 							<Icon size={20} />
-							<span>{label}</span>
+							<span>{translate(label)}</span>
 						</Link>
 					))}
 				</nav>
 				<div className="admin-sidebar-bottom">
 					<Link passHref href="/">
-						<ArrowSquareOut size={19} /> View website
+						<ArrowSquareOut size={19} /> {translate('View website')}
 					</Link>
-					<p>Changes are saved to the connected CreatorHub backend.</p>
+					<p>{translate('Changes are saved to the connected CreatorHub backend.')}</p>
 				</div>
 			</aside>
 			<div className="admin-workspace" {...(open ? { inert: '', 'aria-hidden': true as const } : {})}>
@@ -120,25 +132,25 @@ export default function AdminLayout({ title, children }: { title: string; childr
 					<div className="admin-topbar-title">
 						<button
 							className="admin-menu"
-							aria-label="Open administration navigation"
+							aria-label={translate('Open administration navigation')}
 							aria-expanded={open}
 							onClick={() => setOpen(true)}
 						>
 							<List size={24} />
 						</button>
-						<span>Administration</span>
+						<span>{translate('Administration')}</span>
 						<span className="admin-topbar-divider">/</span>
-						<strong>{title}</strong>
+						<strong>{translate(title)}</strong>
 					</div>
 					{user && (
 						<div className="admin-account">
 							<Picture src={user.avatarUrl} alt="" avatar />
 							<span>
 								{user.displayName}
-								<small>{user.role === 'ADMIN' ? 'Administrator' : user.role}</small>
+								<small>{user.role === 'ADMIN' ? translate('Administrator') : user.role}</small>
 							</span>
 							<button
-								aria-label="Sign out"
+								aria-label={translate('Sign out')}
 								disabled={action.busy}
 								onClick={() =>
 									action.run(async () => {
@@ -156,15 +168,17 @@ export default function AdminLayout({ title, children }: { title: string; childr
 				</header>
 				<main id="admin-main" className="admin-main">
 					{!ready ? (
-						<p role="status">Checking your session…</p>
+						<p role="status">{translate('Checking your session…')}</p>
 					) : !user ? (
 						<section className="admin-access">
-							<h1>Administrator sign-in</h1>
-							<p>Sign in with an administrator account to manage CreatorHub.</p>
-							<LinkButton href={`/account/sign-in?returnTo=${encodeURIComponent(router.asPath)}`}>Sign in</LinkButton>
+							<h1>{translate('Administrator sign-in')}</h1>
+							<p>{translate('Sign in with an administrator account to manage CreatorHub.')}</p>
+							<LinkButton href={`/account/sign-in?returnTo=${encodeURIComponent(router.asPath)}`}>
+								{translate('Sign in')}
+							</LinkButton>
 						</section>
 					) : user.role !== 'ADMIN' ? (
-						<Notice error>This page is available to administrators only.</Notice>
+						<Notice error>{translate('This page is available to administrators only.')}</Notice>
 					) : (
 						children
 					)}

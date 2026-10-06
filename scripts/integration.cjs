@@ -84,7 +84,11 @@ async function op(name, variables = {}, token, expectError = false) {
 	await op('apiName');
 	await op('me', {}, ct);
 	await op('login', { input: { email: 'client@frontend.test', password } });
-	await op('updateMe', { input: { displayName: 'Studio Test', preferredLocale: 'en' } }, ct);
+	for (const preferredLocale of ['ko', 'uz', 'en']) {
+		const updated = await op('updateMe', { input: { displayName: 'Studio Test', preferredLocale } }, ct);
+		assert.equal(updated.preferredLocale, preferredLocale);
+	}
+
 	const phone = await op('registerPhone', {
 		input: { phoneNumber: '+821012345678', password, displayName: 'Preview Creator' },
 	});

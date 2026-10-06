@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { useApolloClient, useReactiveVar } from '@apollo/client';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -43,19 +44,23 @@ export default function Layout({
 	title?: string;
 	area?: 'workspace' | 'account' | 'admin';
 }) {
+	const { t: translate } = useSiteTranslation('common');
+
 	if (area === 'admin') return <AdminLayout title={title}>{children}</AdminLayout>;
 
 	return (
 		<>
 			<Head>
-				<title>{title === 'CreatorHub' ? title : `${title} | CreatorHub`}</title>
+				<title>{title === 'CreatorHub' ? title : `${translate(title)} | CreatorHub`}</title>
 				<meta
 					name="description"
-					content="Explore creative work, discover creators and services, and start a private project inquiry."
+					content={translate(
+						'Explore creative work, discover creators and services, and start a private project inquiry.',
+					)}
 				/>
 			</Head>
 			<a href="#main" className="skip">
-				Skip to content
+				{translate('Skip to content')}
 			</a>
 			<Top />
 			<div className={area ? 'app-frame' : 'public-frame'}>
@@ -79,25 +84,30 @@ export function Guard({
 	adminOnly?: boolean;
 	creatorOnly?: boolean;
 }) {
+	const { t: translate } = useSiteTranslation('common');
+
 	const user = useReactiveVar(userVar);
 	const ready = useReactiveVar(sessionReadyVar);
 	const router = useRouter();
-	if (!ready) return <p role="status">Checking your session…</p>;
+	if (!ready) return <p role="status">{translate('Checking your session…')}</p>;
 	if (!user)
 		return (
 			<section className="empty">
-				<h1>Sign in to continue</h1>
-				<p>Your workspace and conversations are private.</p>
-				<LinkButton href={`/account/sign-in?returnTo=${encodeURIComponent(router.asPath)}`}>Sign in</LinkButton>
+				<h1>{translate('Sign in to continue')}</h1>
+				<p>{translate('Your workspace and conversations are private.')}</p>
+				<LinkButton href={`/account/sign-in?returnTo=${encodeURIComponent(router.asPath)}`}>
+					{translate('Sign in')}
+				</LinkButton>
 			</section>
 		);
-	if (adminOnly && user.role !== 'ADMIN') return <Notice error>This page is available to administrators only.</Notice>;
+	if (adminOnly && user.role !== 'ADMIN')
+		return <Notice error>{translate('This page is available to administrators only.')}</Notice>;
 	if (creatorOnly && user.role !== 'CREATOR' && user.role !== 'ADMIN')
 		return (
 			<section className="empty">
-				<h1>Get your creator profile approved first</h1>
-				<p>Set up your profile and submit it for admin approval before adding projects or services.</p>
-				<LinkButton href="/workspace/profile">Open creator profile</LinkButton>
+				<h1>{translate('Get your creator profile approved first')}</h1>
+				<p>{translate('Set up your profile and submit it for admin approval before adding projects or services.')}</p>
+				<LinkButton href="/workspace/profile">{translate('Open creator profile')}</LinkButton>
 			</section>
 		);
 	return <>{children}</>;

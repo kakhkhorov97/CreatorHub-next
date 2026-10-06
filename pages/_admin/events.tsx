@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { useState } from 'react';
 import {
 	Button,
@@ -17,8 +18,10 @@ import { usePaged } from '../../libs/hooks/usePaged';
 import { CreativeEvent, EventStatus } from '../../libs/types/creatorhub';
 
 export default function EventsAdmin() {
+	const { t: translate } = useSiteTranslation('common');
+
 	return (
-		<Layout title="Manage events" area="admin">
+		<Layout title={translate('Manage events')} area="admin">
 			<Guard adminOnly>
 				<EventContent />
 			</Guard>
@@ -27,6 +30,8 @@ export default function EventsAdmin() {
 }
 
 function EventContent() {
+	const { t: translate } = useSiteTranslation('common');
+
 	const result = usePaged('adminEvents', { input: { upcoming: false } }, false, 20);
 	const action = useAction();
 	const [selected, setSelected] = useState<CreativeEvent | null>(null);
@@ -34,28 +39,30 @@ function EventContent() {
 	const dateInput = (value?: string) => (value ? new Date(value).toISOString().slice(0, 16) : '');
 	return (
 		<>
-			<Heading title="Events">
+			<Heading title={translate('Events')}>
 				<Button
 					onClick={() => {
 						setSelected(null);
 						setSaved(false);
 					}}
 				>
-					New event
+					{translate('New event')}
 				</Button>
 			</Heading>
 			<div className="admin-layout">
 				<section>
 					<QueryState loading={result.loading} error={result.error} retry={() => result.refetch()} />
-					<p className="muted">Publish upcoming events or archive finished listings. All times below are UTC.</p>
+					<p className="muted">
+						{translate('Publish upcoming events or archive finished listings. All times below are UTC.')}
+					</p>
 					<div className="table-wrap">
 						<table>
 							<thead>
 								<tr>
-									<th>Event</th>
-									<th>Status</th>
-									<th>Starts, UTC</th>
-									<th>Actions</th>
+									<th>{translate('Event')}</th>
+									<th>{translate('Status')}</th>
+									<th>{translate('Starts, UTC')}</th>
+									<th>{translate('Actions')}</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -63,7 +70,7 @@ function EventContent() {
 									<tr key={event._id}>
 										<td>
 											{event.title}
-											{event.isDemo && <small> · Demo</small>}
+											{event.isDemo && <small> {translate('· Demo')}</small>}
 										</td>
 										<td>
 											<Status value={event.status} />
@@ -77,7 +84,7 @@ function EventContent() {
 													setSaved(false);
 												}}
 											>
-												Edit
+												{translate('Edit')}
 											</Button>
 										</td>
 									</tr>
@@ -113,60 +120,60 @@ function EventContent() {
 						});
 					}}
 				>
-					<h2>{selected ? 'Edit event' : 'New event'}</h2>
-					<Field label="Title" name="title" required maxLength={160} defaultValue={selected?.title} />
+					<h2>{selected ? translate('Edit event') : translate('New event')}</h2>
+					<Field label={translate('Title')} name="title" required maxLength={160} defaultValue={selected?.title} />
 					<TextArea
-						label="Description"
+						label={translate('Description')}
 						name="description"
 						required
 						maxLength={3000}
 						defaultValue={selected?.description}
 					/>
 					<Field
-						label="Starts, UTC"
+						label={translate('Starts, UTC')}
 						name="startsAt"
 						type="datetime-local"
 						required
 						defaultValue={dateInput(selected?.startsAt)}
 					/>
 					<Field
-						label="Ends, UTC"
+						label={translate('Ends, UTC')}
 						name="endsAt"
 						type="datetime-local"
 						required
 						defaultValue={dateInput(selected?.endsAt)}
 					/>
 					<Field
-						label="Location or online meeting"
+						label={translate('Location or online meeting')}
 						name="location"
 						required
 						maxLength={200}
 						defaultValue={selected?.location}
 					/>
 					<Field
-						label="Event website, optional"
+						label={translate('Event website, optional')}
 						name="eventUrl"
 						type="url"
 						pattern="https://.*"
 						maxLength={2000}
 						defaultValue={selected?.eventUrl || ''}
-						hint="Use an HTTPS address. Demo events do not show registration links."
+						hint={translate('Use an HTTPS address. Demo events do not show registration links.')}
 					/>
-					<Field label="Status">
+					<Field label={translate('Status')}>
 						<select name="status" defaultValue={selected?.status || 'DRAFT'}>
-							<option value="DRAFT">Draft</option>
-							<option value="PUBLISHED">Published</option>
-							<option value="ARCHIVED">Archived</option>
+							<option value="DRAFT">{translate('Draft')}</option>
+							<option value="PUBLISHED">{translate('Published')}</option>
+							<option value="ARCHIVED">{translate('Archived')}</option>
 						</select>
 					</Field>
 					<label className="checkbox">
 						<input name="isDemo" type="checkbox" defaultChecked={selected?.isDemo ?? false} />
-						Fictional demo event
+						{translate('Fictional demo event')}
 					</label>
 					<Feedback {...action} />
-					{saved && <Notice notify>Event saved.</Notice>}
+					{saved && <Notice notify>{translate('Event saved.')}</Notice>}
 					<Button type="submit" disabled={action.busy}>
-						Save event
+						{translate('Save event')}
 					</Button>
 				</form>
 			</div>

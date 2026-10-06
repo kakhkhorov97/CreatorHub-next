@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { ArrowLeft, ArrowRight } from 'phosphor-react';
 import React, { ReactNode } from 'react';
 import { label } from '../../utils/format';
@@ -6,7 +7,8 @@ import { Button } from './Button';
 import { Notice } from './Feedback';
 
 export function Status({ value }: { value?: string | null }) {
-	return <span className={`status ${value?.toLowerCase()}`}>{label(value)}</span>;
+	const { t: translate } = useSiteTranslation('common');
+	return <span className={`status ${value?.toLowerCase()}`}>{translate(label(value))}</span>;
 }
 
 export function Empty({ title = 'Nothing here yet', children }: { title?: string; children?: ReactNode }) {
@@ -27,13 +29,15 @@ export function QueryState({
 	error?: { message: string };
 	retry?: () => unknown;
 }) {
+	const { t: translate } = useSiteTranslation('common');
+
 	if (error)
 		return (
 			<Notice error>
-				{error.message}{' '}
+				{translate(error.message)}{' '}
 				{retry && (
 					<Button secondary onClick={retry}>
-						Try again
+						{translate('Try again')}
 					</Button>
 				)}
 			</Notice>
@@ -41,7 +45,7 @@ export function QueryState({
 	return loading ? (
 		<div className="loading" role="status">
 			<span />
-			Loading…
+			{translate('Loading…')}
 		</div>
 	) : null;
 }
@@ -59,8 +63,10 @@ export function Pager({
 	canNext: boolean;
 	loading: boolean;
 }) {
+	const { t: translate } = useSiteTranslation('common');
+
 	return (
-		<nav className="pager" aria-label="Pagination">
+		<nav className="pager" aria-label={translate('Pagination')}>
 			<Button
 				secondary
 				disabled={!offset || loading}
@@ -70,7 +76,7 @@ export function Pager({
 				}}
 			>
 				<ArrowLeft />
-				Previous
+				{translate('Previous')}
 			</Button>
 			<Button
 				secondary
@@ -80,7 +86,7 @@ export function Pager({
 					window.scrollTo({ top: 0, behavior: 'auto' });
 				}}
 			>
-				Next
+				{translate('Next')}
 				<ArrowRight />
 			</Button>
 		</nav>
@@ -111,16 +117,18 @@ export function Confirm({
 	busy?: boolean;
 	danger?: boolean;
 }) {
+	const { t: translate } = useSiteTranslation('common');
+
 	return (
 		<ConfirmationPrompt onCancel={onCancel} busy={busy}>
 			<h3>{title}</h3>
 			<p>{children}</p>
 			<div className="actions">
 				<Button danger={danger} disabled={busy} onClick={onConfirm}>
-					Confirm
+					{translate('Confirm')}
 				</Button>
 				<Button secondary disabled={busy} onClick={onCancel}>
-					Keep it
+					{translate('Keep it')}
 				</Button>
 			</div>
 		</ConfirmationPrompt>

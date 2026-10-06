@@ -1,650 +1,650 @@
 [
-	{
-		"name": "myContentReviews",
-		"kind": "query",
-		"admin": false,
-		"document": "query myContentReviews { myContentReviews { _id  createdAt  updatedAt  kind  targetId  ownerId  title  status  reason  baseUpdatedAt  preview  } }"
-	},
-	{
-		"name": "adminContentReviews",
-		"kind": "query",
-		"admin": true,
-		"document": "query adminContentReviews($status: String! = \"PENDING\") { adminContentReviews(status: $status) { _id  createdAt  updatedAt  kind  targetId  ownerId  title  status  reason  baseUpdatedAt  preview  } }"
-	},
-	{
-		"name": "adminOverview",
-		"kind": "query",
-		"admin": true,
-		"document": "query adminOverview { adminOverview { users  creators  projects  services  comments  categories  events  } }"
-	},
-	{
-		"name": "adminDirectory",
-		"kind": "query",
-		"admin": true,
-		"document": "query adminDirectory($kind: AdminKind!, $input: AdminDirectoryInput! = {}) { adminDirectory(kind: $kind, input: $input) { list { _id  title  status  updatedAt  deletedAt  ownerName  projectTitle  user { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } creator { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } project { _id  createdAt  updatedAt  creatorId  categoryId  title  slug  summary  description  coverImageUrl  media { type  url  altText  sortOrder  } tags  externalUrl  status  publishedAt  deletedAt  } service { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } comment { _id  createdAt  updatedAt  clientCommentKey  userId  projectId  content  status  editedAt  deletedAt  } } metaCounter { total  } } }"
-	},
-	{
-		"name": "getSiteContent",
-		"kind": "query",
-		"admin": false,
-		"document": "query getSiteContent { getSiteContent { homeHeading  homeSubheading  aboutText  contactEmail  contactText  footerCopy  } }"
-	},
-	{
-		"name": "getEvents",
-		"kind": "query",
-		"admin": false,
-		"document": "query getEvents($input: EventsInput! = {}) { getEvents(input: $input) { _id  createdAt  updatedAt  title  description  startsAt  endsAt  location  eventUrl  status  isDemo  } }"
-	},
-	{
-		"name": "getEvent",
-		"kind": "query",
-		"admin": false,
-		"document": "query getEvent($id: ID!) { getEvent(id: $id) { _id  createdAt  updatedAt  title  description  startsAt  endsAt  location  eventUrl  status  isDemo  } }"
-	},
-	{
-		"name": "adminEvents",
-		"kind": "query",
-		"admin": true,
-		"document": "query adminEvents($input: EventsInput! = {}) { adminEvents(input: $input) { _id  createdAt  updatedAt  title  description  startsAt  endsAt  location  eventUrl  status  isDemo  } }"
-	},
-	{
-		"name": "apiName",
-		"kind": "query",
-		"admin": false,
-		"document": "query apiName { apiName  }"
-	},
-	{
-		"name": "getMyAuthIdentities",
-		"kind": "query",
-		"admin": false,
-		"document": "query getMyAuthIdentities { getMyAuthIdentities { _id  createdAt  updatedAt  userId  provider  providerSubject  verifiedAt  revokedAt  lastLoginAt  } }"
-	},
-	{
-		"name": "categories",
-		"kind": "query",
-		"admin": false,
-		"document": "query categories { categories { _id  createdAt  updatedAt  slug  name  description  sortOrder  isActive  } }"
-	},
-	{
-		"name": "adminCategories",
-		"kind": "query",
-		"admin": true,
-		"document": "query adminCategories { adminCategories { _id  createdAt  updatedAt  slug  name  description  sortOrder  isActive  } }"
-	},
-	{
-		"name": "creator",
-		"kind": "query",
-		"admin": false,
-		"document": "query creator($slug: String!) { creator(slug: $slug) { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } }"
-	},
-	{
-		"name": "myCreatorProfile",
-		"kind": "query",
-		"admin": false,
-		"document": "query myCreatorProfile { myCreatorProfile { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } }"
-	},
-	{
-		"name": "getCities",
-		"kind": "query",
-		"admin": false,
-		"document": "query getCities { getCities { key  nameEn  nameKo  } }"
-	},
-	{
-		"name": "getCreators",
-		"kind": "query",
-		"admin": false,
-		"document": "query getCreators($input: DiscoveryInput! = {}) { getCreators(input: $input) { list { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } metaCounter { total  } } }"
-	},
-	{
-		"name": "getProjects",
-		"kind": "query",
-		"admin": false,
-		"document": "query getProjects($input: DiscoveryInput! = {}) { getProjects(input: $input) { list { _id  createdAt  updatedAt  creatorId  categoryId  title  slug  summary  description  coverImageUrl  media { type  url  altText  sortOrder  } tags  externalUrl  status  publishedAt  deletedAt  } metaCounter { total  } } }"
-	},
-	{
-		"name": "getServices",
-		"kind": "query",
-		"admin": false,
-		"document": "query getServices($input: DiscoveryInput! = {}) { getServices(input: $input) { list { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } metaCounter { total  } } }"
-	},
-	{
-		"name": "discoverCreators",
-		"kind": "query",
-		"admin": false,
-		"document": "query discoverCreators($input: AssistantInput!) { discoverCreators(input: $input) { mode  explanation  creators { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } projects { _id  createdAt  updatedAt  creatorId  categoryId  title  slug  summary  description  coverImageUrl  media { type  url  altText  sortOrder  } tags  externalUrl  status  publishedAt  deletedAt  } services { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } } }"
-	},
-	{
-		"name": "getMyProjectLike",
-		"kind": "query",
-		"admin": false,
-		"document": "query getMyProjectLike($projectId: ID!) { getMyProjectLike(projectId: $projectId)  }"
-	},
-	{
-		"name": "getProjectLikeCount",
-		"kind": "query",
-		"admin": false,
-		"document": "query getProjectLikeCount($projectId: ID!) { getProjectLikeCount(projectId: $projectId)  }"
-	},
-	{
-		"name": "getMyFollows",
-		"kind": "query",
-		"admin": false,
-		"document": "query getMyFollows($input: PageInput! = {}) { getMyFollows(input: $input) { list { _id  createdAt  updatedAt  followerId  creatorId  isActive  followedAt  } metaCounter { total  } } }"
-	},
-	{
-		"name": "getSavedProjects",
-		"kind": "query",
-		"admin": false,
-		"document": "query getSavedProjects($input: PageInput! = {}) { getSavedProjects(input: $input) { list { projectId  savedAt  available  project { _id  createdAt  updatedAt  creatorId  categoryId  title  slug  summary  description  coverImageUrl  media { type  url  altText  sortOrder  } tags  externalUrl  status  publishedAt  deletedAt  } } metaCounter { total  } } }"
-	},
-	{
-		"name": "getProjectComments",
-		"kind": "query",
-		"admin": false,
-		"document": "query getProjectComments($projectId: ID!, $input: PageInput! = {}) { getProjectComments(projectId: $projectId, input: $input) { list { _id  createdAt  updatedAt  clientCommentKey  userId  projectId  content  status  editedAt  deletedAt  } metaCounter { total  } } }"
-	},
-	{
-		"name": "getUnreadInquiryCount",
-		"kind": "query",
-		"admin": false,
-		"document": "query getUnreadInquiryCount { getUnreadInquiryCount  }"
-	},
-	{
-		"name": "getInquiry",
-		"kind": "query",
-		"admin": false,
-		"document": "query getInquiry($inquiryId: ID!) { getInquiry(inquiryId: $inquiryId) { _id  createdAt  updatedAt  counterpartyName  counterpartyAvatarUrl  unreadCount  clientId  creatorId  serviceId  subject  brief  budgetMin  budgetMax  currency  desiredDeadline  serviceSnapshot { title  pricingType  startingPrice  currency  estimatedDays  deliverables  } status  outcome  closedById  closedAt  submittedAt  lastMessageAt  version  } }"
-	},
-	{
-		"name": "getInquiries",
-		"kind": "query",
-		"admin": false,
-		"document": "query getInquiries($creatorInbox: Boolean! = false, $allConversations: Boolean! = false, $input: PageInput! = {}) { getInquiries(creatorInbox: $creatorInbox, allConversations: $allConversations, input: $input) { list { _id  createdAt  updatedAt  counterpartyName  counterpartyAvatarUrl  unreadCount  clientId  creatorId  serviceId  subject  brief  budgetMin  budgetMax  currency  desiredDeadline  serviceSnapshot { title  pricingType  startingPrice  currency  estimatedDays  deliverables  } status  outcome  closedById  closedAt  submittedAt  lastMessageAt  version  } metaCounter { total  } } }"
-	},
-	{
-		"name": "getInquiryMessages",
-		"kind": "query",
-		"admin": false,
-		"document": "query getInquiryMessages($inquiryId: ID!, $input: PageInput! = {}) { getInquiryMessages(inquiryId: $inquiryId, input: $input) { list { _id  createdAt  inquiryId  senderId  clientMessageKey  body  readAt  } metaCounter { total  } } }"
-	},
-	{
-		"name": "getInquiryEvents",
-		"kind": "query",
-		"admin": false,
-		"document": "query getInquiryEvents($inquiryId: ID!, $input: PageInput! = {}) { getInquiryEvents(inquiryId: $inquiryId, input: $input) { list { _id  createdAt  inquiryId  performedById  type  fromStatus  toStatus  messageId  version  } metaCounter { total  } } }"
-	},
-	{
-		"name": "getInquiryFeedback",
-		"kind": "query",
-		"admin": false,
-		"document": "query getInquiryFeedback($inquiryId: ID!) { getInquiryFeedback(inquiryId: $inquiryId) { _id  createdAt  updatedAt  creatorId  serviceId  rating  feedback  authorName  } }"
-	},
-	{
-		"name": "getCreatorFeedback",
-		"kind": "query",
-		"admin": false,
-		"document": "query getCreatorFeedback($creatorId: ID!, $input: PageInput! = {}) { getCreatorFeedback(creatorId: $creatorId, input: $input) { list { _id  createdAt  updatedAt  creatorId  serviceId  rating  feedback  authorName  } metaCounter { total  } } }"
-	},
-	{
-		"name": "getNotifications",
-		"kind": "query",
-		"admin": false,
-		"document": "query getNotifications($input: PageInput! = {}, $unreadOnly: Boolean! = false) { getNotifications(input: $input, unreadOnly: $unreadOnly) { list { _id  createdAt  recipientId  inquiryEventId  activityEventId  readAt  event { _id  createdAt  inquiryId  performedById  type  fromStatus  toStatus  messageId  version  } activityEvent { _id  createdAt  updatedAt  performedById  creatorId  type  projectId  commentId  } unavailable  } metaCounter { total  } } }"
-	},
-	{
-		"name": "getUnreadNotificationCount",
-		"kind": "query",
-		"admin": false,
-		"document": "query getUnreadNotificationCount { getUnreadNotificationCount  }"
-	},
-	{
-		"name": "getProject",
-		"kind": "query",
-		"admin": false,
-		"document": "query getProject($projectId: ID!) { getProject(projectId: $projectId) { _id  createdAt  updatedAt  creatorId  categoryId  title  slug  summary  description  coverImageUrl  media { type  url  altText  sortOrder  } tags  externalUrl  status  publishedAt  deletedAt  } }"
-	},
-	{
-		"name": "getMyProjects",
-		"kind": "query",
-		"admin": false,
-		"document": "query getMyProjects($input: PageInput! = {}) { getMyProjects(input: $input) { list { _id  createdAt  updatedAt  creatorId  categoryId  title  slug  summary  description  coverImageUrl  media { type  url  altText  sortOrder  } tags  externalUrl  status  publishedAt  deletedAt  } metaCounter { total  } } }"
-	},
-	{
-		"name": "getService",
-		"kind": "query",
-		"admin": false,
-		"document": "query getService($serviceId: ID!) { getService(serviceId: $serviceId) { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } }"
-	},
-	{
-		"name": "getMyServices",
-		"kind": "query",
-		"admin": false,
-		"document": "query getMyServices($input: PageInput! = {}) { getMyServices(input: $input) { list { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } metaCounter { total  } } }"
-	},
-	{
-		"name": "me",
-		"kind": "query",
-		"admin": false,
-		"document": "query me { me { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } }"
-	},
-	{
-		"name": "adminDecideContentReview",
-		"kind": "mutation",
-		"admin": true,
-		"document": "mutation adminDecideContentReview($id: ID!, $approve: Boolean!, $revision: DateTime!, $reason: String) { adminDecideContentReview(id: $id, approve: $approve, revision: $revision, reason: $reason) { _id  createdAt  updatedAt  kind  targetId  ownerId  title  status  reason  baseUpdatedAt  preview  } }"
-	},
-	{
-		"name": "adminUpdateUser",
-		"kind": "mutation",
-		"admin": true,
-		"document": "mutation adminUpdateUser($id: ID!, $input: AdminUserUpdateInput!) { adminUpdateUser(id: $id, input: $input) { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } }"
-	},
-	{
-		"name": "adminSetUserStatus",
-		"kind": "mutation",
-		"admin": true,
-		"document": "mutation adminSetUserStatus($id: ID!, $status: UserStatus!) { adminSetUserStatus(id: $id, status: $status) { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } }"
-	},
-	{
-		"name": "adminUpdateCreator",
-		"kind": "mutation",
-		"admin": true,
-		"document": "mutation adminUpdateCreator($id: ID!, $input: UpdateCreatorInput!, $status: ProfileStatus) { adminUpdateCreator(id: $id, input: $input, status: $status) { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } }"
-	},
-	{
-		"name": "adminCreateProject",
-		"kind": "mutation",
-		"admin": true,
-		"document": "mutation adminCreateProject($creatorId: ID!, $input: CreateProjectInput!) { adminCreateProject(creatorId: $creatorId, input: $input) { _id  createdAt  updatedAt  creatorId  categoryId  title  slug  summary  description  coverImageUrl  media { type  url  altText  sortOrder  } tags  externalUrl  status  publishedAt  deletedAt  } }"
-	},
-	{
-		"name": "adminUpdateProject",
-		"kind": "mutation",
-		"admin": true,
-		"document": "mutation adminUpdateProject($id: ID!, $input: AdminProjectUpdateInput!, $status: ProjectStatus) { adminUpdateProject(id: $id, input: $input, status: $status) { _id  createdAt  updatedAt  creatorId  categoryId  title  slug  summary  description  coverImageUrl  media { type  url  altText  sortOrder  } tags  externalUrl  status  publishedAt  deletedAt  } }"
-	},
-	{
-		"name": "adminCreateService",
-		"kind": "mutation",
-		"admin": true,
-		"document": "mutation adminCreateService($creatorId: ID!, $input: CreateServiceInput!) { adminCreateService(creatorId: $creatorId, input: $input) { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } }"
-	},
-	{
-		"name": "adminUpdateService",
-		"kind": "mutation",
-		"admin": true,
-		"document": "mutation adminUpdateService($id: ID!, $input: UpdateServiceInput!, $status: ServiceStatus) { adminUpdateService(id: $id, input: $input, status: $status) { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } }"
-	},
-	{
-		"name": "adminSetRemoved",
-		"kind": "mutation",
-		"admin": true,
-		"document": "mutation adminSetRemoved($kind: AdminKind!, $id: ID!, $removed: Boolean!) { adminSetRemoved(kind: $kind, id: $id, removed: $removed)  }"
-	},
-	{
-		"name": "adminUpdateSiteContent",
-		"kind": "mutation",
-		"admin": true,
-		"document": "mutation adminUpdateSiteContent($input: SiteContentInput!) { adminUpdateSiteContent(input: $input) { homeHeading  homeSubheading  aboutText  contactEmail  contactText  footerCopy  } }"
-	},
-	{
-		"name": "imageUploader",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation imageUploader($file: Upload!, $target: String! = \"project\") { imageUploader(file: $file, target: $target)  }"
-	},
-	{
-		"name": "imagesUploader",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation imagesUploader($files: [Upload!]!, $target: String! = \"project\") { imagesUploader(files: $files, target: $target)  }"
-	},
-	{
-		"name": "createEvent",
-		"kind": "mutation",
-		"admin": true,
-		"document": "mutation createEvent($input: EventInput!) { createEvent(input: $input) { _id  createdAt  updatedAt  title  description  startsAt  endsAt  location  eventUrl  status  isDemo  } }"
-	},
-	{
-		"name": "updateEvent",
-		"kind": "mutation",
-		"admin": true,
-		"document": "mutation updateEvent($id: ID!, $input: UpdateEventInput!) { updateEvent(id: $id, input: $input) { _id  createdAt  updatedAt  title  description  startsAt  endsAt  location  eventUrl  status  isDemo  } }"
-	},
-	{
-		"name": "register",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation register($input: RegisterInput!) { register(input: $input) { accessToken  refreshToken  expiresIn  user { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } } }"
-	},
-	{
-		"name": "registerPhone",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation registerPhone($input: PhoneRegisterInput!) { registerPhone(input: $input) { accessToken  refreshToken  expiresIn  user { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } } }"
-	},
-	{
-		"name": "loginPhone",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation loginPhone($input: PhoneLoginInput!) { loginPhone(input: $input) { accessToken  refreshToken  expiresIn  user { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } } }"
-	},
-	{
-		"name": "beginSocialLogin",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation beginSocialLogin($provider: AuthProvider!) { beginSocialLogin(provider: $provider)  }"
-	},
-	{
-		"name": "loginSocial",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation loginSocial($input: SocialLoginInput!) { loginSocial(input: $input) { accessToken  refreshToken  expiresIn  user { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } } }"
-	},
-	{
-		"name": "login",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation login($input: LoginInput!) { login(input: $input) { accessToken  refreshToken  expiresIn  user { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } } }"
-	},
-	{
-		"name": "refreshSession",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation refreshSession($refreshToken: String!) { refreshSession(refreshToken: $refreshToken) { accessToken  refreshToken  expiresIn  user { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } } }"
-	},
-	{
-		"name": "verifyEmail",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation verifyEmail($token: String!) { verifyEmail(token: $token)  }"
-	},
-	{
-		"name": "requestEmailVerification",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation requestEmailVerification($input: EmailInput!) { requestEmailVerification(input: $input)  }"
-	},
-	{
-		"name": "requestPasswordReset",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation requestPasswordReset($input: EmailInput!) { requestPasswordReset(input: $input)  }"
-	},
-	{
-		"name": "resetPassword",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation resetPassword($input: ResetPasswordInput!) { resetPassword(input: $input)  }"
-	},
-	{
-		"name": "linkEmail",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation linkEmail($input: LinkEmailInput!) { linkEmail(input: $input) { _id  createdAt  updatedAt  userId  provider  providerSubject  verifiedAt  revokedAt  lastLoginAt  } }"
-	},
-	{
-		"name": "linkPhone",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation linkPhone($input: LinkPhoneInput!) { linkPhone(input: $input) { _id  createdAt  updatedAt  userId  provider  providerSubject  verifiedAt  revokedAt  lastLoginAt  } }"
-	},
-	{
-		"name": "beginSocialLink",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation beginSocialLink($provider: AuthProvider!) { beginSocialLink(provider: $provider)  }"
-	},
-	{
-		"name": "linkSocial",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation linkSocial($input: SocialLoginInput!) { linkSocial(input: $input) { _id  createdAt  updatedAt  userId  provider  providerSubject  verifiedAt  revokedAt  lastLoginAt  } }"
-	},
-	{
-		"name": "unlinkAuthIdentity",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation unlinkAuthIdentity($authIdentityId: ID!) { unlinkAuthIdentity(authIdentityId: $authIdentityId)  }"
-	},
-	{
-		"name": "changePhonePassword",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation changePhonePassword($input: ChangePhonePasswordInput!) { changePhonePassword(input: $input)  }"
-	},
-	{
-		"name": "logout",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation logout { logout  }"
-	},
-	{
-		"name": "createCategory",
-		"kind": "mutation",
-		"admin": true,
-		"document": "mutation createCategory($input: CategoryInput!) { createCategory(input: $input) { _id  createdAt  updatedAt  slug  name  description  sortOrder  isActive  } }"
-	},
-	{
-		"name": "updateCategory",
-		"kind": "mutation",
-		"admin": true,
-		"document": "mutation updateCategory($id: ID!, $input: UpdateCategoryInput!) { updateCategory(id: $id, input: $input) { _id  createdAt  updatedAt  slug  name  description  sortOrder  isActive  } }"
-	},
-	{
-		"name": "createCreatorProfile",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation createCreatorProfile($input: CreateCreatorInput!) { createCreatorProfile(input: $input) { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } }"
-	},
-	{
-		"name": "updateCreatorProfile",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation updateCreatorProfile($input: UpdateCreatorInput!) { updateCreatorProfile(input: $input) { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } }"
-	},
-	{
-		"name": "setCreatorProfileStatus",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation setCreatorProfileStatus($status: ProfileStatus!) { setCreatorProfileStatus(status: $status) { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } }"
-	},
-	{
-		"name": "deleteCreatorProfile",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation deleteCreatorProfile { deleteCreatorProfile  }"
-	},
-	{
-		"name": "setProjectLike",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation setProjectLike($projectId: ID!, $liked: Boolean!) { setProjectLike(projectId: $projectId, liked: $liked)  }"
-	},
-	{
-		"name": "setCreatorFollow",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation setCreatorFollow($creatorId: ID!, $following: Boolean!) { setCreatorFollow(creatorId: $creatorId, following: $following)  }"
-	},
-	{
-		"name": "setProjectSaved",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation setProjectSaved($projectId: ID!, $saved: Boolean!) { setProjectSaved(projectId: $projectId, saved: $saved)  }"
-	},
-	{
-		"name": "createProjectComment",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation createProjectComment($input: CommentInput!) { createProjectComment(input: $input) { _id  createdAt  updatedAt  clientCommentKey  userId  projectId  content  status  editedAt  deletedAt  } }"
-	},
-	{
-		"name": "editProjectComment",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation editProjectComment($commentId: ID!, $input: EditCommentInput!) { editProjectComment(commentId: $commentId, input: $input) { _id  createdAt  updatedAt  clientCommentKey  userId  projectId  content  status  editedAt  deletedAt  } }"
-	},
-	{
-		"name": "deleteProjectComment",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation deleteProjectComment($commentId: ID!) { deleteProjectComment(commentId: $commentId)  }"
-	},
-	{
-		"name": "moderateProjectComment",
-		"kind": "mutation",
-		"admin": true,
-		"document": "mutation moderateProjectComment($commentId: ID!, $hidden: Boolean!) { moderateProjectComment(commentId: $commentId, hidden: $hidden) { _id  createdAt  updatedAt  clientCommentKey  userId  projectId  content  status  editedAt  deletedAt  } }"
-	},
-	{
-		"name": "markInquiryRead",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation markInquiryRead($input: InquiryVersionInput!) { markInquiryRead(input: $input)  }"
-	},
-	{
-		"name": "sendInquiry",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation sendInquiry($input: SendInquiryInput!) { sendInquiry(input: $input) { _id  createdAt  updatedAt  counterpartyName  counterpartyAvatarUrl  unreadCount  clientId  creatorId  serviceId  subject  brief  budgetMin  budgetMax  currency  desiredDeadline  serviceSnapshot { title  pricingType  startingPrice  currency  estimatedDays  deliverables  } status  outcome  closedById  closedAt  submittedAt  lastMessageAt  version  } }"
-	},
-	{
-		"name": "completeInquiry",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation completeInquiry($input: InquiryVersionInput!) { completeInquiry(input: $input) { _id  createdAt  updatedAt  counterpartyName  counterpartyAvatarUrl  unreadCount  clientId  creatorId  serviceId  subject  brief  budgetMin  budgetMax  currency  desiredDeadline  serviceSnapshot { title  pricingType  startingPrice  currency  estimatedDays  deliverables  } status  outcome  closedById  closedAt  submittedAt  lastMessageAt  version  } }"
-	},
-	{
-		"name": "createServiceFeedback",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation createServiceFeedback($input: CreateServiceFeedbackInput!) { createServiceFeedback(input: $input) { _id  createdAt  updatedAt  creatorId  serviceId  rating  feedback  authorName  } }"
-	},
-	{
-		"name": "createInquiry",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation createInquiry($input: CreateInquiryInput!) { createInquiry(input: $input) { _id  createdAt  updatedAt  counterpartyName  counterpartyAvatarUrl  unreadCount  clientId  creatorId  serviceId  subject  brief  budgetMin  budgetMax  currency  desiredDeadline  serviceSnapshot { title  pricingType  startingPrice  currency  estimatedDays  deliverables  } status  outcome  closedById  closedAt  submittedAt  lastMessageAt  version  } }"
-	},
-	{
-		"name": "updateInquiry",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation updateInquiry($input: UpdateInquiryInput!) { updateInquiry(input: $input) { _id  createdAt  updatedAt  counterpartyName  counterpartyAvatarUrl  unreadCount  clientId  creatorId  serviceId  subject  brief  budgetMin  budgetMax  currency  desiredDeadline  serviceSnapshot { title  pricingType  startingPrice  currency  estimatedDays  deliverables  } status  outcome  closedById  closedAt  submittedAt  lastMessageAt  version  } }"
-	},
-	{
-		"name": "deleteInquiryDraft",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation deleteInquiryDraft($input: InquiryVersionInput!) { deleteInquiryDraft(input: $input)  }"
-	},
-	{
-		"name": "submitInquiry",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation submitInquiry($input: InquiryVersionInput!) { submitInquiry(input: $input) { _id  createdAt  updatedAt  counterpartyName  counterpartyAvatarUrl  unreadCount  clientId  creatorId  serviceId  subject  brief  budgetMin  budgetMax  currency  desiredDeadline  serviceSnapshot { title  pricingType  startingPrice  currency  estimatedDays  deliverables  } status  outcome  closedById  closedAt  submittedAt  lastMessageAt  version  } }"
-	},
-	{
-		"name": "sendInquiryMessage",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation sendInquiryMessage($input: SendMessageInput!) { sendInquiryMessage(input: $input) { _id  createdAt  inquiryId  senderId  clientMessageKey  body  readAt  } }"
-	},
-	{
-		"name": "markInquiryMessageRead",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation markInquiryMessageRead($messageId: ID!) { markInquiryMessageRead(messageId: $messageId)  }"
-	},
-	{
-		"name": "declineInquiry",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation declineInquiry($input: InquiryVersionInput!) { declineInquiry(input: $input) { _id  createdAt  updatedAt  counterpartyName  counterpartyAvatarUrl  unreadCount  clientId  creatorId  serviceId  subject  brief  budgetMin  budgetMax  currency  desiredDeadline  serviceSnapshot { title  pricingType  startingPrice  currency  estimatedDays  deliverables  } status  outcome  closedById  closedAt  submittedAt  lastMessageAt  version  } }"
-	},
-	{
-		"name": "cancelInquiry",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation cancelInquiry($input: InquiryVersionInput!) { cancelInquiry(input: $input) { _id  createdAt  updatedAt  counterpartyName  counterpartyAvatarUrl  unreadCount  clientId  creatorId  serviceId  subject  brief  budgetMin  budgetMax  currency  desiredDeadline  serviceSnapshot { title  pricingType  startingPrice  currency  estimatedDays  deliverables  } status  outcome  closedById  closedAt  submittedAt  lastMessageAt  version  } }"
-	},
-	{
-		"name": "closeInquiry",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation closeInquiry($input: CloseInquiryInput!) { closeInquiry(input: $input) { _id  createdAt  updatedAt  counterpartyName  counterpartyAvatarUrl  unreadCount  clientId  creatorId  serviceId  subject  brief  budgetMin  budgetMax  currency  desiredDeadline  serviceSnapshot { title  pricingType  startingPrice  currency  estimatedDays  deliverables  } status  outcome  closedById  closedAt  submittedAt  lastMessageAt  version  } }"
-	},
-	{
-		"name": "markNotificationRead",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation markNotificationRead($notificationId: ID!) { markNotificationRead(notificationId: $notificationId)  }"
-	},
-	{
-		"name": "createProject",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation createProject($input: CreateProjectInput!) { createProject(input: $input) { _id  createdAt  updatedAt  creatorId  categoryId  title  slug  summary  description  coverImageUrl  media { type  url  altText  sortOrder  } tags  externalUrl  status  publishedAt  deletedAt  } }"
-	},
-	{
-		"name": "updateProject",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation updateProject($projectId: ID!, $input: UpdateProjectInput!) { updateProject(projectId: $projectId, input: $input) { _id  createdAt  updatedAt  creatorId  categoryId  title  slug  summary  description  coverImageUrl  media { type  url  altText  sortOrder  } tags  externalUrl  status  publishedAt  deletedAt  } }"
-	},
-	{
-		"name": "setProjectStatus",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation setProjectStatus($projectId: ID!, $status: ProjectStatus!) { setProjectStatus(projectId: $projectId, status: $status) { _id  createdAt  updatedAt  creatorId  categoryId  title  slug  summary  description  coverImageUrl  media { type  url  altText  sortOrder  } tags  externalUrl  status  publishedAt  deletedAt  } }"
-	},
-	{
-		"name": "deleteProject",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation deleteProject($projectId: ID!) { deleteProject(projectId: $projectId)  }"
-	},
-	{
-		"name": "createService",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation createService($input: CreateServiceInput!) { createService(input: $input) { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } }"
-	},
-	{
-		"name": "updateService",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation updateService($serviceId: ID!, $input: UpdateServiceInput!) { updateService(serviceId: $serviceId, input: $input) { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } }"
-	},
-	{
-		"name": "setServiceStatus",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation setServiceStatus($serviceId: ID!, $status: ServiceStatus!) { setServiceStatus(serviceId: $serviceId, status: $status) { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } }"
-	},
-	{
-		"name": "deleteService",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation deleteService($serviceId: ID!) { deleteService(serviceId: $serviceId)  }"
-	},
-	{
-		"name": "updateMe",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation updateMe($input: UpdateUserInput!) { updateMe(input: $input) { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } }"
-	},
-	{
-		"name": "deleteMyAccount",
-		"kind": "mutation",
-		"admin": false,
-		"document": "mutation deleteMyAccount { deleteMyAccount  }"
-	},
-	{
-		"name": "setAccountSuspended",
-		"kind": "mutation",
-		"admin": true,
-		"document": "mutation setAccountSuspended($userId: ID!, $suspended: Boolean!) { setAccountSuspended(userId: $userId, suspended: $suspended) { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } }"
-	}
+  {
+    "name": "myContentReviews",
+    "kind": "query",
+    "admin": false,
+    "document": "query myContentReviews { myContentReviews { _id  createdAt  updatedAt  kind  targetId  ownerId  title  status  reason  baseUpdatedAt  preview  } }"
+  },
+  {
+    "name": "adminContentReviews",
+    "kind": "query",
+    "admin": true,
+    "document": "query adminContentReviews($status: String! = \"PENDING\") { adminContentReviews(status: $status) { _id  createdAt  updatedAt  kind  targetId  ownerId  title  status  reason  baseUpdatedAt  preview  } }"
+  },
+  {
+    "name": "adminOverview",
+    "kind": "query",
+    "admin": true,
+    "document": "query adminOverview { adminOverview { users  creators  projects  services  comments  categories  events  } }"
+  },
+  {
+    "name": "adminDirectory",
+    "kind": "query",
+    "admin": true,
+    "document": "query adminDirectory($kind: AdminKind!, $input: AdminDirectoryInput! = {}) { adminDirectory(kind: $kind, input: $input) { list { _id  title  status  updatedAt  deletedAt  ownerName  projectTitle  user { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } creator { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } project { _id  createdAt  updatedAt  creatorId  categoryId  title  slug  summary  description  coverImageUrl  media { type  url  altText  sortOrder  } tags  externalUrl  status  publishedAt  deletedAt  } service { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } comment { _id  createdAt  updatedAt  clientCommentKey  userId  projectId  content  status  editedAt  deletedAt  } } metaCounter { total  } } }"
+  },
+  {
+    "name": "getSiteContent",
+    "kind": "query",
+    "admin": false,
+    "document": "query getSiteContent { getSiteContent { homeHeading  homeSubheading  aboutText  contactEmail  contactText  footerCopy  } }"
+  },
+  {
+    "name": "getEvents",
+    "kind": "query",
+    "admin": false,
+    "document": "query getEvents($input: EventsInput! = {}) { getEvents(input: $input) { _id  createdAt  updatedAt  title  description  startsAt  endsAt  location  eventUrl  status  isDemo  } }"
+  },
+  {
+    "name": "getEvent",
+    "kind": "query",
+    "admin": false,
+    "document": "query getEvent($id: ID!) { getEvent(id: $id) { _id  createdAt  updatedAt  title  description  startsAt  endsAt  location  eventUrl  status  isDemo  } }"
+  },
+  {
+    "name": "adminEvents",
+    "kind": "query",
+    "admin": true,
+    "document": "query adminEvents($input: EventsInput! = {}) { adminEvents(input: $input) { _id  createdAt  updatedAt  title  description  startsAt  endsAt  location  eventUrl  status  isDemo  } }"
+  },
+  {
+    "name": "apiName",
+    "kind": "query",
+    "admin": false,
+    "document": "query apiName { apiName  }"
+  },
+  {
+    "name": "getMyAuthIdentities",
+    "kind": "query",
+    "admin": false,
+    "document": "query getMyAuthIdentities { getMyAuthIdentities { _id  createdAt  updatedAt  userId  provider  providerSubject  verifiedAt  revokedAt  lastLoginAt  } }"
+  },
+  {
+    "name": "categories",
+    "kind": "query",
+    "admin": false,
+    "document": "query categories { categories { _id  createdAt  updatedAt  slug  name  description  sortOrder  isActive  } }"
+  },
+  {
+    "name": "adminCategories",
+    "kind": "query",
+    "admin": true,
+    "document": "query adminCategories { adminCategories { _id  createdAt  updatedAt  slug  name  description  sortOrder  isActive  } }"
+  },
+  {
+    "name": "creator",
+    "kind": "query",
+    "admin": false,
+    "document": "query creator($slug: String!) { creator(slug: $slug) { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } }"
+  },
+  {
+    "name": "myCreatorProfile",
+    "kind": "query",
+    "admin": false,
+    "document": "query myCreatorProfile { myCreatorProfile { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } }"
+  },
+  {
+    "name": "getCities",
+    "kind": "query",
+    "admin": false,
+    "document": "query getCities { getCities { key  nameEn  nameKo  } }"
+  },
+  {
+    "name": "getCreators",
+    "kind": "query",
+    "admin": false,
+    "document": "query getCreators($input: DiscoveryInput! = {}) { getCreators(input: $input) { list { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } metaCounter { total  } } }"
+  },
+  {
+    "name": "getProjects",
+    "kind": "query",
+    "admin": false,
+    "document": "query getProjects($input: DiscoveryInput! = {}) { getProjects(input: $input) { list { _id  createdAt  updatedAt  creatorId  categoryId  title  slug  summary  description  coverImageUrl  media { type  url  altText  sortOrder  } tags  externalUrl  status  publishedAt  deletedAt  } metaCounter { total  } } }"
+  },
+  {
+    "name": "getServices",
+    "kind": "query",
+    "admin": false,
+    "document": "query getServices($input: DiscoveryInput! = {}) { getServices(input: $input) { list { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } metaCounter { total  } } }"
+  },
+  {
+    "name": "discoverCreators",
+    "kind": "query",
+    "admin": false,
+    "document": "query discoverCreators($input: AssistantInput!) { discoverCreators(input: $input) { mode  explanation  creators { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } projects { _id  createdAt  updatedAt  creatorId  categoryId  title  slug  summary  description  coverImageUrl  media { type  url  altText  sortOrder  } tags  externalUrl  status  publishedAt  deletedAt  } services { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } } }"
+  },
+  {
+    "name": "getMyProjectLike",
+    "kind": "query",
+    "admin": false,
+    "document": "query getMyProjectLike($projectId: ID!) { getMyProjectLike(projectId: $projectId)  }"
+  },
+  {
+    "name": "getProjectLikeCount",
+    "kind": "query",
+    "admin": false,
+    "document": "query getProjectLikeCount($projectId: ID!) { getProjectLikeCount(projectId: $projectId)  }"
+  },
+  {
+    "name": "getMyFollows",
+    "kind": "query",
+    "admin": false,
+    "document": "query getMyFollows($input: PageInput! = {}) { getMyFollows(input: $input) { list { _id  createdAt  updatedAt  followerId  creatorId  isActive  followedAt  } metaCounter { total  } } }"
+  },
+  {
+    "name": "getSavedProjects",
+    "kind": "query",
+    "admin": false,
+    "document": "query getSavedProjects($input: PageInput! = {}) { getSavedProjects(input: $input) { list { projectId  savedAt  available  project { _id  createdAt  updatedAt  creatorId  categoryId  title  slug  summary  description  coverImageUrl  media { type  url  altText  sortOrder  } tags  externalUrl  status  publishedAt  deletedAt  } } metaCounter { total  } } }"
+  },
+  {
+    "name": "getProjectComments",
+    "kind": "query",
+    "admin": false,
+    "document": "query getProjectComments($projectId: ID!, $input: PageInput! = {}) { getProjectComments(projectId: $projectId, input: $input) { list { _id  createdAt  updatedAt  clientCommentKey  userId  projectId  content  status  editedAt  deletedAt  } metaCounter { total  } } }"
+  },
+  {
+    "name": "getUnreadInquiryCount",
+    "kind": "query",
+    "admin": false,
+    "document": "query getUnreadInquiryCount { getUnreadInquiryCount  }"
+  },
+  {
+    "name": "getInquiry",
+    "kind": "query",
+    "admin": false,
+    "document": "query getInquiry($inquiryId: ID!) { getInquiry(inquiryId: $inquiryId) { _id  createdAt  updatedAt  counterpartyName  counterpartyAvatarUrl  unreadCount  clientId  creatorId  serviceId  subject  brief  budgetMin  budgetMax  currency  desiredDeadline  serviceSnapshot { title  pricingType  startingPrice  currency  estimatedDays  deliverables  } status  outcome  closedById  closedAt  submittedAt  lastMessageAt  version  } }"
+  },
+  {
+    "name": "getInquiries",
+    "kind": "query",
+    "admin": false,
+    "document": "query getInquiries($creatorInbox: Boolean! = false, $allConversations: Boolean! = false, $input: PageInput! = {}) { getInquiries(creatorInbox: $creatorInbox, allConversations: $allConversations, input: $input) { list { _id  createdAt  updatedAt  counterpartyName  counterpartyAvatarUrl  unreadCount  clientId  creatorId  serviceId  subject  brief  budgetMin  budgetMax  currency  desiredDeadline  serviceSnapshot { title  pricingType  startingPrice  currency  estimatedDays  deliverables  } status  outcome  closedById  closedAt  submittedAt  lastMessageAt  version  } metaCounter { total  } } }"
+  },
+  {
+    "name": "getInquiryMessages",
+    "kind": "query",
+    "admin": false,
+    "document": "query getInquiryMessages($inquiryId: ID!, $input: PageInput! = {}) { getInquiryMessages(inquiryId: $inquiryId, input: $input) { list { _id  createdAt  inquiryId  senderId  clientMessageKey  body  readAt  } metaCounter { total  } } }"
+  },
+  {
+    "name": "getInquiryEvents",
+    "kind": "query",
+    "admin": false,
+    "document": "query getInquiryEvents($inquiryId: ID!, $input: PageInput! = {}) { getInquiryEvents(inquiryId: $inquiryId, input: $input) { list { _id  createdAt  inquiryId  performedById  type  fromStatus  toStatus  messageId  version  } metaCounter { total  } } }"
+  },
+  {
+    "name": "getInquiryFeedback",
+    "kind": "query",
+    "admin": false,
+    "document": "query getInquiryFeedback($inquiryId: ID!) { getInquiryFeedback(inquiryId: $inquiryId) { _id  createdAt  updatedAt  creatorId  serviceId  rating  feedback  authorName  } }"
+  },
+  {
+    "name": "getCreatorFeedback",
+    "kind": "query",
+    "admin": false,
+    "document": "query getCreatorFeedback($creatorId: ID!, $input: PageInput! = {}) { getCreatorFeedback(creatorId: $creatorId, input: $input) { list { _id  createdAt  updatedAt  creatorId  serviceId  rating  feedback  authorName  } metaCounter { total  } } }"
+  },
+  {
+    "name": "getNotifications",
+    "kind": "query",
+    "admin": false,
+    "document": "query getNotifications($input: PageInput! = {}, $unreadOnly: Boolean! = false) { getNotifications(input: $input, unreadOnly: $unreadOnly) { list { _id  createdAt  recipientId  inquiryEventId  activityEventId  readAt  event { _id  createdAt  inquiryId  performedById  type  fromStatus  toStatus  messageId  version  } activityEvent { _id  createdAt  updatedAt  performedById  creatorId  type  projectId  commentId  } unavailable  } metaCounter { total  } } }"
+  },
+  {
+    "name": "getUnreadNotificationCount",
+    "kind": "query",
+    "admin": false,
+    "document": "query getUnreadNotificationCount { getUnreadNotificationCount  }"
+  },
+  {
+    "name": "getProject",
+    "kind": "query",
+    "admin": false,
+    "document": "query getProject($projectId: ID!) { getProject(projectId: $projectId) { _id  createdAt  updatedAt  creatorId  categoryId  title  slug  summary  description  coverImageUrl  media { type  url  altText  sortOrder  } tags  externalUrl  status  publishedAt  deletedAt  } }"
+  },
+  {
+    "name": "getMyProjects",
+    "kind": "query",
+    "admin": false,
+    "document": "query getMyProjects($input: PageInput! = {}) { getMyProjects(input: $input) { list { _id  createdAt  updatedAt  creatorId  categoryId  title  slug  summary  description  coverImageUrl  media { type  url  altText  sortOrder  } tags  externalUrl  status  publishedAt  deletedAt  } metaCounter { total  } } }"
+  },
+  {
+    "name": "getService",
+    "kind": "query",
+    "admin": false,
+    "document": "query getService($serviceId: ID!) { getService(serviceId: $serviceId) { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } }"
+  },
+  {
+    "name": "getMyServices",
+    "kind": "query",
+    "admin": false,
+    "document": "query getMyServices($input: PageInput! = {}) { getMyServices(input: $input) { list { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } metaCounter { total  } } }"
+  },
+  {
+    "name": "me",
+    "kind": "query",
+    "admin": false,
+    "document": "query me { me { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } }"
+  },
+  {
+    "name": "adminDecideContentReview",
+    "kind": "mutation",
+    "admin": true,
+    "document": "mutation adminDecideContentReview($id: ID!, $approve: Boolean!, $revision: DateTime!, $reason: String) { adminDecideContentReview(id: $id, approve: $approve, revision: $revision, reason: $reason) { _id  createdAt  updatedAt  kind  targetId  ownerId  title  status  reason  baseUpdatedAt  preview  } }"
+  },
+  {
+    "name": "adminUpdateUser",
+    "kind": "mutation",
+    "admin": true,
+    "document": "mutation adminUpdateUser($id: ID!, $input: AdminUserUpdateInput!) { adminUpdateUser(id: $id, input: $input) { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } }"
+  },
+  {
+    "name": "adminSetUserStatus",
+    "kind": "mutation",
+    "admin": true,
+    "document": "mutation adminSetUserStatus($id: ID!, $status: UserStatus!) { adminSetUserStatus(id: $id, status: $status) { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } }"
+  },
+  {
+    "name": "adminUpdateCreator",
+    "kind": "mutation",
+    "admin": true,
+    "document": "mutation adminUpdateCreator($id: ID!, $input: UpdateCreatorInput!, $status: ProfileStatus) { adminUpdateCreator(id: $id, input: $input, status: $status) { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } }"
+  },
+  {
+    "name": "adminCreateProject",
+    "kind": "mutation",
+    "admin": true,
+    "document": "mutation adminCreateProject($creatorId: ID!, $input: CreateProjectInput!) { adminCreateProject(creatorId: $creatorId, input: $input) { _id  createdAt  updatedAt  creatorId  categoryId  title  slug  summary  description  coverImageUrl  media { type  url  altText  sortOrder  } tags  externalUrl  status  publishedAt  deletedAt  } }"
+  },
+  {
+    "name": "adminUpdateProject",
+    "kind": "mutation",
+    "admin": true,
+    "document": "mutation adminUpdateProject($id: ID!, $input: AdminProjectUpdateInput!, $status: ProjectStatus) { adminUpdateProject(id: $id, input: $input, status: $status) { _id  createdAt  updatedAt  creatorId  categoryId  title  slug  summary  description  coverImageUrl  media { type  url  altText  sortOrder  } tags  externalUrl  status  publishedAt  deletedAt  } }"
+  },
+  {
+    "name": "adminCreateService",
+    "kind": "mutation",
+    "admin": true,
+    "document": "mutation adminCreateService($creatorId: ID!, $input: CreateServiceInput!) { adminCreateService(creatorId: $creatorId, input: $input) { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } }"
+  },
+  {
+    "name": "adminUpdateService",
+    "kind": "mutation",
+    "admin": true,
+    "document": "mutation adminUpdateService($id: ID!, $input: UpdateServiceInput!, $status: ServiceStatus) { adminUpdateService(id: $id, input: $input, status: $status) { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } }"
+  },
+  {
+    "name": "adminSetRemoved",
+    "kind": "mutation",
+    "admin": true,
+    "document": "mutation adminSetRemoved($kind: AdminKind!, $id: ID!, $removed: Boolean!) { adminSetRemoved(kind: $kind, id: $id, removed: $removed)  }"
+  },
+  {
+    "name": "adminUpdateSiteContent",
+    "kind": "mutation",
+    "admin": true,
+    "document": "mutation adminUpdateSiteContent($input: SiteContentInput!) { adminUpdateSiteContent(input: $input) { homeHeading  homeSubheading  aboutText  contactEmail  contactText  footerCopy  } }"
+  },
+  {
+    "name": "imageUploader",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation imageUploader($file: Upload!, $target: String! = \"project\") { imageUploader(file: $file, target: $target)  }"
+  },
+  {
+    "name": "imagesUploader",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation imagesUploader($files: [Upload!]!, $target: String! = \"project\") { imagesUploader(files: $files, target: $target)  }"
+  },
+  {
+    "name": "createEvent",
+    "kind": "mutation",
+    "admin": true,
+    "document": "mutation createEvent($input: EventInput!) { createEvent(input: $input) { _id  createdAt  updatedAt  title  description  startsAt  endsAt  location  eventUrl  status  isDemo  } }"
+  },
+  {
+    "name": "updateEvent",
+    "kind": "mutation",
+    "admin": true,
+    "document": "mutation updateEvent($id: ID!, $input: UpdateEventInput!) { updateEvent(id: $id, input: $input) { _id  createdAt  updatedAt  title  description  startsAt  endsAt  location  eventUrl  status  isDemo  } }"
+  },
+  {
+    "name": "register",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation register($input: RegisterInput!) { register(input: $input) { accessToken  refreshToken  expiresIn  user { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } } }"
+  },
+  {
+    "name": "registerPhone",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation registerPhone($input: PhoneRegisterInput!) { registerPhone(input: $input) { accessToken  refreshToken  expiresIn  user { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } } }"
+  },
+  {
+    "name": "loginPhone",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation loginPhone($input: PhoneLoginInput!) { loginPhone(input: $input) { accessToken  refreshToken  expiresIn  user { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } } }"
+  },
+  {
+    "name": "beginSocialLogin",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation beginSocialLogin($provider: AuthProvider!) { beginSocialLogin(provider: $provider)  }"
+  },
+  {
+    "name": "loginSocial",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation loginSocial($input: SocialLoginInput!) { loginSocial(input: $input) { accessToken  refreshToken  expiresIn  user { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } } }"
+  },
+  {
+    "name": "login",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation login($input: LoginInput!) { login(input: $input) { accessToken  refreshToken  expiresIn  user { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } } }"
+  },
+  {
+    "name": "refreshSession",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation refreshSession($refreshToken: String!) { refreshSession(refreshToken: $refreshToken) { accessToken  refreshToken  expiresIn  user { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } } }"
+  },
+  {
+    "name": "verifyEmail",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation verifyEmail($token: String!) { verifyEmail(token: $token)  }"
+  },
+  {
+    "name": "requestEmailVerification",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation requestEmailVerification($input: EmailInput!) { requestEmailVerification(input: $input)  }"
+  },
+  {
+    "name": "requestPasswordReset",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation requestPasswordReset($input: EmailInput!) { requestPasswordReset(input: $input)  }"
+  },
+  {
+    "name": "resetPassword",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation resetPassword($input: ResetPasswordInput!) { resetPassword(input: $input)  }"
+  },
+  {
+    "name": "linkEmail",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation linkEmail($input: LinkEmailInput!) { linkEmail(input: $input) { _id  createdAt  updatedAt  userId  provider  providerSubject  verifiedAt  revokedAt  lastLoginAt  } }"
+  },
+  {
+    "name": "linkPhone",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation linkPhone($input: LinkPhoneInput!) { linkPhone(input: $input) { _id  createdAt  updatedAt  userId  provider  providerSubject  verifiedAt  revokedAt  lastLoginAt  } }"
+  },
+  {
+    "name": "beginSocialLink",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation beginSocialLink($provider: AuthProvider!) { beginSocialLink(provider: $provider)  }"
+  },
+  {
+    "name": "linkSocial",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation linkSocial($input: SocialLoginInput!) { linkSocial(input: $input) { _id  createdAt  updatedAt  userId  provider  providerSubject  verifiedAt  revokedAt  lastLoginAt  } }"
+  },
+  {
+    "name": "unlinkAuthIdentity",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation unlinkAuthIdentity($authIdentityId: ID!) { unlinkAuthIdentity(authIdentityId: $authIdentityId)  }"
+  },
+  {
+    "name": "changePhonePassword",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation changePhonePassword($input: ChangePhonePasswordInput!) { changePhonePassword(input: $input)  }"
+  },
+  {
+    "name": "logout",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation logout { logout  }"
+  },
+  {
+    "name": "createCategory",
+    "kind": "mutation",
+    "admin": true,
+    "document": "mutation createCategory($input: CategoryInput!) { createCategory(input: $input) { _id  createdAt  updatedAt  slug  name  description  sortOrder  isActive  } }"
+  },
+  {
+    "name": "updateCategory",
+    "kind": "mutation",
+    "admin": true,
+    "document": "mutation updateCategory($id: ID!, $input: UpdateCategoryInput!) { updateCategory(id: $id, input: $input) { _id  createdAt  updatedAt  slug  name  description  sortOrder  isActive  } }"
+  },
+  {
+    "name": "createCreatorProfile",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation createCreatorProfile($input: CreateCreatorInput!) { createCreatorProfile(input: $input) { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } }"
+  },
+  {
+    "name": "updateCreatorProfile",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation updateCreatorProfile($input: UpdateCreatorInput!) { updateCreatorProfile(input: $input) { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } }"
+  },
+  {
+    "name": "setCreatorProfileStatus",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation setCreatorProfileStatus($status: ProfileStatus!) { setCreatorProfileStatus(status: $status) { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } }"
+  },
+  {
+    "name": "deleteCreatorProfile",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation deleteCreatorProfile { deleteCreatorProfile  }"
+  },
+  {
+    "name": "setProjectLike",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation setProjectLike($projectId: ID!, $liked: Boolean!) { setProjectLike(projectId: $projectId, liked: $liked)  }"
+  },
+  {
+    "name": "setCreatorFollow",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation setCreatorFollow($creatorId: ID!, $following: Boolean!) { setCreatorFollow(creatorId: $creatorId, following: $following)  }"
+  },
+  {
+    "name": "setProjectSaved",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation setProjectSaved($projectId: ID!, $saved: Boolean!) { setProjectSaved(projectId: $projectId, saved: $saved)  }"
+  },
+  {
+    "name": "createProjectComment",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation createProjectComment($input: CommentInput!) { createProjectComment(input: $input) { _id  createdAt  updatedAt  clientCommentKey  userId  projectId  content  status  editedAt  deletedAt  } }"
+  },
+  {
+    "name": "editProjectComment",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation editProjectComment($commentId: ID!, $input: EditCommentInput!) { editProjectComment(commentId: $commentId, input: $input) { _id  createdAt  updatedAt  clientCommentKey  userId  projectId  content  status  editedAt  deletedAt  } }"
+  },
+  {
+    "name": "deleteProjectComment",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation deleteProjectComment($commentId: ID!) { deleteProjectComment(commentId: $commentId)  }"
+  },
+  {
+    "name": "moderateProjectComment",
+    "kind": "mutation",
+    "admin": true,
+    "document": "mutation moderateProjectComment($commentId: ID!, $hidden: Boolean!) { moderateProjectComment(commentId: $commentId, hidden: $hidden) { _id  createdAt  updatedAt  clientCommentKey  userId  projectId  content  status  editedAt  deletedAt  } }"
+  },
+  {
+    "name": "markInquiryRead",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation markInquiryRead($input: InquiryVersionInput!) { markInquiryRead(input: $input)  }"
+  },
+  {
+    "name": "sendInquiry",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation sendInquiry($input: SendInquiryInput!) { sendInquiry(input: $input) { _id  createdAt  updatedAt  counterpartyName  counterpartyAvatarUrl  unreadCount  clientId  creatorId  serviceId  subject  brief  budgetMin  budgetMax  currency  desiredDeadline  serviceSnapshot { title  pricingType  startingPrice  currency  estimatedDays  deliverables  } status  outcome  closedById  closedAt  submittedAt  lastMessageAt  version  } }"
+  },
+  {
+    "name": "completeInquiry",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation completeInquiry($input: InquiryVersionInput!) { completeInquiry(input: $input) { _id  createdAt  updatedAt  counterpartyName  counterpartyAvatarUrl  unreadCount  clientId  creatorId  serviceId  subject  brief  budgetMin  budgetMax  currency  desiredDeadline  serviceSnapshot { title  pricingType  startingPrice  currency  estimatedDays  deliverables  } status  outcome  closedById  closedAt  submittedAt  lastMessageAt  version  } }"
+  },
+  {
+    "name": "createServiceFeedback",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation createServiceFeedback($input: CreateServiceFeedbackInput!) { createServiceFeedback(input: $input) { _id  createdAt  updatedAt  creatorId  serviceId  rating  feedback  authorName  } }"
+  },
+  {
+    "name": "createInquiry",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation createInquiry($input: CreateInquiryInput!) { createInquiry(input: $input) { _id  createdAt  updatedAt  counterpartyName  counterpartyAvatarUrl  unreadCount  clientId  creatorId  serviceId  subject  brief  budgetMin  budgetMax  currency  desiredDeadline  serviceSnapshot { title  pricingType  startingPrice  currency  estimatedDays  deliverables  } status  outcome  closedById  closedAt  submittedAt  lastMessageAt  version  } }"
+  },
+  {
+    "name": "updateInquiry",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation updateInquiry($input: UpdateInquiryInput!) { updateInquiry(input: $input) { _id  createdAt  updatedAt  counterpartyName  counterpartyAvatarUrl  unreadCount  clientId  creatorId  serviceId  subject  brief  budgetMin  budgetMax  currency  desiredDeadline  serviceSnapshot { title  pricingType  startingPrice  currency  estimatedDays  deliverables  } status  outcome  closedById  closedAt  submittedAt  lastMessageAt  version  } }"
+  },
+  {
+    "name": "deleteInquiryDraft",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation deleteInquiryDraft($input: InquiryVersionInput!) { deleteInquiryDraft(input: $input)  }"
+  },
+  {
+    "name": "submitInquiry",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation submitInquiry($input: InquiryVersionInput!) { submitInquiry(input: $input) { _id  createdAt  updatedAt  counterpartyName  counterpartyAvatarUrl  unreadCount  clientId  creatorId  serviceId  subject  brief  budgetMin  budgetMax  currency  desiredDeadline  serviceSnapshot { title  pricingType  startingPrice  currency  estimatedDays  deliverables  } status  outcome  closedById  closedAt  submittedAt  lastMessageAt  version  } }"
+  },
+  {
+    "name": "sendInquiryMessage",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation sendInquiryMessage($input: SendMessageInput!) { sendInquiryMessage(input: $input) { _id  createdAt  inquiryId  senderId  clientMessageKey  body  readAt  } }"
+  },
+  {
+    "name": "markInquiryMessageRead",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation markInquiryMessageRead($messageId: ID!) { markInquiryMessageRead(messageId: $messageId)  }"
+  },
+  {
+    "name": "declineInquiry",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation declineInquiry($input: InquiryVersionInput!) { declineInquiry(input: $input) { _id  createdAt  updatedAt  counterpartyName  counterpartyAvatarUrl  unreadCount  clientId  creatorId  serviceId  subject  brief  budgetMin  budgetMax  currency  desiredDeadline  serviceSnapshot { title  pricingType  startingPrice  currency  estimatedDays  deliverables  } status  outcome  closedById  closedAt  submittedAt  lastMessageAt  version  } }"
+  },
+  {
+    "name": "cancelInquiry",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation cancelInquiry($input: InquiryVersionInput!) { cancelInquiry(input: $input) { _id  createdAt  updatedAt  counterpartyName  counterpartyAvatarUrl  unreadCount  clientId  creatorId  serviceId  subject  brief  budgetMin  budgetMax  currency  desiredDeadline  serviceSnapshot { title  pricingType  startingPrice  currency  estimatedDays  deliverables  } status  outcome  closedById  closedAt  submittedAt  lastMessageAt  version  } }"
+  },
+  {
+    "name": "closeInquiry",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation closeInquiry($input: CloseInquiryInput!) { closeInquiry(input: $input) { _id  createdAt  updatedAt  counterpartyName  counterpartyAvatarUrl  unreadCount  clientId  creatorId  serviceId  subject  brief  budgetMin  budgetMax  currency  desiredDeadline  serviceSnapshot { title  pricingType  startingPrice  currency  estimatedDays  deliverables  } status  outcome  closedById  closedAt  submittedAt  lastMessageAt  version  } }"
+  },
+  {
+    "name": "markNotificationRead",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation markNotificationRead($notificationId: ID!) { markNotificationRead(notificationId: $notificationId)  }"
+  },
+  {
+    "name": "createProject",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation createProject($input: CreateProjectInput!) { createProject(input: $input) { _id  createdAt  updatedAt  creatorId  categoryId  title  slug  summary  description  coverImageUrl  media { type  url  altText  sortOrder  } tags  externalUrl  status  publishedAt  deletedAt  } }"
+  },
+  {
+    "name": "updateProject",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation updateProject($projectId: ID!, $input: UpdateProjectInput!) { updateProject(projectId: $projectId, input: $input) { _id  createdAt  updatedAt  creatorId  categoryId  title  slug  summary  description  coverImageUrl  media { type  url  altText  sortOrder  } tags  externalUrl  status  publishedAt  deletedAt  } }"
+  },
+  {
+    "name": "setProjectStatus",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation setProjectStatus($projectId: ID!, $status: ProjectStatus!) { setProjectStatus(projectId: $projectId, status: $status) { _id  createdAt  updatedAt  creatorId  categoryId  title  slug  summary  description  coverImageUrl  media { type  url  altText  sortOrder  } tags  externalUrl  status  publishedAt  deletedAt  } }"
+  },
+  {
+    "name": "deleteProject",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation deleteProject($projectId: ID!) { deleteProject(projectId: $projectId)  }"
+  },
+  {
+    "name": "createService",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation createService($input: CreateServiceInput!) { createService(input: $input) { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } }"
+  },
+  {
+    "name": "updateService",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation updateService($serviceId: ID!, $input: UpdateServiceInput!) { updateService(serviceId: $serviceId, input: $input) { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } }"
+  },
+  {
+    "name": "setServiceStatus",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation setServiceStatus($serviceId: ID!, $status: ServiceStatus!) { setServiceStatus(serviceId: $serviceId, status: $status) { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } }"
+  },
+  {
+    "name": "deleteService",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation deleteService($serviceId: ID!) { deleteService(serviceId: $serviceId)  }"
+  },
+  {
+    "name": "updateMe",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation updateMe($input: UpdateUserInput!) { updateMe(input: $input) { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } }"
+  },
+  {
+    "name": "deleteMyAccount",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation deleteMyAccount { deleteMyAccount  }"
+  },
+  {
+    "name": "setAccountSuspended",
+    "kind": "mutation",
+    "admin": true,
+    "document": "mutation setAccountSuspended($userId: ID!, $suspended: Boolean!) { setAccountSuspended(userId: $userId, suspended: $suspended) { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } }"
+  }
 ]

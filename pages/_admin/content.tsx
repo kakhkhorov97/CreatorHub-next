@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { ArrowRight } from 'phosphor-react';
 import { useState } from 'react';
@@ -6,14 +7,18 @@ import { Button, Feedback, Field, Notice, QueryState, TextArea, values } from '.
 import { useAction, useApi } from '../../libs/hooks/useApi';
 
 function WebsiteContent() {
+	const { t: translate } = useSiteTranslation('common');
+
 	return (
-		<AdminLayout title="Website content">
+		<AdminLayout title={translate('Website content')}>
 			<ContentForm />
 		</AdminLayout>
 	);
 }
 
 function ContentForm() {
+	const { t: translate } = useSiteTranslation('common');
+
 	const result = useApi('getSiteContent'),
 		action = useAction(),
 		[saved, setSaved] = useState(false);
@@ -21,11 +26,11 @@ function ContentForm() {
 		<>
 			<div className="admin-page-heading">
 				<div>
-					<h1>Website content</h1>
-					<p>Update the copy visitors see on the homepage, About and Contact pages.</p>
+					<h1>{translate('Website content')}</h1>
+					<p>{translate('Update the copy visitors see on the homepage, About and Contact pages.')}</p>
 				</div>
 				<Link passHref href="/" className="admin-text-link">
-					View website <ArrowRight size={18} />
+					{translate('View website')} <ArrowRight size={18} />
 				</Link>
 			</div>
 			<QueryState loading={result.loading} error={result.error} retry={() => result.refetch()} />
@@ -52,49 +57,49 @@ function ContentForm() {
 						});
 					}}
 				>
-					<h2>Homepage</h2>
+					<h2>{translate('Homepage')}</h2>
 					<Field
-						label="Main heading"
+						label={translate('Main heading')}
 						name="homeHeading"
 						required
 						maxLength={160}
 						defaultValue={result.value.homeHeading}
 					/>
 					<Field
-						label="Subheading"
+						label={translate('Subheading')}
 						name="homeSubheading"
 						required
 						maxLength={300}
 						defaultValue={result.value.homeSubheading}
 					/>
-					<h2>About CreatorHub</h2>
+					<h2>{translate('About CreatorHub')}</h2>
 					<TextArea
-						label="About text"
+						label={translate('About text')}
 						name="aboutText"
 						rows={8}
 						required
 						maxLength={5000}
 						defaultValue={result.value.aboutText}
 					/>
-					<h2>Contact details</h2>
+					<h2>{translate('Contact details')}</h2>
 					<Field
-						label="Public contact email"
+						label={translate('Public contact email')}
 						name="contactEmail"
 						type="email"
 						maxLength={254}
 						defaultValue={result.value.contactEmail}
-						hint="Leave empty until a real public contact address is available."
+						hint={translate('Leave empty until a real public contact address is available.')}
 					/>
 					<TextArea
-						label="Contact text"
+						label={translate('Contact text')}
 						name="contactText"
 						rows={4}
 						maxLength={2000}
 						defaultValue={result.value.contactText}
 					/>
-					<h2>Footer</h2>
+					<h2>{translate('Footer')}</h2>
 					<TextArea
-						label="Footer copy"
+						label={translate('Footer copy')}
 						name="footerCopy"
 						required
 						rows={3}
@@ -102,9 +107,9 @@ function ContentForm() {
 						defaultValue={result.value.footerCopy}
 					/>
 					<Feedback {...action} />
-					{saved && <Notice notify>Website content saved. The public pages now use this copy.</Notice>}
+					{saved && <Notice notify>{translate('Website content saved. The public pages now use this copy.')}</Notice>}
 					<Button type="submit" disabled={action.busy}>
-						Save website content
+						{translate('Save website content')}
 					</Button>
 				</form>
 			)}

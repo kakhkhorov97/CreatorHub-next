@@ -26,7 +26,7 @@ export interface User {
 }
 export type UserRole = 'USER' | 'CREATOR' | 'ADMIN';
 export type UserStatus = 'ACTIVE' | 'SUSPENDED' | 'DELETED';
-export type Locale = 'ko' | 'en';
+export type Locale = 'ko' | 'en' | 'uz';
 export interface City {
 	key: string;
 	nameEn: string;

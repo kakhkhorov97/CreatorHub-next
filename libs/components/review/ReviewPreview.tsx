@@ -1,8 +1,11 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { useApi } from '../../hooks/useApi';
 import { ContentReview } from '../../types/creatorhub';
 import { label, Picture, safeUrl } from '../common/UI';
 
 export default function ReviewPreview({ review }: { review: ContentReview }) {
+	const { t: translate } = useSiteTranslation('common');
+
 	const categories = useApi('categories');
 	const categoryName = (id: unknown) =>
 		categories.value?.find((item) => item._id === id)?.name || 'Unavailable category';
@@ -10,7 +13,7 @@ export default function ReviewPreview({ review }: { review: ContentReview }) {
 	try {
 		snapshot = JSON.parse(review.preview);
 	} catch {
-		return <p>Preview unavailable. Refresh the queue before reviewing.</p>;
+		return <p>{translate('Preview unavailable. Refresh the queue before reviewing.')}</p>;
 	}
 	return (
 		<div className="review-preview">
@@ -23,7 +26,7 @@ export default function ReviewPreview({ review }: { review: ContentReview }) {
 							<>
 								<Picture src={String(value)} alt="Submitted cover" />
 								<a href={safeUrl(String(value))} target="_blank" rel="noreferrer">
-									Open cover
+									{translate('Open cover')}
 								</a>
 							</>
 						) : key === 'categoryId' || key === 'categoryIds' ? (
@@ -44,8 +47,8 @@ export default function ReviewPreview({ review }: { review: ContentReview }) {
 									? value.map((item) => (typeof item === 'object' ? JSON.stringify(item) : String(item))).join(', ')
 									: typeof value === 'boolean'
 									? value
-										? 'Yes'
-										: 'No'
+										? translate('Yes')
+										: translate('No')
 									: String(value)}
 							</p>
 						)}
@@ -58,7 +61,7 @@ export default function ReviewPreview({ review }: { review: ContentReview }) {
 							<Picture src={item.url} alt={item.altText || 'Submitted image'} />
 						) : (
 							<a href={safeUrl(item.url)} target="_blank" rel="noreferrer">
-								Open submitted video
+								{translate('Open submitted video')}
 							</a>
 						)}
 						<p>{item.altText}</p>

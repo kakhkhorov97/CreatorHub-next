@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { useReactiveVar } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { Heart } from 'phosphor-react';
@@ -6,6 +7,8 @@ import { useAction, useApi } from '../../hooks/useApi';
 import { Feedback } from '../common/UI';
 
 export default function LikeButton({ projectId, ownerId }: { projectId: string; ownerId?: string }) {
+	const { t: translate } = useSiteTranslation('common');
+
 	const user = useReactiveVar(userVar);
 	const router = useRouter();
 	const action = useAction();
@@ -20,8 +23,8 @@ export default function LikeButton({ projectId, ownerId }: { projectId: string; 
 				type="button"
 				className={`like-button ${liked ? 'liked' : ''}`}
 				aria-pressed={liked}
-				aria-label={own ? 'Your project' : liked ? 'Remove like' : 'Like project'}
-				title={own ? 'You cannot like your own project' : undefined}
+				aria-label={own ? translate('Your project') : liked ? translate('Remove like') : translate('Like project')}
+				title={own ? translate('You cannot like your own project') : undefined}
 				disabled={action.busy || own || unavailable}
 				onClick={() => {
 					if (!user) {
@@ -47,7 +50,7 @@ export default function LikeButton({ projectId, ownerId }: { projectId: string; 
 						if (user) mine.refetch();
 					}}
 				>
-					Retry likes
+					{translate('Retry likes')}
 				</button>
 			)}
 		</div>

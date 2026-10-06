@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 const kind: 'project' | 'service' = 'project';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -18,21 +19,24 @@ function ContentEditor() {
 }
 
 function Content() {
+	const { t: translate } = useSiteTranslation('common');
+
 	const router = useRouter();
 	const id = typeof router.query.id === 'string' ? router.query.id : '';
 	const item = useOwnedItem(kind, id);
 	const profile = useApi('myCreatorProfile');
 	return (
 		<>
-			<Heading title={`${id ? 'Edit' : 'New'} ${kind}`} />
+			<Heading title={id ? translate('Edit project') : translate('New project')} />
 			<QueryState loading={item.loading || profile.loading} error={item.error} />
 			{profile.error && !profile.value ? (
 				<Notice>
-					Create your{' '}
+					{translate('Create your')}{' '}
 					<Link passHref href="/workspace/profile">
-						creator profile
+						{translate('creator profile')}
 					</Link>{' '}
-					before adding {kind}s.
+					{translate('before adding')} {kind}
+					{translate('s.')}
 				</Notice>
 			) : (
 				!item.loading &&

@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { Button, Empty, Feedback, Heading, Pager, Picture, QueryState } from '../libs/components/common/UI';
 import Layout, { Guard } from '../libs/components/layout/LayoutBasic';
@@ -6,8 +7,10 @@ import { useCreatorDirectory } from '../libs/hooks/useCreatorDirectory';
 import { usePaged } from '../libs/hooks/usePaged';
 
 function Following() {
+	const { t: translate } = useSiteTranslation('common');
+
 	return (
-		<Layout title="Following" area="account">
+		<Layout title={translate('Following')} area="account">
 			<Guard>
 				<FollowingContent />
 			</Guard>
@@ -16,12 +19,14 @@ function Following() {
 }
 
 function FollowingContent() {
+	const { t: translate } = useSiteTranslation('common');
+
 	const result = usePaged('getMyFollows', {});
 	const creators = useCreatorDirectory(result.rows.map((f) => f.creatorId));
 	const action = useAction();
 	return (
 		<>
-			<Heading title="Following" />
+			<Heading title={translate('Following')} />
 			<QueryState loading={result.loading} error={result.error} retry={() => result.refetch()} />
 			<ul className="following-list">
 				{result.rows.map((f) => (
@@ -36,8 +41,8 @@ function FollowingContent() {
 							</Link>
 						) : (
 							<div className="following-profile">
-								<strong>Followed creator</strong>
-								<p>The public profile may be unavailable.</p>
+								<strong>{translate('Followed creator')}</strong>
+								<p>{translate('The public profile may be unavailable.')}</p>
 							</div>
 						)}
 						<Button
@@ -50,13 +55,15 @@ function FollowingContent() {
 								})
 							}
 						>
-							Unfollow
+							{translate('Unfollow')}
 						</Button>
 					</li>
 				))}
 			</ul>
 			{!result.loading && !result.error && !result.rows.length && (
-				<Empty title="You aren’t following anyone yet">Find a creator and follow their work.</Empty>
+				<Empty title={translate('You aren’t following anyone yet')}>
+					{translate('Find a creator and follow their work.')}
+				</Empty>
 			)}
 			<Pager {...result} />
 			<Feedback {...action} />

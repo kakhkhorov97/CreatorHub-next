@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -15,20 +16,24 @@ const titles = {
 };
 
 export function SocialButtons() {
+	const { t: translate } = useSiteTranslation('common');
+
 	return (
 		<div className="social-sign-in">
-			<p className="divider-label">Or continue with</p>
+			<p className="divider-label">{translate('Or continue with')}</p>
 			{['Google', 'Kakao', 'Telegram'].map((provider) => (
 				<Button key={provider} secondary disabled>
-					Continue with {provider}
+					{translate('Continue with')} {provider}
 				</Button>
 			))}
-			<small>Social sign-in is not available yet.</small>
+			<small>{translate('Social sign-in is not available yet.')}</small>
 		</div>
 	);
 }
 
 export default function Auth({ mode }: { mode: AuthMode }) {
+	const { t: translate } = useSiteTranslation('common');
+
 	const router = useRouter();
 	const [method, setMethod] = useState('email');
 	const action = useAction();
@@ -50,14 +55,19 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 				const payload = registering
 					? method === 'email'
 						? await action.mutate('register', {
-								input: { email: f.email, password: f.password, displayName: f.displayName, preferredLocale: 'en' },
+								input: {
+									email: f.email,
+									password: f.password,
+									displayName: f.displayName,
+									preferredLocale: router.locale === 'ko' ? 'ko' : router.locale === 'uz' ? 'uz' : 'en',
+								},
 						  })
 						: await action.mutate('registerPhone', {
 								input: {
 									phoneNumber: f.phoneNumber,
 									password: f.password,
 									displayName: f.displayName,
-									preferredLocale: 'en',
+									preferredLocale: router.locale === 'ko' ? 'ko' : router.locale === 'uz' ? 'uz' : 'en',
 								},
 						  })
 					: f.identifier.trim().includes('@')
@@ -102,27 +112,29 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 	return (
 		<>
 			<Link passHref className="back-link" href="/">
-				Back to explore
+				{translate('Back to explore')}
 			</Link>
 			<section className="auth-panel panel">
-				<h1>{titles[mode]}</h1>
-				{router.query.passwordChanged === '1' && <Notice notify>Password updated. Sign in again to continue.</Notice>}
+				<h1>{translate(titles[mode])}</h1>
+				{router.query.passwordChanged === '1' && (
+					<Notice notify>{translate('Password updated. Sign in again to continue.')}</Notice>
+				)}
 				<p className="muted auth-intro">
 					{auth
 						? registering
-							? 'Save creative work and start conversations with creators.'
-							: 'Sign in to explore creators, save portfolios, and send project inquiries.'
+							? translate('Save creative work and start conversations with creators.')
+							: translate('Sign in to explore creators, save portfolios, and send project inquiries.')
 						: mode === 'forgot-password'
-						? 'Enter the email linked to your account.'
+						? translate('Enter the email linked to your account.')
 						: mode === 'verify-email'
-						? 'Use the verification link sent to your inbox.'
-						: 'Use 6–30 characters for your new password.'}
+						? translate('Use the verification link sent to your inbox.')
+						: translate('Use 6–30 characters for your new password.')}
 				</p>
 				{registering && (
 					<div className="tabs equal">
 						{['email', 'phone'].map((m) => (
 							<button type="button" key={m} className={method === m ? 'active' : ''} onClick={() => setMethod(m)}>
-								{m === 'email' ? 'Email' : 'Phone'}
+								{m === 'email' ? translate('Email') : translate('Phone')}
 							</button>
 						))}
 					</div>
@@ -136,36 +148,43 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 				>
 					{mode === 'sign-in' && (
 						<Field
-							label="Email or phone number"
+							label={translate('Email or phone number')}
 							name="identifier"
 							autoComplete="username"
 							required
 							maxLength={30}
-							placeholder="Email or Phone Number"
-							hint="Include the country code when signing in with a phone number."
+							placeholder={translate('Email or Phone Number')}
+							hint={translate('Include the country code when signing in with a phone number.')}
 						/>
 					)}
 					{registering && (
-						<Field label="Display name" name="displayName" autoComplete="name" required minLength={3} maxLength={40} />
+						<Field
+							label={translate('Display name')}
+							name="displayName"
+							autoComplete="name"
+							required
+							minLength={3}
+							maxLength={40}
+						/>
 					)}
 					{((registering && method === 'email') || mode === 'forgot-password' || showResend) && (
-						<Field label="Email" name="email" type="email" autoComplete="email" required maxLength={254} />
+						<Field label={translate('Email')} name="email" type="email" autoComplete="email" required maxLength={254} />
 					)}{' '}
 					{registering && method === 'phone' && (
 						<Field
-							label="Phone number"
+							label={translate('Phone number')}
 							name="phoneNumber"
 							type="tel"
 							autoComplete="tel"
 							required
 							pattern="\+[1-9][0-9]{7,14}"
-							placeholder="Phone number"
-							hint="Include your country code. Phone registration does not verify ownership of the number."
+							placeholder={translate('Phone number')}
+							hint={translate('Include your country code. Phone registration does not verify ownership of the number.')}
 						/>
 					)}
 					{(mode === 'reset-password' || (mode === 'verify-email' && !showResend)) && (
 						<Field
-							label="Verification token"
+							label={translate('Verification token')}
 							name="token"
 							required
 							minLength={64}
@@ -182,54 +201,54 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 							autoComplete={registering || mode === 'reset-password' ? 'new-password' : 'current-password'}
 						/>
 					)}{' '}
-					{registering && <small>Use 6–30 characters for your password.</small>}
+					{registering && <small>{translate('Use 6–30 characters for your password.')}</small>}
 					{mode === 'sign-in' && (
 						<Link passHref className="forgot" href={authHref('/account/forgot-password')}>
-							Forgot password?
+							{translate('Forgot password?')}
 						</Link>
 					)}
 					<Feedback {...action} />
 					{message && <Notice notify>{message}</Notice>}
 					<Button type="submit" disabled={action.busy}>
 						{action.busy
-							? 'Please wait…'
+							? translate('Please wait…')
 							: mode === 'sign-in'
-							? 'Sign in'
+							? translate('Sign in')
 							: registering
-							? 'Create account'
+							? translate('Create account')
 							: mode === 'forgot-password'
-							? 'Send reset link'
+							? translate('Send reset link')
 							: mode === 'reset-password'
-							? 'Reset password'
+							? translate('Reset password')
 							: showResend
-							? 'Resend verification email'
-							: 'Verify email'}
+							? translate('Resend verification email')
+							: translate('Verify email')}
 					</Button>
 				</form>
 				{auth && <SocialButtons />}
 				{mode === 'verify-email' && (
 					<div className="verification-resend">
-						<p>Need another verification email?</p>
+						<p>{translate('Need another verification email?')}</p>
 						<Button secondary className="resend-button" onClick={() => setShowResend(!showResend)}>
-							{showResend ? 'Use a verification token' : 'Resend email'}
+							{showResend ? translate('Use a verification token') : translate('Resend email')}
 						</Button>
 					</div>
 				)}
 				<p className="auth-bottom">
 					{mode === 'sign-in' ? (
 						<>
-							Don’t have an account?{' '}
+							{translate('Don’t have an account?')}{' '}
 							<Link passHref href={authHref('/account/register')}>
-								Create an account
+								{translate('Create an account')}
 							</Link>
 							<br />
 							<Link passHref href={authHref('/account/verify-email')}>
-								Verify your email
+								{translate('Verify your email')}
 							</Link>
 						</>
 					) : (
 						<Link passHref href={authHref('/account/sign-in')}>
-							Back to sign in
+							{translate('Back to sign in')}
 						</Link>
 					)}
 				</p>

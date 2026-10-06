@@ -104,3 +104,24 @@ Implemented the four approved changes: an Upload photo button replaces the avata
 Avatar uploads accept JPG, PNG and WebP up to 10 MB, preview the selected image, save the returned URL through updateMe and update the current header avatar. The Apollo transport supports multipart uploads with the required preflight header. Errors remain inline. Existing imageUploader and updateMe APIs are reused without backend changes.
 
 Verification: production build, typecheck, lint and all 17 frontend tests passed. Disposable integration exercised 85/108 generated operations. A separate authenticated multipart check passed upload, account save and image delivery. Browser checks confirmed saved avatar display, menu outside-click dismissal, desktop/phone Following rows and history removal from Details. Browser file selection itself was blocked by the extension's file-URL permission, so the chooser-to-upload interaction was not verified end to end. All writes used disposable accounts.
+
+## Navigation, languages and project uploads, 6 October 2026
+
+Implemented the approved batch within the existing September 25 white-and-blue design system.
+
+- Events, event details and Contact retain the main navigation without project search or categories.
+- English is the default interface language. Korean and Uzbek use next-i18next with Pages Router locale routes. The native header language select remembers the choice in the NEXT_LOCALE cookie. Account preferredLocale accepts en, ko and uz. Stored creator content and private messages retain their original language.
+- Project covers accept JPEG, PNG and WebP uploads. Galleries also accept MP4 and WebM, with a 10 MB limit per file, ten files per upload and twenty gallery items per project. The existing multipart API stores the files. Forms show previews, allow gallery removal and reordering, retain manual URL entry and display errors inline.
+- Project publication continues through manual admin approval. Payments and commissions were not added. Inbox updates still use HTTP polling; WebSockets remain deferred.
+
+Validation: all 19 frontend tests passed. The disposable generated-document integration exercised 85/108 operations, including all three account locale values. Separate authenticated checks passed image and video multipart upload, delivery of the stored bytes and project saving. Browser checks confirmed complete image loading, video readyState 4 and Korean/Uzbek page language. Project and Contact pages had no horizontal overflow at 1440px desktop and 390px phone widths.
+
+The browser file-chooser interaction remains unverified because of the previously recorded extension file-URL permission restriction. No live Gemini key test was performed. The final production build passed, including lint and type checking. All 108 generated operation documents passed contract validation. Native video playback was verified.
+
+DESIGN.md and .impeccable/design.json remain the visual authority for this extension. Their earlier description of simplified headers on informational pages predates the approved Events/Contact navigation adjustment; this batch records that behavior here without revising the design files.
+
+Finish review scored the contact translation and settled video preview fixes resolved. Documentation preserves the incumbent design files. Local API 7001 and production frontend 7007 were restarted; disposable preview servers were stopped.
+
+## Language menu style, 6 October 2026
+
+Replaced the native language select with a compact flag/name button and a dropdown for English, Korean and Uzbek. Approved flags are US, South Korea and Uzbekistan. The selected item has a checkmark and blue styling. Outside click, Escape and leaving the menu close it; arrow keys navigate choices. Route preservation and the saved locale cookie remain. Production build and 19 tests passed; desktop/mobile browser checks verified keyboard switching, Escape, outside-click dismissal and remembered language. The mobile menu position was corrected after inspection.

@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { clearSession } from '../../libs/auth';
@@ -17,8 +18,10 @@ import Layout, { Guard } from '../../libs/components/layout/LayoutBasic';
 import { useAction, useApi } from '../../libs/hooks/useApi';
 
 function SignInMethods() {
+	const { t: translate } = useSiteTranslation('common');
+
 	return (
-		<Layout title="Sign-in methods" area="account">
+		<Layout title={translate('Sign-in methods')} area="account">
 			<Guard>
 				<IdentitySettings />
 			</Guard>
@@ -27,6 +30,8 @@ function SignInMethods() {
 }
 
 function IdentitySettings() {
+	const { t: translate } = useSiteTranslation('common');
+
 	const router = useRouter();
 	const identities = useApi('getMyAuthIdentities');
 	const action = useAction();
@@ -35,28 +40,30 @@ function IdentitySettings() {
 	const [message, setMessage] = useState('');
 	return (
 		<>
-			<Heading title="Sign-in methods" />
-			<p className="muted">Manage the ways you sign in. Sign in again before linking or removing a method.</p>
+			<Heading title={translate('Sign-in methods')} />
+			<p className="muted">
+				{translate('Manage the ways you sign in. Sign in again before linking or removing a method.')}
+			</p>
 			<QueryIdentities />
 			<section className="panel identity-panel">
-				<h2>Linked methods</h2>
+				<h2>{translate('Linked methods')}</h2>
 				{identities.value
 					?.filter((i) => !i.revokedAt)
 					.map((i) => (
 						<div className="list-row" key={i._id}>
 							<div>
 								<strong>{i.provider}</strong>
-								<p>{['EMAIL', 'PHONE'].includes(i.provider) ? i.providerSubject : 'Connected account'}</p>
-								<small>{i.verifiedAt ? `Verified ${date(i.verifiedAt)}` : 'Not verified'}</small>
+								<p>{['EMAIL', 'PHONE'].includes(i.provider) ? i.providerSubject : translate('Connected account')}</p>
+								<small>{i.verifiedAt ? `Verified ${date(i.verifiedAt)}` : translate('Not verified')}</small>
 							</div>
 							<Button danger onClick={() => setUnlink(i._id)}>
-								Remove
+								{translate('Remove')}
 							</Button>
 						</div>
 					))}
 				{unlink && (
 					<Confirm
-						title="Remove this sign-in method?"
+						title={translate('Remove this sign-in method?')}
 						busy={action.busy}
 						onCancel={() => setUnlink(null)}
 						onConfirm={() =>
@@ -67,16 +74,16 @@ function IdentitySettings() {
 							})
 						}
 					>
-						Sessions using this method will be revoked. You must keep at least one usable sign-in method.
+						{translate('Sessions using this method will be revoked. You must keep at least one usable sign-in method.')}
 					</Confirm>
 				)}
 			</section>
 			<section className="panel identity-panel">
-				<h2>Add a sign-in method</h2>
+				<h2>{translate('Add a sign-in method')}</h2>
 				<div className="tabs equal">
 					{['email', 'phone'].map((m) => (
 						<button key={m} className={method === m ? 'active' : ''} onClick={() => setMethod(m)}>
-							{m === 'email' ? 'Email' : 'Phone'}
+							{m === 'email' ? translate('Email') : translate('Phone')}
 						</button>
 					))}
 				</div>
@@ -95,7 +102,7 @@ function IdentitySettings() {
 					}}
 				>
 					<Field
-						label={method === 'email' ? 'Email' : 'Phone number'}
+						label={method === 'email' ? translate('Email') : translate('Phone number')}
 						name="identifier"
 						type={method === 'email' ? 'email' : 'tel'}
 						required
@@ -104,14 +111,14 @@ function IdentitySettings() {
 					/>
 					<Password name="password" required minLength={6} maxLength={30} autoComplete="new-password" />
 					<Button type="submit" disabled={action.busy}>
-						Link {method}
+						{translate('Link')} {method}
 					</Button>
 				</form>
 				<SocialButtons />
 			</section>
 			<section className="panel identity-panel">
-				<h2>Change phone password</h2>
-				<p>You need another linked sign-in method to change this password.</p>
+				<h2>{translate('Change phone password')}</h2>
+				<p>{translate('You need another linked sign-in method to change this password.')}</p>
 				<form
 					onSubmit={(e) => {
 						e.preventDefault();
@@ -125,7 +132,7 @@ function IdentitySettings() {
 					}}
 				>
 					<Password
-						label="New phone password"
+						label={translate('New phone password')}
 						name="password"
 						required
 						minLength={6}
@@ -133,7 +140,7 @@ function IdentitySettings() {
 						autoComplete="new-password"
 					/>
 					<Button type="submit" disabled={action.busy}>
-						Change password
+						{translate('Change password')}
 					</Button>
 				</form>
 			</section>
@@ -143,10 +150,12 @@ function IdentitySettings() {
 	);
 
 	function QueryIdentities() {
+		const { t: translate } = useSiteTranslation('common');
+
 		return identities.error ? (
 			<Notice error>{identities.error.message}</Notice>
 		) : identities.loading ? (
-			<p role="status">Loading sign-in methods…</p>
+			<p role="status">{translate('Loading sign-in methods…')}</p>
 		) : null;
 	}
 }

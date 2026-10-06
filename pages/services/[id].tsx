@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Heading, LinkButton, money, Picture, QueryState } from '../../libs/components/common/UI';
@@ -6,6 +7,8 @@ import { useApi } from '../../libs/hooks/useApi';
 import { useCreatorDirectory } from '../../libs/hooks/useCreatorDirectory';
 
 function ServiceDetail() {
+	const { t: translate } = useSiteTranslation('common');
+
 	const router = useRouter();
 	const id = String(router.query.id || '');
 	const result = useApi('getService', { serviceId: id }, !id);
@@ -13,9 +16,9 @@ function ServiceDetail() {
 	const creators = useCreatorDirectory(s ? [s.creatorId] : []);
 	const creator = s && creators[s.creatorId];
 	return (
-		<Layout title={s?.title || 'Service'}>
+		<Layout title={s?.title || translate('Service')}>
 			<Link passHref href="/services" className="back-link">
-				Back to services
+				{translate('Back to services')}
 			</Link>
 			<QueryState loading={result.loading} error={result.error} retry={() => result.refetch()} />
 			{s && (
@@ -29,9 +32,9 @@ function ServiceDetail() {
 					)}
 					<div className="detail-layout">
 						<section className="prose">
-							<h2>About this service</h2>
+							<h2>{translate('About this service')}</h2>
 							<p>{s.description}</p>
-							<h2>What’s included</h2>
+							<h2>{translate('What’s included')}</h2>
 							<ul>
 								{s.deliverables.map((d) => (
 									<li key={d}>{d}</li>
@@ -39,10 +42,16 @@ function ServiceDetail() {
 							</ul>
 						</section>
 						<aside className="panel service-summary">
-							<h2>{s.pricingType === 'STARTING_AT' ? `From ${money(s.startingPrice)}` : 'Custom quote'}</h2>
-							{s.estimatedDays && <p>Estimated delivery: {s.estimatedDays} days</p>}
-							<p>Discuss the scope and timing directly with the creator.</p>
-							<LinkButton href={`/inquiries/new?creatorId=${s.creatorId}&serviceId=${s._id}`}>Send inquiry</LinkButton>
+							<h2>{s.pricingType === 'STARTING_AT' ? `From ${money(s.startingPrice)}` : translate('Custom quote')}</h2>
+							{s.estimatedDays && (
+								<p>
+									{translate('Estimated delivery:')} {s.estimatedDays} {translate('days')}
+								</p>
+							)}
+							<p>{translate('Discuss the scope and timing directly with the creator.')}</p>
+							<LinkButton href={`/inquiries/new?creatorId=${s.creatorId}&serviceId=${s._id}`}>
+								{translate('Send inquiry')}
+							</LinkButton>
 						</aside>
 					</div>
 				</>

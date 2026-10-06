@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { Rating } from '../../libs/components/inquiry/ServiceFeedback';
 import { useReactiveVar } from '@apollo/client';
 import Link from 'next/link';
@@ -23,6 +24,8 @@ import { useMembership } from '../../libs/hooks/useMembership';
 import { usePaged } from '../../libs/hooks/usePaged';
 
 function CreatorDetail() {
+	const { t: translate } = useSiteTranslation('common');
+
 	const router = useRouter();
 	const slug = String(router.query.slug || '');
 	const profile = useApi('creator', { slug }, !slug);
@@ -37,13 +40,13 @@ function CreatorDetail() {
 	const followed = membership.active;
 	const setFollowed = membership.setActive;
 	return (
-		<Layout title={creator?.identity.displayName || 'Creator profile'}>
+		<Layout title={creator?.identity.displayName || translate('Creator profile')}>
 			<QueryState loading={profile.loading} error={profile.error} retry={() => profile.refetch()} />
 			{creator && (
 				<>
 					<div className="profile-breadcrumb">
 						<Link passHref href="/creators">
-							Creators
+							{translate('Creators')}
 						</Link>
 						<span>/</span>
 						<span>{creator.identity.displayName}</span>
@@ -61,7 +64,7 @@ function CreatorDetail() {
 								{creator.remoteAvailable && (
 									<span>
 										<WifiHigh />
-										Remote available
+										{translate('Remote available')}
 									</span>
 								)}
 								<span className={`availability ${creator.availability.toLowerCase()}`}>
@@ -71,7 +74,7 @@ function CreatorDetail() {
 						</div>
 						{user?._id !== creator.userId && (
 							<div className="actions creator-profile-actions">
-								<LinkButton href={`/inquiries/new?creatorId=${creator._id}`}>Send inquiry</LinkButton>
+								<LinkButton href={`/inquiries/new?creatorId=${creator._id}`}>{translate('Send inquiry')}</LinkButton>
 								<Button
 									secondary
 									danger={followed === true}
@@ -88,7 +91,7 @@ function CreatorDetail() {
 										});
 									}}
 								>
-									{followed ? 'Unfollow' : 'Follow'}
+									{followed ? translate('Unfollow') : translate('Follow')}
 								</Button>
 							</div>
 						)}
@@ -111,7 +114,9 @@ function CreatorDetail() {
 											<ProjectCard key={p._id} project={p} creator={creator} />
 										))}
 									</div>
-									{!projects.loading && !projects.rows.length && <Empty title="No published projects yet" />}
+									{!projects.loading && !projects.rows.length && (
+										<Empty title={translate('No published projects yet')} />
+									)}
 									<Pager {...projects} />
 								</>
 							)}
@@ -123,7 +128,7 @@ function CreatorDetail() {
 											<ServiceCard key={s._id} service={s} />
 										))}
 									</div>
-									{!services.loading && !services.rows.length && <Empty title="No active services yet" />}
+									{!services.loading && !services.rows.length && <Empty title={translate('No active services yet')} />}
 									<Pager {...services} />
 								</>
 							)}
@@ -139,23 +144,25 @@ function CreatorDetail() {
 											</small>
 										</article>
 									))}
-									{!reviews.loading && !reviews.rows.length && <Empty title="No customer reviews yet" />}
+									{!reviews.loading && !reviews.rows.length && <Empty title={translate('No customer reviews yet')} />}
 									<Pager {...reviews} />
 								</>
 							)}
 							{tab === 'About' && (
 								<div className="prose">
-									<h2>About {creator.identity.displayName}</h2>
-									<p>{creator.bio || 'This creator has not added a bio yet.'}</p>
+									<h2>
+										{translate('About')} {creator.identity.displayName}
+									</h2>
+									<p>{creator.bio || translate('This creator has not added a bio yet.')}</p>
 								</div>
 							)}
 						</section>
 						<aside className="detail-sidebar">
-							<h2>Services</h2>
+							<h2>{translate('Services')}</h2>
 							{services.rows.slice(0, 2).map((s) => (
 								<ServiceCard key={s._id} service={s} />
 							))}
-							<h2>Skills</h2>
+							<h2>{translate('Skills')}</h2>
 							<div className="tags">
 								{creator.skills.map((skill) => (
 									<span key={skill}>{skill}</span>
@@ -163,7 +170,7 @@ function CreatorDetail() {
 							</div>
 							{!!creator.socialLinks.length && (
 								<>
-									<h2>External portfolio</h2>
+									<h2>{translate('External portfolio')}</h2>
 									{creator.socialLinks
 										.filter((l) => safeUrl(l.url))
 										.map((l) => (

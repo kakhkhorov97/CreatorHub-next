@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { useCardNavigation } from '../../hooks/useCardNavigation';
 import { useReactiveVar } from '@apollo/client';
 import Link from 'next/link';
@@ -21,6 +22,8 @@ export function ProjectCard({
 	saved?: boolean;
 	onChange?: () => unknown;
 }) {
+	const { t: translate } = useSiteTranslation('common');
+
 	const [isSaved, setSaved] = useState(saved);
 	const action = useAction();
 	const user = useReactiveVar(userVar);
@@ -48,7 +51,9 @@ export function ProjectCard({
 							</span>
 						</Link>
 					) : (
-						<p className="muted">{project.tags.slice(0, 3).join(' · ') || project.summary || 'Portfolio project'}</p>
+						<p className="muted">
+							{project.tags.slice(0, 3).join(' · ') || project.summary || translate('Portfolio project')}
+						</p>
 					)}
 				</div>
 				<Button

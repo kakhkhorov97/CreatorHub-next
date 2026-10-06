@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { ConfirmationPrompt } from '../common/ConfirmationPrompt';
 import { EngagementFeedback } from './ServiceFeedback';
 import { useReactiveVar } from '@apollo/client';
@@ -32,6 +33,8 @@ export function Conversation({
 	isClient: boolean;
 	refresh: () => Promise<unknown>;
 }) {
+	const { t: translate, i18n } = useSiteTranslation('common');
+
 	const action = useAction();
 	const messages = useInquiryHistory(inquiry._id, inquiry.version);
 	const user = useReactiveVar(userVar)!;
@@ -106,15 +109,15 @@ export function Conversation({
 	return (
 		<>
 			<div className="chat-thread">
-				<section className="conversation" aria-label="Messages">
+				<section className="conversation" aria-label={translate('Messages')}>
 					<div className="conversation-heading">
-						<Link passHref className="mobile-inbox-back" href="/inquiries" aria-label="Back to inbox">
+						<Link passHref className="mobile-inbox-back" href="/inquiries" aria-label={translate('Back to inbox')}>
 							<ArrowLeft size={21} />
 						</Link>
 						<Picture avatar src={inquiry.counterpartyAvatarUrl} alt="" />
 						<div className="chat-heading-copy">
-							<h2>{inquiry.counterpartyName || 'Member'}</h2>
-							<p>{inquiry.subject || 'Private inquiry'}</p>
+							<h2>{inquiry.counterpartyName || translate('Member')}</h2>
+							<p>{inquiry.subject || translate('Private inquiry')}</p>
 						</div>
 						<button
 							type="button"
@@ -123,7 +126,7 @@ export function Conversation({
 							aria-controls={`inquiry-details-${inquiry._id}`}
 							onClick={() => setDetailsOpen(!detailsOpen)}
 						>
-							Details <CaretDown size={16} />
+							{translate('Details')} <CaretDown size={16} />
 						</button>
 					</div>
 					<QueryState
@@ -139,7 +142,7 @@ export function Conversation({
 							followMessages.current = pane.scrollHeight - pane.scrollTop - pane.clientHeight < 80;
 						}}
 						role="log"
-						aria-label="Conversation messages"
+						aria-label={translate('Conversation messages')}
 						aria-live="polite"
 						aria-relevant="additions"
 					>
@@ -148,22 +151,25 @@ export function Conversation({
 						</div>
 						<div className="chat-start">
 							<span>{date(inquiry.submittedAt)}</span>
-							<p>{isClient ? 'You sent an inquiry' : 'You received an inquiry'}</p>
+							<p>{isClient ? translate('You sent an inquiry') : translate('You received an inquiry')}</p>
 							<button type="button" onClick={() => setDetailsOpen(true)}>
-								View original brief
+								{translate('View original brief')}
 							</button>
 						</div>
 						{!messages.loading && !messages.error && !messages.rows.length && (
 							<p className="chat-no-replies">
-								No replies yet. {active ? 'Start the conversation below.' : 'This conversation is closed.'}
+								{translate('No replies yet.')}{' '}
+								{active ? translate('Start the conversation below.') : translate('This conversation is closed.')}
 							</p>
 						)}
 						{messages.rows.map((m) => (
 							<article key={m._id} className={`message ${m.senderId === user._id ? 'mine' : ''}`}>
 								<div className="row">
-									<strong>{m.senderId === user._id ? 'You' : inquiry.counterpartyName || 'Member'}</strong>
+									<strong>
+										{m.senderId === user._id ? translate('You') : inquiry.counterpartyName || translate('Member')}
+									</strong>
 									<time dateTime={m.createdAt}>
-										{new Intl.DateTimeFormat('en', {
+										{new Intl.DateTimeFormat(i18n.language, {
 											month: 'short',
 											day: 'numeric',
 											hour: 'numeric',
@@ -172,7 +178,7 @@ export function Conversation({
 									</time>
 								</div>
 								<p>{m.body}</p>
-								{m.senderId === user._id && <small>{m.readAt ? 'Read' : 'Sent'}</small>}
+								{m.senderId === user._id && <small>{m.readAt ? translate('Read') : translate('Sent')}</small>}
 							</article>
 						))}
 					</div>
@@ -196,7 +202,7 @@ export function Conversation({
 							}}
 						>
 							<TextArea
-								label="Message"
+								label={translate('Message')}
 								rows={2}
 								readOnly={action.busy}
 								aria-describedby={`message-hint-${inquiry._id}`}
@@ -209,18 +215,20 @@ export function Conversation({
 								required
 								minLength={1}
 								maxLength={5000}
-								placeholder="Write a message…"
+								placeholder={translate('Write a message…')}
 							/>
 							<Button type="submit" disabled={action.busy || !body.trim()}>
 								<PaperPlaneTilt size={19} />
-								{action.busy ? 'Sending…' : 'Send'}
+								{action.busy ? translate('Sending…') : translate('Send')}
 							</Button>
 							<small className="chat-key-hint" id={`message-hint-${inquiry._id}`}>
-								Enter to send · Shift+Enter for a new line
+								{translate('Enter to send · Shift+Enter for a new line')}
 							</small>
 						</form>
 					) : (
-						<Notice>This conversation is {label(inquiry.status).toLowerCase()}.</Notice>
+						<Notice>
+							{translate('This conversation is')} {label(inquiry.status).toLowerCase()}.
+						</Notice>
 					)}
 					<Feedback {...action} />
 					{action.error && (
@@ -233,39 +241,39 @@ export function Conversation({
 								})
 							}
 						>
-							Load latest conversation
+							{translate('Load latest conversation')}
 						</Button>
 					)}
 				</section>
 				<aside className="inquiry-details" id={`inquiry-details-${inquiry._id}`} hidden={!detailsOpen}>
 					<div className="chat-brief-heading">
-						<h3>Original inquiry</h3>
+						<h3>{translate('Original inquiry')}</h3>
 						<Status value={inquiry.status} />
 					</div>
 					<dl>
-						<dt>Project brief</dt>
+						<dt>{translate('Project brief')}</dt>
 						<dd className="prose-text">{inquiry.brief}</dd>
-						<dt>Budget</dt>
+						<dt>{translate('Budget')}</dt>
 						<dd>
 							{inquiry.budgetMin != null || inquiry.budgetMax != null
 								? `${inquiry.budgetMin != null ? money(inquiry.budgetMin) : 'Not specified'} – ${
 										inquiry.budgetMax != null ? money(inquiry.budgetMax) : 'Not specified'
 								  }`
-								: 'Not specified'}
+								: translate('Not specified')}
 						</dd>
-						<dt>Submitted</dt>
+						<dt>{translate('Submitted')}</dt>
 						<dd>{date(inquiry.submittedAt)}</dd>
-						<dt>Desired deadline</dt>
+						<dt>{translate('Desired deadline')}</dt>
 						<dd>{date(inquiry.desiredDeadline)}</dd>
 						{inquiry.serviceSnapshot && (
 							<>
-								<dt>Selected service at submission</dt>
+								<dt>{translate('Selected service at submission')}</dt>
 								<dd>
 									<strong>{inquiry.serviceSnapshot.title}</strong>
 									<p>
 										{inquiry.serviceSnapshot.pricingType === 'STARTING_AT'
 											? money(inquiry.serviceSnapshot.startingPrice)
-											: 'Custom quote'}
+											: translate('Custom quote')}
 									</p>
 									<ul>
 										{inquiry.serviceSnapshot.deliverables.map((d) => (
@@ -276,17 +284,21 @@ export function Conversation({
 							</>
 						)}
 					</dl>
-					{inquiry.outcome && <p>Outcome: {label(inquiry.outcome)}</p>}
+					{inquiry.outcome && (
+						<p>
+							{translate('Outcome:')} {label(inquiry.outcome)}
+						</p>
+					)}
 					{active && (
 						<div className="stack-actions">
 							{inquiry.status === 'SENT' && (
 								<Button secondary onClick={() => setFinish(isClient ? 'cancelInquiry' : 'declineInquiry')}>
-									{isClient ? 'Cancel inquiry' : 'Decline inquiry'}
+									{isClient ? translate('Cancel inquiry') : translate('Decline inquiry')}
 								</Button>
 							)}
 							{(isClient || inquiry.status === 'IN_DISCUSSION') && (
 								<Button secondary onClick={() => setFinish('closeInquiry')}>
-									Close inquiry
+									{translate('Close inquiry')}
 								</Button>
 							)}
 						</div>
@@ -298,27 +310,29 @@ export function Conversation({
 				<ConfirmationPrompt onCancel={() => setFinish(null)} busy={action.busy}>
 					<h2>
 						{finish === 'closeInquiry'
-							? 'Close inquiry'
+							? translate('Close inquiry')
 							: finish === 'cancelInquiry'
-							? 'Cancel inquiry'
-							: 'Decline inquiry'}
+							? translate('Cancel inquiry')
+							: translate('Decline inquiry')}
 						?
 					</h2>
 					{finish === 'closeInquiry' && (
-						<Field label="Outcome">
+						<Field label={translate('Outcome')}>
 							<select value={outcome} onChange={(e) => setOutcome(e.target.value as InquiryOutcome)}>
-								<option value="NOT_PROCEEDING">Not proceeding</option>
-								{inquiry.status === 'IN_DISCUSSION' && <option value="AGREED_TO_PROCEED">Agreed to proceed</option>}
+								<option value="NOT_PROCEEDING">{translate('Not proceeding')}</option>
+								{inquiry.status === 'IN_DISCUSSION' && (
+									<option value="AGREED_TO_PROCEED">{translate('Agreed to proceed')}</option>
+								)}
 								{isClient &&
 									inquiry.status === 'SENT' &&
 									inquiry.submittedAt &&
 									Date.now() - new Date(inquiry.submittedAt).getTime() >= 7 * 86400000 && (
-										<option value="NO_RESPONSE">No response</option>
+										<option value="NO_RESPONSE">{translate('No response')}</option>
 									)}
 							</select>
 						</Field>
 					)}
-					<p>You will not be able to send further messages.</p>
+					<p>{translate('You will not be able to send further messages.')}</p>
 					<div className="actions">
 						<Button
 							disabled={action.busy}
@@ -331,10 +345,10 @@ export function Conversation({
 								})
 							}
 						>
-							Confirm
+							{translate('Confirm')}
 						</Button>
 						<Button secondary onClick={() => setFinish(null)}>
-							Keep open
+							{translate('Keep open')}
 						</Button>
 					</div>
 				</ConfirmationPrompt>

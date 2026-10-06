@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useState } from 'react';
 import { Empty, QueryState } from '../libs/components/common/UI';
@@ -13,6 +14,8 @@ import { DiscoveryInput } from '../libs/types/creatorhub';
 import { koreaCopy } from '../libs/utils/korea';
 
 function Home() {
+	const { t: translate } = useSiteTranslation('common');
+
 	const [filters, setFilters] = useState<DiscoveryInput>({});
 	const site = useApi('getSiteContent');
 	const projects = usePaged('getProjects', { input: { ...filters, sort: 'POPULAR' } }, false, 6);
@@ -23,25 +26,27 @@ function Home() {
 			<div className="discovery-full discovery-home">
 				<section id="projects">
 					<div className="discovery-hero">
-						<h1>{site.value?.homeHeading || 'Find your next creative collaborator.'}</h1>
+						<h1>{translate(site.value?.homeHeading || 'Find your next creative collaborator.')}</h1>
 						<p>
-							{koreaCopy(site.value?.homeSubheading || 'Discover creators, creative work, and services across Korea.')}
+							{translate(
+								koreaCopy(site.value?.homeSubheading || 'Discover creators, creative work, and services across Korea.'),
+							)}
 						</p>
 					</div>
 					<SearchFilters kind="projects" home filters={filters} onSearch={setFilters} />
 					<CategoryShortcuts />
 					<div className="home-section-heading">
 						<div>
-							<h2>Popular projects</h2>
-							<p className="muted">Work the community has liked. Newer projects break ties.</p>
+							<h2>{translate('Popular projects')}</h2>
+							<p className="muted">{translate('Work the community has liked. Newer projects break ties.')}</p>
 						</div>
 						<Link passHref href="/projects">
-							View all projects →
+							{translate('View all projects →')}
 						</Link>
 					</div>
 					<QueryState loading={projects.loading} error={projects.error} retry={() => projects.refetch()} />
 					{!projects.loading && !projects.error && !projects.rows.length && (
-						<Empty title="No matches yet">Try another search or clear your filters.</Empty>
+						<Empty title={translate('No matches yet')}>{translate('Try another search or clear your filters.')}</Empty>
 					)}
 					<div className="grid projects">
 						{projects.rows.map((project) => (

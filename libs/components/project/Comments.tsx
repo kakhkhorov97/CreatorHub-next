@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { useReactiveVar } from '@apollo/client';
 import { useRef, useState } from 'react';
 import { userVar } from '../../../apollo/store';
@@ -6,6 +7,8 @@ import { usePaged } from '../../hooks/usePaged';
 import { Button, Confirm, date, Feedback, LinkButton, Pager, QueryState, TextArea } from '../common/UI';
 
 export function Comments({ projectId }: { projectId: string }) {
+	const { t: translate } = useSiteTranslation('common');
+
 	const comments = usePaged('getProjectComments', { projectId });
 	const user = useReactiveVar(userVar);
 	const action = useAction();
@@ -15,15 +18,15 @@ export function Comments({ projectId }: { projectId: string }) {
 	const key = useRef<string | null>(null);
 	return (
 		<section className="comments">
-			<h2>Comments</h2>
+			<h2>{translate('Comments')}</h2>
 			<QueryState loading={comments.loading} error={comments.error} />
 			{comments.rows.map((c) => (
 				<article className="comment" key={c._id}>
 					<div className="row">
-						<strong>{c.userId === user?._id ? 'You' : 'Community member'}</strong>
+						<strong>{c.userId === user?._id ? translate('You') : translate('Community member')}</strong>
 						<time>
 							{date(c.createdAt)}
-							{c.editedAt ? ' · Edited' : ''}
+							{c.editedAt ? translate(' · Edited') : ''}
 						</time>
 					</div>
 					<p>{c.content}</p>
@@ -36,10 +39,10 @@ export function Comments({ projectId }: { projectId: string }) {
 									setContent(c.content);
 								}}
 							>
-								Edit
+								{translate('Edit')}
 							</Button>
 							<Button danger secondary onClick={() => setRemove(c._id)}>
-								Delete
+								{translate('Delete')}
 							</Button>
 						</div>
 					)}
@@ -47,7 +50,7 @@ export function Comments({ projectId }: { projectId: string }) {
 			))}
 			{remove && (
 				<Confirm
-					title="Delete this comment?"
+					title={translate('Delete this comment?')}
 					onCancel={() => setRemove(null)}
 					busy={action.busy}
 					onConfirm={() =>
@@ -58,7 +61,7 @@ export function Comments({ projectId }: { projectId: string }) {
 						})
 					}
 				>
-					The comment will no longer be visible.
+					{translate('The comment will no longer be visible.')}
 				</Confirm>
 			)}
 			<Pager {...comments} />
@@ -82,7 +85,7 @@ export function Comments({ projectId }: { projectId: string }) {
 					}}
 				>
 					<TextArea
-						label={edit ? 'Edit comment' : 'Add a comment'}
+						label={edit ? translate('Edit comment') : translate('Add a comment')}
 						required
 						minLength={1}
 						maxLength={2000}
@@ -94,7 +97,7 @@ export function Comments({ projectId }: { projectId: string }) {
 					/>
 					<div className="actions">
 						<Button type="submit" disabled={action.busy}>
-							{edit ? 'Save comment' : 'Post comment'}
+							{edit ? translate('Save comment') : translate('Post comment')}
 						</Button>
 						{edit && (
 							<Button
@@ -104,7 +107,7 @@ export function Comments({ projectId }: { projectId: string }) {
 									setContent('');
 								}}
 							>
-								Cancel edit
+								{translate('Cancel edit')}
 							</Button>
 						)}
 					</div>
@@ -112,7 +115,7 @@ export function Comments({ projectId }: { projectId: string }) {
 				</form>
 			) : (
 				<LinkButton secondary href={`/account/sign-in?returnTo=/projects/${projectId}`}>
-					Sign in to comment
+					{translate('Sign in to comment')}
 				</LinkButton>
 			)}
 		</section>

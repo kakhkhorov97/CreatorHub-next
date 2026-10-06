@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { Pause, Play, SpeakerHigh, SpeakerSlash } from 'phosphor-react';
 import { useEffect, useRef, useState } from 'react';
@@ -8,6 +9,8 @@ import { EventsSection } from '../events/Events';
 import { ProjectCard } from './Cards';
 
 function Introduction() {
+	const { t: translate } = useSiteTranslation('common');
+
 	const ref = useRef<HTMLVideoElement>(null);
 	const pausedByUser = useRef(false);
 	const inView = useRef(false);
@@ -43,17 +46,21 @@ function Introduction() {
 	return (
 		<section className="home-introduction" aria-labelledby="intro-title">
 			<div className="intro-copy">
-				<h2 id="intro-title">Meet CreatorHub</h2>
+				<h2 id="intro-title">{translate('Meet CreatorHub')}</h2>
 				<p>
-					Discover creative work.
+					{translate('Discover creative work.')}
 					<br />
-					Connect with creators.
+					{translate('Connect with creators.')}
 					<br />
-					Start a conversation.
+					{translate('Start a conversation.')}
 				</p>
 				<span className="playback-status">
 					{muted ? <SpeakerSlash size={21} /> : <SpeakerHigh size={21} />}
-					{playing ? (muted ? 'Playing without sound' : 'Playing with sound') : 'Video paused'}
+					{playing
+						? muted
+							? translate('Playing without sound')
+							: translate('Playing with sound')
+						: translate('Video paused')}
 				</span>
 			</div>
 			<figure>
@@ -66,7 +73,7 @@ function Introduction() {
 						loop
 						playsInline
 						preload="metadata"
-						aria-label="CreatorHub introduction"
+						aria-label={translate('CreatorHub introduction')}
 						onPlay={() => setPlaying(true)}
 						onPause={() => setPlaying(false)}
 						onError={() => setError(true)}
@@ -74,7 +81,7 @@ function Introduction() {
 					<div className="video-controls">
 						<button
 							type="button"
-							aria-label={playing ? 'Pause introduction' : 'Play introduction'}
+							aria-label={playing ? translate('Pause introduction') : translate('Play introduction')}
 							onClick={() => {
 								const v = ref.current;
 								if (!v) return;
@@ -91,7 +98,7 @@ function Introduction() {
 						</button>
 						<button
 							type="button"
-							aria-label={muted ? 'Turn sound on' : 'Mute introduction'}
+							aria-label={muted ? translate('Turn sound on') : translate('Mute introduction')}
 							aria-pressed={!muted}
 							onClick={() => setMuted(!muted)}
 						>
@@ -101,9 +108,9 @@ function Introduction() {
 				</div>
 				<figcaption>
 					{error ? (
-						<a href="/videos/creatorhub-introduction.mp4">Open the introduction video</a>
+						<a href="/videos/creatorhub-introduction.mp4">{translate('Open the introduction video')}</a>
 					) : (
-						'CreatorHub introduction'
+						translate('CreatorHub introduction')
 					)}
 				</figcaption>
 			</figure>
@@ -118,6 +125,8 @@ export default function HomeSections({
 	popularIds: string[];
 	loadingPopular: boolean;
 }) {
+	const { t: translate } = useSiteTranslation('common');
+
 	const recent = useApi(
 		'getProjects',
 		{ input: { sort: 'RECENT', limit: 6, excludeProjectIds: popularIds } },
@@ -131,16 +140,18 @@ export default function HomeSections({
 			<section className="home-section">
 				<div className="home-section-heading">
 					<div>
-						<h2>Recently added</h2>
-						<p className="muted">New work to discover, beyond the popular selection.</p>
+						<h2>{translate('Recently added')}</h2>
+						<p className="muted">{translate('New work to discover, beyond the popular selection.')}</p>
 					</div>
 					<Link passHref href="/projects">
-						View all projects →
+						{translate('View all projects →')}
 					</Link>
 				</div>
 				<QueryState loading={recent.loading || loadingPopular} error={recent.error} retry={() => recent.refetch()} />
 				{!loadingPopular && !recent.loading && !recent.error && !recent.value?.length && (
-					<Empty title="More work is on its way">New published projects will appear here.</Empty>
+					<Empty title={translate('More work is on its way')}>
+						{translate('New published projects will appear here.')}
+					</Empty>
 				)}
 				<div className="grid projects">
 					{recent.value?.map((p) => (
@@ -152,21 +163,22 @@ export default function HomeSections({
 			<EventsSection home />
 			<section className="home-about home-section">
 				<div>
-					<h2>Creative work brings us together.</h2>
+					<h2>{translate('Creative work brings us together.')}</h2>
 					<p>
-						CreatorHub is a place for independent creators and people looking for their next collaborator. Explore
-						portfolios, find services, and start a private conversation about your project, across Korea.
+						{translate(
+							'CreatorHub is a place for independent creators and people looking for their next collaborator. Explore portfolios, find services, and start a private conversation about your project, across Korea.',
+						)}
 					</p>
 					<Link passHref href="/about">
-						More about CreatorHub →
+						{translate('More about CreatorHub →')}
 					</Link>
 				</div>
 				<div>
-					<h3>Make your next connection.</h3>
-					<p>Create an account to save work, follow creators, or publish your own portfolio.</p>
-					<LinkButton href="/account/register">Join CreatorHub</LinkButton>
+					<h3>{translate('Make your next connection.')}</h3>
+					<p>{translate('Create an account to save work, follow creators, or publish your own portfolio.')}</p>
+					<LinkButton href="/account/register">{translate('Join CreatorHub')}</LinkButton>
 					<Link passHref className="home-contact-link" href="/contact">
-						Contact us →
+						{translate('Contact us →')}
 					</Link>
 				</div>
 			</section>

@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Empty, Heading, Pager, QueryState } from '../../libs/components/common/UI';
@@ -10,6 +11,8 @@ import { CreatorProfile, DiscoveryInput } from '../../libs/types/creatorhub';
 const kind = 'creators' as const;
 
 function CreatorsPage() {
+	const { t: translate } = useSiteTranslation('common');
+
 	const router = useRouter();
 	const [filters, setFilters] = useState<DiscoveryInput>({});
 	useEffect(() => {
@@ -32,7 +35,7 @@ function CreatorsPage() {
 
 					<QueryState loading={result.loading} error={result.error} retry={() => result.refetch()} />
 					{!result.loading && !result.error && !result.rows.length && (
-						<Empty title="No matches yet">Try another search or clear your filters.</Empty>
+						<Empty title={translate('No matches yet')}>{translate('Try another search or clear your filters.')}</Empty>
 					)}
 					<div className={`grid ${kind}`}>
 						{(result.rows as CreatorProfile[]).map((c) => (

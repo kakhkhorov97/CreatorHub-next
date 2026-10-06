@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Bell, BookmarkSimple, EnvelopeSimple, Folder, Gear, House, SquaresFour, User, Users } from 'phosphor-react';
@@ -19,11 +20,13 @@ const account = [
 ] as const;
 
 export default function Sidebar({ area }: { area: 'workspace' | 'account' }) {
+	const { t: translate } = useSiteTranslation('common');
+
 	const router = useRouter();
 	const links = area === 'workspace' ? workspace : account;
 	return (
 		<aside className="sidebar">
-			<nav aria-label="Your account">
+			<nav aria-label={translate('Your account')}>
 				{links.map(([href, text, Icon]) => (
 					<Link
 						passHref
@@ -36,7 +39,7 @@ export default function Sidebar({ area }: { area: 'workspace' | 'account' }) {
 						}
 					>
 						<Icon size={21} />
-						{text}
+						{translate(text)}
 					</Link>
 				))}
 			</nav>

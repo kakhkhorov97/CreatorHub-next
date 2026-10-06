@@ -45,6 +45,7 @@ enum UserStatus {
 enum Locale {
   ko
   en
+  uz
 }
 
 type City {

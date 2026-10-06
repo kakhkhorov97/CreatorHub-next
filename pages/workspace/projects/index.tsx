@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useState } from 'react';
 import {
@@ -17,8 +18,10 @@ import { useAction, useApi } from '../../../libs/hooks/useApi';
 import { usePaged } from '../../../libs/hooks/usePaged';
 
 function Manager() {
+	const { t: translate } = useSiteTranslation('common');
+
 	return (
-		<Layout title={'Your projects'} area="workspace">
+		<Layout title={translate('Your projects')} area="workspace">
 			<Guard creatorOnly>
 				<ManagerContent />
 			</Guard>
@@ -27,19 +30,21 @@ function Manager() {
 }
 
 function ManagerContent() {
+	const { t: translate } = useSiteTranslation('common');
+
 	const profile = useApi('myCreatorProfile');
 	const result = usePaged('getMyProjects', {}, !profile.value);
 	const action = useAction();
 	const [remove, setRemove] = useState<string | null>(null);
 	return (
 		<>
-			<Heading title={'Your projects'}>
-				<LinkButton href={`/workspace/projects/new`}>{'New project'}</LinkButton>
+			<Heading title={translate('Your projects')}>
+				<LinkButton href={`/workspace/projects/new`}>{translate('New project')}</LinkButton>
 			</Heading>
 			{profile.error && !profile.value ? (
-				<Empty title="Create your creator profile first">
+				<Empty title={translate('Create your creator profile first')}>
 					<Link passHref href="/workspace/profile">
-						Set up your profile
+						{translate('Set up your profile')}
 					</Link>
 				</Empty>
 			) : (
@@ -49,10 +54,10 @@ function ManagerContent() {
 						<table>
 							<thead>
 								<tr>
-									<th>{'Project'}</th>
-									<th>Status</th>
-									<th>Last updated</th>
-									<th>Actions</th>
+									<th>{translate('Project')}</th>
+									<th>{translate('Status')}</th>
+									<th>{translate('Last updated')}</th>
+									<th>{translate('Actions')}</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -66,10 +71,10 @@ function ManagerContent() {
 										<td>
 											<div className="actions">
 												<Link passHref href={`/workspace/projects/${item._id}`} className="button secondary">
-													Edit
+													{translate('Edit')}
 												</Link>
 												<Button danger secondary onClick={() => setRemove(item._id)}>
-													Delete
+													{translate('Delete')}
 												</Button>
 											</div>
 										</td>
@@ -79,14 +84,16 @@ function ManagerContent() {
 						</table>
 					</div>
 					{!result.loading && !result.rows.length && (
-						<Empty title={`No projects yet`}>Save a draft, then submit it for approval when it is ready.</Empty>
+						<Empty title={translate('No projects yet')}>
+							{translate('Save a draft, then submit it for approval when it is ready.')}
+						</Empty>
 					)}
 					<Pager {...result} />
 				</>
 			)}
 			{remove && (
 				<Confirm
-					title={`Delete this ${'project'}?`}
+					title={translate('Delete this project?')}
 					busy={action.busy}
 					onCancel={() => setRemove(null)}
 					onConfirm={() =>
@@ -97,7 +104,7 @@ function ManagerContent() {
 						})
 					}
 				>
-					It will no longer be visible on CreatorHub.
+					{translate('It will no longer be visible on CreatorHub.')}
 				</Confirm>
 			)}
 			<Feedback {...action} />

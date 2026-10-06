@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { MagnifyingGlass } from 'phosphor-react';
 import { FormEvent } from 'react';
 import { useApi } from '../../hooks/useApi';
@@ -15,6 +16,8 @@ export default function SearchFilters({
 	filters: DiscoveryInput;
 	onSearch: (input: DiscoveryInput) => void;
 }) {
+	const { t: translate } = useSiteTranslation('common');
+
 	const categories = useApi('categories');
 	const cities = useApi('getCities');
 
@@ -34,7 +37,11 @@ export default function SearchFilters({
 			<div className="search-segments">
 				<label className="search-query">
 					<MagnifyingGlass size={23} />
-					<span className="sr-only">Search {kind}</span>
+					<span className="sr-only">
+						{translate('Search {{kind}}', {
+							kind: translate(kind === 'projects' ? 'Projects' : kind === 'creators' ? 'Creators' : 'Services'),
+						})}
+					</span>
 					<input
 						name="query"
 						maxLength={200}
@@ -42,41 +49,41 @@ export default function SearchFilters({
 						key={`query-${filters.query || ''}`}
 						placeholder={
 							kind === 'projects'
-								? 'Search projects, tags, or topics'
+								? translate('Search projects, tags, or topics')
 								: kind === 'creators'
-								? 'Search skills, headline, or bio'
-								: 'Search services'
+								? translate('Search skills, headline, or bio')
+								: translate('Search services')
 						}
 					/>
 				</label>
 				<label className="search-segment">
-					<span>Category</span>
+					<span>{translate('Category')}</span>
 					<select name="categoryId" key={filters.categoryId || 'all'} defaultValue={filters.categoryId || ''}>
-						<option value="">All categories</option>
+						<option value="">{translate('All categories')}</option>
 						{categories.value?.map((category) => (
 							<option key={category._id} value={category._id}>
-								{category.name}
+								{translate(category.name)}
 							</option>
 						))}
 					</select>
 				</label>
 				<label className="search-segment">
-					<span>Location</span>
+					<span>{translate('Location')}</span>
 					<select name="city" key={filters.city || 'korea'} defaultValue={filters.city || ''}>
-						<option value="">All Korea</option>
+						<option value="">{translate('All Korea')}</option>
 						{cities.value?.map((city) => (
 							<option key={city.key} value={city.key}>
-								{city.nameEn}
+								{translate(city.nameEn)}
 							</option>
 						))}
 					</select>
 				</label>
-				<Button type="submit">Search</Button>
+				<Button type="submit">{translate('Search')} </Button>
 			</div>
 			<div className="filters">
 				<label className="checkbox">
 					<input type="checkbox" name="remoteAvailable" defaultChecked={filters.remoteAvailable || false} />
-					Remote available
+					{translate('Remote available')}
 				</label>
 				{kind !== 'projects' && (
 					<input
@@ -85,12 +92,12 @@ export default function SearchFilters({
 						type="number"
 						min={0}
 						max={1000000000}
-						aria-label="Maximum budget in won"
-						placeholder="Max budget (₩)"
+						aria-label={translate('Maximum budget in won')}
+						placeholder={translate('Max budget (₩)')}
 					/>
 				)}
 				<Button secondary type="reset" onClick={() => onSearch({})}>
-					Reset
+					{translate('Reset')}
 				</Button>
 			</div>
 		</form>

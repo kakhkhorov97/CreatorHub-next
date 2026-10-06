@@ -1,3 +1,4 @@
+import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { useCardNavigation } from '../../hooks/useCardNavigation';
 import Link from 'next/link';
 import { ArrowUpRight } from 'phosphor-react';
@@ -5,6 +6,8 @@ import { CreatorProfile, CreatorService } from '../../types/creatorhub';
 import { money, Picture } from '../common/UI';
 
 export function ServiceCard({ service, creator }: { service: CreatorService; creator?: CreatorProfile }) {
+	const { t: translate } = useSiteTranslation('common');
+
 	const openCard = useCardNavigation(`/services/${service._id}`);
 	return (
 		<article className="service-card" onClick={openCard}>
@@ -25,10 +28,10 @@ export function ServiceCard({ service, creator }: { service: CreatorService; cre
 			</ul>
 			<div className="card-bottom">
 				<strong>
-					{service.pricingType === 'STARTING_AT' ? `From ${money(service.startingPrice)}` : 'Custom quote'}
+					{service.pricingType === 'STARTING_AT' ? `From ${money(service.startingPrice)}` : translate('Custom quote')}
 				</strong>
 				<Link passHref href={`/services/${service._id}`}>
-					View service <ArrowUpRight />
+					{translate('View service')} <ArrowUpRight />
 				</Link>
 			</div>
 		</article>
