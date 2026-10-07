@@ -111,6 +111,19 @@
     "beginSocialLink",
     "linkSocial"
   ],
+  "websocketChecks": [
+    "Unauthenticated and wrong-origin connections rejected",
+    "Only participants join; administrators, outsiders, private drafts and spoofed inputs denied",
+    "Saved message delivered over WebSocket in 16 ms locally",
+    "Acknowledged messages persist; retries deduplicate; stale writes roll back; invalid bodies rejected",
+    "Concurrent retries produce one persisted message",
+    "Read receipts and unread counts update through events",
+    "Reconnected participant rejoins and recovers missed database history; GraphQL writes also emit live events",
+    "Account rooms receive inbox invalidations only; message bodies stay in joined participant rooms",
+    "Closure reaches the peer immediately and closed conversations reject new replies",
+    "Expired WebSocket disconnects and reauthenticates before rejoining",
+    "Revoked and suspended sessions cannot receive private message events"
+  ],
   "assertions": [
     "All executed requests use the generated frontend documents",
     "Inquiry duplicate retry returns same message",

@@ -1,3 +1,4 @@
+import { useMessagingRefresh } from '../messaging/MessagingProvider';
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { useReactiveVar } from '@apollo/client';
 import LanguageSelector from './LanguageSelector';
@@ -24,7 +25,11 @@ export default function Top() {
 	const user = useReactiveVar(userVar);
 	const action = useAction();
 	const count = useApi('getUnreadNotificationCount', {}, !user, 30000);
-	const inbox = useApi('getUnreadInquiryCount', {}, !user, 15000);
+	const inbox = useApi('getUnreadInquiryCount', {}, !user);
+	useMessagingRefresh(
+		(event) => Boolean(user) && (event.type === 'sync' || event.type === 'inbox'),
+		() => Promise.all([inbox.refetch(), count.refetch()]),
+	);
 	const categories = useApi('categories');
 	const discovery =
 		router.pathname === '/' ||
@@ -68,7 +73,7 @@ export default function Top() {
 	}, [router.pathname]);
 	return (
 		<>
-			<div className={`site-header ${compact ? 'is-compact' : ''} ${!showNavigation ? 'is-simple' : ''}`}>
+			<div className={`site-header ${compact ? 'is-compact' : ''} ${showNavigation ? 'has-navigation' : 'is-simple'}`}>
 				<header className="top">
 					<Link passHref href="/" className="brand">
 						{translate('CreatorHub')}

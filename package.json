@@ -71,6 +71,7 @@
 		"sass": "^1.49.9",
 		"sass-loader": "^12.6.0",
 		"slick-carousel": "^1.8.1",
+		"socket.io-client": "^4.8.4",
 		"sonner": "^2.0.8",
 		"styled-components": "^5.3.3",
 		"styled-jsx": "^5.0.0",

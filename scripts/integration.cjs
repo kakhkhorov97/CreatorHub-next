@@ -47,7 +47,7 @@ async function op(name, variables = {}, token, expectError = false) {
 	process.env.NODE_ENV = 'test';
 	process.env.MONGO_DEV = mongo.getUri('creatorhub_frontend_test');
 	process.env.JWT_SECRET = 'disposable-frontend-test-secret-not-for-deployment';
-	process.env.FRONTEND_URL = 'http://localhost:7007';
+	process.env.FRONTEND_URL = process.env.TEST_FRONTEND_URL || 'http://localhost:7007';
 	process.env.MEDIA_BASE_URL = 'https://media.example.com/creatorhub';
 	process.env.MAIL_WEBHOOK_URL = '';
 	process.env.MAIL_WEBHOOK_TOKEN = '';
@@ -386,12 +386,32 @@ async function op(name, variables = {}, token, expectError = false) {
 	await op('createCreatorProfile', { input: { slug: 'disposable-profile' } }, disposable.accessToken);
 	await op('deleteCreatorProfile', {}, disposable.accessToken);
 	await op('deleteMyAccount', {}, disposable.accessToken);
+	const websocketChecks = await require('./verify-messaging.cjs').verifyMessaging({
+		port,
+		op,
+		customer: (await op('login', { input: { email: 'client@frontend.test', password } })).accessToken,
+		creator: ct,
+		outsider: phone.accessToken,
+		admin: at,
+		inquiryId: direct._id,
+		draftId: privateDraft._id,
+	});
+	websocketChecks.push(
+		...(await require('./verify-messaging-sessions.cjs').verifyMessagingSessions({
+			port,
+			op,
+			backendRequire: req,
+			password,
+		})),
+	);
+	console.log('WebSocket checks: ' + websocketChecks.join('; '));
 	const logout = await op('login', { input: { email: 'admin@frontend.test', password } });
 	await op('logout', {}, logout.accessToken);
 	await op('me', {}, logout.accessToken, true);
 	const report = {
 		passed: Array.from(seen).sort(),
 		notExecuted: docs.map((d) => d.name).filter((n) => !seen.has(n)),
+		websocketChecks,
 		assertions: [
 			'All executed requests use the generated frontend documents',
 			'Inquiry duplicate retry returns same message',

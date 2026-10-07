@@ -1,3 +1,4 @@
+import { useMessaging, useMessagingEvents, useMessagingRefresh } from '../../messaging/MessagingProvider';
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { ConfirmationPrompt } from '../common/ConfirmationPrompt';
 import { EngagementFeedback } from './ServiceFeedback';
@@ -6,7 +7,7 @@ import Link from 'next/link';
 import { ArrowLeft, CaretDown, PaperPlaneTilt } from 'phosphor-react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { userVar } from '../../../apollo/store';
-import { useAction, documents } from '../../hooks/useApi';
+import { useAction } from '../../hooks/useApi';
 import { useInquiryHistory } from '../../hooks/useInquiryHistory';
 import { handleMessageKey } from '../../utils/messageKeyboard';
 import { Inquiry, InquiryOutcome } from '../../types/creatorhub';
@@ -36,6 +37,8 @@ export function Conversation({
 	const { t: translate, i18n } = useSiteTranslation('common');
 
 	const action = useAction();
+	const messaging = useMessaging();
+	const [roomError, setRoomError] = useState('');
 	const messages = useInquiryHistory(inquiry._id, inquiry.version);
 	const user = useReactiveVar(userVar)!;
 	const [body, setBody] = useState('');
@@ -73,14 +76,40 @@ export function Conversation({
 	const [outcome, setOutcome] = useState<InquiryOutcome>('NOT_PROCEEDING');
 	const key = useRef<string | null>(null);
 	const active = ['SENT', 'IN_DISCUSSION'].includes(inquiry.status);
-	const input = { inquiryId: inquiry._id, expectedVersion: inquiry.version };
+	const liveVersion = useRef(inquiry.version);
+	liveVersion.current = Math.max(liveVersion.current, inquiry.version);
+	const input = { inquiryId: inquiry._id, expectedVersion: liveVersion.current };
 	useEffect(() => {
-		const timer = setInterval(() => {
-			refresh().catch(() => {});
-			messages.refresh().catch(() => {});
-		}, 15000);
-		return () => clearInterval(timer);
-	}, [inquiry._id, inquiry.version]);
+		if (messaging.state !== 'connected') return;
+		let cancelled = false;
+		messaging
+			.join(inquiry._id)
+			.then(async () => {
+				if (cancelled) return;
+				setRoomError('');
+				await messages.refresh(true);
+			})
+			.catch((error) => {
+				if (!cancelled) setRoomError(error.message);
+			});
+		return () => {
+			cancelled = true;
+			messaging.leave(inquiry._id);
+		};
+	}, [inquiry._id, messaging.state, messaging.join, messaging.leave]);
+	useMessagingEvents((event) => {
+		if (event.type !== 'sync' && event.change.inquiryId === inquiry._id)
+			liveVersion.current = Math.max(liveVersion.current, event.change.version);
+		if (event.type === 'conversation' && event.change.inquiryId === inquiry._id && event.change.message)
+			messages.append(event.change.message, event.change.version);
+	});
+	useMessagingRefresh(
+		(event) =>
+			event.type === 'sync' ||
+			(event.type === 'conversation' && event.change.inquiryId === inquiry._id && !event.change.message),
+		() => messages.refresh(true),
+	);
+
 	useEffect(() => {
 		if (
 			messages.loading ||
@@ -90,20 +119,10 @@ export function Conversation({
 			document.visibilityState !== 'visible'
 		)
 			return;
-		let cancelled = false;
-		action
+		// The committed read event refreshes the thread, list and badges.
+		void action
 			.mutate('markInquiryRead', { input: { inquiryId: inquiry._id, expectedVersion: inquiry.version } })
-			.then(async () => {
-				if (cancelled) return;
-				await action.client.refetchQueries({
-					include: [documents.getUnreadInquiryCount, documents.getUnreadNotificationCount],
-				});
-				await refresh();
-			})
 			.catch(() => {});
-		return () => {
-			cancelled = true;
-		};
 	}, [inquiry._id, inquiry.version, inquiry.unreadCount, messages.loading, messages.error, messages.observedVersion]);
 
 	return (
@@ -118,6 +137,9 @@ export function Conversation({
 						<div className="chat-heading-copy">
 							<h2>{inquiry.counterpartyName || translate('Member')}</h2>
 							<p>{inquiry.subject || translate('Private inquiry')}</p>
+							{messaging.state !== 'connected' && (
+								<small role="status">{translate('Reconnecting to messages… Your draft is kept.')}</small>
+							)}
 						</div>
 						<button
 							type="button"
@@ -129,6 +151,20 @@ export function Conversation({
 							{translate('Details')} <CaretDown size={16} />
 						</button>
 					</div>
+					<QueryState
+						loading={false}
+						error={roomError ? new Error(roomError) : undefined}
+						retry={async () => {
+							try {
+								await messaging.join(inquiry._id);
+								setRoomError('');
+								await refresh();
+								await messages.refresh(true);
+							} catch (error) {
+								setRoomError(error instanceof Error ? error.message : 'Could not load messages.');
+							}
+						}}
+					/>
 					<QueryState
 						loading={messages.loading && !messages.rows.length}
 						error={messages.error}
@@ -187,17 +223,20 @@ export function Conversation({
 							className="message-form"
 							onSubmit={(e) => {
 								e.preventDefault();
-								if (!body.trim()) return;
+								if (!body.trim() || messaging.state !== 'connected' || roomError) return;
 								action.run(async () => {
 									key.current ??= crypto.randomUUID();
-									await action.mutate('sendInquiryMessage', {
-										input: { ...input, clientMessageKey: key.current, body: body.trim() },
+									const message = await messaging.send({
+										...input,
+										expectedVersion: liveVersion.current,
+										clientMessageKey: key.current,
+										body: body.trim(),
 									});
+									messages.append(message, inquiry.version);
 									key.current = null;
 									setBody('');
 									followMessages.current = true;
-									await refresh();
-									await messages.refresh();
+									// Live events update the version, list and badges without duplicate queries.
 								});
 							}}
 						>
@@ -206,7 +245,12 @@ export function Conversation({
 								rows={2}
 								readOnly={action.busy}
 								aria-describedby={`message-hint-${inquiry._id}`}
-								onKeyDown={(event) => handleMessageKey(event, !action.busy && !!body.trim())}
+								onKeyDown={(event) =>
+									handleMessageKey(
+										event,
+										!action.busy && !!body.trim() && messaging.state === 'connected' && !roomError,
+									)
+								}
 								value={body}
 								onChange={(e) => {
 									setBody(e.target.value);
@@ -217,7 +261,10 @@ export function Conversation({
 								maxLength={5000}
 								placeholder={translate('Write a message…')}
 							/>
-							<Button type="submit" disabled={action.busy || !body.trim()}>
+							<Button
+								type="submit"
+								disabled={action.busy || !body.trim() || messaging.state !== 'connected' || !!roomError}
+							>
 								<PaperPlaneTilt size={19} />
 								{action.busy ? translate('Sending…') : translate('Send')}
 							</Button>

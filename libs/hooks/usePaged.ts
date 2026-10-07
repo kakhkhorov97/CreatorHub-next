@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { useApolloClient } from '@apollo/client';
+import { usePageAdvance } from './usePageAdvance';
 import { Operations } from '../types/creatorhub';
-import { ApiValue, QueryName, useApi } from './useApi';
+import { ApiValue, QueryName, useApi, documents, unwrap } from './useApi';
 
 export function usePaged<K extends QueryName>(
 	name: K,
@@ -26,12 +28,28 @@ export function usePaged<K extends QueryName>(
 	>
 		? T[]
 		: never[];
+	const client = useApolloClient();
+	const pagination = usePageAdvance(JSON.stringify([name, key, offset, limit, skip]), async () => {
+		if (skip) return false;
+		const response = await client.query<Record<K, Operations[K]['result']>>({
+			query: documents[name],
+			variables: {
+				...variables,
+				input: { ...('input' in variables ? variables.input : {}), page: Math.floor(offset / limit) + 2, limit },
+			},
+			fetchPolicy: 'network-only',
+		});
+		const nextRows = unwrap(response.data[name]);
+		if (!Array.isArray(nextRows)) throw new Error('Invalid page response');
+		return nextRows.length > 0;
+	}, () => setOffset((n) => n + limit));
 	return {
 		...result,
+		...pagination,
+		loading: result.loading || pagination.checkingNext,
 		rows,
 		offset,
-		next: () => setOffset((n) => n + limit),
 		previous: () => setOffset((n) => Math.max(0, n - limit)),
-		canNext: rows.length === limit,
+		canNext: !skip && rows.length === limit && !pagination.noMoreResults,
 	};
 }

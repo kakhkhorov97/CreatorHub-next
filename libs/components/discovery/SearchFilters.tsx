@@ -29,7 +29,7 @@ export default function SearchFilters({
 			categoryId: optional(fields.categoryId),
 			city: optional(fields.city),
 			remoteAvailable: fields.remoteAvailable ? true : undefined,
-			...(kind !== 'projects' && fields.budgetMax ? { budgetMax: Number(fields.budgetMax) } : {}),
+			...(kind === 'services' && fields.budgetMax ? { budgetMax: Number(fields.budgetMax) } : {}),
 		});
 	}
 	return (
@@ -85,7 +85,7 @@ export default function SearchFilters({
 					<input type="checkbox" name="remoteAvailable" defaultChecked={filters.remoteAvailable || false} />
 					{translate('Remote available')}
 				</label>
-				{kind !== 'projects' && (
+				{kind === 'services' && (
 					<input
 						className="budget-filter"
 						name="budgetMax"

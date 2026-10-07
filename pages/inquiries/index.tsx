@@ -1,3 +1,4 @@
+import { useMessagingRefresh } from '../../libs/messaging/MessagingProvider';
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { useReactiveVar } from '@apollo/client';
 import Link from 'next/link';
@@ -29,6 +30,12 @@ export function Inbox({ selectedId = '' }: { selectedId?: string }) {
 	const user = useReactiveVar(userVar)!;
 	const selected = useApi('getInquiry', { inquiryId: selectedId }, !selectedId);
 	const result = useConversationList(user._id);
+	useMessagingRefresh(
+		(event) =>
+			Boolean(selectedId) &&
+			(event.type === 'sync' || (event.type === 'inbox' && event.change.inquiryId === selectedId)),
+		() => selected.refetch(),
+	);
 	const listPane = useRef<HTMLDivElement>(null);
 	const moreSentinel = useRef<HTMLDivElement>(null);
 	const { hasMore, loadingMore, error, loadMore } = result;

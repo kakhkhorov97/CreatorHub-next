@@ -1,3 +1,4 @@
+import { MessagingProvider } from '../libs/messaging/MessagingProvider';
 import { ApolloProvider } from '@apollo/client';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import type { AppProps } from 'next/app';
@@ -16,10 +17,12 @@ function App({ Component, pageProps }: AppProps) {
 		<ApolloProvider client={client}>
 			<ThemeProvider theme={theme}>
 				<CssBaseline />
-				<SessionBootstrap />
-				<Component {...pageProps} />
-				<Toaster richColors closeButton position="top-right" />
-				<Chatbot />
+				<MessagingProvider>
+					<SessionBootstrap />
+					<Component {...pageProps} />
+					<Toaster richColors closeButton position="top-right" />
+					<Chatbot />
+				</MessagingProvider>
 			</ThemeProvider>
 		</ApolloProvider>
 	);

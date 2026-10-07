@@ -1,7 +1,9 @@
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { MagnifyingGlass, Plus } from 'phosphor-react';
 import { FormEvent, useState } from 'react';
-import { useApi } from '../../hooks/useApi';
+import { useApi, documents, unwrap } from '../../hooks/useApi';
+import { useApolloClient } from '@apollo/client';
+import { usePageAdvance } from '../../hooks/usePageAdvance';
 import { AdminDirectoryInput, AdminEntry, AdminKind } from '../../types/creatorhub';
 import { Button, Field, optional, Picture, QueryState, Status, values } from '../common/UI';
 import AdminLayout from './AdminLayout';
@@ -24,6 +26,17 @@ export function Directory({ kind }: { kind: AdminKind }) {
 	const [selected, setSelected] = useState<AdminEntry | 'new' | null>(null);
 	const total = result.data?.adminDirectory.metaCounter[0]?.total ?? 0;
 	const page = filter.page || 1;
+	const client = useApolloClient();
+	const pagination = usePageAdvance(JSON.stringify([kind, filter]), async () => {
+		const response = await client.query({
+			query: documents.adminDirectory,
+			variables: { kind, input: { ...filter, page: page + 1 } },
+			fetchPolicy: 'network-only',
+		});
+		const rows = unwrap(response.data.adminDirectory);
+		if (!Array.isArray(rows)) throw new Error('Invalid page response');
+		return rows.length > 0;
+	}, () => setFilter({ ...filter, page: page + 1 }));
 	if (selected)
 		return (
 			<Editor
@@ -195,20 +208,25 @@ export function Directory({ kind }: { kind: AdminKind }) {
 					<div>
 						<Button
 							secondary
-							disabled={page === 1 || result.loading}
+							disabled={page === 1 || result.loading || pagination.checkingNext}
 							onClick={() => setFilter({ ...filter, page: page - 1 })}
 						>
 							{translate('Previous')}
 						</Button>
 						<Button
 							secondary
-							disabled={page * 20 >= total || result.loading}
-							onClick={() => setFilter({ ...filter, page: page + 1 })}
+							disabled={page * 20 >= total || result.loading || pagination.checkingNext || pagination.noMoreResults}
+							onClick={async () => {
+								if (await pagination.next()) window.scrollTo({ top: 0, behavior: 'auto' });
+							}}
 						>
 							{translate('Next')}
 						</Button>
 					</div>
 				</div>
+				{pagination.checkingNext && <p className="pagination-notice" role="status">{translate('Checking for more results…')}</p>}
+				{pagination.noMoreResults && <p className="pagination-notice" role="status">{translate('No more results')}</p>}
+				{pagination.nextPageError && <p className="pagination-notice pagination-error" role="alert">{translate('Could not check the next page. Please try again.')}</p>}
 			</section>
 		</>
 	);

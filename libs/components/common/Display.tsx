@@ -56,16 +56,23 @@ export function Pager({
 	previous,
 	canNext,
 	loading,
+	checkingNext = false,
+	noMoreResults = false,
+	nextPageError = false,
 }: {
 	offset: number;
-	next: () => void;
+	next: () => void | boolean | Promise<void | boolean>;
 	previous: () => void;
 	canNext: boolean;
 	loading: boolean;
+	checkingNext?: boolean;
+	noMoreResults?: boolean;
+	nextPageError?: boolean;
 }) {
 	const { t: translate } = useSiteTranslation('common');
 
 	return (
+		<>
 		<nav className="pager" aria-label={translate('Pagination')}>
 			<Button
 				secondary
@@ -81,15 +88,19 @@ export function Pager({
 			<Button
 				secondary
 				disabled={!canNext || loading}
-				onClick={() => {
-					next();
-					window.scrollTo({ top: 0, behavior: 'auto' });
+				onClick={async () => {
+					const moved = await next();
+					if (moved !== false) window.scrollTo({ top: 0, behavior: 'auto' });
 				}}
 			>
 				{translate('Next')}
 				<ArrowRight />
 			</Button>
 		</nav>
+		{checkingNext && <p className="pagination-notice" role="status">{translate('Checking for more results…')}</p>}
+		{noMoreResults && <p className="pagination-notice" role="status">{translate('No more results')}</p>}
+		{nextPageError && <p className="pagination-notice pagination-error" role="alert">{translate('Could not check the next page. Please try again.')}</p>}
+		</>
 	);
 }
 

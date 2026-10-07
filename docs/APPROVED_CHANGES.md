@@ -125,3 +125,45 @@ Finish review scored the contact translation and settled video preview fixes res
 ## Language menu style, 6 October 2026
 
 Replaced the native language select with a compact flag/name button and a dropdown for English, Korean and Uzbek. Approved flags are US, South Korea and Uzbekistan. The selected item has a checkmark and blue styling. Outside click, Escape and leaving the menu close it; arrow keys navigate choices. Route preservation and the saved locale cookie remain. Production build and 19 tests passed; desktop/mobile browser checks verified keyboard switching, Escape, outside-click dismissal and remembered language. The mobile menu position was corrected after inspection.
+
+## WebSocket messaging, 7 October 2026
+
+Implemented the approved frontend/backend WebSocket task. Socket.IO uses WebSocket transport on the API port. Each connected account joins its own private room; a conversation room requires participant authorization and rejects administrators who are not participants. Replies travel over WebSockets through the existing transactional service and are acknowledged after saving. Existing HTTP inquiry/read/status mutations also publish live events after committing. Message history remains in the same MongoDB database.
+
+Removed the conversation, conversation-list and inbox-count 15-second polling. Live events refresh previews, badge counts and read receipts. Reconnection reauthenticates, rejoins the selected conversation and reloads missed history. Enter/Shift+Enter behavior and scrolling history remain. Interrupted or unconfirmed sends retain the draft and retry key. No group conversations, payment integration or separate database was added.
+
+Verification: frontend production build, lint/type checking, 19 tests and all 108 generated documents passed. Backend format/typecheck/lint/build and 67 tests in eight suites passed. Disposable integration exercised 85/108 operations plus WebSocket checks for wrong-origin/token rejection, participant/admin/draft isolation, saved message delivery, sequential and concurrent retry deduplication, invalid/stale input rollback, read receipts, closure, reconnect history and expired/revoked/suspended sessions. One local final delivery check measured 27 ms; this is not a deployment latency guarantee. Two disposable browser accounts exchanged Enter-sent messages immediately, showed read receipts, preserved a Shift+Enter newline and updated an inbox badge outside the conversation. Desktop and 390px phone captures were inspected; no phone overflow or browser console errors were observed.
+
+The default room adapter runs in one API process. Multiple API replicas require a shared Socket.IO adapter; that deployment configuration is not included. See REALTIME_MESSAGING.md for server/proxy configuration and reproducible checks.
+
+
+## Normal browsing rate limits, 7 October 2026
+
+Separated login, registration, email verification, password reset, refresh and account-security quotas from ordinary query/write traffic. Signed JWT subjects receive per-account quotas, shared across sessions; forged or expired tokens remain in the anonymous IP quota. Resolver authentication remains responsible for active-session access. Browsing now allows 600 query resolutions per minute per signed account or 300 per anonymous IP, with an IP backstop of 3000. Ordinary writes allow 120 per signed account or 60 per anonymous IP, with a 600 IP backstop. Login families retain ten attempts per minute per IP; refresh has its own thirty-request IP quota. Account-security changes allow twenty per subject and sixty per IP. Fixed windows reset after sixty seconds; rejections report the remaining wait. Limits remain in memory per API process.
+
+The frontend groups background inbox/thread/badge invalidations in 300 ms windows and serializes each refresh with one pending follow-up. Message bodies render immediately. Saved sends and read acknowledgements no longer repeat event-driven HTTP refreshes. The live conversation version is retained for rapid successive sends, and history does not refetch a version already delivered over WebSocket. Reconnect/visibility recovery remains enabled.
+
+Verification: backend format, typecheck, lint and build passed, with 72 tests across nine suites. A first full-suite run had one transient missing-response failure in linked-email workflow; its focused rerun and the complete final rerun passed. Frontend typecheck/lint/build and 22 tests passed, including burst, in-flight and disposed scheduler checks. Disposable integration passed 85/108 operations and all real Socket.IO checks. Two disposable browser accounts exchanged Enter-sent messages with live read/badge updates and no console errors. The restarted main API handled 160 public apiName queries without the former 120-request block. Main API 7001 and frontend 7007 were restarted; no real private messages were sent for verification.
+
+
+## First-inquiry dialog, 7 October 2026
+
+Implemented only the Contact Creator dialog from the supplied October 7 reference. The proposed creator-header changes were withdrawn and restored byte-identical to their pre-task source. Attachments were explicitly excluded; no backend edits or migrations were made. Creator/service links retain the existing /inquiries/new route, authentication guard and resume destination. A native modal provides focus isolation, scroll locking and Escape/close/Cancel dismissal to the creator. The service select, message, optional deadline, budget range and direct send use the existing API. The service title supplies the inquiry subject, with translated Project inquiry for general inquiries. Sends retain a retry key and route to the persisted conversation. No response-time claims were added.
+
+Removed the budget input and submitted budget filter from Discover creators only. Services keeps its budget filter. Updated all three language catalogs.
+
+Validation: production build with lint/type checks and 22 frontend tests passed. Disposable generated-document integration passed 85/108 operations and WebSocket/session checks. Browser tests verified service preselection, reversed-budget inline validation, Escape dismissal, direct send and persisted service/brief/budget in Inbox. Desktop 1440×900 and mobile 390×844 captures showed a complete dialog. Browser verified zero creator-discovery budget inputs and one service-discovery budget input. An independent Impeccable finish review returned ship with no material fixes. The detector was unavailable because its engine was not installed and its cache directory was restricted; no detector pass is claimed. The documenter preserved DESIGN.md and .impeccable/design.json and recorded local surface decisions in docs/surfaces/contact-inquiry.md. Screenshots use disposable accounts only.
+
+Final application: restarted the production frontend on port 7007 and verified loaded creator discovery without the budget field. Stopped the disposable preview servers and closed their test-account tab.
+
+
+## Pagination and validation fixes, 7 October 2026
+
+- Approved main navigation on Events and Contact us, without search or categories. Removed obsolete compact-header hiding rule, preserved responsive selector specificity.
+- Shared pagination now checks the next page before advancing; public, workspace, feedback/comment and admin pages keep their current records on empty or failed checks. An inline message reports exhaustion or retryable failure. A failed or empty check does not scroll to the top.
+- The first-inquiry message uses inline red length feedback and a character counter, accessible error descriptions and an invalid border. Whitespace-only input cannot meet the trimmed 20-character minimum.
+- Production build including lint/types passed; 26 tests passed, including four pagination regressions for empty, populated, duplicate, failure/retry and stale-filter behavior. Existing disposable integration checks passed 85/108 operations and Socket.IO checks.
+- Browser verified main navigation on Events/Contact; final Services last-page check retained 12 cards and scroll position, showing No more results; desktop/mobile inquiry errors stayed inline and cleared with valid content. Other paginated lists use the tested shared guard and were not each manually traversed.
+- Fresh finish review requested one mobile CSS specificity correction; reviewer scored it resolved and returned ship for that fix. Screenshots are in docs/verification/pagination-validation.
+- Design detector could not run because engine 0.1.6 was unavailable and its cache was outside writable roots. Existing DESIGN.md and design sidecar preserved.
+- Disposable verification API stopped and fictional browser account signed out. Regular API on 7001 and updated frontend on 7007 restarted.
