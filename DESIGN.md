@@ -463,3 +463,13 @@ Owned project comments show a pencil and trash icon on the right of the author/d
 ## Password requirements and footer placement, 10 October 2026
 
 New-password fields show an accessible localized requirement and example directly beneath the input: 6–30 characters with a letter, number and symbol, for example River7!Cloud. Confirmation fields avoid duplicate guidance. Sign-in and current-password fields accept existing credentials without the new composition rule. The password icon reflects current visibility, with a tooltip naming its next action. Instagram, LinkedIn, YouTube and Telegram icons sit beneath the location in Find us. Social URLs remain unset pending the owner's real links.
+
+
+## Email confirmation and auth errors, October 10
+
+The approved auth change adds a Check your email page using the existing auth panel and envelope icon. Confirmation copy explains link verification, resend and sign-in. Signup and login submission errors appear as red secondary text directly under their inputs, with invalid borders and accessible error associations. Desktop and 390px mobile views were checked.
+
+
+### Simplified email link confirmation
+
+The approved follow-up uses a compact 440px confirmation panel, an inline recipient email, text resend and sign-in links, and no default email form. Verification links automatically show progress, success, or recovery; the technical token is never shown as an input. Duplicate signup banners are hidden on these routes.

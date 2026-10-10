@@ -4,13 +4,13 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { authenticationDestination, safeReturnTo, saveSession } from '../../auth';
 import { useAction } from '../../hooks/useApi';
-import { Button, Feedback, Field, Notice, Password, values } from '../common/UI';
+import { AuthFieldErrors, authSubmissionErrorField, validateAuthForm } from '../../utils/authForm';
+import { Button, Field, Notice, Password, values } from '../common/UI';
 
-export type AuthMode = 'sign-in' | 'register' | 'verify-email' | 'forgot-password' | 'reset-password';
+export type AuthMode = 'sign-in' | 'register' | 'forgot-password' | 'reset-password';
 const titles = {
 	'sign-in': 'Welcome back',
 	register: 'Create your account',
-	'verify-email': 'Verify your email',
 	'forgot-password': 'Forgot your password?',
 	'reset-password': 'Choose a new password',
 };
@@ -38,7 +38,7 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 	const [countryCode, setCountryCode] = useState('+82');
 	const action = useAction();
 	const [message, setMessage] = useState('');
-	const [showResend, setShowResend] = useState(false);
+	const [fieldErrors, setFieldErrors] = useState<AuthFieldErrors>({});
 	const auth = mode === 'sign-in' || mode === 'register';
 	const registering = mode === 'register';
 	const returnTo = typeof router.query.returnTo === 'string' ? safeReturnTo(router.query.returnTo) : undefined;
@@ -47,7 +47,18 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 		if (returnTo) sessionStorage.setItem('creatorhub.returnTo', returnTo);
 	}, [returnTo]);
 
+	useEffect(() => {
+		if (action.error) setFieldErrors({ [authSubmissionErrorField(action.error, mode)]: action.error });
+	}, [action.error, mode]);
+
 	async function submit(form: HTMLFormElement) {
+		action.setError('');
+		const errors = validateAuthForm(form, registering);
+		setFieldErrors(errors);
+		if (Object.keys(errors).length) {
+			form.querySelector<HTMLInputElement>(`[name="${Object.keys(errors)[0]}"]`)?.focus();
+			return;
+		}
 		const f = values(form);
 		if (registering) {
 			f.phoneNumber = f.phoneNumber.trim().startsWith('+')
@@ -60,10 +71,6 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 		}
 
 		setMessage('');
-		if (registering && f.password !== f.confirmPassword) {
-			action.setError(translate('Passwords do not match. Please try again.'));
-			return;
-		}
 		await action.run(async () => {
 			if (auth) {
 				const payload = registering
@@ -78,8 +85,8 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 					  })
 					: await action.mutate('login', { input: { email: f.email.trim(), password: f.password } });
 				if (registering) {
-					sessionStorage.setItem('creatorhub.pendingEmail', f.email);
-					await router.push(returnTo || '/');
+					sessionStorage.setItem('creatorhub.pendingEmail', f.email.trim());
+					await router.push(authHref('/account/check-email'));
 					return;
 				}
 				if (payload.accessToken) {
@@ -102,12 +109,6 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 			} else if (mode === 'reset-password') {
 				await action.mutate('resetPassword', { input: { token: f.token, password: f.password } });
 				setMessage('Password changed. You can now sign in.');
-			} else if (showResend) {
-				await action.mutate('requestEmailVerification', { input: { email: f.email } });
-				setMessage('If verification is needed, a new link will be sent.');
-			} else {
-				await action.mutate('verifyEmail', { token: f.token });
-				setMessage('Your email is verified. You can now sign in.');
 			}
 		});
 	}
@@ -128,39 +129,65 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 							: translate('Sign in to explore creators, save portfolios, and send project inquiries.')
 						: mode === 'forgot-password'
 						? translate('Enter the email linked to your account.')
-						: mode === 'verify-email'
-						? translate('Use the verification link sent to your inbox.')
 						: translate('Choose a password you do not use for another account.')}
 				</p>
 
 				<form
-					key={`${mode}-${showResend}`}
+					noValidate
+					onInput={(event) => {
+						const name = (event.target as HTMLInputElement).name;
+						action.setError('');
+						setFieldErrors((previous) => {
+							const next = { ...previous };
+							delete next[name];
+							return next;
+						});
+					}}
+					key={mode}
 					onSubmit={(e) => {
 						e.preventDefault();
 						submit(e.currentTarget);
 					}}
 				>
 					{mode === 'sign-in' && (
-						<Field label={translate('Email')} name="email" type="email" autoComplete="email" required maxLength={254} />
+						<Field
+							label={translate('Email')}
+							name="email"
+							error={fieldErrors.email}
+							type="email"
+							autoComplete="email"
+							required
+							maxLength={254}
+						/>
 					)}
 					{registering && (
 						<Field
 							label={translate('Your name')}
 							name="displayName"
+							error={fieldErrors.displayName}
 							autoComplete="name"
 							required
 							minLength={3}
 							maxLength={40}
 						/>
 					)}
-					{(mode === 'forgot-password' || showResend) && (
-						<Field label={translate('Email')} name="email" type="email" autoComplete="email" required maxLength={254} />
+					{mode === 'forgot-password' && (
+						<Field
+							label={translate('Email')}
+							name="email"
+							error={fieldErrors.email}
+							type="email"
+							autoComplete="email"
+							required
+							maxLength={254}
+						/>
 					)}{' '}
 					{registering && (
 						<>
 							<Field
 								label={translate('Email')}
 								name="email"
+								error={fieldErrors.email}
 								type="email"
 								autoComplete="email"
 								required
@@ -178,6 +205,7 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 									<Field
 										label={translate('Phone number')}
 										name="phoneNumber"
+										error={fieldErrors.phoneNumber}
 										type="tel"
 										autoComplete="tel"
 										required
@@ -189,10 +217,11 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 							</div>
 						</>
 					)}
-					{(mode === 'reset-password' || (mode === 'verify-email' && !showResend)) && (
+					{mode === 'reset-password' && (
 						<Field
 							label={translate('Verification token')}
 							name="token"
+							error={fieldErrors.token}
 							required
 							minLength={64}
 							maxLength={64}
@@ -202,6 +231,7 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 					{(auth || mode === 'reset-password') && (
 						<Password
 							name="password"
+							error={fieldErrors.password}
 							required
 							minLength={registering || mode === 'reset-password' ? 6 : 1}
 							maxLength={registering || mode === 'reset-password' ? 30 : 128}
@@ -214,6 +244,7 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 								label={translate('Confirm password')}
 								showRequirements={false}
 								name="confirmPassword"
+								error={fieldErrors.confirmPassword}
 								autoComplete="new-password"
 								required
 								minLength={6}
@@ -226,7 +257,6 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 							{translate('Forgot password?')}
 						</Link>
 					)}
-					<Feedback {...action} />
 					{mode === 'sign-in' && /verif/i.test(action.error) && (
 						<Link href={authHref('/account/verify-email')}>{translate('Verify email or resend')}</Link>
 					)}
@@ -240,22 +270,10 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 							? translate('Create account')
 							: mode === 'forgot-password'
 							? translate('Send reset link')
-							: mode === 'reset-password'
-							? translate('Reset password')
-							: showResend
-							? translate('Resend verification email')
-							: translate('Verify email')}
+							: translate('Reset password')}
 					</Button>
 				</form>
 				{auth && <SocialButtons />}
-				{mode === 'verify-email' && (
-					<div className="verification-resend">
-						<p>{translate('Need another verification email?')}</p>
-						<Button secondary className="resend-button" onClick={() => setShowResend(!showResend)}>
-							{showResend ? translate('Use a verification token') : translate('Resend email')}
-						</Button>
-					</div>
-				)}
 				<p className="auth-bottom">
 					{mode === 'sign-in' ? (
 						<>

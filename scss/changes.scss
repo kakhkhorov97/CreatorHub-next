@@ -2045,3 +2045,77 @@
 .auth-phone-row select {
 	height: 46px;
 }
+
+.field .field-error,
+.auth-panel .field-error {
+	color: #b42318;
+	font-size: 14px;
+	line-height: 1.5;
+	overflow-wrap: anywhere;
+}
+.field input[aria-invalid='true'] {
+	border-color: #b42318;
+}
+.email-confirmation {
+	text-align: center;
+}
+.email-confirmation .confirmation-icon {
+	color: #1458d4;
+	margin-bottom: 18px;
+}
+.email-confirmation .confirmation-address {
+	overflow-wrap: anywhere;
+}
+.email-confirmation .confirmation-address strong {
+	display: block;
+	margin-top: 6px;
+}
+.email-confirmation .field {
+	text-align: left;
+}
+.email-confirmation > .button {
+	width: 100%;
+	margin-top: 12px;
+}
+
+.email-confirmation {
+	max-width: 440px;
+	padding: 30px;
+	margin-top: 40px;
+}
+.email-confirmation h1 {
+	font-size: 28px;
+}
+.email-confirmation .confirmation-icon {
+	margin-bottom: 12px;
+}
+.email-confirmation .confirmation-address strong {
+	display: inline;
+}
+.email-confirmation .auth-intro {
+	margin-bottom: 24px;
+}
+.email-confirmation .confirmation-text-action {
+	display: inline;
+	min-height: 44px;
+	padding: 8px 2px;
+	border: 0;
+	background: transparent;
+	color: #1458d4;
+	font: inherit;
+	font-weight: 600;
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+.email-confirmation .confirmation-text-action:disabled {
+	opacity: 0.6;
+}
+.email-confirmation .confirmation-sign-in {
+	display: inline-block;
+	padding: 12px;
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+.email-confirmation .confirmation-status {
+	font-size: 14px;
+}

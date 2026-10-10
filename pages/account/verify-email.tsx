@@ -1,8 +1,8 @@
-import AuthForm from '../../libs/components/account/Auth';
+import EmailConfirmation from '../../libs/components/account/EmailConfirmation';
 import { withLayoutBasic } from '../../libs/components/layout/LayoutBasic';
 
 function AccountPage() {
-	return <AuthForm mode="verify-email" />;
+	return <EmailConfirmation verifyLink />;
 }
 
 export default withLayoutBasic(AccountPage, 'Verify email');

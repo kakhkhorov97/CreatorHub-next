@@ -6,24 +6,37 @@ import { handleMessageKey } from '../../utils/messageKeyboard';
 export function Field({
 	label: text,
 	hint,
+	error,
 	children,
 	...props
-}: React.InputHTMLAttributes<HTMLInputElement> & { label: string; hint?: string; children?: ReactNode }) {
+}: React.InputHTMLAttributes<HTMLInputElement> & {
+	label: string;
+	hint?: string;
+	error?: string;
+	children?: ReactNode;
+}) {
 	const { t: translate } = useSiteTranslation('common');
 	const id = useId();
+	const describedBy =
+		[props['aria-describedby'], hint && `${id}-hint`, error && `${id}-error`].filter(Boolean).join(' ') || undefined;
 	return (
 		<label className="field" htmlFor={id}>
 			<span>{translate(text)}</span>
 			{React.isValidElement(children) ? (
-				React.cloneElement(children as React.ReactElement<{ id?: string; 'aria-describedby'?: string }>, {
-					id,
-					'aria-describedby': hint ? `${id}-hint` : undefined,
-				})
+				React.cloneElement(
+					children as React.ReactElement<{ id?: string; 'aria-describedby'?: string; 'aria-invalid'?: boolean }>,
+					{
+						id,
+						'aria-describedby': describedBy,
+						'aria-invalid': error ? true : undefined,
+					},
+				)
 			) : (
 				<input
 					id={id}
-					aria-describedby={hint ? `${id}-hint` : undefined}
 					{...props}
+					aria-describedby={describedBy}
+					aria-invalid={error ? true : undefined}
 					onKeyDown={(event) => {
 						props.onKeyDown?.(event);
 						if (
@@ -35,6 +48,11 @@ export function Field({
 				/>
 			)}
 			{hint && <small id={`${id}-hint`}>{translate(hint)}</small>}
+			{error && (
+				<small id={`${id}-error`} className="field-error" role="alert">
+					{translate(error)}
+				</small>
+			)}
 		</label>
 	);
 }
@@ -67,8 +85,9 @@ export function TextArea({
 export function Password({
 	label: text = 'Password',
 	showRequirements = true,
+	error,
 	...props
-}: React.InputHTMLAttributes<HTMLInputElement> & { label?: string; showRequirements?: boolean }) {
+}: React.InputHTMLAttributes<HTMLInputElement> & { label?: string; showRequirements?: boolean; error?: string }) {
 	const { t: translate } = useSiteTranslation('common');
 
 	const [show, setShow] = useState(false);
@@ -85,7 +104,12 @@ export function Password({
 					pattern={
 						newPassword ? '(?=[\\s\\S]*\\p{L})(?=[\\s\\S]*[0-9])(?=[\\s\\S]*[^\\p{L}\\p{N}\\s])[\\s\\S]+' : undefined
 					}
-					aria-describedby={hint ? `${id}-requirements` : props['aria-describedby']}
+					aria-describedby={
+						[props['aria-describedby'], hint && `${id}-requirements`, error && `${id}-error`]
+							.filter(Boolean)
+							.join(' ') || undefined
+					}
+					aria-invalid={error ? true : undefined}
 					onKeyDown={(event) => {
 						props.onKeyDown?.(event);
 						if (!event.defaultPrevented) handleMessageKey(event, !props.disabled);
@@ -101,6 +125,11 @@ export function Password({
 					{show ? <Eye size={20} aria-hidden="true" /> : <EyeSlash size={20} aria-hidden="true" />}
 				</button>
 			</span>
+			{error && (
+				<small id={`${id}-error`} className="field-error" role="alert">
+					{translate(error)}
+				</small>
+			)}
 			{hint && (
 				<small id={`${id}-requirements`}>
 					{translate('Use 6–30 characters with a letter, a number, and a symbol. Example: River7!Cloud.')}

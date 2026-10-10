@@ -55,10 +55,6 @@ export default function Top() {
 		if (accountMenu.current) accountMenu.current.open = false;
 	}, [router.asPath]);
 	const [compact, setCompact] = useState(false);
-	const [pendingEmail, setPendingEmail] = useState('');
-	useEffect(() => {
-		setPendingEmail(sessionStorage.getItem('creatorhub.pendingEmail') || '');
-	}, [router.asPath, user]);
 	useEffect(() => {
 		let observer: IntersectionObserver | undefined;
 		const target = router.pathname === '/' ? document.getElementById('homepage-search') : null;
@@ -213,12 +209,6 @@ export default function Top() {
 					</nav>
 				)}
 			</div>
-			{!user && pendingEmail && (
-				<Notice>
-					{translate('Account created. Verify the email sent to')} {pendingEmail} {translate('before signing in.')}{' '}
-					<Link href="/account/verify-email">{translate('Verify email or resend')}</Link>
-				</Notice>
-			)}
 			{action.error && <Notice error>{action.error}</Notice>}
 		</>
 	);
