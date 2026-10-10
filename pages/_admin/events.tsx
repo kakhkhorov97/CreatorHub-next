@@ -70,7 +70,7 @@ function EventContent() {
 									<tr key={event._id}>
 										<td>
 											{event.title}
-											{event.isDemo && <small> {translate('· Demo')}</small>}
+											{event.isDemo && <small> {translate('· Fictional')}</small>}
 										</td>
 										<td>
 											<Status value={event.status} />
@@ -157,7 +157,7 @@ function EventContent() {
 						pattern="https://.*"
 						maxLength={2000}
 						defaultValue={selected?.eventUrl || ''}
-						hint={translate('Use an HTTPS address. Demo events do not show registration links.')}
+						hint={translate('Use an HTTPS address. Fictional event concepts do not show registration links.')}
 					/>
 					<Field label={translate('Status')}>
 						<select name="status" defaultValue={selected?.status || 'DRAFT'}>
@@ -168,7 +168,7 @@ function EventContent() {
 					</Field>
 					<label className="checkbox">
 						<input name="isDemo" type="checkbox" defaultChecked={selected?.isDemo ?? false} />
-						{translate('Fictional demo event')}
+						{translate('Fictional event concept')}
 					</label>
 					<Feedback {...action} />
 					{saved && <Notice notify>{translate('Event saved.')}</Notice>}

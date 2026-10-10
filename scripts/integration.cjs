@@ -70,7 +70,7 @@ async function op(name, variables = {}, token, expectError = false) {
 	for (const model of Object.values(db.models)) await model.createIndexes();
 	const password = 'Frontend-test-password-123';
 	async function account(email, displayName) {
-		const user = await op('register', { input: { email, password, displayName } });
+		const user = await op('register', { input: { email, password, displayName, phoneNumber: '+821023456789' } });
 		await op('verifyEmail', { token: mail.get(email + ':EMAIL_VERIFY') });
 		return user;
 	}
@@ -89,10 +89,14 @@ async function op(name, variables = {}, token, expectError = false) {
 		assert.equal(updated.preferredLocale, preferredLocale);
 	}
 
-	const phone = await op('registerPhone', {
-		input: { phoneNumber: '+821012345678', password, displayName: 'Preview Creator' },
-	});
-	await op('loginPhone', { input: { phoneNumber: '+821012345678', password } });
+	const phone = await account('phone@frontend.test', 'Preview Creator');
+	await op(
+		'registerPhone',
+		{ input: { phoneNumber: '+821012345678', password, displayName: 'Blocked Phone Signup' } },
+		undefined,
+		true,
+	);
+	await op('loginPhone', { input: { phoneNumber: '+821012345678', password } }, undefined, true);
 	await op('requestEmailVerification', { input: { email: 'client@frontend.test' } });
 	await op('requestPasswordReset', { input: { email: 'client@frontend.test' } });
 	await op('resetPassword', { input: { token: mail.get('client@frontend.test:PASSWORD_RESET'), password } });
@@ -101,12 +105,17 @@ async function op(name, variables = {}, token, expectError = false) {
 	const refreshed = await op('refreshSession', { refreshToken: freshClient.refreshToken });
 	const activeClient = refreshed.accessToken;
 	await op('getMyAuthIdentities', {}, ct);
-	const extra = await op('linkPhone', { input: { phoneNumber: '+821087654321', password } }, ct);
-	await op('changePhonePassword', { input: { password } }, ct);
-	ct = (await op('login', { input: { email: 'creator@frontend.test', password } })).accessToken;
-	await op('unlinkAuthIdentity', { authIdentityId: extra._id }, ct);
+	await op('linkPhone', { input: { phoneNumber: '+821087654321', password } }, ct, true);
 	await op('linkEmail', { input: { email: 'phone@frontend.test', password } }, phone.accessToken);
-	await op('verifyEmail', { token: mail.get('phone@frontend.test:EMAIL_VERIFY') });
+	const removable = await db
+		.model('AuthIdentity')
+		.create({
+			userId: creator.user._id,
+			provider: 'GOOGLE',
+			providerSubject: 'disposable-unlink',
+			verifiedAt: new Date(),
+		});
+	await op('unlinkAuthIdentity', { authIdentityId: String(removable._id) }, ct);
 	const category = await op('createCategory', { input: { slug: 'brand-design', name: 'Branding' } }, at);
 	await op('updateCategory', { id: category._id, input: { description: 'Brand identity and packaging' } }, at);
 	await op('categories');
@@ -191,6 +200,9 @@ async function op(name, variables = {}, token, expectError = false) {
 	await op('discoverCreators', { input: { request: 'Brand designer in Seoul' } });
 	await op('setCreatorFollow', { creatorId: profile._id, following: true }, activeClient);
 	await op('getMyFollows', {}, activeClient);
+	assert.ok((await op('getMyFollowers', {}, ct)).some((member) => member._id === client.user._id));
+	assert.deepEqual(await op('getMyFollowers', {}, at), []);
+	await op('getMyFollowers', {}, undefined, true);
 	assert.equal(await op('getMyProjectLike', { projectId: project._id }, activeClient), false);
 	await op('setProjectLike', { projectId: project._id, liked: true }, activeClient);
 	assert.equal(await op('getMyProjectLike', { projectId: project._id }, activeClient), true);
@@ -402,6 +414,7 @@ async function op(name, variables = {}, token, expectError = false) {
 			op,
 			backendRequire: req,
 			password,
+			account,
 		})),
 	);
 	console.log('WebSocket checks: ' + websocketChecks.join('; '));

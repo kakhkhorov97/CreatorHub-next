@@ -28,7 +28,7 @@ export default function EventDetail() {
 						<Heading title={event.title} />
 						{event.isDemo && (
 							<p className="demo-label">
-								{translate('Fictional demo event. This is a sample listing, not a scheduled real-world event.')}
+								{translate('Fictional event concept. This is not a scheduled real-world event.')}
 							</p>
 						)}
 						<dl className="event-facts">

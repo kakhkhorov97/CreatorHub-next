@@ -235,6 +235,15 @@ export interface Followings {
 	list: Array<CreatorFollow>;
 	metaCounter: Array<MetaCounter>;
 }
+export interface FollowerIdentity {
+	_id: string;
+	displayName: string;
+	avatarUrl?: string | null;
+}
+export interface Followers {
+	list: Array<FollowerIdentity>;
+	metaCounter: Array<MetaCounter>;
+}
 export interface SavedProjectResult {
 	projectId: string;
 	savedAt: string;
@@ -490,6 +499,7 @@ export interface UpdateEventInput {
 	isDemo: boolean;
 }
 export interface RegisterInput {
+	phoneNumber: string;
 	email: string;
 	password: string;
 	displayName: string;
@@ -506,6 +516,7 @@ export interface PhoneLoginInput {
 	password: string;
 }
 export interface SocialLoginInput {
+	phoneNumber?: string | null;
 	provider: AuthProvider;
 	idToken: string;
 	nonce: string;
@@ -529,6 +540,11 @@ export interface LinkEmailInput {
 }
 export interface LinkPhoneInput {
 	phoneNumber: string;
+	password: string;
+}
+export interface ChangePasswordInput {
+	authIdentityId: string;
+	currentPassword: string;
 	password: string;
 }
 export interface ChangePhonePasswordInput {
@@ -636,6 +652,7 @@ export interface UpdateUserInput {
 export interface Operations {
 	myContentReviews: { variables: {}; result: Array<ContentReview> };
 	adminContentReviews: { variables: { status?: string }; result: Array<ContentReview> };
+	adminPendingContentReviewCount: { variables: {}; result: number };
 	adminOverview: { variables: {}; result: AdminOverview };
 	adminDirectory: { variables: { kind: AdminKind; input?: AdminDirectoryInput }; result: AdminDirectory };
 	getSiteContent: { variables: {}; result: SiteContent };
@@ -656,6 +673,7 @@ export interface Operations {
 	getMyProjectLike: { variables: { projectId: string }; result: boolean };
 	getProjectLikeCount: { variables: { projectId: string }; result: number };
 	getMyFollows: { variables: { input?: PageInput }; result: Followings };
+	getMyFollowers: { variables: { input?: PageInput }; result: Followers };
 	getSavedProjects: { variables: { input?: PageInput }; result: SavedProjects };
 	getProjectComments: { variables: { projectId: string; input?: PageInput }; result: Comments };
 	getUnreadInquiryCount: { variables: {}; result: number };
@@ -717,6 +735,7 @@ export interface Operations {
 	beginSocialLink: { variables: { provider: AuthProvider }; result: string };
 	linkSocial: { variables: { input: SocialLoginInput }; result: AuthIdentity };
 	unlinkAuthIdentity: { variables: { authIdentityId: string }; result: boolean };
+	changePassword: { variables: { input: ChangePasswordInput }; result: boolean };
 	changePhonePassword: { variables: { input: ChangePhonePasswordInput }; result: boolean };
 	logout: { variables: {}; result: boolean };
 	createCategory: { variables: { input: CategoryInput }; result: Category };

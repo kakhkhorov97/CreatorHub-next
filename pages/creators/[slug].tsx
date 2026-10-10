@@ -71,28 +71,36 @@ function CreatorDetail() {
 									{label(creator.availability)}
 								</span>
 							</div>
+							{user?._id !== creator.userId && (
+								<div className="profile-follow">
+									{' '}
+									<Button
+										secondary
+										danger={followed === true}
+										aria-pressed={followed === true}
+										disabled={action.busy || membership.loading}
+										onClick={() => {
+											if (!user) {
+												router.push(`/account/sign-in?returnTo=${encodeURIComponent(router.asPath)}`);
+												return;
+											}
+											action.run(async () => {
+												await action.mutate('setCreatorFollow', {
+													creatorId: creator._id,
+													following: followed !== true,
+												});
+												setFollowed(followed !== true);
+											});
+										}}
+									>
+										{followed ? translate('Unfollow') : translate('Follow')}
+									</Button>
+								</div>
+							)}
 						</div>
 						{user?._id !== creator.userId && (
 							<div className="actions creator-profile-actions">
 								<LinkButton href={`/inquiries/new?creatorId=${creator._id}`}>{translate('Send inquiry')}</LinkButton>
-								<Button
-									secondary
-									danger={followed === true}
-									aria-pressed={followed === true}
-									disabled={action.busy || membership.loading}
-									onClick={() => {
-										if (!user) {
-											router.push(`/account/sign-in?returnTo=${encodeURIComponent(router.asPath)}`);
-											return;
-										}
-										action.run(async () => {
-											await action.mutate('setCreatorFollow', { creatorId: creator._id, following: followed !== true });
-											setFollowed(followed !== true);
-										});
-									}}
-								>
-									{followed ? translate('Unfollow') : translate('Follow')}
-								</Button>
 							</div>
 						)}
 					</section>

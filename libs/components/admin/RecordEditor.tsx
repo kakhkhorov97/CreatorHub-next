@@ -445,7 +445,7 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 									/>
 									<p className="admin-help">
 										{translate(
-											"Existing demo images are retained. New media must use the creator account's storage folder.",
+											"Existing concept images are retained. New media must use the creator account's storage folder.",
 										)}
 									</p>
 									<h3>{translate('Portfolio media')}</h3>

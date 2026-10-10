@@ -3,7 +3,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { adminDecideContentReview } from '../../apollo/admin/mutation';
-import { adminContentReviews } from '../../apollo/admin/query';
+import { adminContentReviews, adminPendingContentReviewCount } from '../../apollo/admin/query';
 import AdminLayout from '../../libs/components/admin/AdminLayout';
 import { Button, Empty, Field, Heading, QueryState, Status, Notice } from '../../libs/components/common/UI';
 import ReviewPreview from '../../libs/components/review/ReviewPreview';
@@ -19,9 +19,12 @@ export default function Moderation() {
 	const queue = useQuery<{ adminContentReviews: ContentReview[] }>(adminContentReviews, {
 		variables: { status },
 		fetchPolicy: 'network-only',
-		pollInterval: 15000,
+		pollInterval: 30000,
 	});
-	const [decide] = useMutation(adminDecideContentReview);
+	const [decide] = useMutation(adminDecideContentReview, {
+		refetchQueries: [adminPendingContentReviewCount],
+		awaitRefetchQueries: true,
+	});
 
 	async function review(item: ContentReview, approve: boolean) {
 		if (pending) return;

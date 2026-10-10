@@ -1,4 +1,6 @@
 import { useTranslation as useSiteTranslation } from 'next-i18next';
+import { useReactiveVar } from '@apollo/client';
+import { userVar } from '../../../apollo/store';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Bell, BookmarkSimple, EnvelopeSimple, Folder, Gear, House, SquaresFour, User, Users } from 'phosphor-react';
@@ -14,7 +16,7 @@ const account = [
 	['/account/settings', 'Account', User],
 	['/account/sign-in-methods', 'Sign-in methods', Gear],
 	['/saved', 'Saved projects', BookmarkSimple],
-	['/following', 'Following', Users],
+	['/following', 'Followers & Following', Users],
 	['/notifications', 'Notifications', Bell],
 	['/workspace', 'Workspace', House],
 ] as const;
@@ -23,7 +25,9 @@ export default function Sidebar({ area }: { area: 'workspace' | 'account' }) {
 	const { t: translate } = useSiteTranslation('common');
 
 	const router = useRouter();
-	const links = area === 'workspace' ? workspace : account;
+	const user = useReactiveVar(userVar);
+	const links =
+		area === 'workspace' ? workspace : account.filter(([href]) => user?.role !== 'ADMIN' || href !== '/workspace');
 	return (
 		<aside className="sidebar">
 			<nav aria-label={translate('Your account')}>

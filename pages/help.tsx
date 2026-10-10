@@ -1,5 +1,7 @@
-import InfoPage from '../libs/components/common/InfoPage';
+export function getServerSideProps({ locale }: { locale: string }) {
+	return { redirect: { destination: locale === 'en' ? '/faq' : `/${locale}/faq`, permanent: true } };
+}
 
 export default function Page() {
-	return <InfoPage kind="help" />;
+	return null;
 }

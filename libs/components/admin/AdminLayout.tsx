@@ -1,5 +1,5 @@
 import { useTranslation as useSiteTranslation } from 'next-i18next';
-import { useReactiveVar } from '@apollo/client';
+import { useQuery, useReactiveVar } from '@apollo/client';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -20,6 +20,8 @@ import {
 } from 'phosphor-react';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { sessionReadyVar, userVar } from '../../../apollo/store';
+import { adminPendingContentReviewCount } from '../../../apollo/admin/query';
+import PendingApprovalBadge from './PendingApprovalBadge';
 import { clearSession } from '../../auth';
 import { useAction } from '../../hooks/useApi';
 import { LinkButton, Notice, Picture } from '../common/UI';
@@ -43,6 +45,13 @@ export default function AdminLayout({ title, children }: { title: string; childr
 		ready = useReactiveVar(sessionReadyVar),
 		router = useRouter(),
 		action = useAction();
+	const approvals = useQuery<{ adminPendingContentReviewCount: number }>(adminPendingContentReviewCount, {
+		skip: !ready || user?.role !== 'ADMIN',
+		fetchPolicy: 'network-only',
+		pollInterval: 30000,
+	});
+	const pendingCount =
+		ready && user?.role === 'ADMIN' && !approvals.error ? approvals.data?.adminPendingContentReviewCount : undefined;
 	const [open, setOpen] = useState(false);
 	const sidebarRef = useRef<HTMLElement>(null);
 	useEffect(() => {
@@ -117,6 +126,7 @@ export default function AdminLayout({ title, children }: { title: string; childr
 						>
 							<Icon size={20} />
 							<span>{translate(label)}</span>
+							{href === '/_admin/moderation' && <PendingApprovalBadge count={pendingCount} />}
 						</Link>
 					))}
 				</nav>
@@ -141,6 +151,7 @@ export default function AdminLayout({ title, children }: { title: string; childr
 						<span>{translate('Administration')}</span>
 						<span className="admin-topbar-divider">/</span>
 						<strong>{translate(title)}</strong>
+						{router.pathname === '/_admin/moderation' && <PendingApprovalBadge count={pendingCount} />}
 					</div>
 					{user && (
 						<div className="admin-account">

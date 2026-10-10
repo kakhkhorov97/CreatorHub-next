@@ -1,0 +1,117 @@
+{
+  "checks": [
+    {
+      "device": "desktop",
+      "page": "01-home",
+      "overflow": false,
+      "demoWording": false,
+      "brokenImages": []
+    },
+    {
+      "device": "desktop",
+      "page": "02-projects",
+      "overflow": false,
+      "demoWording": false,
+      "brokenImages": []
+    },
+    {
+      "device": "desktop",
+      "page": "03-creators",
+      "overflow": false,
+      "demoWording": false,
+      "brokenImages": []
+    },
+    {
+      "device": "desktop",
+      "page": "04-creator-profile",
+      "overflow": false,
+      "demoWording": false,
+      "brokenImages": []
+    },
+    {
+      "device": "desktop",
+      "page": "05-project-detail",
+      "overflow": false,
+      "demoWording": false,
+      "brokenImages": []
+    },
+    {
+      "device": "desktop",
+      "page": "06-services",
+      "overflow": false,
+      "demoWording": false,
+      "brokenImages": []
+    },
+    {
+      "device": "desktop",
+      "page": "07-faq",
+      "overflow": false,
+      "demoWording": false,
+      "brokenImages": []
+    },
+    {
+      "device": "desktop",
+      "page": "08-ai-assistant",
+      "overflow": false,
+      "demoWording": false,
+      "brokenImages": []
+    },
+    {
+      "device": "mobile-raw",
+      "page": "01-home",
+      "overflow": false,
+      "demoWording": false,
+      "brokenImages": []
+    },
+    {
+      "device": "mobile-raw",
+      "page": "02-projects",
+      "overflow": false,
+      "demoWording": false,
+      "brokenImages": []
+    },
+    {
+      "device": "mobile-raw",
+      "page": "03-creators",
+      "overflow": false,
+      "demoWording": false,
+      "brokenImages": []
+    },
+    {
+      "device": "mobile-raw",
+      "page": "04-creator-profile",
+      "overflow": false,
+      "demoWording": false,
+      "brokenImages": []
+    },
+    {
+      "device": "mobile-raw",
+      "page": "05-project-detail",
+      "overflow": false,
+      "demoWording": false,
+      "brokenImages": []
+    },
+    {
+      "device": "mobile-raw",
+      "page": "06-services",
+      "overflow": false,
+      "demoWording": false,
+      "brokenImages": []
+    },
+    {
+      "device": "mobile-raw",
+      "page": "07-faq",
+      "overflow": false,
+      "demoWording": false,
+      "brokenImages": []
+    },
+    {
+      "device": "mobile-raw",
+      "page": "08-ai-assistant",
+      "overflow": false,
+      "demoWording": false,
+      "brokenImages": []
+    }
+  ],
+  "errors": []
+}

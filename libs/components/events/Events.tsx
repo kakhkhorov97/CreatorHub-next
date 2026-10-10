@@ -30,7 +30,7 @@ function EventCard({ event }: { event: CreativeEvent }) {
 				<span>{new Intl.DateTimeFormat(i18n.language, { year: 'numeric', timeZone: 'Asia/Seoul' }).format(d)}</span>
 			</div>
 			<div>
-				{event.isDemo && <span className="demo-label">{translate('Fictional demo event')}</span>}
+				{event.isDemo && <span className="demo-label">{translate('Fictional event concept')}</span>}
 				<h3>
 					<Link passHref href={`/events/${event._id}`}>
 						{event.title}

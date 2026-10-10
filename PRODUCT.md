@@ -29,3 +29,16 @@ Project forms upload JPEG, PNG and WebP cover images. Galleries also accept MP4 
 
 
 The October 7 first-inquiry update uses a centered Contact Creator dialog on /inquiries/new. It shows the real creator identity/profile link, service selection, message, optional deadline, optional KRW minimum/maximum budget, Send Inquiry and Cancel. The selected service supplies the inquiry subject; general inquiries use a translated Project inquiry subject. The dialog sends immediately through sendInquiry and opens the resulting inbox conversation. There are no attachments or estimated response-time claims. Creator profile layout remains unchanged. Discover creators no longer offers a budget filter; Services retains it. The dialog is translated in English, Korean and Uzbek.
+
+The approved October 8 account/chat batch combines signup email and phone detection, Your name and password confirmation. Account menus use Followers & Following tabs with an owner-only followers API. Mobile avatar menus contain language, Inbox and notifications. Inbox and the AI assistant use the original reference appearance. The Light/Dark/System preference was removed at the owner's request on October 9. The assistant greets signed-in members, shows their avatar, supports Enter sending and outside-click closing. Visible demo copy is replaced with truthful fictional/concept wording. Social sign-ups remain disabled for the next stage.
+
+The approved October 9 batch shows original briefs directly in conversations and restricts inquiry alerts to Inbox. FAQ replaces Help with fourteen translated answers; /help redirects preserve old links. Auth fields retain labels without placeholders. The assistant introduces itself immediately, including a personalized greeting for members. The public catalog gains four fictional creators, four services and fifteen AI-imaged portfolio concepts. All active categories have at least two published projects. Dead social footer controls are removed; fictional provenance stays explicit.
+
+
+The approved October 10 authentication policy requires name, email, password confirmation and a contact phone number at signup. Phone numbers are private unverified contact data, not authentication identities. Login and recovery use email. Phone signup, login and linking are disabled in the API and removed from the interface; social sign-in remains unavailable. Existing records and passwords are retained. Existing phone sessions can link a verified email before expiry, but new phone logins are blocked. The approval badge and queue now poll every 30 seconds.
+
+
+The approved Enter shortcut applies to shared text inputs, password inputs and textareas inside forms. Enter submits using the existing submit button and native validation; Shift+Enter adds a newline to multiline fields. Korean input composition and held Enter do not submit. Disabled submit buttons block the shortcut. Comments reject whitespace-only submissions and retain their existing idempotency and busy lock. Non-form controls keep native Enter behavior.
+
+
+The owner deferred shared browser-profile authentication on October 10 to retain independent accounts in separate tabs during testing. Revisit it before deployment and obtain approval; see docs/PRE_DEPLOYMENT_CHECKLIST.md.

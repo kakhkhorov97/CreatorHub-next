@@ -2,7 +2,7 @@ const assert = require('node:assert/strict');
 const { randomUUID } = require('node:crypto');
 const { io } = require('socket.io-client');
 
-exports.verifyMessagingSessions = async ({ port, op, backendRequire, password }) => {
+exports.verifyMessagingSessions = async ({ port, op, backendRequire, password, account }) => {
 	const sockets = [];
 	function once(socket, event) {
 		return new Promise((resolve, reject) => {
@@ -33,7 +33,7 @@ exports.verifyMessagingSessions = async ({ port, op, backendRequire, password })
 	}
 	try {
 		const customer = await op('login', { input: { email: 'client@frontend.test', password } });
-		const creator = await op('loginPhone', { input: { phoneNumber: '+821012345678', password } });
+		const creator = await op('login', { input: { email: 'phone@frontend.test', password } });
 		const profile = await op('myCreatorProfile', {}, creator.accessToken);
 		const createInquiry = (token, subject) =>
 			op(
@@ -88,9 +88,7 @@ exports.verifyMessagingSessions = async ({ port, op, backendRequire, password })
 		await invalid;
 		assert.equal(leaked.length, 0);
 		const admin = await op('login', { input: { email: 'admin@frontend.test', password } });
-		const suspended = await op('registerPhone', {
-			input: { phoneNumber: '+821010123456', password, displayName: 'Disposable Suspended Chat' },
-		});
+		const suspended = await account('suspended-chat@frontend.test', 'Disposable Suspended Chat');
 		inquiry = await createInquiry(suspended.accessToken, 'Suspended account check');
 		const suspendedSocket = await connect(suspended.accessToken);
 		await suspendedSocket.timeout(5000).emitWithAck('inquiry:join', { inquiryId: inquiry._id });

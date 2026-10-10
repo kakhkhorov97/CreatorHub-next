@@ -12,6 +12,12 @@
     "document": "query adminContentReviews($status: String! = \"PENDING\") { adminContentReviews(status: $status) { _id  createdAt  updatedAt  kind  targetId  ownerId  title  status  reason  baseUpdatedAt  preview  } }"
   },
   {
+    "name": "adminPendingContentReviewCount",
+    "kind": "query",
+    "admin": true,
+    "document": "query adminPendingContentReviewCount { adminPendingContentReviewCount  }"
+  },
+  {
     "name": "adminOverview",
     "kind": "query",
     "admin": true,
@@ -130,6 +136,12 @@
     "kind": "query",
     "admin": false,
     "document": "query getMyFollows($input: PageInput! = {}) { getMyFollows(input: $input) { list { _id  createdAt  updatedAt  followerId  creatorId  isActive  followedAt  } metaCounter { total  } } }"
+  },
+  {
+    "name": "getMyFollowers",
+    "kind": "query",
+    "admin": false,
+    "document": "query getMyFollowers($input: PageInput! = {}) { getMyFollowers(input: $input) { list { _id  displayName  avatarUrl  } metaCounter { total  } } }"
   },
   {
     "name": "getSavedProjects",
@@ -406,6 +418,12 @@
     "kind": "mutation",
     "admin": false,
     "document": "mutation unlinkAuthIdentity($authIdentityId: ID!) { unlinkAuthIdentity(authIdentityId: $authIdentityId)  }"
+  },
+  {
+    "name": "changePassword",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation changePassword($input: ChangePasswordInput!) { changePassword(input: $input)  }"
   },
   {
     "name": "changePhonePassword",

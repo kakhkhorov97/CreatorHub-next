@@ -329,6 +329,17 @@ type Followings {
   metaCounter: [MetaCounter!]!
 }
 
+type FollowerIdentity {
+  _id: ID!
+  displayName: String!
+  avatarUrl: String
+}
+
+type Followers {
+  list: [FollowerIdentity!]!
+  metaCounter: [MetaCounter!]!
+}
+
 type SavedProjectResult {
   projectId: ID!
   savedAt: DateTime!
@@ -492,6 +503,7 @@ type Notifications {
 type Query {
   myContentReviews: [ContentReview!]!
   adminContentReviews(status: String! = "PENDING"): [ContentReview!]!
+  adminPendingContentReviewCount: Int!
   adminOverview: AdminOverview!
   adminDirectory(kind: AdminKind!, input: AdminDirectoryInput! = {}): AdminDirectory!
   getSiteContent: SiteContent!
@@ -512,6 +524,7 @@ type Query {
   getMyProjectLike(projectId: ID!): Boolean!
   getProjectLikeCount(projectId: ID!): Int!
   getMyFollows(input: PageInput! = {}): Followings!
+  getMyFollowers(input: PageInput! = {}): Followers!
   getSavedProjects(input: PageInput! = {}): SavedProjects!
   getProjectComments(projectId: ID!, input: PageInput! = {}): Comments!
   getUnreadInquiryCount: Int!
@@ -612,6 +625,7 @@ type Mutation {
   beginSocialLink(provider: AuthProvider!): String!
   linkSocial(input: SocialLoginInput!): AuthIdentity!
   unlinkAuthIdentity(authIdentityId: ID!): Boolean!
+  changePassword(input: ChangePasswordInput!): Boolean!
   changePhonePassword(input: ChangePhonePasswordInput!): Boolean!
   logout: Boolean!
   createCategory(input: CategoryInput!): Category!
@@ -771,6 +785,7 @@ input UpdateEventInput {
 }
 
 input RegisterInput {
+  phoneNumber: String!
   email: String!
   password: String!
   displayName: String!
@@ -790,6 +805,7 @@ input PhoneLoginInput {
 }
 
 input SocialLoginInput {
+  phoneNumber: String
   provider: AuthProvider!
   idToken: String!
   nonce: String!
@@ -818,6 +834,12 @@ input LinkEmailInput {
 
 input LinkPhoneInput {
   phoneNumber: String!
+  password: String!
+}
+
+input ChangePasswordInput {
+  authIdentityId: String!
+  currentPassword: String!
   password: String!
 }
 

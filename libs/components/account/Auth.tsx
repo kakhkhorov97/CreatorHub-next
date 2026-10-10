@@ -35,7 +35,7 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 	const { t: translate } = useSiteTranslation('common');
 
 	const router = useRouter();
-	const [method, setMethod] = useState('email');
+	const [countryCode, setCountryCode] = useState('+82');
 	const action = useAction();
 	const [message, setMessage] = useState('');
 	const [showResend, setShowResend] = useState(false);
@@ -49,33 +49,35 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 
 	async function submit(form: HTMLFormElement) {
 		const f = values(form);
+		if (registering) {
+			f.phoneNumber = f.phoneNumber.trim().startsWith('+')
+				? f.phoneNumber.trim()
+				: countryCode +
+				  f.phoneNumber
+						.trim()
+						.replace(/[\s()-]/g, '')
+						.replace(/^0/, '');
+		}
+
 		setMessage('');
+		if (registering && f.password !== f.confirmPassword) {
+			action.setError(translate('Passwords do not match. Please try again.'));
+			return;
+		}
 		await action.run(async () => {
 			if (auth) {
 				const payload = registering
-					? method === 'email'
-						? await action.mutate('register', {
-								input: {
-									email: f.email,
-									password: f.password,
-									displayName: f.displayName,
-									preferredLocale: router.locale === 'ko' ? 'ko' : router.locale === 'uz' ? 'uz' : 'en',
-								},
-						  })
-						: await action.mutate('registerPhone', {
-								input: {
-									phoneNumber: f.phoneNumber,
-									password: f.password,
-									displayName: f.displayName,
-									preferredLocale: router.locale === 'ko' ? 'ko' : router.locale === 'uz' ? 'uz' : 'en',
-								},
-						  })
-					: f.identifier.trim().includes('@')
-					? await action.mutate('login', { input: { email: f.identifier.trim(), password: f.password } })
-					: await action.mutate('loginPhone', {
-							input: { phoneNumber: f.identifier.trim().replace(/[\s()-]/g, ''), password: f.password },
-					  });
-				if (registering && method === 'email') {
+					? await action.mutate('register', {
+							input: {
+								email: f.email.trim(),
+								phoneNumber: f.phoneNumber,
+								password: f.password,
+								displayName: f.displayName,
+								preferredLocale: router.locale === 'ko' ? 'ko' : router.locale === 'uz' ? 'uz' : 'en',
+							},
+					  })
+					: await action.mutate('login', { input: { email: f.email.trim(), password: f.password } });
+				if (registering) {
 					sessionStorage.setItem('creatorhub.pendingEmail', f.email);
 					await router.push(returnTo || '/');
 					return;
@@ -128,38 +130,22 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 						? translate('Enter the email linked to your account.')
 						: mode === 'verify-email'
 						? translate('Use the verification link sent to your inbox.')
-						: translate('Use 6–30 characters for your new password.')}
+						: translate('Choose a password you do not use for another account.')}
 				</p>
-				{registering && (
-					<div className="tabs equal">
-						{['email', 'phone'].map((m) => (
-							<button type="button" key={m} className={method === m ? 'active' : ''} onClick={() => setMethod(m)}>
-								{m === 'email' ? translate('Email') : translate('Phone')}
-							</button>
-						))}
-					</div>
-				)}
+
 				<form
-					key={`${mode}-${method}-${showResend}`}
+					key={`${mode}-${showResend}`}
 					onSubmit={(e) => {
 						e.preventDefault();
 						submit(e.currentTarget);
 					}}
 				>
 					{mode === 'sign-in' && (
-						<Field
-							label={translate('Email or phone number')}
-							name="identifier"
-							autoComplete="username"
-							required
-							maxLength={30}
-							placeholder={translate('Email or Phone Number')}
-							hint={translate('Include the country code when signing in with a phone number.')}
-						/>
+						<Field label={translate('Email')} name="email" type="email" autoComplete="email" required maxLength={254} />
 					)}
 					{registering && (
 						<Field
-							label={translate('Display name')}
+							label={translate('Your name')}
 							name="displayName"
 							autoComplete="name"
 							required
@@ -167,20 +153,41 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 							maxLength={40}
 						/>
 					)}
-					{((registering && method === 'email') || mode === 'forgot-password' || showResend) && (
+					{(mode === 'forgot-password' || showResend) && (
 						<Field label={translate('Email')} name="email" type="email" autoComplete="email" required maxLength={254} />
 					)}{' '}
-					{registering && method === 'phone' && (
-						<Field
-							label={translate('Phone number')}
-							name="phoneNumber"
-							type="tel"
-							autoComplete="tel"
-							required
-							pattern="\+[1-9][0-9]{7,14}"
-							placeholder={translate('Phone number')}
-							hint={translate('Include your country code. Phone registration does not verify ownership of the number.')}
-						/>
+					{registering && (
+						<>
+							<Field
+								label={translate('Email')}
+								name="email"
+								type="email"
+								autoComplete="email"
+								required
+								maxLength={254}
+							/>
+							<div className="auth-phone-group">
+								<div className="auth-phone-row">
+									<Field label={translate('Country code')}>
+										<select value={countryCode} onChange={(event) => setCountryCode(event.target.value)}>
+											{['+82', '+1', '+44', '+61', '+81', '+86', '+91', '+33', '+49', '+998'].map((code) => (
+												<option key={code}>{code}</option>
+											))}
+										</select>
+									</Field>
+									<Field
+										label={translate('Phone number')}
+										name="phoneNumber"
+										type="tel"
+										autoComplete="tel"
+										required
+										maxLength={40}
+										aria-describedby="signup-phone-hint"
+									/>
+								</div>
+								<small id="signup-phone-hint">{translate('For contact only. Sign in with your email.')}</small>
+							</div>
+						</>
 					)}
 					{(mode === 'reset-password' || (mode === 'verify-email' && !showResend)) && (
 						<Field
@@ -196,18 +203,33 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 						<Password
 							name="password"
 							required
-							minLength={6}
-							maxLength={30}
+							minLength={registering || mode === 'reset-password' ? 6 : 1}
+							maxLength={registering || mode === 'reset-password' ? 30 : 128}
 							autoComplete={registering || mode === 'reset-password' ? 'new-password' : 'current-password'}
 						/>
 					)}{' '}
-					{registering && <small>{translate('Use 6–30 characters for your password.')}</small>}
+					{registering && (
+						<>
+							<Password
+								label={translate('Confirm password')}
+								showRequirements={false}
+								name="confirmPassword"
+								autoComplete="new-password"
+								required
+								minLength={6}
+								maxLength={30}
+							/>
+						</>
+					)}
 					{mode === 'sign-in' && (
 						<Link passHref className="forgot" href={authHref('/account/forgot-password')}>
 							{translate('Forgot password?')}
 						</Link>
 					)}
 					<Feedback {...action} />
+					{mode === 'sign-in' && /verif/i.test(action.error) && (
+						<Link href={authHref('/account/verify-email')}>{translate('Verify email or resend')}</Link>
+					)}
 					{message && <Notice notify>{message}</Notice>}
 					<Button type="submit" disabled={action.busy}>
 						{action.busy
@@ -240,10 +262,6 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 							{translate('Don’t have an account?')}{' '}
 							<Link passHref href={authHref('/account/register')}>
 								{translate('Create an account')}
-							</Link>
-							<br />
-							<Link passHref href={authHref('/account/verify-email')}>
-								{translate('Verify your email')}
 							</Link>
 						</>
 					) : (

@@ -1,13 +1,6 @@
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
-import { InstagramLogo, LinkedinLogo, TwitterLogo, YoutubeLogo } from 'phosphor-react';
-import { toast } from 'sonner';
-const socials = [
-	['Instagram', InstagramLogo],
-	['YouTube', YoutubeLogo],
-	['LinkedIn', LinkedinLogo],
-	['X', TwitterLogo],
-] as const;
+import { InstagramLogo, LinkedinLogo, TelegramLogo, YoutubeLogo } from 'phosphor-react';
 
 export default function Footer() {
 	const { t: translate } = useSiteTranslation('common');
@@ -46,8 +39,8 @@ export default function Footer() {
 					<Link passHref href="/contact">
 						{translate('Contact us')}
 					</Link>
-					<Link passHref href="/help">
-						{translate('Help')}
+					<Link passHref href="/faq">
+						{translate('FAQ')}
 					</Link>
 				</nav>
 				<nav aria-label={translate('Your account and policies')}>
@@ -59,35 +52,34 @@ export default function Footer() {
 						{translate('Sign in')}
 					</Link>
 					<Link passHref href="/privacy">
-						{translate('Privacy')}
+						{translate('Privacy policy')}
 					</Link>
 					<Link passHref href="/terms">
-						{translate('Terms')}
+						{translate('Terms of service')}
 					</Link>
 				</nav>
 				<section className="footer-contact" aria-label={translate('Address and social accounts')}>
 					<h2>{translate('Find us')}</h2>
 					<address>{translate('Gwangju, Korea')}</address>
-					<div className="footer-socials">
-						{socials.map(([name, Icon]) => (
-							<button
-								type="button"
-								key={name}
-								aria-label={translate('{{name}} demo account', { name })}
-								onClick={() => toast.info(translate('{{name}} account coming soon.', { name }))}
-							>
-								<Icon size={23} />
-							</button>
+					<div className="footer-socials" role="group" aria-label={translate('Social media')}>
+						{[
+							{ name: 'Instagram', Icon: InstagramLogo },
+							{ name: 'LinkedIn', Icon: LinkedinLogo },
+							{ name: 'YouTube', Icon: YoutubeLogo },
+							{ name: 'Telegram', Icon: TelegramLogo },
+						].map(({ name, Icon }) => (
+							<span key={name} className="footer-social-icon" role="img" aria-label={name}>
+								<Icon size={22} aria-hidden="true" />
+							</span>
 						))}
 					</div>
-					<p className="muted">{translate('Demo icons · real accounts coming soon')}</p>
 				</section>
 			</div>
 			<div className="footer-bottom">
 				<span>
 					© {new Date().getFullYear()} {translate('CreatorHub')}
 				</span>
-				<span>{translate('Preview accounts, portfolio studies, and demo events are fictional.')}</span>
+				<span>{translate('Illustrative accounts, portfolio studies, and event concepts are fictional.')}</span>
 			</div>
 		</footer>
 	);

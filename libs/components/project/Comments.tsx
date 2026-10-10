@@ -1,6 +1,7 @@
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { useReactiveVar } from '@apollo/client';
 import { useRef, useState } from 'react';
+import { PencilSimple, Trash } from 'phosphor-react';
 import { userVar } from '../../../apollo/store';
 import { useAction } from '../../hooks/useApi';
 import { usePaged } from '../../hooks/usePaged';
@@ -22,30 +23,41 @@ export function Comments({ projectId }: { projectId: string }) {
 			<QueryState loading={comments.loading} error={comments.error} />
 			{comments.rows.map((c) => (
 				<article className="comment" key={c._id}>
-					<div className="row">
-						<strong>{c.userId === user?._id ? translate('You') : translate('Community member')}</strong>
-						<time>
-							{date(c.createdAt)}
-							{c.editedAt ? translate(' · Edited') : ''}
-						</time>
+					<div className="comment-header">
+						<div className="comment-meta">
+							<strong>{c.userId === user?._id ? translate('You') : translate('Community member')}</strong>
+							<time>
+								{date(c.createdAt)}
+								{c.editedAt ? translate(' · Edited') : ''}
+							</time>
+						</div>
+						{user?._id === c.userId && (
+							<div className="comment-actions">
+								<Button
+									className="icon-button"
+									aria-label={translate('Edit comment')}
+									title={translate('Edit comment')}
+									disabled={action.busy}
+									onClick={() => {
+										setEdit(c._id);
+										setContent(c.content);
+									}}
+								>
+									<PencilSimple size={19} aria-hidden="true" />
+								</Button>
+								<Button
+									className="icon-button delete-comment"
+									aria-label={translate('Delete comment')}
+									title={translate('Delete comment')}
+									disabled={action.busy}
+									onClick={() => setRemove(c._id)}
+								>
+									<Trash size={19} aria-hidden="true" />
+								</Button>
+							</div>
+						)}
 					</div>
 					<p>{c.content}</p>
-					{user?._id === c.userId && (
-						<div className="actions">
-							<Button
-								secondary
-								onClick={() => {
-									setEdit(c._id);
-									setContent(c.content);
-								}}
-							>
-								{translate('Edit')}
-							</Button>
-							<Button danger secondary onClick={() => setRemove(c._id)}>
-								{translate('Delete')}
-							</Button>
-						</div>
-					)}
 				</article>
 			))}
 			{remove && (
@@ -96,7 +108,7 @@ export function Comments({ projectId }: { projectId: string }) {
 						}}
 					/>
 					<div className="actions">
-						<Button type="submit" disabled={action.busy}>
+						<Button type="submit" disabled={action.busy || !content.trim()}>
 							{edit ? translate('Save comment') : translate('Post comment')}
 						</Button>
 						{edit && (

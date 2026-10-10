@@ -40,3 +40,37 @@ test('Held Enter and unavailable sending do not submit', () => {
 	assert.deepEqual(press({}, false), { submitted: 0, prevented: 1 });
 });
 test('Other keys keep native behavior', () => assert.deepEqual(press({ key: 'a' }), { submitted: 0, prevented: 0 }));
+
+test('Disabled submit buttons block keyboard submission', () => {
+	assert.deepEqual(
+		press({
+			currentTarget: {
+				form: {
+					querySelector: () => ({ disabled: true }),
+					requestSubmit: () => {
+						throw new Error('Disabled form submitted');
+					},
+				},
+			},
+		}),
+		{ submitted: 0, prevented: 1 },
+	);
+});
+test('Fields outside a form retain native Enter behavior', () => {
+	assert.deepEqual(press({ currentTarget: { form: null } }), { submitted: 0, prevented: 0 });
+});
+test('Enter uses the existing submit button so browser validation and submitter semantics apply', () => {
+	const button = { disabled: false };
+	let received;
+	press({
+		currentTarget: {
+			form: {
+				querySelector: () => button,
+				requestSubmit: (submitter) => {
+					received = submitter;
+				},
+			},
+		},
+	});
+	assert.equal(received, button);
+});

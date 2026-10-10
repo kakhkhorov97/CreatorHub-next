@@ -11,7 +11,7 @@ export default function Events() {
 			<Heading title={translate('Meet through creativity')} />
 			<p className="muted">
 				{translate(
-					'Find creative events across the community. Demo events are clearly labeled and are not open for registration.',
+					'Find creative events across the community. Fictional event concepts are labeled and are not open for registration.',
 				)}
 			</p>
 			<EventsSection />

@@ -32,11 +32,9 @@ export default function CompanyPage({ contact = false }: { contact?: boolean }) 
 						</section>
 						<section>
 							<h2>{translate('Need help using CreatorHub?')}</h2>
-							<p>
-								{translate('Read our help page for guidance on accounts, publishing your work, and sending inquiries.')}
-							</p>
-							<Link passHref href="/help">
-								{translate('Visit the help page →')}
+							<p>{translate('Read our FAQ for guidance on accounts, publishing your work, and sending inquiries.')}</p>
+							<Link passHref href="/faq">
+								{translate('Visit FAQ →')}
 							</Link>
 						</section>
 						<section>
@@ -85,10 +83,10 @@ export default function CompanyPage({ contact = false }: { contact?: boolean }) 
 							<LinkButton href="/account/register">{translate('Join CreatorHub')}</LinkButton>
 						</section>
 						<section>
-							<h2>{translate('About this preview')}</h2>
+							<h2>{translate('Content transparency')}</h2>
 							<p>
 								{translate(
-									'The sample creators, portfolio studies, and events in this preview are fictional. Their AI-generated images illustrate how the platform can look with published content.',
+									'Illustrative creator profiles, concept projects and event concepts are fictional. AI-generated images are identified in their project descriptions; no real client commission is implied.',
 								)}
 							</p>
 							<Link passHref href="/contact">

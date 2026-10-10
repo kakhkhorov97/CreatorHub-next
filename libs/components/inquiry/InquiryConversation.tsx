@@ -151,6 +151,10 @@ export function Conversation({
 							{translate('Details')} <CaretDown size={16} />
 						</button>
 					</div>
+					<section className="chat-original-brief" aria-label={translate('Original inquiry')}>
+						<h3>{translate('Original inquiry')}</h3>
+						<p className="prose-text">{inquiry.brief}</p>
+					</section>
 					<QueryState
 						loading={false}
 						error={roomError ? new Error(roomError) : undefined}
@@ -188,9 +192,6 @@ export function Conversation({
 						<div className="chat-start">
 							<span>{date(inquiry.submittedAt)}</span>
 							<p>{isClient ? translate('You sent an inquiry') : translate('You received an inquiry')}</p>
-							<button type="button" onClick={() => setDetailsOpen(true)}>
-								{translate('View original brief')}
-							</button>
 						</div>
 						{!messages.loading && !messages.error && !messages.rows.length && (
 							<p className="chat-no-replies">

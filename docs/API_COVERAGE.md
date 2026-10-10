@@ -132,3 +132,7 @@ The community checks also verified getProjects actual-like sorting, publication 
 `getInquiries` now accepts optional `allConversations: Boolean = false`. The inbox requests `true` to merge participant sent and received conversations. Existing callers retain their directional behavior. Private drafts stay with their author, and an administrator receives only their own participant conversations through this inbox query. This adds an argument to an existing operation, so the generated-document count remains 108.
 
 The disposable integration executed 85/108 operations and checked unified participant merging, draft privacy and admin isolation. All 108 documents validate against the schema. Conversation and message loading continue to use the existing paged HTTP queries internally; the interface loads more records on scroll. HTTP polling remains at 15 seconds. WebSockets are deferred. See [messaging verification](verification/messaging-redesign.md).
+
+## Current contract, 8 October 2026
+
+The exported schema and generated frontend documents now contain 109 operations. getMyFollowers is authenticated and owner-only, returning names and avatars with pagination. The latest disposable integration exercised 86/109 generated operations, including follower owner/admin/guest isolation and the existing Socket.IO privacy/retry/recovery checks. See docs/verification/integration.json for the remaining operations.

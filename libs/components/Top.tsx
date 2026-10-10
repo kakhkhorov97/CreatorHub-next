@@ -140,9 +140,20 @@ export default function Top() {
 										<span>{user.displayName}</span>
 									</summary>
 									<div>
-										<Link passHref href="/workspace">
-											{translate('Workspace')}
-										</Link>
+										<div className="mobile-account-tools">
+											<LanguageSelector />
+											<Link href="/inquiries">
+												{translate('Inbox')} {inbox.value || ''}
+											</Link>
+											<Link href="/notifications">
+												{translate('Notifications')} {count.value || ''}
+											</Link>
+										</div>
+										{user.role !== 'ADMIN' && (
+											<Link passHref href="/workspace">
+												{translate('Workspace')}
+											</Link>
+										)}
 										<Link passHref href="/account/settings">
 											{translate('Account settings')}
 										</Link>
@@ -154,11 +165,9 @@ export default function Top() {
 												{translate('My profile')}
 											</Link>
 										)}
-										<Link passHref href="/inquiries">
-											{translate('Inquiries')}
-										</Link>
+
 										<Link passHref href="/following">
-											{translate('Following')}
+											{translate('Followers & Following')}
 										</Link>
 										{user.role === 'ADMIN' && (
 											<Link passHref href="/_admin">

@@ -167,3 +167,13 @@ Final application: restarted the production frontend on port 7007 and verified l
 - Fresh finish review requested one mobile CSS specificity correction; reviewer scored it resolved and returned ship for that fix. Screenshots are in docs/verification/pagination-validation.
 - Design detector could not run because engine 0.1.6 was unavailable and its cache was outside writable roots. Existing DESIGN.md and design sidecar preserved.
 - Disposable verification API stopped and fictional browser account signed out. Regular API on 7001 and updated frontend on 7007 restarted.
+
+## Account and assistant batch, 8 October 2026
+
+Applied Enter sending, outside closing, guest questions, signed-in greetings/avatars, shared Inbox/AI appearance, mobile account shortcuts, combined connections tabs, relocated Follow, unified signup and password confirmation, conditional verification links and visible wording cleanup. See PROJECT_REVIEW_2026-10-08.md for behavior and remaining work. Social sign-ups remain deferred.
+
+Final verification: frontend production build generated 204 localized pages; all 29 tests, typecheck, lint and 109-operation contract validation passed. Backend 72 tests, typecheck, lint, format check, API and worker builds passed. Generated frontend integration exercised 86/109 operations on disposable MongoDB. Main frontend serves the final build on 7007; backend remains 7001.
+
+## Approved batch, 9 October 2026
+
+Inquiry briefs are directly visible; inquiry alerts are Inbox-only. FAQ replaces Help and expands to 14 translated answers. Auth placeholders and dead social footer controls are removed. The assistant introduces itself on opening. Four fictional creators, four services and 15 project concepts expand all active categories to at least two published projects. Verification, private directory limits and deployment gaps are in APPROVED_BATCH_2026-10-09.md.

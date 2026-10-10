@@ -76,8 +76,10 @@ The fictional imported profiles have no copied sign-in identities. They appear i
 
 See [the implementation notes](docs/APPROVED_CHANGES.md) for page/component organization, manual approval, the segmented homepage search, compact sticky navigation, Sonner feedback, and Gemini setup. The current local API uses the configured Atlas database. Existing foreign records remain stored but are hidden from public discovery. Demo seeding instructions above target disposable databases only; their old demo login identities were not imported into Atlas.
 
-The Gemini assistant needs server-only `GEMINI_API_KEY` and `GEMINI_MODEL` in `.env.local`, followed by a frontend restart. Never use a `NEXT_PUBLIC_` prefix for the key. The interface handles missing configuration, and mocked API tests passed; a live Gemini response has not been verified.
+The Gemini assistant uses server-side retrieval over curated public help entries and current public GraphQL content. Set server-only `GEMINI_API_KEY` and `GEMINI_MODEL` in `.env.local`, then restart the frontend. Never use a `NEXT_PUBLIC_` prefix for the key. See `docs/ASSISTANT_RAG.md` for the retrieval design and setup. Tests cover public retrieval and provider failures. A guest publishing/upload question received a live Gemini answer locally on 8 October 2026.
 
 ### Backend-served demo images
 
 The 51 approved demo portraits and project images are included in the CreatorHub backend's `public/demo-media/` folder and packaged with its API build. The frontend keeps the same `/demo-media/<filename>` paths in its database records. A Next.js `beforeFiles` rewrite forwards those requests to the backend origin derived from `NEXT_PUBLIC_API_GRAPHQL_URL`. Set that variable to the deployed backend's HTTPS GraphQL URL before building and starting the frontend. Deploy the backend's bundled media folder with the API. The backend folder is the only project copy of these images; local demo seed scripts also use that folder. Creator-uploaded files use the separate backend `uploads/` directory and still need persistent storage on the deployment host.
+
+See [the October 8 project review](docs/PROJECT_REVIEW_2026-10-08.md) for the applied account/chat batch, unfinished work, suggested features and maintenance plan.

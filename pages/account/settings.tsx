@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { userVar } from '../../apollo/store';
 import { clearSession } from '../../libs/auth';
 import { Button, Confirm, Feedback, Field, Heading, Notice, values } from '../../libs/components/common/UI';
+import ChangePasswordSettings from '../../libs/components/account/ChangePasswordSettings';
 import { AvatarUpload } from '../../libs/components/account/AvatarUpload';
 import Layout, { Guard } from '../../libs/components/layout/LayoutBasic';
 import { useAction } from '../../libs/hooks/useApi';
@@ -77,6 +78,7 @@ function AccountForm() {
 					</Button>
 				</div>
 			</form>
+			<ChangePasswordSettings />
 			<section className="danger-zone">
 				<h2>{translate('Delete account')}</h2>
 				<p>{translate('Your profile will no longer be publicly available and your sessions will be revoked.')}</p>

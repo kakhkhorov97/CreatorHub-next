@@ -438,3 +438,28 @@ The current inbox uses one sidebar for sent and received conversations. Rows sho
 ### Account photo and Following refinements, 5 October 2026
 
 Account settings uses a 72px photo preview beside an Upload photo action and format/size hint. Following uses a single list of 48px avatars, linked creator names and headlines, and compact red Unfollow actions. The account menu dismisses on outside pointer input and route changes. Messaging Details keeps the brief and workflow actions, without the audit history disclosure. These changes retain existing color and type tokens.
+
+## Conversation appearance, 9 October 2026
+
+Inbox and the AI panel use the original reference appearance, with no appearance selector or automatic system theme. Stored chat theme preferences no longer affect these surfaces. Public pages and administration retain their existing appearance. Mobile connection lists use compact avatar rows and a single Followers & Following entry.
+
+## Mobile header controls, 9 October 2026
+
+Mobile authentication links are compact at 12px text and 36px height. A 20px globe in a 40px button opens the language menu. Desktop uses the same globe language trigger; its authentication links keep their existing sizing.
+
+## Assistant design, 10 October 2026
+
+The assistant uses a compact CreatorHub Assistant heading with a circular chat emblem. Pale neutral assistant bubbles and pale blue user bubbles have separate avatars and 20px spacing. The rounded input and blue send button stay visible below a scrollable transcript. Desktop uses a 410px panel with up to 620px height. Mobile uses the available viewport height up to 680px with space for its launcher. No theme modes return.
+
+## Password settings and footer, 10 October 2026
+
+Account Settings uses the existing panel and labelled password controls for current password, new password and confirmation. A linked-method selector appears only when needed. The footer bottom includes Instagram, LinkedIn and YouTube icons without placeholder links, plus Terms of service and Privacy policy links in Get started.
+
+## Comment controls, 10 October 2026
+
+Owned project comments show a pencil and trash icon on the right of the author/date row. Controls retain accessible Edit comment and Delete comment names, native title tooltips and keyboard focus rings. Other members' comments show no actions. Delete still requires confirmation.
+
+
+## Password requirements and footer placement, 10 October 2026
+
+New-password fields show an accessible localized requirement and example directly beneath the input: 6–30 characters with a letter, number and symbol, for example River7!Cloud. Confirmation fields avoid duplicate guidance. Sign-in and current-password fields accept existing credentials without the new composition rule. The password icon reflects current visibility, with a tooltip naming its next action. Instagram, LinkedIn, YouTube and Telegram icons sit beneath the location in Find us. Social URLs remain unset pending the owner's real links.
