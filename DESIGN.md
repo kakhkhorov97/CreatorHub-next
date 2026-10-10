@@ -1,7 +1,7 @@
 ---
 {
   "name": "CreatorHub",
-  "description": "White-and-blue CreatorHub interface based on the approved September 25 references.",
+  "description": "Ivory, charcoal and forest-green CreatorHub interface based on the approved October 10 previews.",
   "colors": {
     "background": "#f7f5f0",
     "paper": "#ffffff",
@@ -479,3 +479,9 @@ The approved follow-up uses a compact 440px confirmation panel, an inline recipi
 The approved homepage image replaces the earlier white-and-blue palette across public discovery, account, workspace, inbox, assistant, and administration. The canvas is warm ivory #f7f5f0, primary text charcoal #202722, actions forest green #245c46 with #194332 hover, paper white, borders #d9d7cf, and the homepage hero soft stone #edeae2. The search section fills the viewport width while its contents retain the existing centered width. Administrative navigation uses dark green; error, warning, destructive-action and publication-status meanings remain distinct.
 
 Sign-in and signup use a desktop split layout with the existing Copenhagen reading-room portfolio concept beside the form. Its caption identifies the artwork as a fictional AI-generated concept. The image is hidden at 900px and below so the form occupies the available phone/tablet width. Recovery and verification remain focused forms. No authentication behavior changes as part of this design update.
+
+### Final approved homepage and auth refinements
+
+The custom CreatorHub studio artwork replaces the reading-room portfolio image on desktop sign-in and signup; no unrelated project caption remains. Subtle camera sketches, editorial page roughs, crop marks and paper fragments decorate only homepage search and auth backgrounds. Mobile reduces decoration and hides the photographic side panel; forms remain white and readable. The homepage category shortcuts start with one measured row at every width and expose a localized Show all categories / Show fewer categories button. Hidden links are excluded from keyboard and accessibility navigation until expanded. Existing media, account behavior and admin permissions stay intact.
+
+Google’s provider-rendered button follows the form width when the viewport changes, while its official provider appearance and authentication flow remain unchanged.

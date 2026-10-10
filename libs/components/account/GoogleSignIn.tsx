@@ -90,14 +90,25 @@ export default function GoogleSignIn({ onSetupChange }: { onSetupChange(setup: b
 			auto_select: false,
 			callback: (response) => callback.current(response.credential),
 		});
-		identity.renderButton(host, {
-			type: 'standard',
-			theme: 'outline',
-			size: 'large',
-			text: 'continue_with',
-			width: Math.min(400, host.clientWidth || 280),
-		});
+		let renderedWidth = 0;
+		const render = () => {
+			const width = Math.min(400, Math.floor(host.clientWidth || 280));
+			if (width === renderedWidth) return;
+			renderedWidth = width;
+			host.replaceChildren();
+			identity.renderButton(host, {
+				type: 'standard',
+				theme: 'outline',
+				size: 'large',
+				text: 'continue_with',
+				width,
+			});
+		};
+		render();
+		const observer = new ResizeObserver(render);
+		observer.observe(host);
 		return () => {
+			observer.disconnect();
 			host.replaceChildren();
 		};
 	}, [ready, nonce, pending]);

@@ -4,7 +4,7 @@ import { useReactiveVar } from '@apollo/client';
 import LanguageSelector from './LanguageSelector';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Bell, EnvelopeSimple, MagnifyingGlass, SignOut } from 'phosphor-react';
+import { Bell, CaretDown, EnvelopeSimple, MagnifyingGlass, SignOut } from 'phosphor-react';
 import { useEffect, useRef, useState } from 'react';
 import { userVar } from '../../apollo/store';
 import { clearSession } from '../auth';
@@ -70,7 +70,15 @@ export default function Top() {
 	return (
 		<>
 			<div className={`site-header ${compact ? 'is-compact' : ''} ${showNavigation ? 'has-navigation' : 'is-simple'}`}>
-				<header className="top">
+				<header
+					className="top"
+					onKeyDown={(event) => {
+						if (event.key === 'Escape' && accountMenu.current?.open) {
+							accountMenu.current.open = false;
+							accountMenu.current.querySelector('summary')?.focus();
+						}
+					}}
+				>
 					<Link passHref href="/" className="brand">
 						{translate('CreatorHub')}
 					</Link>
@@ -137,7 +145,6 @@ export default function Top() {
 									</summary>
 									<div>
 										<div className="mobile-account-tools">
-											<LanguageSelector />
 											<Link href="/inquiries">
 												{translate('Inbox')} {inbox.value || ''}
 											</Link>
@@ -191,10 +198,22 @@ export default function Top() {
 							</>
 						) : (
 							<>
-								<LinkButton secondary href="/account/sign-in">
-									{translate('Sign in')}
-								</LinkButton>
-								<LinkButton href="/account/register">{translate('Sign up')}</LinkButton>
+								<div className="desktop-auth-actions">
+									<LinkButton secondary href="/account/sign-in">
+										{translate('Sign in')}
+									</LinkButton>
+									<LinkButton href="/account/register">{translate('Sign up')}</LinkButton>
+								</div>
+								<details className="user-menu guest-account-menu" ref={accountMenu}>
+									<summary className="button" aria-label={translate('Account menu')}>
+										{translate('Account')}
+										<CaretDown size={14} aria-hidden="true" />
+									</summary>
+									<div>
+										<Link href="/account/sign-in">{translate('Sign in')}</Link>
+										<Link href="/account/register">{translate('Sign up')}</Link>
+									</div>
+								</details>
 							</>
 						)}
 					</div>

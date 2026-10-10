@@ -70,6 +70,8 @@
 }
 
 .discovery-search-section {
+	position: relative;
+	isolation: isolate;
 	background: $stone;
 	box-shadow: 0 0 0 100vmax $stone;
 	clip-path: inset(0 -100vmax);
@@ -1687,7 +1689,6 @@
 	margin-top: 16px;
 }
 @media (max-width: 700px) {
-	.header-actions:has(.user-menu) > .language-selector,
 	.header-actions > .header-text-link,
 	.header-actions > .icon-button {
 		display: none;
@@ -2140,6 +2141,7 @@
 	width: 100%;
 }
 .google-button {
+	min-width: 0;
 	min-height: 44px;
 	display: flex;
 	justify-content: center;
@@ -2183,9 +2185,9 @@ input[type='radio'] {
 }
 .auth-layout.has-artwork {
 	display: grid;
-	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+	grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
 	align-items: stretch;
-	gap: 48px;
+	gap: 24px;
 }
 .auth-layout.has-artwork .auth-panel {
 	width: 100%;
@@ -2205,20 +2207,7 @@ input[type='radio'] {
 .auth-artwork-image {
 	flex: 1;
 	min-height: 450px;
-	background: url('/brand/reading-room.png') center / cover no-repeat;
-}
-.auth-artwork figcaption {
-	padding: 20px 24px;
-	color: $ink;
-	font-size: 16px;
-	font-weight: 600;
-}
-.auth-artwork figcaption small {
-	display: block;
-	margin-top: 4px;
-	color: $muted;
-	font-size: 13px;
-	font-weight: 400;
+	background: url('/brand/auth-studio.jpg') center / cover no-repeat;
 }
 @media (max-width: 900px) {
 	.discovery-search-section {
@@ -2238,5 +2227,139 @@ input[type='radio'] {
 @media (max-width: 560px) {
 	.auth-layout.has-artwork .auth-panel {
 		padding: 24px 20px;
+	}
+}
+
+// Decorative assets stay behind content and never intercept input.
+.discovery-search-section::before,
+.auth-page.has-pattern::before {
+	content: '';
+	position: absolute;
+	inset: 0 calc(50% - 50vw);
+	background: url('/brand/discovery-pattern.png') center top / 100% 100% no-repeat;
+	opacity: 0.38;
+	pointer-events: none;
+	z-index: -1;
+}
+.auth-page {
+	position: relative;
+	isolation: isolate;
+}
+.auth-page.has-pattern::before {
+	background-size: 100% 380px;
+	opacity: 0.22;
+}
+.discovery-home .category-links {
+	padding: 6px;
+	margin: -6px;
+}
+.category-links.is-collapsed {
+	overflow: hidden;
+}
+.discovery-home .category-links a {
+	flex-shrink: 0;
+	white-space: nowrap;
+}
+.category-toggle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	margin: 8px auto 0;
+	min-height: 44px;
+	padding: 8px 16px;
+	border: 0;
+	background: transparent;
+	color: $coral;
+	font-weight: 600;
+}
+.category-toggle:hover {
+	color: $coral-hover;
+	text-decoration: underline;
+	text-underline-offset: 4px;
+}
+@media (max-width: 900px) {
+	.discovery-search-section::before {
+		background-size: 100% auto;
+		opacity: 0.3;
+	}
+	.auth-page.has-pattern::before {
+		background-size: 100% auto;
+		opacity: 0.2;
+	}
+}
+
+// Mobile header actions keep account access and language switching within easy reach.
+.desktop-auth-actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+.guest-account-menu {
+	display: none;
+}
+@media (max-width: 700px) {
+	.site-header .desktop-auth-actions {
+		display: none;
+	}
+	.site-header .guest-account-menu {
+		display: block;
+	}
+	.site-header .guest-account-menu > summary {
+		min-height: 44px;
+		padding: 10px 12px;
+		gap: 6px;
+		font-size: 13px;
+		white-space: nowrap;
+		list-style: none;
+	}
+	.site-header .user-menu summary::-webkit-details-marker {
+		display: none;
+	}
+	.site-header .user-menu > div {
+		top: calc(100% + 8px);
+		width: min(260px, calc(100vw - 32px));
+		min-width: 0;
+		max-height: calc(100dvh - 100px);
+		overflow-y: auto;
+		padding: 8px;
+		gap: 0;
+		border-radius: 12px;
+	}
+	.site-header .user-menu > div a,
+	.site-header .user-menu .signout-button {
+		min-height: 44px;
+		padding: 10px 12px;
+		font-size: 14px;
+		line-height: 24px;
+	}
+	.site-header .mobile-account-tools {
+		gap: 0;
+		padding-bottom: 8px;
+		margin-bottom: 8px;
+	}
+	.site-header .user-menu .signout-button {
+		width: 100%;
+		justify-content: flex-start;
+		margin: 8px 0 0;
+	}
+	.site-header .language-trigger {
+		width: 44px;
+		min-height: 44px;
+		padding: 10px;
+	}
+	.site-header .language-trigger > .language-globe {
+		display: none;
+	}
+	.site-header .language-trigger > .language-flag {
+		display: block;
+	}
+	.site-header .language-menu,
+	.site-header .language-error {
+		left: auto;
+		right: 0;
+	}
+	.site-header .language-menu button {
+		min-height: 44px;
 	}
 }

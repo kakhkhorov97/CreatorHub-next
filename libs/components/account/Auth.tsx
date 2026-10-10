@@ -126,7 +126,7 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 		});
 	}
 	return (
-		<>
+		<div className={auth ? 'auth-page has-pattern' : 'auth-page'}>
 			<Link passHref className="back-link" href="/">
 				{translate('Back to explore')}
 			</Link>
@@ -312,15 +312,13 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 						<div
 							className="auth-artwork-image"
 							role="img"
-							aria-label={translate('A warm, light-filled reading room')}
+							aria-label={translate(
+								'CreatorHub creative workspace with design, illustration, and photography materials',
+							)}
 						/>
-						<figcaption>
-							Copenhagen · A room for reading
-							<small>{translate('Fictional portfolio concept · AI-generated artwork')}</small>
-						</figcaption>
 					</figure>
 				)}
 			</div>
-		</>
+		</div>
 	);
 }
