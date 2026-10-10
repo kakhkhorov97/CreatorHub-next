@@ -14,6 +14,7 @@ export const requestEmailVerification = gql`mutation requestEmailVerification($i
 export const requestPasswordReset = gql`mutation requestPasswordReset($input: EmailInput!) { requestPasswordReset(input: $input)  }`;
 export const resetPassword = gql`mutation resetPassword($input: ResetPasswordInput!) { resetPassword(input: $input)  }`;
 export const linkEmail = gql`mutation linkEmail($input: LinkEmailInput!) { linkEmail(input: $input) { _id  createdAt  updatedAt  userId  provider  providerSubject  verifiedAt  revokedAt  lastLoginAt  } }`;
+export const requestEmailChange = gql`mutation requestEmailChange($input: ChangeEmailInput!) { requestEmailChange(input: $input)  }`;
 export const linkPhone = gql`mutation linkPhone($input: LinkPhoneInput!) { linkPhone(input: $input) { _id  createdAt  updatedAt  userId  provider  providerSubject  verifiedAt  revokedAt  lastLoginAt  } }`;
 export const beginSocialLink = gql`mutation beginSocialLink($provider: AuthProvider!) { beginSocialLink(provider: $provider)  }`;
 export const linkSocial = gql`mutation linkSocial($input: SocialLoginInput!) { linkSocial(input: $input) { _id  createdAt  updatedAt  userId  provider  providerSubject  verifiedAt  revokedAt  lastLoginAt  } }`;

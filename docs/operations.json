@@ -396,6 +396,12 @@
     "document": "mutation linkEmail($input: LinkEmailInput!) { linkEmail(input: $input) { _id  createdAt  updatedAt  userId  provider  providerSubject  verifiedAt  revokedAt  lastLoginAt  } }"
   },
   {
+    "name": "requestEmailChange",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation requestEmailChange($input: ChangeEmailInput!) { requestEmailChange(input: $input)  }"
+  },
+  {
     "name": "linkPhone",
     "kind": "mutation",
     "admin": false,

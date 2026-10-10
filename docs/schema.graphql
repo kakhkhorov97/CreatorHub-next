@@ -621,6 +621,7 @@ type Mutation {
   requestPasswordReset(input: EmailInput!): Boolean!
   resetPassword(input: ResetPasswordInput!): Boolean!
   linkEmail(input: LinkEmailInput!): AuthIdentity!
+  requestEmailChange(input: ChangeEmailInput!): Boolean!
   linkPhone(input: LinkPhoneInput!): AuthIdentity!
   beginSocialLink(provider: AuthProvider!): String!
   linkSocial(input: SocialLoginInput!): AuthIdentity!
@@ -830,6 +831,11 @@ input ResetPasswordInput {
 input LinkEmailInput {
   email: String!
   password: String!
+}
+
+input ChangeEmailInput {
+  email: String!
+  currentPassword: String!
 }
 
 input LinkPhoneInput {

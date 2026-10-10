@@ -60,3 +60,10 @@ Backend: 72 tests across nine suites passed on a full rerun, plus typecheck, lin
 Frontend: 29 tests passed, including public-only RAG, provider overload retry and error classification, and matching translation catalogs. Typecheck, lint and all 109 generated API documents passed. The final production build passed and generated 204 localized pages. Backend worker build and formatting checks also passed. Disposable generated-document integration exercised 86 of 109 operations, including getMyFollowers and messaging privacy/retry/session/reconnect checks. The remaining 23 operations are not represented as newly tested live integrations.
 
 Browser checks covered guest Enter sending and a live Gemini answer, outside closing, mobile account shortcuts, named greetings, shared dark preference, populated connection tabs, signed-in avatar images, signup password mismatch rejection and mobile/desktop Inbox colors. No real user inquiries were sent for validation. Provider OAuth, SMS, real email and remote deployment remain unverified.
+
+
+## Account email settings, 10 October 2026
+
+The Sign-in methods page now displays one Account email with Change email and the existing Change password form for admins and members. It no longer offers Add a sign-in method, email removal, or inactive social-link buttons. A replacement request requires the current password and recent sign-in, displays errors under inputs, and keeps the current email until the replacement link is verified. Confirmation clears the local session; expired replacement links return users to account settings. Backend enforcement prevents a second email login and revokes all sessions after replacement. Generated GraphQL documents cover 112 operations.
+
+Verified frontend results: 43 tests passed, typecheck and lint passed, contract validation passed, and the production build completed. The local frontend was restarted on port 7007. Real mailbox delivery is a separate deployment check; the mail webhook must support EMAIL_CHANGE messages.

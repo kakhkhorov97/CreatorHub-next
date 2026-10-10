@@ -5,13 +5,19 @@ const vm = require('node:vm');
 const ts = require('typescript');
 const React = require('react');
 const jsx = require('react/jsx-runtime');
-function harness(token, result = true) {
+function harness(token, result = true, purpose = undefined) {
 	const states = [];
 	const effects = [];
 	const calls = [];
+	let cleared = 0;
 	const storage = new Map([['creatorhub.pendingEmail', 'reader@example.invalid']]);
 	let index = 0;
 	const action = {
+		client: {
+			clearStore: async () => {
+				cleared++;
+			},
+		},
 		busy: false,
 		error: '',
 		run: async (fn) => {
@@ -59,10 +65,16 @@ function harness(token, result = true) {
 			if (name === 'react/jsx-runtime') return jsx;
 			if (name === 'next-i18next') return { useTranslation: () => ({ t: (k) => k }) };
 			if (name === 'next/router')
-				return { useRouter: () => ({ isReady: true, query: { token, returnTo: '/creators' } }) };
+				return { useRouter: () => ({ isReady: true, query: { token, purpose, returnTo: '/creators' } }) };
 			if (name === 'next/link') return { default: () => null };
 			if (name === 'phosphor-react') return { EnvelopeSimple: () => null, CheckCircle: () => null };
-			if (name === '../../auth') return { safeReturnTo: (p) => p };
+			if (name === '../../auth')
+				return {
+					safeReturnTo: (p) => p,
+					clearSession: () => {
+						cleared++;
+					},
+				};
 			if (name === '../../hooks/useApi') return { useAction: () => action };
 			if (name === '../../utils/authForm') return {};
 			if (name === '../common/UI') return { Field: () => null, Button: () => null, LinkButton: () => null };
@@ -77,6 +89,7 @@ function harness(token, result = true) {
 	);
 	return {
 		calls,
+		cleared: () => cleared,
 		storage,
 		effects,
 		render: () => {
@@ -122,4 +135,24 @@ test('expired and failed verification requests never show success', async () => 
 	await new Promise((resolve) => setImmediate(resolve));
 	assert.match(text(h.render()), /invalid or has expired/);
 	assert.equal(h.storage.has('creatorhub.pendingEmail'), true);
+});
+
+test('replacement-email confirmation clears the old session and asks for the new email at sign-in', async () => {
+	const h = harness('c'.repeat(64), true, 'email-change');
+	h.render();
+	h.effects.forEach((fn) => fn());
+	await new Promise((resolve) => setImmediate(resolve));
+	assert.equal(h.cleared(), 2);
+	assert.match(text(h.render()), /Sign in with your new email/);
+});
+test('expired replacement links point to account settings instead of signup resend', async () => {
+	const h = harness('d'.repeat(64), new Error('Invalid or expired token'), 'email-change');
+	h.render();
+	h.effects.forEach((fn) => fn());
+	await new Promise((resolve) => setImmediate(resolve));
+	const rendered = text(h.render());
+	assert.match(rendered, /Request a new change in account settings/);
+	assert.match(rendered, /Back to account settings/);
+	assert.doesNotMatch(rendered, /Resend email/);
+	assert.equal(h.cleared(), 0);
 });

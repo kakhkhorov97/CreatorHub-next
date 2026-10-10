@@ -79,7 +79,6 @@ export default function Footer() {
 				<span>
 					© {new Date().getFullYear()} {translate('CreatorHub')}
 				</span>
-				<span>{translate('Illustrative accounts, portfolio studies, and event concepts are fictional.')}</span>
 			</div>
 		</footer>
 	);

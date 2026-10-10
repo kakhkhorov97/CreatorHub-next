@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { CheckCircle, EnvelopeSimple } from 'phosphor-react';
 import { useEffect, useRef, useState } from 'react';
-import { safeReturnTo } from '../../auth';
+import { clearSession, safeReturnTo } from '../../auth';
 import { useAction } from '../../hooks/useApi';
 import { validateAuthForm } from '../../utils/authForm';
 import { Button, Field, LinkButton, values } from '../common/UI';
@@ -20,6 +20,7 @@ export default function EmailConfirmation({ verifyLink = false }: { verifyLink?:
 	const [showEmailForm, setShowEmailForm] = useState(false);
 	const [state, setState] = useState<VerificationState>('waiting');
 	const attemptedToken = useRef<string | null>(null);
+	const emailChange = router.query.purpose === 'email-change';
 	const token = typeof router.query.token === 'string' ? router.query.token : '';
 	const returnTo = typeof router.query.returnTo === 'string' ? safeReturnTo(router.query.returnTo) : undefined;
 	const signInHref = returnTo ? `/account/sign-in?returnTo=${encodeURIComponent(returnTo)}` : '/account/sign-in';
@@ -36,6 +37,10 @@ export default function EmailConfirmation({ verifyLink = false }: { verifyLink?:
 		setState('verifying');
 		const verified = await action.run(() => action.mutate('verifyEmail', { token }));
 		if (verified) {
+			if (emailChange) {
+				clearSession();
+				await action.client.clearStore();
+			}
 			setState('verified');
 			sessionStorage.removeItem('creatorhub.pendingEmail');
 		} else setState('failed');
@@ -98,7 +103,11 @@ export default function EmailConfirmation({ verifyLink = false }: { verifyLink?:
 			{state === 'verified' ? (
 				<>
 					<p className="auth-intro" role="status">
-						{translate('Your account is verified. You can now sign in.')}
+						{translate(
+							emailChange
+								? 'Your email has been changed. Sign in with your new email.'
+								: 'Your account is verified. You can now sign in.',
+						)}
 					</p>
 					<LinkButton href={signInHref}>{translate('Sign in')}</LinkButton>
 				</>
@@ -113,7 +122,9 @@ export default function EmailConfirmation({ verifyLink = false }: { verifyLink?:
 							<p className="field-error" role="alert">
 								{translate(
 									invalidLink
-										? 'This confirmation link is invalid or has expired. Request a new email below.'
+										? emailChange
+											? 'This confirmation link is invalid or has expired. Request a new change in account settings.'
+											: 'This confirmation link is invalid or has expired. Request a new email below.'
 										: 'We could not verify your email. Please try again.',
 								)}
 							</p>
@@ -133,7 +144,11 @@ export default function EmailConfirmation({ verifyLink = false }: { verifyLink?:
 							<p className="auth-intro">{translate('Open the link to verify your account, then sign in.')}</p>
 						</>
 					)}
-					{showEmailForm ? (
+					{emailChange ? (
+						<Link className="confirmation-sign-in" href="/account/sign-in-methods">
+							{translate('Back to account settings')}
+						</Link>
+					) : showEmailForm ? (
 						<form
 							noValidate
 							onSubmit={(event) => {
