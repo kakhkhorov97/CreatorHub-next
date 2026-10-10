@@ -11,7 +11,7 @@
 	background: $paper;
 	box-shadow: 0 20px 64px rgba(11, 16, 32, 0.2);
 	overflow: auto;
-	scrollbar-color: #afb5c0 $paper;
+	scrollbar-color: #b7c1b2 $paper;
 	scrollbar-width: thin;
 }
 .contact-creator-dialog::backdrop {
@@ -48,13 +48,13 @@
 }
 .contact-creator-close:hover {
 	color: $ink;
-	background: #eef0f3;
+	background: #edf0e8;
 }
 .contact-creator-recipient {
 	display: flex;
 	align-items: center;
 	gap: 12px;
-	background: #f7f8fa;
+	background: #f7f5f0;
 	padding: 18px 28px;
 	border-bottom: 1px solid $line;
 }
@@ -91,7 +91,7 @@
 .contact-creator-form select,
 .contact-creator-form textarea {
 	border-radius: 9px;
-	border: 1px solid #b9bec7;
+	border: 1px solid #b7c1b2;
 	font-size: 16px;
 	color: $ink;
 	background: $paper;
@@ -109,7 +109,7 @@
 }
 .contact-creator-form input::placeholder,
 .contact-creator-form textarea::placeholder {
-	color: #626878;
+	color: #5d665f;
 	opacity: 1;
 }
 .inquiry-deadline {
@@ -148,7 +148,7 @@
 	display: flex;
 	align-items: center;
 	gap: 6px;
-	border: 1px solid #b9bec7;
+	border: 1px solid #b7c1b2;
 	border-radius: 9px;
 	padding: 0 12px;
 	min-height: 46px;
@@ -261,8 +261,18 @@
 	line-height: 1.5;
 	color: $muted;
 }
-.inquiry-message-error { color: #b91c1c; }
-.inquiry-message-count { font-variant-numeric: tabular-nums; }
-.pagination-notice { text-align: center; color: $muted; font-size: 14px; }
+.inquiry-message-error {
+	color: #b91c1c;
+}
+.inquiry-message-count {
+	font-variant-numeric: tabular-nums;
+}
+.pagination-notice {
+	text-align: center;
+	color: $muted;
+	font-size: 14px;
+}
 
-.pagination-error { color: #b91c1c; }
+.pagination-error {
+	color: #b91c1c;
+}

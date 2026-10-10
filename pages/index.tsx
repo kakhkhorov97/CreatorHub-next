@@ -25,15 +25,19 @@ function Home() {
 		<>
 			<div className="discovery-full discovery-home">
 				<section id="projects">
-					<div className="discovery-hero">
-						<h1>{translate(site.value?.homeHeading || 'Find your next creative collaborator.')}</h1>
-						<p>
-							{translate(
-								koreaCopy(site.value?.homeSubheading || 'Discover creators, creative work, and services across Korea.'),
-							)}
-						</p>
+					<div className="discovery-search-section">
+						<div className="discovery-hero">
+							<h1>{translate(site.value?.homeHeading || 'Find your next creative collaborator.')}</h1>
+							<p>
+								{translate(
+									koreaCopy(
+										site.value?.homeSubheading || 'Discover creators, creative work, and services across Korea.',
+									),
+								)}
+							</p>
+						</div>
+						<SearchFilters kind="projects" home filters={filters} onSearch={setFilters} />
 					</div>
-					<SearchFilters kind="projects" home filters={filters} onSearch={setFilters} />
 					<CategoryShortcuts />
 					<div className="home-section-heading">
 						<div>

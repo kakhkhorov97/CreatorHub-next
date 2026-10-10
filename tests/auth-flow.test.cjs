@@ -57,6 +57,7 @@ test('successful email signup opens confirmation, preserves return path and does
 				};
 			if (name === '../../hooks/useApi') return { useAction: () => action };
 			if (name === '../../utils/authForm') return { validateAuthForm: () => ({}) };
+			if (name === './GoogleSignIn') return { default: () => null };
 			if (name === '../common/UI')
 				return {
 					values: () => ({ ...formValues }),

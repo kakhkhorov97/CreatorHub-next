@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { authenticationDestination, safeReturnTo, saveSession } from '../../auth';
 import { useAction } from '../../hooks/useApi';
 import { AuthFieldErrors, authSubmissionErrorField, validateAuthForm } from '../../utils/authForm';
+import GoogleSignIn from './GoogleSignIn';
 import { Button, Field, Notice, Password, values } from '../common/UI';
 
 export type AuthMode = 'sign-in' | 'register' | 'forgot-password' | 'reset-password';
@@ -15,18 +16,29 @@ const titles = {
 	'reset-password': 'Choose a new password',
 };
 
-export function SocialButtons() {
+export function SocialButtons({
+	onSetupChange = () => {},
+	setup = false,
+}: {
+	onSetupChange?(setup: boolean): void;
+	setup?: boolean;
+}) {
 	const { t: translate } = useSiteTranslation('common');
 
 	return (
 		<div className="social-sign-in">
-			<p className="divider-label">{translate('Or continue with')}</p>
-			{['Google', 'Kakao', 'Telegram'].map((provider) => (
-				<Button key={provider} secondary disabled>
-					{translate('Continue with')} {provider}
-				</Button>
-			))}
-			<small>{translate('Social sign-in is not available yet.')}</small>
+			{!setup && <p className="divider-label">{translate('Or continue with')}</p>}
+			<GoogleSignIn onSetupChange={onSetupChange} />
+			{!setup && (
+				<>
+					{['Kakao', 'Telegram'].map((provider) => (
+						<Button key={provider} secondary disabled>
+							{translate('Continue with')} {provider}
+						</Button>
+					))}
+					<small>{translate('Kakao and Telegram sign-in are not available yet.')}</small>
+				</>
+			)}
 		</div>
 	);
 }
@@ -35,6 +47,7 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 	const { t: translate } = useSiteTranslation('common');
 
 	const router = useRouter();
+	const [googleSetup, setGoogleSetup] = useState(false);
 	const [countryCode, setCountryCode] = useState('+82');
 	const action = useAction();
 	const [message, setMessage] = useState('');
@@ -117,178 +130,197 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 			<Link passHref className="back-link" href="/">
 				{translate('Back to explore')}
 			</Link>
-			<section className="auth-panel panel">
-				<h1>{translate(titles[mode])}</h1>
-				{router.query.passwordChanged === '1' && (
-					<Notice notify>{translate('Password updated. Sign in again to continue.')}</Notice>
-				)}
-				<p className="muted auth-intro">
-					{auth
-						? registering
-							? translate('Save creative work and start conversations with creators.')
-							: translate('Sign in to explore creators, save portfolios, and send project inquiries.')
-						: mode === 'forgot-password'
-						? translate('Enter the email linked to your account.')
-						: translate('Choose a password you do not use for another account.')}
-				</p>
-
-				<form
-					noValidate
-					onInput={(event) => {
-						const name = (event.target as HTMLInputElement).name;
-						action.setError('');
-						setFieldErrors((previous) => {
-							const next = { ...previous };
-							delete next[name];
-							return next;
-						});
-					}}
-					key={mode}
-					onSubmit={(e) => {
-						e.preventDefault();
-						submit(e.currentTarget);
-					}}
-				>
-					{mode === 'sign-in' && (
-						<Field
-							label={translate('Email')}
-							name="email"
-							error={fieldErrors.email}
-							type="email"
-							autoComplete="email"
-							required
-							maxLength={254}
-						/>
+			<div className={auth ? 'auth-layout has-artwork' : 'auth-layout'}>
+				<section className="auth-panel panel">
+					<h1>{translate(googleSetup ? 'Complete your account' : titles[mode])}</h1>
+					{router.query.passwordChanged === '1' && (
+						<Notice notify>{translate('Password updated. Sign in again to continue.')}</Notice>
 					)}
-					{registering && (
-						<Field
-							label={translate('Your name')}
-							name="displayName"
-							error={fieldErrors.displayName}
-							autoComplete="name"
-							required
-							minLength={3}
-							maxLength={40}
-						/>
-					)}
-					{mode === 'forgot-password' && (
-						<Field
-							label={translate('Email')}
-							name="email"
-							error={fieldErrors.email}
-							type="email"
-							autoComplete="email"
-							required
-							maxLength={254}
-						/>
-					)}{' '}
-					{registering && (
-						<>
-							<Field
-								label={translate('Email')}
-								name="email"
-								error={fieldErrors.email}
-								type="email"
-								autoComplete="email"
-								required
-								maxLength={254}
-							/>
-							<div className="auth-phone-group">
-								<div className="auth-phone-row">
-									<Field label={translate('Country code')}>
-										<select value={countryCode} onChange={(event) => setCountryCode(event.target.value)}>
-											{['+82', '+1', '+44', '+61', '+81', '+86', '+91', '+33', '+49', '+998'].map((code) => (
-												<option key={code}>{code}</option>
-											))}
-										</select>
-									</Field>
-									<Field
-										label={translate('Phone number')}
-										name="phoneNumber"
-										error={fieldErrors.phoneNumber}
-										type="tel"
-										autoComplete="tel"
-										required
-										maxLength={40}
-										aria-describedby="signup-phone-hint"
-									/>
-								</div>
-								<small id="signup-phone-hint">{translate('For contact only. Sign in with your email.')}</small>
-							</div>
-						</>
-					)}
-					{mode === 'reset-password' && (
-						<Field
-							label={translate('Verification token')}
-							name="token"
-							error={fieldErrors.token}
-							required
-							minLength={64}
-							maxLength={64}
-							defaultValue={typeof router.query.token === 'string' ? router.query.token : ''}
-						/>
-					)}
-					{(auth || mode === 'reset-password') && (
-						<Password
-							name="password"
-							error={fieldErrors.password}
-							required
-							minLength={registering || mode === 'reset-password' ? 6 : 1}
-							maxLength={registering || mode === 'reset-password' ? 30 : 128}
-							autoComplete={registering || mode === 'reset-password' ? 'new-password' : 'current-password'}
-						/>
-					)}{' '}
-					{registering && (
-						<>
-							<Password
-								label={translate('Confirm password')}
-								showRequirements={false}
-								name="confirmPassword"
-								error={fieldErrors.confirmPassword}
-								autoComplete="new-password"
-								required
-								minLength={6}
-								maxLength={30}
-							/>
-						</>
-					)}
-					{mode === 'sign-in' && (
-						<Link passHref className="forgot" href={authHref('/account/forgot-password')}>
-							{translate('Forgot password?')}
-						</Link>
-					)}
-					{mode === 'sign-in' && /verif/i.test(action.error) && (
-						<Link href={authHref('/account/verify-email')}>{translate('Verify email or resend')}</Link>
-					)}
-					{message && <Notice notify>{message}</Notice>}
-					<Button type="submit" disabled={action.busy}>
-						{action.busy
-							? translate('Please wait…')
-							: mode === 'sign-in'
-							? translate('Sign in')
-							: registering
-							? translate('Create account')
+					<p className="muted auth-intro">
+						{googleSetup
+							? translate('Add your contact details to finish creating your account.')
+							: auth
+							? registering
+								? translate('Save creative work and start conversations with creators.')
+								: translate('Sign in to explore creators, save portfolios, and send project inquiries.')
 							: mode === 'forgot-password'
-							? translate('Send reset link')
-							: translate('Reset password')}
-					</Button>
-				</form>
-				{auth && <SocialButtons />}
-				<p className="auth-bottom">
-					{mode === 'sign-in' ? (
-						<>
-							{translate('Don’t have an account?')}{' '}
-							<Link passHref href={authHref('/account/register')}>
-								{translate('Create an account')}
-							</Link>
-						</>
-					) : (
-						<Link passHref href={authHref('/account/sign-in')}>
-							{translate('Back to sign in')}
-						</Link>
+							? translate('Enter the email linked to your account.')
+							: translate('Choose a password you do not use for another account.')}
+					</p>
+
+					{!googleSetup && (
+						<form
+							noValidate
+							onInput={(event) => {
+								const name = (event.target as HTMLInputElement).name;
+								action.setError('');
+								setFieldErrors((previous) => {
+									const next = { ...previous };
+									delete next[name];
+									return next;
+								});
+							}}
+							key={mode}
+							onSubmit={(e) => {
+								e.preventDefault();
+								submit(e.currentTarget);
+							}}
+						>
+							{mode === 'sign-in' && (
+								<Field
+									label={translate('Email')}
+									name="email"
+									error={fieldErrors.email}
+									type="email"
+									autoComplete="email"
+									required
+									maxLength={254}
+								/>
+							)}
+							{registering && (
+								<Field
+									label={translate('Your name')}
+									name="displayName"
+									error={fieldErrors.displayName}
+									autoComplete="name"
+									required
+									minLength={3}
+									maxLength={40}
+								/>
+							)}
+							{mode === 'forgot-password' && (
+								<Field
+									label={translate('Email')}
+									name="email"
+									error={fieldErrors.email}
+									type="email"
+									autoComplete="email"
+									required
+									maxLength={254}
+								/>
+							)}{' '}
+							{registering && (
+								<>
+									<Field
+										label={translate('Email')}
+										name="email"
+										error={fieldErrors.email}
+										type="email"
+										autoComplete="email"
+										required
+										maxLength={254}
+									/>
+									<div className="auth-phone-group">
+										<div className="auth-phone-row">
+											<Field label={translate('Country code')}>
+												<select value={countryCode} onChange={(event) => setCountryCode(event.target.value)}>
+													{['+82', '+1', '+44', '+61', '+81', '+86', '+91', '+33', '+49', '+998'].map((code) => (
+														<option key={code}>{code}</option>
+													))}
+												</select>
+											</Field>
+											<Field
+												label={translate('Phone number')}
+												name="phoneNumber"
+												error={fieldErrors.phoneNumber}
+												type="tel"
+												autoComplete="tel"
+												required
+												maxLength={40}
+												aria-describedby="signup-phone-hint"
+											/>
+										</div>
+										<small id="signup-phone-hint">{translate('For contact only. Sign in with your email.')}</small>
+									</div>
+								</>
+							)}
+							{mode === 'reset-password' && (
+								<Field
+									label={translate('Verification token')}
+									name="token"
+									error={fieldErrors.token}
+									required
+									minLength={64}
+									maxLength={64}
+									defaultValue={typeof router.query.token === 'string' ? router.query.token : ''}
+								/>
+							)}
+							{(auth || mode === 'reset-password') && (
+								<Password
+									name="password"
+									error={fieldErrors.password}
+									required
+									minLength={registering || mode === 'reset-password' ? 6 : 1}
+									maxLength={registering || mode === 'reset-password' ? 30 : 128}
+									autoComplete={registering || mode === 'reset-password' ? 'new-password' : 'current-password'}
+								/>
+							)}{' '}
+							{registering && (
+								<>
+									<Password
+										label={translate('Confirm password')}
+										showRequirements={false}
+										name="confirmPassword"
+										error={fieldErrors.confirmPassword}
+										autoComplete="new-password"
+										required
+										minLength={6}
+										maxLength={30}
+									/>
+								</>
+							)}
+							{mode === 'sign-in' && (
+								<Link passHref className="forgot" href={authHref('/account/forgot-password')}>
+									{translate('Forgot password?')}
+								</Link>
+							)}
+							{mode === 'sign-in' && /verif/i.test(action.error) && (
+								<Link href={authHref('/account/verify-email')}>{translate('Verify email or resend')}</Link>
+							)}
+							{message && <Notice notify>{message}</Notice>}
+							<Button type="submit" disabled={action.busy}>
+								{action.busy
+									? translate('Please wait…')
+									: mode === 'sign-in'
+									? translate('Sign in')
+									: registering
+									? translate('Create account')
+									: mode === 'forgot-password'
+									? translate('Send reset link')
+									: translate('Reset password')}
+							</Button>
+						</form>
 					)}
-				</p>
-			</section>
+					{auth && <SocialButtons onSetupChange={setGoogleSetup} setup={googleSetup} />}
+					<p className="auth-bottom">
+						{mode === 'sign-in' ? (
+							<>
+								{translate('Don’t have an account?')}{' '}
+								<Link passHref href={authHref('/account/register')}>
+									{translate('Create an account')}
+								</Link>
+							</>
+						) : (
+							<Link passHref href={authHref('/account/sign-in')}>
+								{translate('Back to sign in')}
+							</Link>
+						)}
+					</p>
+				</section>
+				{auth && (
+					<figure className="auth-artwork">
+						<div
+							className="auth-artwork-image"
+							role="img"
+							aria-label={translate('A warm, light-filled reading room')}
+						/>
+						<figcaption>
+							Copenhagen · A room for reading
+							<small>{translate('Fictional portfolio concept · AI-generated artwork')}</small>
+						</figcaption>
+					</figure>
+				)}
+			</div>
 		</>
 	);
 }

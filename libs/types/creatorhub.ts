@@ -199,6 +199,11 @@ export interface AuthPayload {
   expiresIn: number;
   user: User;
 }
+export interface GoogleSignInResult {
+  session?: AuthPayload | null;
+  signupToken?: string | null;
+  displayName?: string | null;
+}
 export interface AuthIdentity {
   _id: string;
   createdAt: string;
@@ -515,6 +520,16 @@ export interface PhoneLoginInput {
   phoneNumber: string;
   password: string;
 }
+export interface GoogleLoginInput {
+  idToken: string;
+  nonce: string;
+}
+export interface CompleteGoogleSignupInput {
+  phoneNumber: string;
+  displayName: string;
+  preferredLocale?: Locale | null;
+  signupToken: string;
+}
 export interface SocialLoginInput {
   phoneNumber?: string | null;
   provider: AuthProvider;
@@ -712,6 +727,8 @@ export interface Operations {
   registerPhone: { variables: { input: PhoneRegisterInput }; result: AuthPayload };
   loginPhone: { variables: { input: PhoneLoginInput }; result: AuthPayload };
   beginSocialLogin: { variables: { provider: AuthProvider }; result: string };
+  loginGoogle: { variables: { input: GoogleLoginInput }; result: GoogleSignInResult };
+  completeGoogleSignup: { variables: { input: CompleteGoogleSignupInput }; result: AuthPayload };
   loginSocial: { variables: { input: SocialLoginInput }; result: AuthPayload };
   login: { variables: { input: LoginInput }; result: AuthPayload };
   refreshSession: { variables: { refreshToken: string }; result: AuthPayload };

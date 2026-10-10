@@ -281,6 +281,12 @@ type AuthPayload {
   user: User!
 }
 
+type GoogleSignInResult {
+  session: AuthPayload
+  signupToken: String
+  displayName: String
+}
+
 type AuthIdentity {
   _id: ID!
   createdAt: DateTime!
@@ -613,6 +619,8 @@ type Mutation {
   registerPhone(input: PhoneRegisterInput!): AuthPayload!
   loginPhone(input: PhoneLoginInput!): AuthPayload!
   beginSocialLogin(provider: AuthProvider!): String!
+  loginGoogle(input: GoogleLoginInput!): GoogleSignInResult!
+  completeGoogleSignup(input: CompleteGoogleSignupInput!): AuthPayload!
   loginSocial(input: SocialLoginInput!): AuthPayload!
   login(input: LoginInput!): AuthPayload!
   refreshSession(refreshToken: String!): AuthPayload!
@@ -803,6 +811,18 @@ input PhoneRegisterInput {
 input PhoneLoginInput {
   phoneNumber: String!
   password: String!
+}
+
+input GoogleLoginInput {
+  idToken: String!
+  nonce: String!
+}
+
+input CompleteGoogleSignupInput {
+  phoneNumber: String!
+  displayName: String!
+  preferredLocale: Locale
+  signupToken: String!
 }
 
 input SocialLoginInput {

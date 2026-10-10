@@ -348,6 +348,18 @@
     "document": "mutation beginSocialLogin($provider: AuthProvider!) { beginSocialLogin(provider: $provider)  }"
   },
   {
+    "name": "loginGoogle",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation loginGoogle($input: GoogleLoginInput!) { loginGoogle(input: $input) { session { accessToken  refreshToken  expiresIn  user { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } } signupToken  displayName  } }"
+  },
+  {
+    "name": "completeGoogleSignup",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation completeGoogleSignup($input: CompleteGoogleSignupInput!) { completeGoogleSignup(input: $input) { accessToken  refreshToken  expiresIn  user { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } } }"
+  },
+  {
     "name": "loginSocial",
     "kind": "mutation",
     "admin": false,

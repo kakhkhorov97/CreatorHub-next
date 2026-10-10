@@ -23,19 +23,19 @@ body {
 	line-height: 1.5;
 }
 ::selection {
-	background: #dceaff;
-	color: #102952;
+	background: #dee9dc;
+	color: #213e2e;
 }
 * {
 	scrollbar-width: thin;
-	scrollbar-color: #b9c0cb $background;
+	scrollbar-color: #b7c1b2 $background;
 }
 a {
 	color: inherit;
 	text-underline-offset: 4px;
 }
 a:hover {
-	color: #0645bb;
+	color: #194332;
 }
 button,
 input,
@@ -56,7 +56,7 @@ button:disabled {
 	opacity: 0.55;
 }
 :focus-visible {
-	outline: 2px solid #0859ec;
+	outline: 2px solid #245c46;
 	outline-offset: 4px;
 }
 input,
