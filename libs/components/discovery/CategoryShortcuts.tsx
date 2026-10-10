@@ -9,10 +9,19 @@ export default function CategoryShortcuts() {
 	const { t: translate } = useSiteTranslation('common');
 	const categories = useApi('categories');
 	const [expanded, setExpanded] = useState(false);
+	const [mobile, setMobile] = useState(false);
 	const [rowCount, setRowCount] = useState(3);
 	const [rowHeight, setRowHeight] = useState(44);
 	const linksRef = useRef<HTMLElement>(null);
 	const linksId = useId();
+
+	useEffect(() => {
+		const query = window.matchMedia('(max-width: 700px)');
+		const update = () => setMobile(query.matches);
+		update();
+		query.addEventListener('change', update);
+		return () => query.removeEventListener('change', update);
+	}, []);
 
 	useEffect(() => {
 		const nav = linksRef.current;
@@ -30,7 +39,8 @@ export default function CategoryShortcuts() {
 		return () => observer.disconnect();
 	}, [categories.value, translate]);
 
-	const canExpand = (categories.value?.length || 0) > rowCount;
+	const collapsed = mobile && !expanded;
+	const canExpand = mobile && (categories.value?.length || 0) > rowCount;
 	return (
 		<section className="home-section category-section">
 			<div className="home-section-heading">
@@ -43,12 +53,12 @@ export default function CategoryShortcuts() {
 			<nav
 				ref={linksRef}
 				id={linksId}
-				className={`category-links${expanded ? '' : ' is-collapsed'}`}
-				style={expanded ? undefined : { maxHeight: rowHeight + 12 }}
+				className={`category-links${collapsed ? ' is-collapsed' : ''}`}
+				style={collapsed ? { maxHeight: rowHeight + 12 } : undefined}
 				aria-label={translate('Project categories')}
 			>
 				{categories.value?.map((category, index) => {
-					const hidden = !expanded && index >= rowCount;
+					const hidden = collapsed && index >= rowCount;
 					return (
 						<Link
 							passHref

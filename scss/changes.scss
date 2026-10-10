@@ -2164,8 +2164,19 @@
 .top {
 	background: $background;
 }
-footer {
+footer.site-footer {
 	background: $stone;
+	color: $ink;
+}
+footer.site-footer a {
+	color: $ink;
+}
+footer.site-footer a:hover {
+	color: $coral;
+}
+footer.site-footer a:focus-visible {
+	outline: 2px solid $coral;
+	outline-offset: 3px;
 }
 .panel {
 	background: $paper;
@@ -2306,6 +2317,7 @@ input[type='radio'] {
 		display: block;
 	}
 	.site-header .guest-account-menu > summary {
+		box-sizing: border-box;
 		min-height: 44px;
 		padding: 10px 12px;
 		gap: 6px;
@@ -2317,6 +2329,7 @@ input[type='radio'] {
 		display: none;
 	}
 	.site-header .user-menu > div {
+		box-sizing: border-box;
 		top: calc(100% + 8px);
 		width: min(260px, calc(100vw - 32px));
 		min-width: 0;
@@ -2328,6 +2341,7 @@ input[type='radio'] {
 	}
 	.site-header .user-menu > div a,
 	.site-header .user-menu .signout-button {
+		box-sizing: border-box;
 		min-height: 44px;
 		padding: 10px 12px;
 		font-size: 14px;
@@ -2345,6 +2359,7 @@ input[type='radio'] {
 	}
 	.site-header .language-trigger {
 		width: 44px;
+		box-sizing: border-box;
 		min-height: 44px;
 		padding: 10px;
 	}
@@ -2360,6 +2375,7 @@ input[type='radio'] {
 		right: 0;
 	}
 	.site-header .language-menu button {
+		box-sizing: border-box;
 		min-height: 44px;
 	}
 }
