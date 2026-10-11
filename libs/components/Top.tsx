@@ -4,7 +4,7 @@ import { useReactiveVar } from '@apollo/client';
 import LanguageSelector from './LanguageSelector';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Bell, CaretDown, EnvelopeSimple, MagnifyingGlass, SignOut } from 'phosphor-react';
+import { Bell, EnvelopeSimple, MagnifyingGlass, SignOut } from 'phosphor-react';
 import { useEffect, useRef, useState } from 'react';
 import { userVar } from '../../apollo/store';
 import { clearSession } from '../auth';
@@ -204,16 +204,6 @@ export default function Top() {
 									</LinkButton>
 									<LinkButton href="/account/register">{translate('Sign up')}</LinkButton>
 								</div>
-								<details className="user-menu guest-account-menu" ref={accountMenu}>
-									<summary className="button" aria-label={translate('Account menu')}>
-										{translate('Account')}
-										<CaretDown size={14} aria-hidden="true" />
-									</summary>
-									<div>
-										<Link href="/account/sign-in">{translate('Sign in')}</Link>
-										<Link href="/account/register">{translate('Sign up')}</Link>
-									</div>
-								</details>
 							</>
 						)}
 					</div>

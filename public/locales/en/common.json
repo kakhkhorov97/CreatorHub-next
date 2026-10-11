@@ -944,5 +944,21 @@
 	"Fictional portfolio concept · AI-generated artwork": "Fictional portfolio concept · AI-generated artwork",
 	"Show all categories": "Show all categories",
 	"Show fewer categories": "Show fewer categories",
-	"CreatorHub creative workspace with design, illustration, and photography materials": "CreatorHub creative workspace with design, illustration, and photography materials"
+	"CreatorHub creative workspace with design, illustration, and photography materials": "CreatorHub creative workspace with design, illustration, and photography materials",
+	"For contact only. Continue signing in with {{provider}}.": "For contact only. Continue signing in with {{provider}}.",
+	"Loading Telegram sign-in…": "Loading Telegram sign-in…",
+	"Telegram sign-in could not load. Refresh the page and try again.": "Telegram sign-in could not load. Refresh the page and try again.",
+	"Telegram sign-in is not configured yet.": "Telegram sign-in is not configured yet.",
+	"Telegram sign-in was not completed. Please try again.": "Telegram sign-in was not completed. Please try again.",
+	"Signing in with Kakao": "Signing in with Kakao",
+	"Kakao sign-in expired. Please try again.": "Kakao sign-in expired. Please try again.",
+	"Kakao sign-in was not completed. Please try again.": "Kakao sign-in was not completed. Please try again.",
+	"Kakao sign-in could not be verified. Please try again.": "Kakao sign-in could not be verified. Please try again.",
+	"Kakao login is not configured": "Kakao login is not configured",
+	"KAKAO login is not configured": "Kakao login is not configured",
+	"TELEGRAM login is not configured": "Telegram login is not configured",
+	"Kakao signup expired. Continue with Kakao again.": "Kakao signup expired. Continue with Kakao again.",
+	"Telegram signup expired. Continue with Telegram again.": "Telegram signup expired. Continue with Telegram again.",
+	"Profile photo": "Profile photo",
+	"No profile photo": "No profile photo"
 }

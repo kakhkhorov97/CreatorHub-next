@@ -485,3 +485,6 @@ Sign-in and signup use a desktop split layout with the existing Copenhagen readi
 The custom CreatorHub studio artwork replaces the reading-room portfolio image on desktop sign-in and signup; no unrelated project caption remains. Subtle camera sketches, editorial page roughs, crop marks and paper fragments decorate only homepage search and auth backgrounds. Mobile reduces decoration and hides the photographic side panel; forms remain white and readable. The homepage category shortcuts show every category on desktop. On mobile at 700px and below, they start with one measured row and expose a localized Show all categories / Show fewer categories button. Hidden links are excluded from keyboard and accessibility navigation until expanded. Existing media, account behavior and admin permissions stay intact.
 
 Google’s provider-rendered button follows the form width when the viewport changes, while its official provider appearance and authentication flow remain unchanged.
+
+
+The sticky creative-category bar uses a forest-green background with ivory links, a darker bottom boundary and light keyboard focus outlines. On mobile, the signed-out header shows only Sign in; signup remains accessible through Create an account inside the sign-in page. Desktop keeps both authentication links.

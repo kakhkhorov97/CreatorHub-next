@@ -944,5 +944,21 @@
 	"Fictional portfolio concept · AI-generated artwork": "Xayoliy portfolio konsepti · AI yaratgan tasvir",
 	"Show all categories": "Barcha toifalarni koʻrsatish",
 	"Show fewer categories": "Kamroq toifalarni koʻrsatish",
-	"CreatorHub creative workspace with design, illustration, and photography materials": "Dizayn, illyustratsiya va fotografiya materiallari mavjud CreatorHub ijodiy ish joyi"
+	"CreatorHub creative workspace with design, illustration, and photography materials": "Dizayn, illyustratsiya va fotografiya materiallari mavjud CreatorHub ijodiy ish joyi",
+	"For contact only. Continue signing in with {{provider}}.": "Faqat aloqa uchun. {{provider}} orqali kirishda davom eting.",
+	"Loading Telegram sign-in…": "Telegram orqali kirish yuklanmoqda…",
+	"Telegram sign-in could not load. Refresh the page and try again.": "Telegram orqali kirish yuklanmadi. Sahifani yangilab qayta urinib ko‘ring.",
+	"Telegram sign-in is not configured yet.": "Telegram orqali kirish hali sozlanmagan.",
+	"Telegram sign-in was not completed. Please try again.": "Telegram orqali kirish tugallanmadi. Qayta urinib ko‘ring.",
+	"Signing in with Kakao": "Kakao orqali kirish",
+	"Kakao sign-in expired. Please try again.": "Kakao orqali kirish muddati tugadi. Qayta urinib ko‘ring.",
+	"Kakao sign-in was not completed. Please try again.": "Kakao orqali kirish tugallanmadi. Qayta urinib ko‘ring.",
+	"Kakao sign-in could not be verified. Please try again.": "Kakao orqali kirishni tasdiqlab bo‘lmadi. Qayta urinib ko‘ring.",
+	"Kakao login is not configured": "Kakao orqali kirish sozlanmagan.",
+	"KAKAO login is not configured": "Kakao orqali kirish sozlanmagan.",
+	"TELEGRAM login is not configured": "Telegram orqali kirish sozlanmagan.",
+	"Kakao signup expired. Continue with Kakao again.": "Kakao orqali ro‘yxatdan o‘tish muddati tugadi. Kakao orqali qayta boshlang.",
+	"Telegram signup expired. Continue with Telegram again.": "Telegram orqali ro‘yxatdan o‘tish muddati tugadi. Telegram orqali qayta boshlang.",
+	"Profile photo": "Profil rasmi",
+	"No profile photo": "Profil rasmi yo‘q"
 }

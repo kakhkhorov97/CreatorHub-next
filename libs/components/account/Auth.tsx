@@ -6,6 +6,7 @@ import { authenticationDestination, safeReturnTo, saveSession } from '../../auth
 import { useAction } from '../../hooks/useApi';
 import { AuthFieldErrors, authSubmissionErrorField, validateAuthForm } from '../../utils/authForm';
 import GoogleSignIn from './GoogleSignIn';
+import ProviderSignIn from './ProviderSignIn';
 import { Button, Field, Notice, Password, values } from '../common/UI';
 
 export type AuthMode = 'sign-in' | 'register' | 'forgot-password' | 'reset-password';
@@ -24,20 +25,25 @@ export function SocialButtons({
 	setup?: boolean;
 }) {
 	const { t: translate } = useSiteTranslation('common');
-
+	const [activeProvider, setActiveProvider] = useState<'GOOGLE' | 'OTHER'>('GOOGLE');
 	return (
 		<div className="social-sign-in">
 			{!setup && <p className="divider-label">{translate('Or continue with')}</p>}
-			<GoogleSignIn onSetupChange={onSetupChange} />
-			{!setup && (
-				<>
-					{['Kakao', 'Telegram'].map((provider) => (
-						<Button key={provider} secondary disabled>
-							{translate('Continue with')} {provider}
-						</Button>
-					))}
-					<small>{translate('Kakao and Telegram sign-in are not available yet.')}</small>
-				</>
+			{(!setup || activeProvider === 'GOOGLE') && (
+				<GoogleSignIn
+					onSetupChange={(value) => {
+						setActiveProvider('GOOGLE');
+						onSetupChange(value);
+					}}
+				/>
+			)}
+			{(!setup || activeProvider === 'OTHER') && (
+				<ProviderSignIn
+					onSetupChange={(value) => {
+						setActiveProvider('OTHER');
+						onSetupChange(value);
+					}}
+				/>
 			)}
 		</div>
 	);
@@ -47,7 +53,7 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 	const { t: translate } = useSiteTranslation('common');
 
 	const router = useRouter();
-	const [googleSetup, setGoogleSetup] = useState(false);
+	const [socialSetup, setSocialSetup] = useState(false);
 	const [countryCode, setCountryCode] = useState('+82');
 	const action = useAction();
 	const [message, setMessage] = useState('');
@@ -126,18 +132,18 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 		});
 	}
 	return (
-		<div className={auth ? 'auth-page has-pattern' : 'auth-page'}>
+		<div className={`auth-page${auth ? ' has-pattern' : ''}${auth ? ' is-compact-auth' : ''}`}>
 			<Link passHref className="back-link" href="/">
 				{translate('Back to explore')}
 			</Link>
 			<div className={auth ? 'auth-layout has-artwork' : 'auth-layout'}>
 				<section className="auth-panel panel">
-					<h1>{translate(googleSetup ? 'Complete your account' : titles[mode])}</h1>
+					<h1>{translate(socialSetup ? 'Complete your account' : titles[mode])}</h1>
 					{router.query.passwordChanged === '1' && (
 						<Notice notify>{translate('Password updated. Sign in again to continue.')}</Notice>
 					)}
 					<p className="muted auth-intro">
-						{googleSetup
+						{socialSetup
 							? translate('Add your contact details to finish creating your account.')
 							: auth
 							? registering
@@ -148,7 +154,7 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 							: translate('Choose a password you do not use for another account.')}
 					</p>
 
-					{!googleSetup && (
+					{!socialSetup && (
 						<form
 							noValidate
 							onInput={(event) => {
@@ -291,7 +297,7 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 							</Button>
 						</form>
 					)}
-					{auth && <SocialButtons onSetupChange={setGoogleSetup} setup={googleSetup} />}
+					{auth && <SocialButtons onSetupChange={setSocialSetup} setup={socialSetup} />}
 					<p className="auth-bottom">
 						{mode === 'sign-in' ? (
 							<>

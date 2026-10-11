@@ -876,13 +876,24 @@
 	color: #194332;
 }
 .site-header .header-categories {
-	background: #f7f5f0;
-	border-top: 1px solid $line;
+	background: $coral;
+	border-top: 1px solid $coral;
+	border-bottom-color: $coral-hover;
+	scrollbar-color: $background $coral;
 }
 .site-header .header-categories a {
 	font-size: 13px;
 	font-weight: 400;
-	color: #5d665f;
+	color: $background;
+}
+.site-header .header-categories a:hover {
+	color: $paper;
+	text-decoration: underline;
+	text-underline-offset: 4px;
+}
+.site-header .header-categories a:focus-visible {
+	outline: 2px solid $background;
+	outline-offset: 3px;
 }
 .site-header .user-menu .signout-button {
 	color: #b52b31;
@@ -2306,24 +2317,16 @@ input[type='radio'] {
 	align-items: center;
 	gap: 8px;
 }
-.guest-account-menu {
-	display: none;
-}
 @media (max-width: 700px) {
-	.site-header .desktop-auth-actions {
+	.site-header .desktop-auth-actions > .button:last-child {
 		display: none;
 	}
-	.site-header .guest-account-menu {
-		display: block;
-	}
-	.site-header .guest-account-menu > summary {
+	.site-header .desktop-auth-actions > .button:first-child {
 		box-sizing: border-box;
 		min-height: 44px;
 		padding: 10px 12px;
-		gap: 6px;
 		font-size: 13px;
 		white-space: nowrap;
-		list-style: none;
 	}
 	.site-header .user-menu summary::-webkit-details-marker {
 		display: none;
@@ -2377,5 +2380,118 @@ input[type='radio'] {
 	.site-header .language-menu button {
 		box-sizing: border-box;
 		min-height: 44px;
+	}
+}
+
+.provider-sign-in {
+	width: 100%;
+}
+.provider-sign-in > .social-provider-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	width: 100%;
+	max-width: 400px;
+	height: 40px;
+	min-height: 40px;
+	margin: 12px auto 0;
+	font-size: 14px;
+}
+.provider-sign-in > .field-error {
+	margin-top: 12px;
+}
+
+.provider-sign-in > .social-provider-button {
+	position: relative;
+	padding: 0 44px;
+}
+.social-provider-icon {
+	position: absolute;
+	left: 14px;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 20px;
+	height: 20px;
+	pointer-events: none;
+}
+.social-provider-icon--kakao {
+	color: #3c1e1e;
+}
+.social-provider-icon--telegram {
+	color: #229ed9;
+}
+
+// Account photos are shown as a preview.
+.admin-avatar-preview {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding-block: 8px;
+}
+.admin-avatar-preview p {
+	margin: 4px 0 0;
+	font-size: 14px;
+}
+
+@media (max-width: 700px) {
+	.site-header .desktop-auth-actions > .button:first-child {
+		background: $coral;
+		border-color: $coral;
+		color: $paper;
+	}
+	.site-header .desktop-auth-actions > .button:first-child:hover {
+		background: $coral-hover;
+		border-color: $coral-hover;
+	}
+}
+
+// Sign-in and signup share compact spacing without shrinking touch controls.
+.auth-page.is-compact-auth .auth-layout {
+	max-width: 1000px;
+	margin: 12px auto 32px;
+}
+.auth-page.is-compact-auth .auth-layout.has-artwork .auth-panel {
+	box-sizing: border-box;
+	padding: 28px;
+}
+.auth-page.is-compact-auth .auth-panel h1 {
+	font-size: 28px;
+	line-height: 1.2;
+}
+.auth-page.is-compact-auth .auth-intro {
+	margin-bottom: 18px;
+	font-size: 14px;
+	line-height: 1.5;
+}
+.auth-page.is-compact-auth .field {
+	gap: 6px;
+	margin-bottom: 14px;
+}
+.auth-page.is-compact-auth .auth-phone-group {
+	margin-bottom: 14px;
+}
+.auth-page.is-compact-auth .auth-phone-row .field {
+	margin-bottom: 0;
+}
+.auth-page.is-compact-auth .auth-panel form > .button {
+	margin-top: 10px;
+}
+.auth-page.is-compact-auth .social-sign-in {
+	gap: 8px;
+	margin-top: 16px;
+}
+.auth-page.is-compact-auth .provider-sign-in > .social-provider-button {
+	margin-top: 8px;
+}
+.auth-page.is-compact-auth .auth-bottom {
+	margin-top: 18px;
+}
+@media (max-width: 560px) {
+	.auth-page.is-compact-auth .auth-layout.has-artwork .auth-panel {
+		padding: 20px 18px;
+	}
+	.auth-page.is-compact-auth .auth-panel h1 {
+		font-size: 26px;
 	}
 }

@@ -204,6 +204,15 @@ export interface GoogleSignInResult {
   signupToken?: string | null;
   displayName?: string | null;
 }
+export interface SocialSignInResult {
+  session?: AuthPayload | null;
+  signupToken?: string | null;
+  displayName?: string | null;
+}
+export interface KakaoLoginChallenge {
+  authorizationUrl: string;
+  state: string;
+}
 export interface AuthIdentity {
   _id: string;
   createdAt: string;
@@ -530,6 +539,21 @@ export interface CompleteGoogleSignupInput {
   preferredLocale?: Locale | null;
   signupToken: string;
 }
+export interface KakaoLoginInput {
+  code: string;
+  state: string;
+}
+export interface TelegramLoginInput {
+  idToken: string;
+  nonce: string;
+}
+export interface CompleteSocialSignupInput {
+  phoneNumber: string;
+  displayName: string;
+  preferredLocale?: Locale | null;
+  signupToken: string;
+  provider: AuthProvider;
+}
 export interface SocialLoginInput {
   phoneNumber?: string | null;
   provider: AuthProvider;
@@ -729,6 +753,10 @@ export interface Operations {
   beginSocialLogin: { variables: { provider: AuthProvider }; result: string };
   loginGoogle: { variables: { input: GoogleLoginInput }; result: GoogleSignInResult };
   completeGoogleSignup: { variables: { input: CompleteGoogleSignupInput }; result: AuthPayload };
+  beginKakaoLogin: { variables: {  }; result: KakaoLoginChallenge };
+  loginKakao: { variables: { input: KakaoLoginInput }; result: SocialSignInResult };
+  loginTelegram: { variables: { input: TelegramLoginInput }; result: SocialSignInResult };
+  completeSocialSignup: { variables: { input: CompleteSocialSignupInput }; result: AuthPayload };
   loginSocial: { variables: { input: SocialLoginInput }; result: AuthPayload };
   login: { variables: { input: LoginInput }; result: AuthPayload };
   refreshSession: { variables: { refreshToken: string }; result: AuthPayload };

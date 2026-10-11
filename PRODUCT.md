@@ -42,3 +42,6 @@ The approved Enter shortcut applies to shared text inputs, password inputs and t
 
 
 The owner deferred shared browser-profile authentication on October 10 to retain independent accounts in separate tabs during testing. Revisit it before deployment and obtain approval; see docs/PRE_DEPLOYMENT_CHECKLIST.md.
+
+
+The approved October 10 social signup batch activates Telegram's official popup and Kakao's authorization-code callback alongside Google. New provider accounts complete name and private contact phone without setting a password; returning users sign in directly. Provider Allowed URLs and real-account acceptance tests remain external setup requirements. Social account linking and automatic email-based merging are outside this batch.

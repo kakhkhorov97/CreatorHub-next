@@ -21,6 +21,7 @@ import {
 	Notice,
 	optional,
 	QueryState,
+	Picture,
 	Status,
 	TextArea,
 	values,
@@ -81,7 +82,6 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 						displayName: f.displayName,
 						role: f.role as 'USER' | 'CREATOR' | 'ADMIN',
 						preferredLocale: f.preferredLocale as 'en' | 'ko',
-						avatarUrl: f.avatarUrl !== u?.avatarUrl ? optional(f.avatarUrl) : undefined,
 					},
 				});
 			if (kind === 'CREATORS')
@@ -258,13 +258,13 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 										maxLength={60}
 										defaultValue={u?.displayName}
 									/>
-									<Field
-										label={translate('Avatar URL')}
-										name="avatarUrl"
-										maxLength={2048}
-										defaultValue={u?.avatarUrl || ''}
-										hint={translate("A replacement must use this account's media folder.")}
-									/>
+									<div className="admin-avatar-preview">
+										<Picture avatar src={u?.avatarUrl} alt={translate('Profile photo')} />
+										<div>
+											<strong>{translate('Profile photo')}</strong>
+											{!u?.avatarUrl && <p className="muted">{translate('No profile photo')}</p>}
+										</div>
+									</div>
 									<div className="form-grid">
 										<Field label={translate('Role')}>
 											<select name="role" defaultValue={u?.role}>

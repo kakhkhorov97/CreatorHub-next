@@ -287,6 +287,17 @@ type GoogleSignInResult {
   displayName: String
 }
 
+type SocialSignInResult {
+  session: AuthPayload
+  signupToken: String
+  displayName: String
+}
+
+type KakaoLoginChallenge {
+  authorizationUrl: String!
+  state: String!
+}
+
 type AuthIdentity {
   _id: ID!
   createdAt: DateTime!
@@ -621,6 +632,10 @@ type Mutation {
   beginSocialLogin(provider: AuthProvider!): String!
   loginGoogle(input: GoogleLoginInput!): GoogleSignInResult!
   completeGoogleSignup(input: CompleteGoogleSignupInput!): AuthPayload!
+  beginKakaoLogin: KakaoLoginChallenge!
+  loginKakao(input: KakaoLoginInput!): SocialSignInResult!
+  loginTelegram(input: TelegramLoginInput!): SocialSignInResult!
+  completeSocialSignup(input: CompleteSocialSignupInput!): AuthPayload!
   loginSocial(input: SocialLoginInput!): AuthPayload!
   login(input: LoginInput!): AuthPayload!
   refreshSession(refreshToken: String!): AuthPayload!
@@ -823,6 +838,24 @@ input CompleteGoogleSignupInput {
   displayName: String!
   preferredLocale: Locale
   signupToken: String!
+}
+
+input KakaoLoginInput {
+  code: String!
+  state: String!
+}
+
+input TelegramLoginInput {
+  idToken: String!
+  nonce: String!
+}
+
+input CompleteSocialSignupInput {
+  phoneNumber: String!
+  displayName: String!
+  preferredLocale: Locale
+  signupToken: String!
+  provider: AuthProvider!
 }
 
 input SocialLoginInput {

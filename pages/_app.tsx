@@ -1,3 +1,4 @@
+import PostHogPageViews from '../libs/analytics/PostHogPageViews';
 import { MessagingProvider } from '../libs/messaging/MessagingProvider';
 import { ApolloProvider } from '@apollo/client';
 import { CssBaseline, ThemeProvider } from '@mui/material';
@@ -19,6 +20,7 @@ function App({ Component, pageProps }: AppProps) {
 				<CssBaseline />
 				<MessagingProvider>
 					<SessionBootstrap />
+					<PostHogPageViews />
 					<Component {...pageProps} />
 					<Toaster richColors closeButton position="top-right" />
 					<Chatbot />

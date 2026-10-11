@@ -360,6 +360,30 @@
     "document": "mutation completeGoogleSignup($input: CompleteGoogleSignupInput!) { completeGoogleSignup(input: $input) { accessToken  refreshToken  expiresIn  user { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } } }"
   },
   {
+    "name": "beginKakaoLogin",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation beginKakaoLogin { beginKakaoLogin { authorizationUrl  state  } }"
+  },
+  {
+    "name": "loginKakao",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation loginKakao($input: KakaoLoginInput!) { loginKakao(input: $input) { session { accessToken  refreshToken  expiresIn  user { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } } signupToken  displayName  } }"
+  },
+  {
+    "name": "loginTelegram",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation loginTelegram($input: TelegramLoginInput!) { loginTelegram(input: $input) { session { accessToken  refreshToken  expiresIn  user { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } } signupToken  displayName  } }"
+  },
+  {
+    "name": "completeSocialSignup",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation completeSocialSignup($input: CompleteSocialSignupInput!) { completeSocialSignup(input: $input) { accessToken  refreshToken  expiresIn  user { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } } }"
+  },
+  {
     "name": "loginSocial",
     "kind": "mutation",
     "admin": false,

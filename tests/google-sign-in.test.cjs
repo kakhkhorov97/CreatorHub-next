@@ -47,6 +47,10 @@ function harness(result) {
 	const context = {
 		exports: {},
 		Error,
+		ResizeObserver: class {
+			observe() {}
+			disconnect() {}
+		},
 		process: { env: { NEXT_PUBLIC_GOOGLE_CLIENT_ID: 'fixture.apps.googleusercontent.com' } },
 		window: {
 			google: {
