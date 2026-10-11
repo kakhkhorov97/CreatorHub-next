@@ -23,6 +23,7 @@ export default function Top() {
 
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
+	const signingIn = router.pathname === '/account/sign-in';
 	const action = useAction();
 	const count = useApi('getUnreadNotificationCount', {}, !user, 30000);
 	const inbox = useApi('getUnreadInquiryCount', {}, !user);
@@ -199,9 +200,11 @@ export default function Top() {
 						) : (
 							<>
 								<div className="desktop-auth-actions">
-									<LinkButton secondary href="/account/sign-in">
-										{translate('Sign in')}
-									</LinkButton>
+									{!signingIn && (
+										<LinkButton secondary href="/account/sign-in">
+											{translate('Sign in')}
+										</LinkButton>
+									)}
 									<LinkButton href="/account/register">{translate('Sign up')}</LinkButton>
 								</div>
 							</>

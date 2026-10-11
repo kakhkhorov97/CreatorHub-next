@@ -2318,7 +2318,7 @@ input[type='radio'] {
 	gap: 8px;
 }
 @media (max-width: 700px) {
-	.site-header .desktop-auth-actions > .button:last-child {
+	.site-header .desktop-auth-actions > .button:last-child:not(:only-child) {
 		display: none;
 	}
 	.site-header .desktop-auth-actions > .button:first-child {
@@ -2486,6 +2486,16 @@ input[type='radio'] {
 }
 .auth-page.is-compact-auth .auth-bottom {
 	margin-top: 18px;
+}
+.auth-page.is-compact-auth .auth-bottom > .button {
+	display: flex;
+	box-sizing: border-box;
+	width: 100%;
+	min-height: 42px;
+	margin-top: 10px;
+	padding: 10px 20px;
+	font-size: 14px;
+	font-weight: 600;
 }
 @media (max-width: 560px) {
 	.auth-page.is-compact-auth .auth-layout.has-artwork .auth-panel {

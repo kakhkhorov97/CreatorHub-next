@@ -7,7 +7,7 @@ import { useAction } from '../../hooks/useApi';
 import { AuthFieldErrors, authSubmissionErrorField, validateAuthForm } from '../../utils/authForm';
 import GoogleSignIn from './GoogleSignIn';
 import ProviderSignIn from './ProviderSignIn';
-import { Button, Field, Notice, Password, values } from '../common/UI';
+import { Button, Field, LinkButton, Notice, Password, values } from '../common/UI';
 
 export type AuthMode = 'sign-in' | 'register' | 'forgot-password' | 'reset-password';
 const titles = {
@@ -301,10 +301,10 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 					<p className="auth-bottom">
 						{mode === 'sign-in' ? (
 							<>
-								{translate('Don’t have an account?')}{' '}
-								<Link passHref href={authHref('/account/register')}>
+								<span>{translate('Don’t have an account?')}</span>
+								<LinkButton secondary href={authHref('/account/register')}>
 									{translate('Create an account')}
-								</Link>
+								</LinkButton>
 							</>
 						) : (
 							<Link passHref href={authHref('/account/sign-in')}>
