@@ -9,7 +9,7 @@ The frontend adapts the Nestar-next structure with Next.js Pages Router, React, 
 Use Node.js 22 and npm. Start the backend on port 7001 with a MongoDB replica set before using the website.
 
 ```bash
-npm ci
+npm ci --legacy-peer-deps
 cp .env.example .env.local
 npm run dev
 ```
@@ -72,3 +72,15 @@ For integration and preview tools, set `CREATORHUB_BACKEND_PATH` to the backend 
 Deployment preparation is in progress. Dependency security upgrades and live social-provider acceptance checks remain pending. Production requires HTTPS, separate development and production databases, verified email delivery and persistent uploads. Configure public environment variables before building, then use `npm run start` to serve the build on port 7007.
 
 On a shared VPS, use separate CreatorHub directories and services, available assigned ports and a domain-specific reverse-proxy configuration. Do not replace another application's configuration or restart its services.
+
+The retained starter dependencies include older peer ranges. Use the install flag above with the committed npm lockfile.
+
+## Local reverse proxy
+
+When Nginx on the same server proxies this application, set the server-only `TRUST_PROXY=loopback`. Leave it unset when clients connect directly. Restrict application ports to local access and have the CreatorHub Nginx location overwrite `X-Forwarded-For` with `$remote_addr`. Do not enable unrestricted proxy trust or accept arbitrary client-supplied forwarding headers. Configure only CreatorHub's proxy locations on a shared server.
+
+## Shared browser login
+
+Tabs in one browser profile now share the signed-in account through localStorage. Signing in, switching accounts or signing out reloads other open tabs to clear cached private data and messaging sockets. Token rotation uses the browser Web Locks API, so simultaneous tab requests do not reuse a refresh token. Production requires HTTPS and a current browser with Web Locks support. Previously saved per-tab sessions are retired; sign in once after this update. Social callback state and return paths remain per-tab.
+
+Production service and proxy templates, backup commands and rollback instructions are in the backend repository's `deploy/` directory. They still require installation and verification on the VPS.

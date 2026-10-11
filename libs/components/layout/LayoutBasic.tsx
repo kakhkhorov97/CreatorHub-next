@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import type { ComponentType } from 'react';
 import { ReactNode, useEffect } from 'react';
 import { sessionReadyVar, userVar } from '../../../apollo/store';
-import { clearSession, finishSessionCheck, isAuthenticationError, readSession } from '../../auth';
+import { clearSession, finishSessionCheck, isAuthenticationError, readSession, watchSharedSession } from '../../auth';
 import { documents } from '../../hooks/useApi';
 import AdminLayout from '../admin/AdminLayout';
 import { LinkButton, Notice } from '../common/UI';
@@ -17,12 +17,13 @@ export function SessionBootstrap() {
 	const client = useApolloClient();
 	useEffect(() => {
 		let active = true;
+		const stopWatching = watchSharedSession();
 		(async () => {
 			const session = readSession();
 			if (session) {
 				try {
 					const result = await client.query({ query: documents.me, fetchPolicy: 'network-only' });
-					if (active && readSession()) userVar(result.data.me);
+					if (active && readSession()?.sessionId === session.sessionId) userVar(result.data.me);
 				} catch (error) {
 					// Temporary startup failures must not erase a recoverable session.
 					if (active && readSession()?.refreshToken === session.refreshToken && isAuthenticationError(error))
@@ -33,6 +34,7 @@ export function SessionBootstrap() {
 		})();
 		return () => {
 			active = false;
+			stopWatching();
 		};
 	}, [client]);
 	return null;

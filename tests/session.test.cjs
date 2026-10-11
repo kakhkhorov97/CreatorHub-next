@@ -3,23 +3,36 @@ const assert = require('node:assert/strict');
 const fs = require('fs');
 const vm = require('vm');
 const ts = require('typescript');
-function harness() {
-	const memory = new Map();
+function harness(memory = new Map(), requestLock) {
 	const store = { userVar: () => {}, sessionReadyVar: () => {} };
 	const ctx = {
 		exports: {},
 		require: () => store,
 		process: { env: {} },
+		AbortSignal,
 		Date,
 		JSON,
 		Promise,
 		Error,
-		window: {},
-		sessionStorage: {
+		window: {
+			addEventListener: (name, handler) => {
+				ctx.listener = handler;
+			},
+			removeEventListener: () => {},
+			location: {
+				reload: () => {
+					ctx.reloaded = true;
+				},
+			},
+		},
+		crypto: require('node:crypto'),
+		navigator: { locks: { request: requestLock || ((_name, callback) => callback()) } },
+		localStorage: {
 			getItem: (k) => memory.get(k) || null,
 			setItem: (k, v) => memory.set(k, v),
 			removeItem: (k) => memory.delete(k),
 		},
+		sessionStorage: { removeItem: () => {} },
 		fetch: async () => {
 			throw Error('Unexpected request');
 		},
@@ -187,4 +200,95 @@ test('Nest authentication errors are distinguished from transient GraphQL errors
 		api.isAuthenticationError({ graphQLErrors: [{ extensions: { originalError: { statusCode: 429 } } }] }),
 		false,
 	);
+});
+
+test('new tabs share one account and observe logout immediately', () => {
+	const shared = new Map();
+	const first = harness(shared);
+	const second = harness(shared);
+	first.api.saveSession(payload);
+	assert.equal(second.api.readSession().refreshToken, payload.refreshToken);
+	second.api.clearSession();
+	assert.equal(first.api.readSession(), null);
+});
+
+test('two tabs refresh once under a shared browser lock', async () => {
+	const shared = new Map();
+	let tail = Promise.resolve();
+	const lock = (_name, callback) => {
+		const next = tail.then(callback);
+		tail = next.catch(() => {});
+		return next;
+	};
+	const first = harness(shared, lock);
+	const second = harness(shared, lock);
+	let calls = 0;
+	const fetch = async () => {
+		calls++;
+		await new Promise((resolve) => setTimeout(resolve, 5));
+		return {
+			ok: true,
+			json: async () => ({
+				data: { refreshSession: { ...payload, accessToken: 'rotated', refreshToken: 'new-refresh' } },
+			}),
+		};
+	};
+	first.ctx.fetch = fetch;
+	second.ctx.fetch = fetch;
+	first.api.saveSession({ ...payload, expiresIn: 0 });
+	const identity = first.api.readSession().sessionId;
+	assert.deepEqual(await Promise.all([first.api.accessToken(), second.api.accessToken()]), ['rotated', 'rotated']);
+	assert.equal(calls, 1);
+	assert.equal(second.api.readSession().sessionId, identity);
+});
+
+test('cross-tab account changes reload private state, refresh rotations do not', () => {
+	const shared = new Map();
+	const first = harness(shared);
+	const second = harness(shared);
+	first.api.saveSession(payload);
+	const previous = shared.get('creatorhub.session');
+	second.api.watchSharedSession();
+	const rotated = JSON.parse(previous);
+	rotated.refreshToken = 'rotated';
+	shared.set('creatorhub.session', JSON.stringify(rotated));
+	second.ctx.listener({ key: 'creatorhub.session', storageArea: second.ctx.localStorage, oldValue: previous });
+	assert.equal(second.ctx.reloaded, undefined);
+	first.api.saveSession({ ...payload, refreshToken: 'another-account' });
+	second.ctx.listener({ key: 'creatorhub.session', storageArea: second.ctx.localStorage, oldValue: previous });
+	assert.equal(second.ctx.reloaded, true);
+});
+
+test('a delayed response cannot clear a newer shared login', () => {
+	const { api } = harness();
+	api.saveSession(payload);
+	const old = api.readSession().sessionId;
+	api.saveSession({ ...payload, refreshToken: 'another-account' });
+	api.clearSession(old);
+	assert.equal(api.readSession().refreshToken, 'another-account');
+});
+
+test('logout in another tab prevents an in-flight refresh from restoring it', async () => {
+	const shared = new Map();
+	const first = harness(shared);
+	const second = harness(shared);
+	let respond;
+	first.ctx.fetch = () =>
+		new Promise((resolve) => {
+			respond = resolve;
+		});
+	first.api.saveSession({ ...payload, expiresIn: 0 });
+	const pending = first.api.accessToken();
+	second.api.clearSession();
+	respond({ ok: true, json: async () => ({ data: { refreshSession: payload } }) });
+	assert.equal(await pending, null);
+	assert.equal(first.api.readSession(), null);
+});
+
+test('missing browser locks cannot send an unsafe refresh request', async () => {
+	const { api, ctx } = harness();
+	api.saveSession({ ...payload, expiresIn: 0 });
+	ctx.navigator = {};
+	await assert.rejects(api.accessToken(), /Secure session refresh is unavailable/);
+	assert.equal(api.readSession().refreshToken, payload.refreshToken);
 });

@@ -1,3 +1,4 @@
+import { clientIp } from '../../libs/server/client-ip.cjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { answer, checkBody, takeQuota } from '../../libs/server/chat.cjs';
 
@@ -20,7 +21,7 @@ export default async function chat(request: NextApiRequest, response: NextApiRes
 	}
 	if (!checkBody(request.body))
 		return response.status(400).json({ error: 'Write a message of up to 1,500 characters.' });
-	if (!takeQuota(request.socket.remoteAddress || 'unknown')) {
+	if (!takeQuota(clientIp(request))) {
 		response.setHeader('Retry-After', '60');
 		return response.status(429).json({ error: 'The assistant is busy. Please try again later.' });
 	}

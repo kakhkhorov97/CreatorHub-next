@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 import { Bell, EnvelopeSimple, MagnifyingGlass, SignOut } from 'phosphor-react';
 import { useEffect, useRef, useState } from 'react';
 import { userVar } from '../../apollo/store';
-import { clearSession } from '../auth';
+import { clearSession, readSession } from '../auth';
 import { useAction, useApi } from '../hooks/useApi';
 import { Button, LinkButton, Notice, Picture } from './common/UI';
 const navigation = [
@@ -184,8 +184,9 @@ export default function Top() {
 											disabled={action.busy}
 											onClick={() =>
 												action.run(async () => {
+													const sessionId = readSession()?.sessionId;
 													await action.mutate('logout');
-													clearSession();
+													clearSession(sessionId);
 													await action.client.clearStore();
 													await router.push('/');
 												})

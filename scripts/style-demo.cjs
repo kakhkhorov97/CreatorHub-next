@@ -1,8 +1,16 @@
 const fs = require('fs');
 const { MongoClient } = require('./backend-path.cjs').backendRequire('mongodb');
 const root = require('path').resolve(__dirname, '..');
+const uri = JSON.parse(fs.readFileSync(root + '/.preview-db.json')).uri;
+const address = new URL(uri);
+if (
+	address.protocol !== 'mongodb:' ||
+	address.hostname !== '127.0.0.1' ||
+	address.pathname !== '/creatorhub_frontend_test'
+)
+	throw new Error('Only the local disposable preview database is permitted');
 (async () => {
-	const c = await MongoClient.connect(JSON.parse(fs.readFileSync(root + '/.preview-db.json')).uri);
+	const c = await MongoClient.connect(uri);
 	const db = c.db('creatorhub_frontend_test');
 	const samples = [
 		[

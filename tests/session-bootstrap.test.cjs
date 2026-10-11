@@ -28,6 +28,7 @@ for (const invalid of [false, true]) {
 				if (name === '../../auth')
 					return {
 						readSession: () => session,
+						watchSharedSession: () => () => {},
 						clearSession: () => {
 							cleared = true;
 						},

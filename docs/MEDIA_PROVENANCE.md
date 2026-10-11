@@ -12,7 +12,7 @@ The backend stores and serves the demo artwork in `public/demo-media/`. Its buil
 
 ## Introduction video
 
-The project owner supplied the introduction video included at `public/videos/creatorhub-introduction.mp4`. The poster is a frame extracted from that video. No external source or distribution license was supplied with it. Confirm publication rights before publishing the repository and website.
+The project owner reports creating the introduction video at `public/videos/creatorhub-introduction.mp4` using AI. The poster is a frame extracted from that video. The generation provider and its distribution terms have not been recorded.
 
 ## User uploads
 

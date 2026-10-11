@@ -2,7 +2,7 @@ import { ApolloClient, ApolloLink, InMemoryCache, Observable } from '@apollo/cli
 import { createUploadLink } from 'apollo-upload-client';
 import { onError } from '@apollo/client/link/error';
 import { useMemo } from 'react';
-import { accessToken, clearSession, endpoint } from '../libs/auth';
+import { accessToken, clearSession, endpoint, readSession } from '../libs/auth';
 
 function createClient() {
 	const auth = new ApolloLink(
@@ -13,7 +13,10 @@ function createClient() {
 				accessToken()
 					.then((token) => {
 						if (cancelled) return;
-						operation.setContext({ headers: token ? { Authorization: `Bearer ${token}` } : {} });
+						operation.setContext({
+							creatorhubSessionId: readSession()?.sessionId,
+							headers: token ? { Authorization: `Bearer ${token}` } : {},
+						});
 						subscription = forward(operation).subscribe(observer);
 					})
 					.catch((error) => observer.error(error));
@@ -23,8 +26,11 @@ function createClient() {
 				};
 			}),
 	);
-	const errors = onError(({ graphQLErrors }) => {
-		if (graphQLErrors?.some((error) => error.extensions?.code === 'UNAUTHENTICATED')) clearSession();
+	const errors = onError(({ graphQLErrors, operation }) => {
+		if (graphQLErrors?.some((error) => error.extensions?.code === 'UNAUTHENTICATED')) {
+			const sessionId = operation.getContext().creatorhubSessionId;
+			if (sessionId) clearSession(sessionId);
+		}
 	});
 	return new ApolloClient({
 		ssrMode: typeof window === 'undefined',

@@ -90,7 +90,7 @@ export function MessagingProvider({ children }: { children: ReactNode }) {
 			if (error.data?.code === 'UNAUTHENTICATED') clearSession();
 			else setState('reconnecting');
 		});
-		socket.on('session:invalid', clearSession);
+		socket.on('session:invalid', () => clearSession());
 		socket.on('session:expired', () => {
 			expiryReconnect = setTimeout(() => {
 				if (active) socket.connect();
