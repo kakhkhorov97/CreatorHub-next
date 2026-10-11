@@ -31,3 +31,32 @@ coverage/
 /yarn.lock
 
 /.local/
+
+# Private runtime settings, including backend.env and frontend.env
+*.env
+*.env.*
+!*.env.example
+
+# Local logs and caches
+*.log
+/logs/
+.cache/
+.eslintcache
+
+# Private credentials and database/upload backups
+/secrets/
+*.key
+*.p12
+*.pfx
+/backups/
+/dump/
+/dumps/
+/shared/
+/deploy/shared/
+/deploy/backups/
+*.archive.gz
+uploads.tar.gz
+
+# Next.js static export and macOS resource files
+/out/
+**/._*

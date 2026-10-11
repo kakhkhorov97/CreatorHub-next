@@ -1,3 +1,4 @@
+import { socialPageProps, SocialPageProps } from '../../libs/server/socialMetadata';
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { Rating } from '../../libs/components/inquiry/ServiceFeedback';
 import { useReactiveVar } from '@apollo/client';
@@ -23,7 +24,7 @@ import { useAction, useApi } from '../../libs/hooks/useApi';
 import { useMembership } from '../../libs/hooks/useMembership';
 import { usePaged } from '../../libs/hooks/usePaged';
 
-function CreatorDetail() {
+function CreatorDetail({ seo }: SocialPageProps) {
 	const { t: translate } = useSiteTranslation('common');
 
 	const router = useRouter();
@@ -40,7 +41,7 @@ function CreatorDetail() {
 	const followed = membership.active;
 	const setFollowed = membership.setActive;
 	return (
-		<Layout title={creator?.identity.displayName || translate('Creator profile')}>
+		<Layout seo={seo} title={creator?.identity.displayName || translate('Creator profile')}>
 			<QueryState loading={profile.loading} error={profile.error} retry={() => profile.refetch()} />
 			{creator && (
 				<>
@@ -198,3 +199,5 @@ function CreatorDetail() {
 }
 
 export default CreatorDetail;
+
+export const getServerSideProps = socialPageProps('creator');

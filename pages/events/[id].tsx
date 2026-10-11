@@ -1,3 +1,4 @@
+import { socialPageProps, SocialPageProps } from '../../libs/server/socialMetadata';
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -8,7 +9,7 @@ import Layout from '../../libs/components/layout/LayoutBasic';
 import { useApi } from '../../libs/hooks/useApi';
 import { koreaCopy } from '../../libs/utils/korea';
 
-export default function EventDetail() {
+export default function EventDetail({ seo }: SocialPageProps) {
 	const { t: translate } = useSiteTranslation('common');
 
 	const router = useRouter();
@@ -17,7 +18,7 @@ export default function EventDetail() {
 	const event = result.value;
 	const url = safeUrl(event?.eventUrl);
 	return (
-		<Layout title={event?.title || translate('Event')}>
+		<Layout seo={seo} title={event?.title || translate('Event')}>
 			<div className="info-page">
 				<Link passHref href="/events">
 					{translate('Back to events')}
@@ -55,3 +56,5 @@ export default function EventDetail() {
 		</Layout>
 	);
 }
+
+export const getServerSideProps = socialPageProps('event');

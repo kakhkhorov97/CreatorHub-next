@@ -1,3 +1,4 @@
+import { socialPageProps, SocialPageProps } from '../../libs/server/socialMetadata';
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { useReactiveVar } from '@apollo/client';
 import Link from 'next/link';
@@ -12,7 +13,7 @@ import { useAction, useApi } from '../../libs/hooks/useApi';
 import { useCreatorDirectory } from '../../libs/hooks/useCreatorDirectory';
 import { useMembership } from '../../libs/hooks/useMembership';
 
-function ProjectDetail() {
+function ProjectDetail({ seo }: SocialPageProps) {
 	const { t: translate } = useSiteTranslation('common');
 
 	const router = useRouter();
@@ -36,7 +37,7 @@ function ProjectDetail() {
 		});
 	}
 	return (
-		<Layout title={p?.title || translate('Project')}>
+		<Layout seo={seo} title={p?.title || translate('Project')}>
 			<Link passHref href="/" className="back-link">
 				{translate('Back to explore')}
 			</Link>
@@ -110,3 +111,5 @@ function ProjectDetail() {
 }
 
 export default ProjectDetail;
+
+export const getServerSideProps = socialPageProps('project');

@@ -1,3 +1,4 @@
+import { socialPageProps, SocialPageProps } from '../../libs/server/socialMetadata';
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -6,7 +7,7 @@ import Layout from '../../libs/components/layout/LayoutBasic';
 import { useApi } from '../../libs/hooks/useApi';
 import { useCreatorDirectory } from '../../libs/hooks/useCreatorDirectory';
 
-function ServiceDetail() {
+function ServiceDetail({ seo }: SocialPageProps) {
 	const { t: translate } = useSiteTranslation('common');
 
 	const router = useRouter();
@@ -16,7 +17,7 @@ function ServiceDetail() {
 	const creators = useCreatorDirectory(s ? [s.creatorId] : []);
 	const creator = s && creators[s.creatorId];
 	return (
-		<Layout title={s?.title || translate('Service')}>
+		<Layout seo={seo} title={s?.title || translate('Service')}>
 			<Link passHref href="/services" className="back-link">
 				{translate('Back to services')}
 			</Link>
@@ -61,3 +62,5 @@ function ServiceDetail() {
 }
 
 export default ServiceDetail;
+
+export const getServerSideProps = socialPageProps('service');

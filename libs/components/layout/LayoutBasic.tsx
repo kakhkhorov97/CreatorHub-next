@@ -1,6 +1,7 @@
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { useApolloClient, useReactiveVar } from '@apollo/client';
-import Head from 'next/head';
+import Seo from '../common/Seo';
+import type { PageMetadata } from '../../seo/metadata';
 import { useRouter } from 'next/router';
 import type { ComponentType } from 'react';
 import { ReactNode, useEffect } from 'react';
@@ -44,10 +45,12 @@ export default function Layout({
 	children,
 	title = 'CreatorHub',
 	area,
+	seo,
 }: {
 	children: ReactNode;
 	title?: string;
 	area?: 'workspace' | 'account' | 'admin';
+	seo?: PageMetadata;
 }) {
 	const { t: translate } = useSiteTranslation('common');
 
@@ -55,15 +58,13 @@ export default function Layout({
 
 	return (
 		<>
-			<Head>
-				<title>{title === 'CreatorHub' ? title : `${translate(title)} | CreatorHub`}</title>
-				<meta
-					name="description"
-					content={translate(
-						'Explore creative work, discover creators and services, and start a private project inquiry.',
-					)}
-				/>
-			</Head>
+			<Seo
+				title={translate(title)}
+				description={translate(
+					'Explore creative work, discover creators and services, and start a private project inquiry.',
+				)}
+				{...seo}
+			/>
 			<a href="#main" className="skip">
 				{translate('Skip to content')}
 			</a>
