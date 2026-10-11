@@ -1,6 +1,6 @@
 const fs = require('node:fs');
 const assert = require('node:assert/strict');
-const { MongoClient, ObjectId } = require('/Users/kakhkhorov/Desktop/creatorhub-backend-starter/node_modules/mongodb');
+const { MongoClient, ObjectId } = require('./backend-path.cjs').backendRequire('mongodb');
 const docs = JSON.parse(fs.readFileSync('docs/operations.json'));
 const uri = JSON.parse(fs.readFileSync('.preview-db.json')).uri;
 const addr = new URL(uri);

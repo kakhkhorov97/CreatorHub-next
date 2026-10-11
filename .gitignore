@@ -7,3 +7,27 @@ node_modules/
 coverage/
 
 .preview-db.json
+
+/.impeccable/
+
+/AGENTS.md
+
+/CREATORHUB_IMPLEMENTATION_PLAN.md
+
+/DESIGN.md
+
+/PRODUCT.md
+
+/docs/*
+
+!/docs/schema.graphql
+
+!/docs/operations.json
+
+!/docs/portrait-assets.json
+
+!/docs/MEDIA_PROVENANCE.md
+
+/yarn.lock
+
+/.local/

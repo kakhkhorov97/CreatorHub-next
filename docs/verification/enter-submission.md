@@ -1,5 +1,0 @@
-# Enter submission — 10 October 2026
-
-Shared Field, Password and TextArea components submit their enclosing form on Enter. Shift+Enter preserves newline behavior. Existing custom keyboard handlers run first; the shared handler respects preventDefault, composition, legacy keyCode 229, repeated keys and the first submit button's disabled state. requestSubmit uses the existing button and browser validation. Controls outside a form keep native behavior. Comments also block busy and whitespace-only submissions. Textarea shortcut hints are localized and linked through aria-describedby, while existing message hints are preserved.
-
-Verification: 32 frontend tests, typecheck, lint and Prettier passed. Keyboard regressions cover Enter, Shift+Enter, composition, repeats, unavailable sending, disabled buttons, controls outside forms and submitter selection. Browser verification of the shared textarea on AI finder confirmed Shift+Enter produces a newline and Enter submits and displays results. No comments, inquiries or other user content were posted during browser verification.

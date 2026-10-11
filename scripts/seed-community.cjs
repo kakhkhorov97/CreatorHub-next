@@ -3,11 +3,7 @@ const { approveDemoSubmission } = require('./approve-demo.cjs');
 const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
-const {
-	MongoClient,
-	ObjectId,
-	BSON,
-} = require('/Users/kakhkhorov/Desktop/creatorhub-backend-starter/node_modules/mongodb');
+const { MongoClient, ObjectId, BSON } = require('./backend-path.cjs').backendRequire('mongodb');
 const root = path.resolve(__dirname, '..');
 const uri = JSON.parse(fs.readFileSync(path.join(root, '.preview-db.json'))).uri;
 const address = new URL(uri);
@@ -92,7 +88,9 @@ const eventInputs = [
 	const db = client.db();
 	try {
 		if (process.env.RESTORE_PREVIEW_BACKUP === '1') {
-			const data = BSON.EJSON.parse(fs.readFileSync('/private/tmp/creatorhub-preview-backup.ejson', 'utf8'));
+			const data = BSON.EJSON.parse(
+				fs.readFileSync(process.env.PREVIEW_BACKUP_PATH || path.join(root, '.local/preview-backup.ejson'), 'utf8'),
+			);
 			for (const [name, rows] of Object.entries(data)) {
 				await db.collection(name).deleteMany({});
 				if (rows.length) await db.collection(name).insertMany(rows);

@@ -82,7 +82,10 @@ test('logout during a refresh cannot restore authentication', async () => {
 });
 test('invalid refresh clears the session', async () => {
 	const { api, ctx } = harness();
-	ctx.fetch = async () => ({ ok: true, json: async () => ({ errors: [{ message: 'Invalid session' }] }) });
+	ctx.fetch = async () => ({
+		ok: true,
+		json: async () => ({ errors: [{ message: 'Invalid session', extensions: { code: 'UNAUTHENTICATED' } }] }),
+	});
 	api.saveSession({ ...payload, expiresIn: 0 });
 	await assert.rejects(api.accessToken(), /session expired/);
 	assert.equal(api.readSession(), null);
@@ -102,4 +105,86 @@ test('registration defaults home and authentication resumes the requested activi
 	assert.equal(api.authenticationDestination(undefined, undefined, 'USER'), '/');
 	assert.equal(api.authenticationDestination(undefined, undefined, 'ADMIN'), '/_admin');
 	assert.equal(api.authenticationDestination('//evil.test', undefined, 'USER'), '/');
+});
+
+for (const status of [429, 500, 502, 503, 504]) {
+	test(`HTTP ${status} preserves the saved session and allows a later refresh`, async () => {
+		const { api, ctx, memory } = harness();
+		api.saveSession({ ...payload, expiresIn: 0 });
+		const original = memory.get('creatorhub.session');
+		ctx.fetch = async () => ({
+			ok: false,
+			status,
+			json: async () => {
+				throw new Error('HTML error page');
+			},
+		});
+		await assert.rejects(api.accessToken(), /try again/);
+		assert.equal(memory.get('creatorhub.session'), original);
+		ctx.fetch = async () => ({ ok: true, status: 200, json: async () => ({ data: { refreshSession: payload } }) });
+		assert.equal(await api.accessToken(), payload.accessToken);
+	});
+}
+
+for (const failure of ['offline', 'invalid-json', 'graphql-server-error', 'missing-payload', 'null-response']) {
+	test(`${failure} does not clear the session`, async () => {
+		const { api, ctx, memory } = harness();
+		api.saveSession({ ...payload, expiresIn: 0 });
+		const original = memory.get('creatorhub.session');
+		ctx.fetch = async () => {
+			if (failure === 'offline') throw new Error('Network unavailable');
+			return {
+				ok: true,
+				status: 200,
+				json: async () => {
+					if (failure === 'invalid-json') throw new SyntaxError('Bad JSON');
+					if (failure === 'null-response') return null;
+					if (failure === 'graphql-server-error')
+						return { errors: [{ extensions: { code: 'INTERNAL_SERVER_ERROR' } }] };
+					return { data: { refreshSession: null } };
+				},
+			};
+		};
+		await assert.rejects(api.accessToken(), /Unable to refresh/);
+		assert.equal(memory.get('creatorhub.session'), original);
+	});
+}
+
+for (const status of [401, 403]) {
+	test(`HTTP ${status} clears an invalid session even when the response is not JSON`, async () => {
+		const { api, ctx, memory } = harness();
+		api.saveSession({ ...payload, expiresIn: 0 });
+		ctx.fetch = async () => ({ ok: false, status });
+		await assert.rejects(api.accessToken(), /session expired/);
+		assert.equal(api.readSession(), null);
+		assert.equal(memory.has('creatorhub.session'), false);
+	});
+}
+
+test('an old failed refresh cannot clear a newly signed-in account', async () => {
+	const { api, ctx } = harness();
+	let resolve;
+	ctx.fetch = () =>
+		new Promise((done) => {
+			resolve = done;
+		});
+	api.saveSession({ ...payload, expiresIn: 0 });
+	const pending = api.accessToken();
+	api.saveSession({ ...payload, refreshToken: 'different-account-refresh' });
+	resolve({ ok: false, status: 401 });
+	await assert.rejects(pending, /session expired/);
+	assert.equal(api.readSession().refreshToken, 'different-account-refresh');
+});
+
+test('Nest authentication errors are distinguished from transient GraphQL errors', () => {
+	const { api } = harness();
+	assert.equal(
+		api.isAuthenticationError({ graphQLErrors: [{ extensions: { originalError: { statusCode: 401 } } }] }),
+		true,
+	);
+	assert.equal(api.isAuthenticationError({ graphQLErrors: [{ extensions: { code: 'FORBIDDEN' } }] }), true);
+	assert.equal(
+		api.isAuthenticationError({ graphQLErrors: [{ extensions: { originalError: { statusCode: 429 } } }] }),
+		false,
+	);
 });

@@ -3,10 +3,8 @@ const { approveDemoSubmission } = require('./approve-demo.cjs');
 const path = require('path');
 const fs = require('fs');
 const assert = require('node:assert/strict');
-const { createRequire } = require('module');
+const { backendPath: backend, backendRequire: req } = require('./backend-path.cjs');
 const { randomUUID } = require('crypto');
-const backend = process.env.CREATORHUB_BACKEND_PATH || '/Users/kakhkhorov/Desktop/creatorhub-backend-starter';
-const req = createRequire(path.join(backend, 'package.json'));
 process.env.TS_NODE_PROJECT = path.join(backend, 'tsconfig.json');
 req('ts-node').register({
 	transpileOnly: true,
@@ -42,7 +40,10 @@ async function op(name, variables = {}, token, expectError = false) {
 (async () => {
 	mongo = await MongoMemoryReplSet.create({
 		replSet: { count: 1, storageEngine: 'wiredTiger' },
-		binary: { systemBinary: path.join(backend, '.local/mongodb/mongod-arm64-darwin-7.0.24') },
+		binary: {
+			version: '7.0.24',
+			...(process.env.MONGOMS_SYSTEM_BINARY ? { systemBinary: process.env.MONGOMS_SYSTEM_BINARY } : {}),
+		},
 	});
 	process.env.NODE_ENV = 'test';
 	process.env.MONGO_DEV = mongo.getUri('creatorhub_frontend_test');
@@ -107,14 +108,12 @@ async function op(name, variables = {}, token, expectError = false) {
 	await op('getMyAuthIdentities', {}, ct);
 	await op('linkPhone', { input: { phoneNumber: '+821087654321', password } }, ct, true);
 	await op('linkEmail', { input: { email: 'phone@frontend.test', password } }, phone.accessToken);
-	const removable = await db
-		.model('AuthIdentity')
-		.create({
-			userId: creator.user._id,
-			provider: 'GOOGLE',
-			providerSubject: 'disposable-unlink',
-			verifiedAt: new Date(),
-		});
+	const removable = await db.model('AuthIdentity').create({
+		userId: creator.user._id,
+		provider: 'GOOGLE',
+		providerSubject: 'disposable-unlink',
+		verifiedAt: new Date(),
+	});
 	await op('unlinkAuthIdentity', { authIdentityId: String(removable._id) }, ct);
 	const category = await op('createCategory', { input: { slug: 'brand-design', name: 'Branding' } }, at);
 	await op('updateCategory', { id: category._id, input: { description: 'Brand identity and packaging' } }, at);

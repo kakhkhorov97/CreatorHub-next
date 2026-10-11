@@ -1,10 +1,9 @@
 const { approveDemoSubmission } = require('./approve-demo.cjs');
 const fs = require('fs'),
 	path = require('path'),
-	{ createRequire } = require('module'),
 	{ randomUUID } = require('crypto');
-const root = '/Users/kakhkhorov/Desktop/CreatorHUb-FrontEnd';
-const req = createRequire('/Users/kakhkhorov/Desktop/creatorhub-backend-starter/package.json');
+const root = path.resolve(__dirname, '..');
+const { backendRequire: req } = require('./backend-path.cjs');
 const { MongoClient, ObjectId } = req('mongodb');
 const uri = process.env.DEMO_MONGO_URI;
 if (!uri || !uri.includes('/creatorhub_frontend_test'))

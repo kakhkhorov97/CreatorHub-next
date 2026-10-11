@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { MongoClient } = require('/Users/kakhkhorov/Desktop/creatorhub-backend-starter/node_modules/mongodb');
+const { MongoClient } = require('./backend-path.cjs').backendRequire('mongodb');
 const root = require('path').resolve(__dirname, '..');
 (async () => {
 	const c = await MongoClient.connect(JSON.parse(fs.readFileSync(root + '/.preview-db.json')).uri);

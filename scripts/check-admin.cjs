@@ -1,7 +1,7 @@
 const fs = require('node:fs');
 const assert = require('node:assert/strict');
 const { randomUUID } = require('node:crypto');
-const { MongoClient, ObjectId } = require('/Users/kakhkhorov/Desktop/creatorhub-backend-starter/node_modules/mongodb');
+const { MongoClient, ObjectId } = require('./backend-path.cjs').backendRequire('mongodb');
 const uri = JSON.parse(fs.readFileSync('.preview-db.json')).uri;
 const address = new URL(uri);
 if (address.hostname !== '127.0.0.1' || address.pathname !== '/creatorhub_frontend_test')
