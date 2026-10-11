@@ -14,9 +14,11 @@ export default function ChangePasswordSettings() {
 			(identity) => !identity.revokedAt && identity.provider === 'EMAIL' && identity.verifiedAt,
 		) || [];
 
+	const googleAccount = identities.value?.some((identity) => !identity.revokedAt && identity.provider === 'GOOGLE');
+
 	return (
 		<section className="panel identity-panel password-settings">
-			<h2>{t('Change password')}</h2>
+			<h2>{t(methods.length ? 'Change password' : 'Password')}</h2>
 			<QueryState loading={identities.loading} error={identities.error} retry={identities.refetch} />
 			{!identities.loading &&
 				!identities.error &&
@@ -96,7 +98,9 @@ export default function ChangePasswordSettings() {
 					</form>
 				) : (
 					<p className="muted">
-						{t('No verified email password is linked. Social account passwords are managed by the provider.')}
+						{googleAccount
+							? t('You signed in with Google. Your password is managed through your Google Account.')
+							: t('No verified email password is linked. Social account passwords are managed by the provider.')}
 					</p>
 				))}
 		</section>

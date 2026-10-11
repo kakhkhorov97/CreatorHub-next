@@ -892,6 +892,7 @@
 	"For contact only. Sign in with your email.": "For contact only. Sign in with your email.",
 	"Link email": "Link email",
 	"No verified email password is linked. Social account passwords are managed by the provider.": "No verified email password is linked. Social account passwords are managed by the provider.",
+	"You signed in with Google. Your password is managed through your Google Account.": "You signed in with Google. Your password is managed through your Google Account.",
 	"Choose Sign up, enter your name, email and contact phone number, and confirm your password. Verify your email before protected actions. Sign in with email only; your phone number is contact information. Social sign-in is not available yet.": "Choose Sign up, enter your name, email and contact phone number, and confirm your password. Verify your email before protected actions. Sign in with email only; your phone number is contact information. Social sign-in is not available yet.",
 	"Enter to submit. Shift+Enter for a new line.": "Enter to submit. Shift+Enter for a new line.",
 	"Check your email": "Check your email",
@@ -960,5 +961,8 @@
 	"Kakao signup expired. Continue with Kakao again.": "Kakao signup expired. Continue with Kakao again.",
 	"Telegram signup expired. Continue with Telegram again.": "Telegram signup expired. Continue with Telegram again.",
 	"Profile photo": "Profile photo",
-	"No profile photo": "No profile photo"
+	"No profile photo": "No profile photo",
+	"Manage how you sign in to CreatorHub.": "Manage how you sign in to CreatorHub.",
+	"Connected": "Connected",
+	"This is your only usable sign-in method, so it can't be removed.": "This is your only usable sign-in method, so it can't be removed."
 }

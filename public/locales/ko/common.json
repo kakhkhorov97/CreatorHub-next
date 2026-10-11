@@ -892,6 +892,7 @@
 	"For contact only. Sign in with your email.": "연락용 전화번호입니다. 로그인에는 이메일을 사용하세요.",
 	"Link email": "이메일 연결",
 	"No verified email password is linked. Social account passwords are managed by the provider.": "인증된 이메일 비밀번호가 연결되어 있지 않습니다. 소셜 계정 비밀번호는 해당 서비스에서 관리합니다.",
+	"You signed in with Google. Your password is managed through your Google Account.": "Google로 로그인했습니다. 비밀번호는 Google 계정에서 관리됩니다.",
 	"Choose Sign up, enter your name, email and contact phone number, and confirm your password. Verify your email before protected actions. Sign in with email only; your phone number is contact information. Social sign-in is not available yet.": "회원가입에서 이름, 이메일, 연락처 전화번호를 입력하고 비밀번호를 확인하세요. 보호된 기능을 사용하기 전에 이메일을 인증하세요. 로그인에는 이메일만 사용하며 전화번호는 연락용입니다. 소셜 로그인은 아직 지원되지 않습니다.",
 	"Enter to submit. Shift+Enter for a new line.": "Enter로 제출하고 Shift+Enter로 줄을 바꿀 수 있습니다.",
 	"Check your email": "이메일을 확인하세요",
@@ -960,5 +961,8 @@
 	"Kakao signup expired. Continue with Kakao again.": "카카오 가입 시간이 만료되었습니다. 카카오로 다시 진행하세요.",
 	"Telegram signup expired. Continue with Telegram again.": "텔레그램 가입 시간이 만료되었습니다. 텔레그램으로 다시 진행하세요.",
 	"Profile photo": "프로필 사진",
-	"No profile photo": "프로필 사진 없음"
+	"No profile photo": "프로필 사진 없음",
+	"Manage how you sign in to CreatorHub.": "CreatorHub 로그인 방법을 관리하세요.",
+	"Connected": "연결됨",
+	"This is your only usable sign-in method, so it can't be removed.": "이 계정에서 사용할 수 있는 유일한 로그인 방법이므로 삭제할 수 없습니다."
 }

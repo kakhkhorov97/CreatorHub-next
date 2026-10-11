@@ -892,6 +892,7 @@
 	"For contact only. Sign in with your email.": "Faqat aloqa uchun. Elektron pochtangiz bilan kiring.",
 	"Link email": "Elektron pochtani ulash",
 	"No verified email password is linked. Social account passwords are managed by the provider.": "Tasdiqlangan elektron pochta paroli ulanmagan. Ijtimoiy tarmoq parollari tegishli xizmatda boshqariladi.",
+	"You signed in with Google. Your password is managed through your Google Account.": "Google orqali tizimga kirdingiz. Parolingiz Google hisobingiz orqali boshqariladi.",
 	"Choose Sign up, enter your name, email and contact phone number, and confirm your password. Verify your email before protected actions. Sign in with email only; your phone number is contact information. Social sign-in is not available yet.": "Ro‘yxatdan o‘tishda ismingiz, elektron pochta va aloqa telefon raqamingizni kiriting hamda parolni tasdiqlang. Himoyalangan amallar uchun elektron pochtani tasdiqlang. Faqat elektron pochta bilan kiring; telefon raqami aloqa uchun saqlanadi. Ijtimoiy tarmoq orqali kirish hozircha mavjud emas.",
 	"Enter to submit. Shift+Enter for a new line.": "Yuborish uchun Enter, yangi qator uchun Shift+Enter.",
 	"Check your email": "Elektron pochtangizni tekshiring",
@@ -960,5 +961,8 @@
 	"Kakao signup expired. Continue with Kakao again.": "Kakao orqali ro‘yxatdan o‘tish muddati tugadi. Kakao orqali qayta boshlang.",
 	"Telegram signup expired. Continue with Telegram again.": "Telegram orqali ro‘yxatdan o‘tish muddati tugadi. Telegram orqali qayta boshlang.",
 	"Profile photo": "Profil rasmi",
-	"No profile photo": "Profil rasmi yo‘q"
+	"No profile photo": "Profil rasmi yo‘q",
+	"Manage how you sign in to CreatorHub.": "CreatorHub hisobiga kirish usullarini boshqaring.",
+	"Connected": "Ulangan",
+	"This is your only usable sign-in method, so it can't be removed.": "Bu foydalanishingiz mumkin bo'lgan yagona kirish usuli, shuning uchun uni olib tashlab bo'lmaydi."
 }

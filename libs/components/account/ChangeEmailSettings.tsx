@@ -12,10 +12,13 @@ export default function ChangeEmailSettings() {
 	const [errors, setErrors] = useState<AuthFieldErrors>({});
 	const [sentTo, setSentTo] = useState('');
 	const email = identities.value?.find((i) => !i.revokedAt && i.provider === 'EMAIL');
+	const googleAccount = identities.value?.some((identity) => !identity.revokedAt && identity.provider === 'GOOGLE');
 	function clearErrors() {
 		setErrors({});
 		action.setError('');
 	}
+	if (!identities.loading && !identities.error && !email && googleAccount) return null;
+
 	return (
 		<section className="panel identity-panel email-settings">
 			<h2>{t('Account email')}</h2>

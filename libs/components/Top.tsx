@@ -5,7 +5,8 @@ import LanguageSelector from './LanguageSelector';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Bell, EnvelopeSimple, MagnifyingGlass, SignOut } from 'phosphor-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import useHeaderScroll from '../hooks/useHeaderScroll';
 import { userVar } from '../../apollo/store';
 import { clearSession, readSession } from '../auth';
 import { useAction, useApi } from '../hooks/useApi';
@@ -55,22 +56,15 @@ export default function Top() {
 	useEffect(() => {
 		if (accountMenu.current) accountMenu.current.open = false;
 	}, [router.asPath]);
-	const [compact, setCompact] = useState(false);
-	useEffect(() => {
-		let observer: IntersectionObserver | undefined;
-		const target = router.pathname === '/' ? document.getElementById('homepage-search') : null;
-		if (target) {
-			observer = new IntersectionObserver(
-				([entry]) => setCompact(!entry.isIntersecting && entry.boundingClientRect.bottom < 80),
-				{ rootMargin: '-80px 0px 0px 0px' },
-			);
-			observer.observe(target);
-		} else setCompact(router.pathname !== '/');
-		return () => observer?.disconnect();
-	}, [router.pathname]);
+	const { header, compact, hidden } = useHeaderScroll(router.pathname, router.asPath);
 	return (
 		<>
-			<div className={`site-header ${compact ? 'is-compact' : ''} ${showNavigation ? 'has-navigation' : 'is-simple'}`}>
+			<div
+				ref={header}
+				className={`site-header ${compact ? 'is-compact' : ''} ${hidden ? 'is-scroll-hidden' : ''} ${
+					showNavigation ? 'has-navigation' : 'is-simple'
+				}`}
+			>
 				<header
 					className="top"
 					onKeyDown={(event) => {
@@ -98,7 +92,7 @@ export default function Top() {
 							))}
 						</nav>
 					)}
-					{discovery && compact && (
+					{discovery && (
 						<form
 							className="header-search"
 							onSubmit={(event) => {
@@ -212,7 +206,7 @@ export default function Top() {
 						)}
 					</div>
 				</header>
-				{discovery && compact && (
+				{discovery && (
 					<nav className="header-categories" aria-label={translate('Creative categories')}>
 						{categories.value?.map((category) => (
 							<Link passHref key={category._id} href={`/projects?categoryId=${category._id}`}>

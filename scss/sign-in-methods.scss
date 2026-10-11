@@ -1,0 +1,163 @@
+.sign-in-methods {
+	max-width: 680px;
+
+	.page-heading {
+		margin-bottom: 8px;
+	}
+
+	.sign-in-methods-intro {
+		margin: 0 0 24px;
+		font-size: 15px;
+		line-height: 1.5;
+	}
+
+	.sign-in-methods-panel {
+		padding: 0;
+		border-color: var(--line);
+		background: var(--paper);
+	}
+
+	.sign-in-methods-panel > .identity-panel {
+		max-width: none;
+		margin: 0;
+		padding: 22px 24px;
+		border: 0;
+		border-radius: 0;
+		background: transparent;
+	}
+
+	.sign-in-methods-panel > .identity-panel + .identity-panel {
+		border-top: 1px solid var(--line);
+	}
+
+	.identity-panel h2 {
+		margin: 0 0 14px;
+		font-size: 18px;
+		line-height: 1.35;
+	}
+
+	.identity-panel > .muted,
+	.identity-panel > form > .muted {
+		max-width: 65ch;
+		margin: 0 0 18px;
+		font-size: 14px;
+		line-height: 1.55;
+	}
+
+	.identity-panel > .muted:last-child {
+		margin-bottom: 0;
+	}
+
+	.email-settings > .list-row {
+		padding: 0;
+		border: 0;
+	}
+
+	.email-settings > .list-row strong {
+		overflow-wrap: anywhere;
+	}
+
+	.email-settings > form {
+		margin-top: 20px;
+	}
+
+	.account-save-actions {
+		flex-wrap: wrap;
+		gap: 10px;
+		margin-top: 18px;
+	}
+
+	.sign-in-method-row {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 20px;
+	}
+
+	.sign-in-method-row + .sign-in-method-row {
+		margin-top: 16px;
+		padding-top: 16px;
+		border-top: 1px solid var(--line);
+	}
+
+	.sign-in-method-details {
+		min-width: 0;
+	}
+
+	.sign-in-method-name {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 10px;
+		min-height: 40px;
+	}
+
+	.sign-in-method-status {
+		padding: 3px 9px;
+		border-radius: 20px;
+		background: #e1e9dd;
+		color: #315b35;
+		font-size: 13px;
+		font-weight: 500;
+		line-height: 1.4;
+	}
+
+	.sign-in-method-removal-reason {
+		margin: 4px 0 0;
+		font-size: 13px;
+		line-height: 1.5;
+	}
+
+	.sign-in-method-remove {
+		flex-shrink: 0;
+		min-height: 40px;
+		padding: 9px 16px;
+	}
+
+	.sign-in-method-remove:disabled {
+		opacity: 1;
+		border-color: var(--line);
+		background: #f4f2ef;
+		color: var(--muted);
+	}
+
+	.sign-in-methods-panel > .loading,
+	.sign-in-methods-panel > .notice {
+		margin: 22px 24px;
+	}
+
+	@media (max-width: 560px) {
+		.sign-in-methods-intro {
+			margin-bottom: 20px;
+		}
+
+		.sign-in-methods-panel > .identity-panel {
+			padding: 20px 18px;
+		}
+
+		.sign-in-method-row {
+			gap: 12px;
+		}
+
+		.sign-in-method-name {
+			align-items: flex-start;
+			flex-direction: column;
+			gap: 5px;
+		}
+
+		.sign-in-method-removal-reason {
+			margin-top: 10px;
+		}
+
+		.sign-in-methods-panel > .loading,
+		.sign-in-methods-panel > .notice {
+			margin: 20px 18px;
+		}
+	}
+}
+
+@media (max-width: 700px) {
+	.app-frame:has(.sign-in-methods) {
+		grid-template-rows: auto 1fr;
+	}
+}
