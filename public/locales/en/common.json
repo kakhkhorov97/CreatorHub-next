@@ -967,5 +967,17 @@
 	"This is your only usable sign-in method, so it can't be removed.": "This is your only usable sign-in method, so it can't be removed.",
 	"Close categories": "Close categories",
 	"Please wait {{seconds}} seconds before trying again.": "Please wait {{seconds}} seconds before trying again.",
-	"Hi! What can I help you find?": "Hi! What can I help you find?"
+	"Hi! What can I help you find?": "Hi! What can I help you find?",
+	"Expand assistant": "Expand assistant",
+	"Collapse assistant": "Collapse assistant",
+	"Publish my work": "Publish my work",
+	"My page": "My page",
+	"Signed in": "Signed in",
+	"Your account, saved work and connections.": "Your account, saved work and connections.",
+	"Edit your photo, name and language.": "Edit your photo, name and language.",
+	"Manage your password and connected sign-in methods in one place.": "Manage your password and connected sign-in methods in one place.",
+	"Manage sign-in methods": "Manage sign-in methods",
+	"People who follow your creator profile.": "People who follow your creator profile.",
+	"Creators whose work you follow.": "Creators whose work you follow.",
+	"Revisit the projects you saved.": "Revisit the projects you saved."
 }

@@ -1,5 +1,5 @@
 import { useTranslation as useSiteTranslation } from 'next-i18next';
-import { MagnifyingGlass } from 'phosphor-react';
+import { CaretDown, MagnifyingGlass } from 'phosphor-react';
 import { FormEvent, useEffect, useState } from 'react';
 import CategoryPicker from './CategoryPicker';
 import { useApi } from '../../hooks/useApi';
@@ -71,9 +71,14 @@ export default function SearchFilters({
 					</select>
 				</label>
 				<CategoryPicker value={category} onChange={setCategory} />
-				<label className="search-segment">
+				<label className="search-segment location-filter">
 					<span>{translate('Location')}</span>
-					<select name="city" key={filters.city || 'korea'} defaultValue={filters.city || ''}>
+					<select
+						aria-label={translate('Location')}
+						name="city"
+						key={filters.city || 'korea'}
+						defaultValue={filters.city || ''}
+					>
 						<option value="">{translate('All Korea')}</option>
 						{cities.value?.map((city) => (
 							<option key={city.key} value={city.key}>
@@ -81,6 +86,7 @@ export default function SearchFilters({
 							</option>
 						))}
 					</select>
+					<CaretDown className="location-caret" size={16} aria-hidden="true" />
 				</label>
 				<Button type="submit">{translate('Search')} </Button>
 			</div>

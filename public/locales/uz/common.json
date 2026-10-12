@@ -967,5 +967,17 @@
 	"This is your only usable sign-in method, so it can't be removed.": "Bu foydalanishingiz mumkin bo'lgan yagona kirish usuli, shuning uchun uni olib tashlab bo'lmaydi.",
 	"Close categories": "Toifalarni yopish",
 	"Please wait {{seconds}} seconds before trying again.": "Qayta urinishdan oldin {{seconds}} soniya kuting.",
-	"Hi! What can I help you find?": "Salom! Nimani topishga yordam beray?"
+	"Hi! What can I help you find?": "Salom! Nimani topishga yordam beray?",
+	"Expand assistant": "Yordamchini kengaytirish",
+	"Collapse assistant": "Yordamchini kichraytirish",
+	"Publish my work": "Ishimni joylash",
+	"My page": "Mening sahifam",
+	"Signed in": "Tizimga kirilgan",
+	"Your account, saved work and connections.": "Hisobingiz, saqlangan ishlar va aloqalaringiz.",
+	"Edit your photo, name and language.": "Rasm, ism va tilni tahrirlang.",
+	"Manage your password and connected sign-in methods in one place.": "Parol va ulangan kirish usullarini bir joyda boshqaring.",
+	"Manage sign-in methods": "Kirish usullarini boshqarish",
+	"People who follow your creator profile.": "Ijodkor profilingizni kuzatuvchilar.",
+	"Creators whose work you follow.": "Ishlarini kuzatadigan ijodkorlaringiz.",
+	"Revisit the projects you saved.": "Saqlangan loyihalaringizga qayting."
 }

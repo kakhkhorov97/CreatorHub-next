@@ -1,7 +1,7 @@
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { authenticationDestination, safeReturnTo, saveSession } from '../../auth';
 import { useAction } from '../../hooks/useApi';
 import { AuthFieldErrors, authSubmissionErrorField, validateAuthForm } from '../../utils/authForm';
@@ -25,12 +25,15 @@ export function SocialButtons({
 	setup?: boolean;
 }) {
 	const { t: translate } = useSiteTranslation('common');
+	const [googleFeedback, setGoogleFeedback] = useState<ReactNode>(null);
+	const [providerFeedback, setProviderFeedback] = useState<ReactNode>(null);
 	const [activeProvider, setActiveProvider] = useState<'GOOGLE' | 'OTHER'>('GOOGLE');
 	return (
 		<div className="social-sign-in">
 			{!setup && <p className="divider-label">{translate('Or continue with')}</p>}
 			{(!setup || activeProvider === 'GOOGLE') && (
 				<GoogleSignIn
+					onFeedbackChange={setGoogleFeedback}
 					onSetupChange={(value) => {
 						setActiveProvider('GOOGLE');
 						onSetupChange(value);
@@ -39,12 +42,17 @@ export function SocialButtons({
 			)}
 			{(!setup || activeProvider === 'OTHER') && (
 				<ProviderSignIn
+					onFeedbackChange={setProviderFeedback}
 					onSetupChange={(value) => {
 						setActiveProvider('OTHER');
 						onSetupChange(value);
 					}}
 				/>
 			)}
+			<div className="social-feedback" aria-live="polite">
+				{(!setup || activeProvider === 'GOOGLE') && googleFeedback}
+				{(!setup || activeProvider === 'OTHER') && providerFeedback}
+			</div>
 		</div>
 	);
 }

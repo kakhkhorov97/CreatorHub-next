@@ -2,7 +2,7 @@ import { discardSocialChallenge, getSocialChallenge } from '../../auth/socialCha
 import Script from 'next/script';
 import { SiKakaotalk } from 'react-icons/si';
 import { FaTelegramPlane } from 'react-icons/fa';
-import { useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { useAction } from '../../hooks/useApi';
@@ -19,7 +19,13 @@ type TelegramLogin = {
 };
 const clientId = Number(process.env.NEXT_PUBLIC_TELEGRAM_CLIENT_ID);
 
-export default function ProviderSignIn({ onSetupChange }: { onSetupChange(setup: boolean): void }) {
+export default function ProviderSignIn({
+	onSetupChange,
+	onFeedbackChange,
+}: {
+	onSetupChange(setup: boolean): void;
+	onFeedbackChange?(feedback: ReactNode): void;
+}) {
 	const { t } = useTranslation('common');
 	const router = useRouter();
 	const action = useAction();
@@ -85,6 +91,30 @@ export default function ProviderSignIn({ onSetupChange }: { onSetupChange(setup:
 			window.location.assign(challenge.authorizationUrl);
 		});
 	}
+	const feedback = (
+		<div className="provider-feedback" aria-live="polite">
+			{action.retryAfter > 0 ? (
+				<p role="status">{t('Please wait {{seconds}} seconds before trying again.', { seconds: action.retryAfter })}</p>
+			) : scriptError ? (
+				<p className="field-error" role="alert">
+					{t('Telegram sign-in could not load. Refresh the page and try again.')}
+				</p>
+			) : action.error ? (
+				<p className="field-error" role="alert">
+					{t(action.error)}
+				</p>
+			) : configured && !ready ? (
+				<p role="status">{t('Loading Telegram sign-in…')}</p>
+			) : !configured ? (
+				<p>{t('Telegram sign-in is not configured yet.')}</p>
+			) : null}
+		</div>
+	);
+	useEffect(() => {
+		if (onFeedbackChange) onFeedbackChange(feedback);
+		// The parent setter is stable; feedback depends only on these status values.
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [onFeedbackChange, action.retryAfter, action.error, scriptError, ready, t]);
 
 	return (
 		<div className="provider-sign-in">
@@ -142,25 +172,7 @@ export default function ProviderSignIn({ onSetupChange }: { onSetupChange(setup:
 					)}
 				</>
 			)}
-			<div className="provider-feedback" aria-live="polite">
-				{action.retryAfter > 0 ? (
-					<p role="status">
-						{t('Please wait {{seconds}} seconds before trying again.', { seconds: action.retryAfter })}
-					</p>
-				) : scriptError ? (
-					<p className="field-error" role="alert">
-						{t('Telegram sign-in could not load. Refresh the page and try again.')}
-					</p>
-				) : action.error ? (
-					<p className="field-error" role="alert">
-						{t(action.error)}
-					</p>
-				) : configured && !ready ? (
-					<p role="status">{t('Loading Telegram sign-in…')}</p>
-				) : !configured ? (
-					<p>{t('Telegram sign-in is not configured yet.')}</p>
-				) : null}
-			</div>
+			{!onFeedbackChange && feedback}
 		</div>
 	);
 }

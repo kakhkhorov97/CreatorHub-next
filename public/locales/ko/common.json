@@ -967,5 +967,17 @@
 	"This is your only usable sign-in method, so it can't be removed.": "이 계정에서 사용할 수 있는 유일한 로그인 방법이므로 삭제할 수 없습니다.",
 	"Close categories": "카테고리 닫기",
 	"Please wait {{seconds}} seconds before trying again.": "{{seconds}}초 후에 다시 시도해 주세요.",
-	"Hi! What can I help you find?": "안녕하세요! 무엇을 찾고 계신가요?"
+	"Hi! What can I help you find?": "안녕하세요! 무엇을 찾고 계신가요?",
+	"Expand assistant": "도우미 확대",
+	"Collapse assistant": "도우미 축소",
+	"Publish my work": "내 작업 게시",
+	"My page": "마이 페이지",
+	"Signed in": "로그인됨",
+	"Your account, saved work and connections.": "계정, 저장한 작업과 연결을 관리하세요.",
+	"Edit your photo, name and language.": "사진, 이름과 언어를 수정하세요.",
+	"Manage your password and connected sign-in methods in one place.": "비밀번호와 연결된 로그인 방법을 한곳에서 관리하세요.",
+	"Manage sign-in methods": "로그인 방법 관리",
+	"People who follow your creator profile.": "크리에이터 프로필을 팔로우하는 사람들입니다.",
+	"Creators whose work you follow.": "작업을 팔로우하는 크리에이터입니다.",
+	"Revisit the projects you saved.": "저장한 프로젝트를 다시 확인하세요."
 }

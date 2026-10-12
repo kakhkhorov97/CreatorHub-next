@@ -4,7 +4,7 @@ import { useReactiveVar } from '@apollo/client';
 import LanguageSelector from './LanguageSelector';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Bell, EnvelopeSimple, List, MagnifyingGlass, SignOut } from 'phosphor-react';
+import { Bell, EnvelopeSimple, List, SignOut } from 'phosphor-react';
 import { useEffect, useRef } from 'react';
 import useHeaderScroll from '../hooks/useHeaderScroll';
 import { userVar } from '../../apollo/store';
@@ -25,6 +25,9 @@ export default function Top() {
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 	const signingIn = router.pathname === '/account/sign-in';
+	const registering = router.pathname === '/account/register';
+	const authHref = signingIn ? '/account/register' : '/account/sign-in';
+	const authLabel = signingIn ? 'Sign up' : 'Sign in';
 	const action = useAction();
 	const count = useApi('getUnreadNotificationCount', {}, !user, 30000);
 	const inbox = useApi('getUnreadInquiryCount', {}, !user);
@@ -65,6 +68,13 @@ export default function Top() {
 		if (!user) return null;
 		return (
 			<div>
+				<div className="account-menu-identity">
+					<strong>{user.displayName}</strong>
+					<small>{translate('Signed in')}</small>
+				</div>
+				<Link href="/account" className="my-page-link">
+					{translate('My page')}
+				</Link>
 				<div className="mobile-account-tools">
 					<Link href="/inquiries">
 						{translate('Inbox')} {inbox.value || ''}
@@ -156,46 +166,27 @@ export default function Top() {
 							))}
 						</nav>
 					)}
-					{discovery && (
-						<form
-							className="header-search"
-							onSubmit={(event) => {
-								event.preventDefault();
-								const query = new FormData(event.currentTarget).get('query');
-								router.push({ pathname: '/projects', query: { query: String(query || '') } });
-							}}
-						>
-							<label className="sr-only" htmlFor="header-query">
-								{translate('Search projects')}
-							</label>
-							<input id="header-query" name="query" maxLength={200} placeholder={translate('Search creative work…')} />
-							<Button type="submit" aria-label={translate('Search projects')}>
-								<MagnifyingGlass size={20} />
-							</Button>
-						</form>
-					)}
 					<div className="header-actions">
-						<Link
-							href="/projects#directory-search"
-							className="mobile-search-link icon-button"
-							aria-label={translate('Search projects')}
-						>
-							<MagnifyingGlass size={22} />
-						</Link>
 						<details className="mobile-navigation" ref={mobileMenu}>
 							<summary aria-label={translate('Main navigation')}>
 								<List size={24} />
 							</summary>
 							<nav aria-label={translate('Main navigation')}>
 								{navigation.map(([href, text]) => (
-									<Link key={href} href={href} aria-current={router.pathname === href ? 'page' : undefined}>
+									<Link
+										key={href}
+										href={href}
+										aria-current={
+											router.pathname === href || router.pathname.startsWith(href + '/') ? 'page' : undefined
+										}
+									>
 										{translate(text)}
 									</Link>
 								))}
 								{!user && (
 									<>
-										<Link href="/account/sign-in">{translate('Sign in')}</Link>
-										<Link href="/account/register">{translate('Sign up')}</Link>
+										{compact && <Link href={authHref}>{translate(authLabel)}</Link>}
+										{!signingIn && !registering && <Link href="/account/register">{translate('Sign up')}</Link>}
 									</>
 								)}
 								{user && <div className="mobile-account-links">{accountContent()}</div>}
@@ -204,8 +195,8 @@ export default function Top() {
 						</details>
 						<LanguageSelector />
 						{!user && (
-							<Link href="/account/sign-in" className="mobile-login-link">
-								{translate('Sign in')}
+							<Link href={authHref} className="mobile-login-link">
+								{translate(authLabel)}
 							</Link>
 						)}
 						{user ? (
@@ -230,7 +221,7 @@ export default function Top() {
 									{!!count.value && <span className="dot" />}
 								</Link>
 								<details className="user-menu" ref={accountMenu}>
-									<summary aria-label={translate('Account menu')}>
+									<summary aria-label={`${translate('Account menu')}: ${user.displayName}`}>
 										<Picture avatar src={user.avatarUrl} alt={user.displayName} />
 										<span>{user.displayName}</span>
 									</summary>
@@ -240,12 +231,8 @@ export default function Top() {
 						) : (
 							<>
 								<div className="desktop-auth-actions">
-									{!signingIn && (
-										<LinkButton secondary href="/account/sign-in">
-											{translate('Sign in')}
-										</LinkButton>
-									)}
-									<LinkButton href="/account/register">{translate('Sign up')}</LinkButton>
+									{!signingIn && <LinkButton href="/account/sign-in">{translate('Sign in')}</LinkButton>}
+									{!registering && <LinkButton href="/account/register">{translate('Sign up')}</LinkButton>}
 								</div>
 							</>
 						)}

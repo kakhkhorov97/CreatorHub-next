@@ -1,6 +1,6 @@
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { ArrowLeft, ArrowRight } from 'phosphor-react';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect, useRef } from 'react';
 import { label } from '../../utils/format';
 import { ConfirmationPrompt } from './ConfirmationPrompt';
 import { Button } from './Button';
@@ -71,35 +71,65 @@ export function Pager({
 }) {
 	const { t: translate } = useSiteTranslation('common');
 
+	const pager = useRef<HTMLElement>(null);
+	const lastOffset = useRef(offset);
+	const needsScroll = useRef(false);
+	useEffect(() => {
+		if (offset !== lastOffset.current) {
+			lastOffset.current = offset;
+			needsScroll.current = true;
+		}
+		if (loading || !needsScroll.current) return;
+		needsScroll.current = false;
+		const list = pager.current?.parentElement?.querySelector('.grid, .event-list');
+		const headerHeight = document.querySelector('.site-header')?.getBoundingClientRect().height || 0;
+		const top = list ? list.getBoundingClientRect().top + window.scrollY - headerHeight - 16 : 0;
+		const root = document.documentElement;
+		const behavior = root.style.scrollBehavior;
+		root.style.scrollBehavior = 'auto';
+		window.scrollTo({ top: Math.max(0, top), behavior: 'auto' });
+		root.style.scrollBehavior = behavior;
+	}, [offset, loading]);
+
 	return (
 		<>
-		<nav className="pager" aria-label={translate('Pagination')}>
-			<Button
-				secondary
-				disabled={!offset || loading}
-				onClick={() => {
-					previous();
-					window.scrollTo({ top: 0, behavior: 'auto' });
-				}}
-			>
-				<ArrowLeft />
-				{translate('Previous')}
-			</Button>
-			<Button
-				secondary
-				disabled={!canNext || loading}
-				onClick={async () => {
-					const moved = await next();
-					if (moved !== false) window.scrollTo({ top: 0, behavior: 'auto' });
-				}}
-			>
-				{translate('Next')}
-				<ArrowRight />
-			</Button>
-		</nav>
-		{checkingNext && <p className="pagination-notice" role="status">{translate('Checking for more results…')}</p>}
-		{noMoreResults && <p className="pagination-notice" role="status">{translate('No more results')}</p>}
-		{nextPageError && <p className="pagination-notice pagination-error" role="alert">{translate('Could not check the next page. Please try again.')}</p>}
+			<nav ref={pager} className="pager" aria-label={translate('Pagination')}>
+				<Button
+					secondary
+					disabled={!offset || loading}
+					onClick={() => {
+						previous();
+					}}
+				>
+					<ArrowLeft />
+					{translate('Previous')}
+				</Button>
+				<Button
+					secondary
+					disabled={!canNext || loading}
+					onClick={async () => {
+						await next();
+					}}
+				>
+					{translate('Next')}
+					<ArrowRight />
+				</Button>
+			</nav>
+			{checkingNext && (
+				<p className="pagination-notice" role="status">
+					{translate('Checking for more results…')}
+				</p>
+			)}
+			{noMoreResults && (
+				<p className="pagination-notice" role="status">
+					{translate('No more results')}
+				</p>
+			)}
+			{nextPageError && (
+				<p className="pagination-notice pagination-error" role="alert">
+					{translate('Could not check the next page. Please try again.')}
+				</p>
+			)}
 		</>
 	);
 }

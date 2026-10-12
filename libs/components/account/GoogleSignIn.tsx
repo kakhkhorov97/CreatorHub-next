@@ -2,7 +2,7 @@ import { discardSocialChallenge, getSocialChallenge } from '../../auth/socialCha
 import Script from 'next/script';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
-import { useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { authenticationDestination, safeReturnTo, saveSession } from '../../auth';
 import { useAction } from '../../hooks/useApi';
 import { AuthPayload, GoogleSignInResult } from '../../types/creatorhub';
@@ -24,7 +24,13 @@ type GoogleIdentity = {
 };
 const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
-export default function GoogleSignIn({ onSetupChange }: { onSetupChange(setup: boolean): void }) {
+export default function GoogleSignIn({
+	onSetupChange,
+	onFeedbackChange,
+}: {
+	onSetupChange(setup: boolean): void;
+	onFeedbackChange?(feedback: ReactNode): void;
+}) {
 	const { t } = useTranslation('common');
 	const router = useRouter();
 	const action = useAction();
@@ -122,6 +128,28 @@ export default function GoogleSignIn({ onSetupChange }: { onSetupChange(setup: b
 		};
 	}, [ready, nonce, pending]);
 
+	const feedback = (
+		<div className="provider-feedback" aria-live="polite">
+			{action.retryAfter > 0 ? (
+				<p role="status">{t('Please wait {{seconds}} seconds before trying again.', { seconds: action.retryAfter })}</p>
+			) : scriptError ? (
+				<p className="field-error" role="alert">
+					{t('Google sign-in could not load. Refresh the page and try again.')}
+				</p>
+			) : action.error ? (
+				<p className="field-error" role="alert">
+					{t(action.error)}
+				</p>
+			) : !ready ? (
+				<p role="status">{t('Loading Google sign-in…')}</p>
+			) : null}
+		</div>
+	);
+	useEffect(() => {
+		if (onFeedbackChange) onFeedbackChange(feedback);
+		// The parent setter is stable; feedback depends only on these status values.
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [onFeedbackChange, action.retryAfter, action.error, scriptError, ready, t]);
 	if (!clientId) return <p className="muted">{t('Google sign-in is not configured yet.')}</p>;
 	return (
 		<div className="google-sign-in">
@@ -239,23 +267,7 @@ export default function GoogleSignIn({ onSetupChange }: { onSetupChange(setup: b
 					)}
 				</>
 			)}
-			<div className="provider-feedback" aria-live="polite">
-				{action.retryAfter > 0 ? (
-					<p role="status">
-						{t('Please wait {{seconds}} seconds before trying again.', { seconds: action.retryAfter })}
-					</p>
-				) : scriptError ? (
-					<p className="field-error" role="alert">
-						{t('Google sign-in could not load. Refresh the page and try again.')}
-					</p>
-				) : action.error ? (
-					<p className="field-error" role="alert">
-						{t(action.error)}
-					</p>
-				) : !ready ? (
-					<p role="status">{t('Loading Google sign-in…')}</p>
-				) : null}
-			</div>
+			{!onFeedbackChange && feedback}
 		</div>
 	);
 }

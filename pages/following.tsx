@@ -1,5 +1,5 @@
 import { useTranslation as useSiteTranslation } from 'next-i18next';
-import { useState } from 'react';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { Button, Empty, Feedback, Heading, Pager, Picture, QueryState } from '../libs/components/common/UI';
 import Layout, { Guard } from '../libs/components/layout/LayoutBasic';
@@ -22,7 +22,10 @@ function Following() {
 function FollowingContent() {
 	const { t: translate } = useSiteTranslation('common');
 
-	const [tab, setTab] = useState('following');
+	const router = useRouter();
+	const tab = router.query.tab === 'followers' ? 'followers' : 'following';
+	const setTab = (next: string) =>
+		void router.replace({ pathname: '/following', query: { tab: next } }, undefined, { shallow: true, scroll: false });
 	const result = usePaged('getMyFollows', {}, tab !== 'following');
 	const followers = usePaged('getMyFollowers', {}, tab !== 'followers');
 	const creators = useCreatorDirectory(result.rows.map((f) => f.creatorId));

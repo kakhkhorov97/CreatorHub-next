@@ -1,8 +1,9 @@
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { ChatCircle, PaperPlaneRight, UserCircle, X } from 'phosphor-react';
+import { ArrowLeft, ArrowsIn, ArrowsOut, ChatCircle, PaperPlaneRight, UserCircle, X } from 'phosphor-react';
 import { FormEvent, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '../../../apollo/store';
 import { Picture } from '../common/UI';
@@ -35,6 +36,9 @@ export default function Chatbot() {
 		return () => document.removeEventListener('pointerdown', outside);
 	}, []);
 	const [open, setOpen] = useState(false);
+	const [mounted, setMounted] = useState(false);
+	const [mobile, setMobile] = useState(false);
+	const [expanded, setExpanded] = useState(false);
 	const [messages, setMessages] = useState<Message[]>([]);
 	const [draft, setDraft] = useState('');
 	const [busy, setBusy] = useState(false);
@@ -43,6 +47,38 @@ export default function Chatbot() {
 	const trigger = useRef<HTMLButtonElement>(null);
 	const transcript = useRef<HTMLDivElement>(null);
 	const lock = useRef(false);
+	useEffect(() => {
+		setMounted(true);
+		const media = window.matchMedia('(max-width: 700px)');
+		const update = () => setMobile(media.matches);
+		update();
+		media.addEventListener('change', update);
+		return () => media.removeEventListener('change', update);
+	}, []);
+	useEffect(() => {
+		if (!open || !mobile) return;
+		const scrollY = window.scrollY;
+		const bodyStyle = document.body.getAttribute('style');
+		const siblings = Array.from(document.body.children).filter((node) => node !== widget.current) as HTMLElement[];
+		const inert = siblings.map((node) => node.inert);
+		siblings.forEach((node) => {
+			node.inert = true;
+		});
+		Object.assign(document.body.style, { position: 'fixed', top: `-${scrollY}px`, width: '100%', overflow: 'hidden' });
+		widget.current?.querySelector<HTMLButtonElement>('.chat-back')?.focus({ preventScroll: true });
+		return () => {
+			siblings.forEach((node, index) => {
+				node.inert = inert[index];
+			});
+			if (bodyStyle === null) document.body.removeAttribute('style');
+			else document.body.setAttribute('style', bodyStyle);
+			const behavior = document.documentElement.style.scrollBehavior;
+			document.documentElement.style.scrollBehavior = 'auto';
+			window.scrollTo({ top: scrollY, behavior: 'auto' });
+			document.documentElement.style.scrollBehavior = behavior;
+			trigger.current?.focus({ preventScroll: true });
+		};
+	}, [open, mobile]);
 	useEffect(() => {
 		if (open && !window.matchMedia('(max-width: 700px)').matches) input.current?.focus();
 	}, [open]);
@@ -54,6 +90,7 @@ export default function Chatbot() {
 			const height = viewport?.height ?? window.innerHeight;
 			const inset = Math.max(0, window.innerHeight - height - (viewport?.offsetTop ?? 0));
 			element?.style.setProperty('--chat-viewport-height', `${height}px`);
+			element?.style.setProperty('--chat-viewport-top', `${viewport?.offsetTop ?? 0}px`);
 			element?.style.setProperty('--chat-keyboard-inset', `${inset}px`);
 		};
 		updateViewport();
@@ -66,15 +103,16 @@ export default function Chatbot() {
 			window.removeEventListener('resize', updateViewport);
 			element?.style.removeProperty('--chat-viewport-height');
 			element?.style.removeProperty('--chat-keyboard-inset');
+			element?.style.removeProperty('--chat-viewport-top');
 		};
-	}, [open]);
+	}, [open, mobile]);
 	useEffect(() => {
 		transcript.current?.scrollTo({ top: transcript.current.scrollHeight });
 	}, [messages, busy]);
 
 	function close() {
 		setOpen(false);
-		trigger.current?.focus();
+		trigger.current?.focus({ preventScroll: true });
 	}
 
 	async function submit(event: FormEvent) {
@@ -109,20 +147,42 @@ export default function Chatbot() {
 			lock.current = false;
 		}
 	}
-	if (router.pathname.startsWith('/_admin')) return null;
-	return (
-		<div className="chat-widget" ref={widget}>
+	if (!mounted || router.pathname.startsWith('/_admin')) return null;
+	return createPortal(
+		<div
+			className={`chat-widget${open ? ' is-open' : ''}${mobile ? ' is-mobile' : ''}${expanded ? ' is-expanded' : ''}`}
+			ref={widget}
+		>
 			{open && (
 				<section
 					className="chat-panel"
 					role="dialog"
-					aria-modal="false"
+					aria-modal={mobile}
 					aria-labelledby="chat-title"
 					onKeyDown={(event) => {
 						if (event.key === 'Escape') close();
+						if (mobile && event.key === 'Tab') {
+							const controls = Array.from(
+								event.currentTarget.querySelectorAll<HTMLElement>('button:not(:disabled), a[href], textarea'),
+							).filter((node) => node.getClientRects().length > 0);
+							const first = controls[0];
+							const last = controls[controls.length - 1];
+							if (event.shiftKey && document.activeElement === first) {
+								event.preventDefault();
+								last?.focus();
+							} else if (!event.shiftKey && document.activeElement === last) {
+								event.preventDefault();
+								first?.focus();
+							}
+						}
 					}}
 				>
 					<header>
+						{mobile && (
+							<button className="icon-button chat-back" aria-label={translate('Back')} onClick={close}>
+								<ArrowLeft size={22} />
+							</button>
+						)}
 						<span className="assistant-avatar" aria-hidden="true">
 							<ChatCircle size={22} weight="duotone" />
 						</span>
@@ -130,9 +190,20 @@ export default function Chatbot() {
 							<h2 id="chat-title">{translate('CreatorHub Assistant')}</h2>
 							<p>{translate('Find creative work and get help')}</p>
 						</div>
-						<button className="icon-button" aria-label={translate('Close assistant')} onClick={close}>
-							<X size={22} />
-						</button>
+						{!mobile && (
+							<button
+								className="icon-button"
+								aria-label={translate(expanded ? 'Collapse assistant' : 'Expand assistant')}
+								onClick={() => setExpanded(!expanded)}
+							>
+								{expanded ? <ArrowsIn size={20} /> : <ArrowsOut size={20} />}
+							</button>
+						)}
+						{!mobile && (
+							<button className="icon-button" aria-label={translate('Close assistant')} onClick={close}>
+								<X size={22} />
+							</button>
+						)}
 					</header>
 					<div className="chat-transcript" ref={transcript} role="log" aria-live="polite" aria-relevant="additions">
 						{messages.length === 0 && (
@@ -144,19 +215,17 @@ export default function Chatbot() {
 									)}
 								</p>
 								<div className="chat-suggestions">
-									{['How do I find a creator?', 'How do I publish my work?', 'Find designers in Gwangju'].map(
-										(question) => (
-											<button
-												key={translate(question)}
-												onClick={() => {
-													setDraft(question);
-													input.current?.focus();
-												}}
-											>
-												{translate(question)}
-											</button>
-										),
-									)}
+									{['Find a creator', 'Explore projects', 'Publish my work'].map((question) => (
+										<button
+											key={translate(question)}
+											onClick={() => {
+												setDraft(translate(question));
+												input.current?.focus();
+											}}
+										>
+											{translate(question)}
+										</button>
+									))}
 								</div>
 								<small>{translate('AI answers may be incomplete. Check the linked profiles and services.')}</small>
 							</div>
@@ -242,6 +311,7 @@ export default function Chatbot() {
 			)}
 			<button
 				ref={trigger}
+				hidden={open}
 				className="chat-trigger"
 				aria-expanded={open}
 				aria-label={open ? translate('Close CreatorHub assistant') : translate('Open CreatorHub assistant')}
@@ -250,6 +320,7 @@ export default function Chatbot() {
 				<ChatCircle size={25} />
 				<span>{translate('Ask CreatorHub AI')}</span>
 			</button>
-		</div>
+		</div>,
+		document.body,
 	);
 }

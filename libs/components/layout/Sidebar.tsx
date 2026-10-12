@@ -13,10 +13,12 @@ const workspace = [
 	['/account/settings', 'Settings', Gear],
 ] as const;
 const account = [
-	['/account/settings', 'Account', User],
+	['/account', 'My page', User],
+	['/following?tab=followers', 'Followers', Users],
+	['/following?tab=following', 'Following', Users],
+	['/account/settings', 'Account settings', Gear],
 	['/account/sign-in-methods', 'Sign-in methods', Gear],
 	['/saved', 'Saved projects', BookmarkSimple],
-	['/following', 'Followers & Following', Users],
 	['/notifications', 'Notifications', Bell],
 	['/workspace', 'Workspace', House],
 ] as const;
@@ -37,7 +39,9 @@ export default function Sidebar({ area }: { area: 'workspace' | 'account' }) {
 						key={href}
 						href={href}
 						className={
-							router.pathname === href || (href !== '/workspace' && router.pathname.startsWith(href + '/'))
+							router.asPath.split('#')[0] === href ||
+							(href === '/following?tab=following' && router.pathname === '/following' && !router.query.tab) ||
+							(area === 'workspace' && href !== '/workspace' && router.pathname.startsWith(href + '/'))
 								? 'active'
 								: ''
 						}

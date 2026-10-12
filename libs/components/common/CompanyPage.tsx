@@ -10,7 +10,7 @@ export default function CompanyPage({ contact = false }: { contact?: boolean }) 
 	const site = useApi('getSiteContent');
 	return (
 		<>
-			<div className="company-page">
+			<div className={`company-page${contact ? ' contact-page' : ''}`}>
 				<div className="company-heading">
 					<Heading title={contact ? translate('Let’s start a conversation.') : translate('Creativity connects us.')} />
 					<p className="muted">

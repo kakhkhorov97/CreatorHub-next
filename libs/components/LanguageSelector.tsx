@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'next-i18next';
-import { CaretDown, Check, Globe } from 'phosphor-react';
+import { CaretDown, Check } from 'phosphor-react';
 import LanguageFlag from './LanguageFlag';
 
 const languages = [
@@ -89,7 +89,6 @@ export default function LanguageSelector() {
 					}
 				}}
 			>
-				<Globe className="language-globe" size={20} aria-hidden="true" />
 				<LanguageFlag locale={current.locale} />
 				<span lang={current.locale}>{current.name}</span>
 				<CaretDown size={12} aria-hidden="true" />
