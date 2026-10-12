@@ -3,6 +3,8 @@ import { useApolloClient, useReactiveVar } from '@apollo/client';
 import Seo from '../common/Seo';
 import type { PageMetadata } from '../../seo/metadata';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
+import { ArrowLeft } from 'phosphor-react';
 import type { ComponentType } from 'react';
 import { ReactNode, useEffect } from 'react';
 import { sessionReadyVar, userVar } from '../../../apollo/store';
@@ -71,10 +73,26 @@ export default function Layout({
 				{translate('Skip to content')}
 			</a>
 			<Top />
-			<div className={standaloneAccount ? 'app-frame account-frame' : area ? 'app-frame' : 'public-frame'}>
+			<div
+				className={
+					standaloneAccount
+						? 'app-frame account-frame account-area'
+						: area === 'account'
+						? 'app-frame account-area'
+						: area
+						? 'app-frame'
+						: 'public-frame'
+				}
+			>
 				{area && !standaloneAccount && <Sidebar area={area} />}
 
 				<main id="main" className={area ? 'workspace-main' : 'public-main'}>
+					{area === 'account' && router.pathname !== '/account' && (
+						<Link className="mobile-account-back" href="/account">
+							<ArrowLeft size={18} aria-hidden />
+							{translate('Back to My page')}
+						</Link>
+					)}
 					{children}
 				</main>
 			</div>

@@ -227,3 +227,29 @@
 		display: inline-flex;
 	}
 }
+
+.mobile-account-back {
+	display: none;
+}
+@media (max-width: 700px) {
+	.app-frame.account-area {
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-rows: 1fr;
+	}
+	.app-frame.account-area > .sidebar {
+		display: none;
+	}
+	.mobile-account-back {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		min-height: 44px;
+		margin-bottom: 8px;
+		color: #245c46;
+		font-size: 14px;
+		text-decoration: none;
+	}
+	.mobile-account-back:hover {
+		text-decoration: underline;
+	}
+}

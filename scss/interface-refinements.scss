@@ -499,50 +499,74 @@
 	.grid.creators .creator-top {
 		align-items: flex-start;
 		flex-direction: column;
-		gap: 10px;
+		gap: 8px;
+	}
+	.grid.creators .creator-top .avatar {
+		width: 36px;
+		height: 36px;
+		min-width: 36px;
+		min-height: 36px;
 	}
 	.grid.creators .creator-top > div {
 		min-width: 0;
 		width: 100%;
 	}
 	.grid.creators .card-title,
-	.grid.services .card-title {
-		font-size: 15px;
-		line-height: 1.4;
-		overflow-wrap: anywhere;
-	}
+	.grid.services .card-title,
 	.grid.creators .creator-top p,
 	.grid.services > .service-card > p {
 		display: -webkit-box;
-		-webkit-line-clamp: 3;
+		-webkit-line-clamp: 2;
 		-webkit-box-orient: vertical;
 		overflow: hidden;
-	}
-	.grid.creators .tags {
-		flex-wrap: wrap;
-	}
-	.grid.creators .tags span {
-		max-width: 100%;
 		overflow-wrap: anywhere;
+	}
+	.grid.creators .card-title,
+	.grid.services .card-title {
+		font-size: 14px;
+		line-height: 1.4;
+	}
+	.grid.creators .creator-top p,
+	.grid.services > .service-card > p {
+		margin: 4px 0 8px;
+		font-size: 12px;
+		line-height: 1.4;
+	}
+	.grid.creators .tags,
+	.grid.services .service-card > ul {
+		display: none;
+	}
+	.grid.creators .creator-card > .muted {
+		font-size: 12px;
+		line-height: 1.4;
+		margin: 0 0 6px;
 	}
 	.grid.services .creator-line {
-		flex-wrap: wrap;
 		font-size: 12px;
+		margin: 8px 0;
 		overflow-wrap: anywhere;
+	}
+	.grid.services .creator-line .avatar {
+		width: 24px;
+		height: 24px;
+		min-width: 24px;
+		min-height: 24px;
+		max-height: 24px;
+		flex-shrink: 0;
 	}
 	.grid.creators .card-bottom,
 	.grid.services .card-bottom {
 		margin-top: auto;
+		padding-top: 6px;
 		align-items: flex-start;
 		flex-direction: column;
-		gap: 4px;
+		gap: 0;
+		font-size: 11px;
 	}
 	.grid.creators .card-bottom a,
 	.grid.services .card-bottom a {
 		min-height: 44px;
-	}
-	.grid.services ul {
-		overflow-wrap: anywhere;
+		font-size: 12px;
 	}
 
 	.event-list {
