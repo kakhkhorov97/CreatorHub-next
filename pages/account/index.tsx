@@ -30,10 +30,6 @@ function AccountOverview() {
 					<h2>{user.displayName}</h2>
 					<p>{t('Signed in')}</p>
 				</div>
-				<Link href="/account/settings">
-					{t('Account settings')}
-					<CaretRight aria-hidden />
-				</Link>
 			</section>
 			<section className="account-connections" aria-label={t('Followers & Following')}>
 				<Link href="/following?tab=followers">
@@ -62,13 +58,7 @@ function AccountOverview() {
 					</div>
 					<CaretRight aria-hidden />
 				</Link>
-				<Link href="/account/sign-in-methods">
-					<div>
-						<strong>{t('Sign-in methods')}</strong>
-						<p>{t('Manage your password and connected sign-in methods in one place.')}</p>
-					</div>
-					<CaretRight aria-hidden />
-				</Link>
+
 				{user.role !== 'ADMIN' && (
 					<Link href="/workspace">
 						<strong>{t('Workspace')}</strong>

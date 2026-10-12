@@ -4,7 +4,20 @@ import { useReactiveVar } from '@apollo/client';
 import LanguageSelector from './LanguageSelector';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Bell, EnvelopeSimple, List, SignOut } from 'phosphor-react';
+import {
+	Bell,
+	EnvelopeSimple,
+	List,
+	SignOut,
+	Users,
+	BookmarkSimple,
+	Folder,
+	SquaresFour,
+	CalendarBlank,
+	ChatCircle,
+	User,
+	CaretRight,
+} from 'phosphor-react';
 import { useEffect, useRef } from 'react';
 import useHeaderScroll from '../hooks/useHeaderScroll';
 import { userVar } from '../../apollo/store';
@@ -46,7 +59,6 @@ export default function Top() {
 		router.pathname === '/events' ||
 		router.pathname.startsWith('/events/') ||
 		router.pathname === '/contact';
-	const profile = useApi('myCreatorProfile', {}, !user || user.role === 'USER');
 	const accountMenu = useRef<HTMLDetailsElement>(null);
 	const mobileMenu = useRef<HTMLDetailsElement>(null);
 	useEffect(() => {
@@ -64,67 +76,85 @@ export default function Top() {
 		if (mobileMenu.current) mobileMenu.current.open = false;
 	}, [router.asPath]);
 	const { header, compact } = useHeaderScroll(router.pathname, router.asPath);
-	function accountContent() {
+	function signOutButton() {
+		return (
+			<Button
+				secondary
+				className="signout-button"
+				disabled={action.busy}
+				onClick={() =>
+					action.run(async () => {
+						const sessionId = readSession()?.sessionId;
+						await action.mutate('logout');
+						clearSession(sessionId);
+						await action.client.clearStore();
+						await router.push('/');
+					})
+				}
+			>
+				<SignOut aria-hidden />
+				{translate('Sign out')}
+			</Button>
+		);
+	}
+	function menuLink(href: string, text: string, Icon: typeof Users, badge = 0, mobileOnly = false) {
+		return (
+			<Link
+				href={href}
+				className={`menu-row${mobileOnly ? ' menu-mobile-only' : ''}`}
+				key={href}
+				aria-current={router.asPath.split('#')[0] === href ? 'page' : undefined}
+			>
+				<Icon size={21} aria-hidden />
+				<span>{translate(text)}</span>
+				{badge > 0 ? (
+					<span className="menu-count">{badge > 99 ? '99+' : badge}</span>
+				) : (
+					<CaretRight size={16} aria-hidden />
+				)}
+			</Link>
+		);
+	}
+	function accountContent(mobile = false) {
 		if (!user) return null;
 		return (
-			<div>
-				<div className="account-menu-identity">
-					<strong>{user.displayName}</strong>
-					<small>{translate('Signed in')}</small>
+			<div className="account-dropdown">
+				<div className="account-menu-primary">
+					<div className="account-menu-identity">
+						<Picture avatar src={user.avatarUrl} alt="" />
+						<div>
+							<strong>{user.displayName}</strong>
+							<small>{translate('Signed in')}</small>
+						</div>
+					</div>
+					<div className="account-menu-shortcuts">
+						<Link href="/account">{translate('My page')}</Link>
+						<Link href={user.role === 'ADMIN' ? '/_admin' : '/workspace'}>
+							{translate(user.role === 'ADMIN' ? 'Administration' : 'Workspace')}
+						</Link>
+					</div>
+					{mobile && menuLink('/inquiries', 'Inbox', EnvelopeSimple, inbox.value || 0, true)}
+					{mobile && menuLink('/notifications', 'Notifications', Bell, count.value || 0, true)}
+					{menuLink('/following', 'Followers & Following', Users)}
 				</div>
-				<Link href="/account" className="my-page-link">
-					{translate('My page')}
-				</Link>
-				<div className="mobile-account-tools">
-					<Link href="/inquiries">
-						{translate('Inbox')} {inbox.value || ''}
-					</Link>
-					<Link href="/notifications">
-						{translate('Notifications')} {count.value || ''}
-					</Link>
+				{mobile && (
+					<div className="menu-group menu-mobile-only">
+						{menuLink('/projects', 'Projects', Folder)}
+						{menuLink('/services', 'Services', SquaresFour)}
+						{menuLink('/creators', 'Creators', User)}
+					</div>
+				)}
+				<div className="menu-group">
+					{menuLink('/saved', 'Saved projects', BookmarkSimple)}
+					{mobile && menuLink('/events', 'Events', CalendarBlank, 0, true)}
+					{mobile && menuLink('/contact', 'Contact us', ChatCircle, 0, true)}
 				</div>
-				{user.role !== 'ADMIN' && (
-					<Link passHref href="/workspace">
-						{translate('Workspace')}
-					</Link>
+				{mobile && (
+					<div className="menu-language menu-mobile-only">
+						<LanguageSelector />
+					</div>
 				)}
-				<Link passHref href="/account/settings">
-					{translate('Account settings')}
-				</Link>
-				<Link passHref href="/saved">
-					{translate('Saved projects')}
-				</Link>
-				{profile.value && (
-					<Link passHref href={`/creators/${profile.value.slug}`}>
-						{translate('My profile')}
-					</Link>
-				)}
-
-				<Link passHref href="/following">
-					{translate('Followers & Following')}
-				</Link>
-				{user.role === 'ADMIN' && (
-					<Link passHref href="/_admin">
-						{translate('Administration')}
-					</Link>
-				)}
-				<Button
-					secondary
-					className="signout-button"
-					disabled={action.busy}
-					onClick={() =>
-						action.run(async () => {
-							const sessionId = readSession()?.sessionId;
-							await action.mutate('logout');
-							clearSession(sessionId);
-							await action.client.clearStore();
-							await router.push('/');
-						})
-					}
-				>
-					<SignOut />
-					{translate('Sign out')}
-				</Button>
+				<div className="menu-footer">{signOutButton()}</div>
 			</div>
 		);
 	}
@@ -167,30 +197,41 @@ export default function Top() {
 						</nav>
 					)}
 					<div className="header-actions">
-						<details className="mobile-navigation" ref={mobileMenu}>
+						<details
+							className="mobile-navigation"
+							ref={mobileMenu}
+							onToggle={(event) => {
+								if (event.currentTarget.open && accountMenu.current) accountMenu.current.open = false;
+							}}
+						>
 							<summary aria-label={translate('Main navigation')}>
 								<List size={24} />
 							</summary>
 							<nav aria-label={translate('Main navigation')}>
-								{navigation.map(([href, text]) => (
-									<Link
-										key={href}
-										href={href}
-										aria-current={
-											router.pathname === href || router.pathname.startsWith(href + '/') ? 'page' : undefined
-										}
-									>
-										{translate(text)}
-									</Link>
-								))}
-								{!user && (
-									<>
-										{compact && <Link href={authHref}>{translate(authLabel)}</Link>}
-										{!signingIn && !registering && <Link href="/account/register">{translate('Sign up')}</Link>}
-									</>
+								{user ? (
+									accountContent(true)
+								) : (
+									<div className="guest-menu">
+										<div className="guest-auth-actions">
+											<LinkButton href="/account/sign-in">{translate('Sign in')}</LinkButton>
+											<LinkButton secondary href="/account/register">
+												{translate('Sign up')}
+											</LinkButton>
+										</div>
+										<div className="menu-group">
+											{menuLink('/projects', 'Projects', Folder)}
+											{menuLink('/services', 'Services', SquaresFour)}
+											{menuLink('/creators', 'Creators', User)}
+										</div>
+										<div className="menu-group">
+											{menuLink('/events', 'Events', CalendarBlank, 0, true)}
+											{menuLink('/contact', 'Contact us', ChatCircle, 0, true)}
+										</div>
+										<div className="menu-language">
+											<LanguageSelector />
+										</div>
+									</div>
 								)}
-								{user && <div className="mobile-account-links">{accountContent()}</div>}
-								<LanguageSelector />
 							</nav>
 						</details>
 						<LanguageSelector />
@@ -220,19 +261,29 @@ export default function Top() {
 									<Bell size={23} />
 									{!!count.value && <span className="dot" />}
 								</Link>
-								<details className="user-menu" ref={accountMenu}>
+								<details
+									className="user-menu"
+									ref={accountMenu}
+									onToggle={(event) => {
+										if (event.currentTarget.open && mobileMenu.current) mobileMenu.current.open = false;
+									}}
+								>
 									<summary aria-label={`${translate('Account menu')}: ${user.displayName}`}>
 										<Picture avatar src={user.avatarUrl} alt={user.displayName} />
 										<span>{user.displayName}</span>
 									</summary>
-									{accountContent()}
+									{accountContent(true)}
 								</details>
 							</>
 						) : (
 							<>
 								<div className="desktop-auth-actions">
 									{!signingIn && <LinkButton href="/account/sign-in">{translate('Sign in')}</LinkButton>}
-									{!registering && <LinkButton href="/account/register">{translate('Sign up')}</LinkButton>}
+									{!registering && (
+										<LinkButton secondary href="/account/register">
+											{translate('Sign up')}
+										</LinkButton>
+									)}
 								</div>
 							</>
 						)}

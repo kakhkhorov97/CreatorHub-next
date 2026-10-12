@@ -479,11 +479,15 @@
 	}
 	.grid.creators,
 	.grid.services {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 12px;
 	}
 	.creator-card,
 	.service-card {
-		padding: 16px;
+		padding: 12px;
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
 		background: #fff;
 		border: 1px solid var(--catalog-border);
 		border-radius: 12px;
@@ -492,6 +496,55 @@
 	.service-card:active {
 		background: var(--pressed-surface);
 	}
+	.grid.creators .creator-top {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 10px;
+	}
+	.grid.creators .creator-top > div {
+		min-width: 0;
+		width: 100%;
+	}
+	.grid.creators .card-title,
+	.grid.services .card-title {
+		font-size: 15px;
+		line-height: 1.4;
+		overflow-wrap: anywhere;
+	}
+	.grid.creators .creator-top p,
+	.grid.services > .service-card > p {
+		display: -webkit-box;
+		-webkit-line-clamp: 3;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+	.grid.creators .tags {
+		flex-wrap: wrap;
+	}
+	.grid.creators .tags span {
+		max-width: 100%;
+		overflow-wrap: anywhere;
+	}
+	.grid.services .creator-line {
+		flex-wrap: wrap;
+		font-size: 12px;
+		overflow-wrap: anywhere;
+	}
+	.grid.creators .card-bottom,
+	.grid.services .card-bottom {
+		margin-top: auto;
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 4px;
+	}
+	.grid.creators .card-bottom a,
+	.grid.services .card-bottom a {
+		min-height: 44px;
+	}
+	.grid.services ul {
+		overflow-wrap: anywhere;
+	}
+
 	.event-list {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 12px;
@@ -628,27 +681,6 @@
 }
 
 // Signed-in identity and account destinations remain visible at every scroll position.
-.account-menu-identity {
-	padding: 12px;
-	border-bottom: 1px solid #d9d7cf;
-}
-.account-menu-identity strong,
-.account-menu-identity small {
-	display: block;
-}
-.account-menu-identity strong {
-	overflow-wrap: anywhere;
-}
-.account-menu-identity small {
-	margin-top: 4px;
-	color: #5d665f;
-	font-size: 12px;
-}
-.user-menu > div > .my-page-link {
-	color: #194332;
-	font-weight: 600;
-	background: #e6efe9;
-}
 .my-page,
 .account-settings-content {
 	max-width: 760px;

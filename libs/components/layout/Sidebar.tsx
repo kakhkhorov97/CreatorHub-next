@@ -17,7 +17,6 @@ const account = [
 	['/following?tab=followers', 'Followers', Users],
 	['/following?tab=following', 'Following', Users],
 	['/account/settings', 'Account settings', Gear],
-	['/account/sign-in-methods', 'Sign-in methods', Gear],
 	['/saved', 'Saved projects', BookmarkSimple],
 	['/notifications', 'Notifications', Bell],
 	['/workspace', 'Workspace', House],

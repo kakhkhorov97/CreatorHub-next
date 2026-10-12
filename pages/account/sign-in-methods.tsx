@@ -1,107 +1,12 @@
-import ChangePasswordSettings from '../../libs/components/account/ChangePasswordSettings';
-import ChangeEmailSettings from '../../libs/components/account/ChangeEmailSettings';
-import { useTranslation } from 'next-i18next';
-import { useState } from 'react';
-import { Button, Confirm, Feedback, Heading, QueryState } from '../../libs/components/common/UI';
-import Layout, { Guard } from '../../libs/components/layout/LayoutBasic';
-import { useAction, useApi } from '../../libs/hooks/useApi';
-import type { AuthProvider } from '../../libs/types/creatorhub';
+import type { GetServerSideProps } from 'next';
 
-const providerNames: Record<AuthProvider, string> = {
-	EMAIL: 'Email',
-	PHONE: 'Phone',
-	GOOGLE: 'Google',
-	TELEGRAM: 'Telegram',
-	KAKAO: 'Kakao',
-};
-
-export default function SignInMethods() {
-	const { t } = useTranslation('common');
-	return (
-		<Layout title={t('Sign-in methods')} area="account">
-			<Guard>
-				<AccountSecurity />
-			</Guard>
-		</Layout>
-	);
+export default function SignInMethodsRedirect() {
+	return null;
 }
 
-function AccountSecurity() {
-	const { t } = useTranslation('common');
-	const identities = useApi('getMyAuthIdentities');
-	const action = useAction();
-	const [unlink, setUnlink] = useState<string | null>(null);
-	const social =
-		identities.value?.filter((identity) => !identity.revokedAt && !['EMAIL', 'PHONE'].includes(identity.provider)) ||
-		[];
-	const usableMethods =
-		identities.value?.filter(
-			(identity) => !identity.revokedAt && identity.verifiedAt && identity.provider !== 'PHONE',
-		) || [];
-
-	return (
-		<div className="sign-in-methods">
-			<Heading title={t('Sign-in methods')} />
-			<p className="muted sign-in-methods-intro">{t('Manage how you sign in to CreatorHub.')}</p>
-			<div className="panel sign-in-methods-panel">
-				<QueryState loading={identities.loading} error={identities.error} retry={identities.refetch} />
-				{!identities.loading && !identities.error && (
-					<>
-						<ChangeEmailSettings />
-						{social.length > 0 && (
-							<section className="identity-panel linked-methods-settings">
-								<h2>{t('Linked methods')}</h2>
-								{social.map((identity) => {
-									const onlyUsableMethod = usableMethods.length === 1 && usableMethods[0]._id === identity._id;
-									const removalReasonId = `removal-reason-${identity._id}`;
-									return (
-										<div className="sign-in-method-row" key={identity._id}>
-											<div className="sign-in-method-details">
-												<div className="sign-in-method-name">
-													<strong>{t(providerNames[identity.provider])}</strong>
-													<span className="sign-in-method-status">{t('Connected')}</span>
-												</div>
-												{onlyUsableMethod && (
-													<p className="muted sign-in-method-removal-reason" id={removalReasonId}>
-														{t("This is your only usable sign-in method, so it can't be removed.")}
-													</p>
-												)}
-											</div>
-											<Button
-												danger
-												className="sign-in-method-remove"
-												disabled={action.busy || onlyUsableMethod}
-												aria-describedby={onlyUsableMethod ? removalReasonId : undefined}
-												onClick={() => setUnlink(identity._id)}
-											>
-												{t('Remove')}
-											</Button>
-										</div>
-									);
-								})}
-								{unlink && (
-									<Confirm
-										title={t('Remove this sign-in method?')}
-										busy={action.busy}
-										onCancel={() => setUnlink(null)}
-										onConfirm={() =>
-											action.run(async () => {
-												await action.mutate('unlinkAuthIdentity', { authIdentityId: unlink });
-												setUnlink(null);
-												await identities.refetch();
-											})
-										}
-									>
-										{t('Sessions using this method will be revoked. You must keep at least one usable sign-in method.')}
-									</Confirm>
-								)}
-								<Feedback {...action} />
-							</section>
-						)}
-						<ChangePasswordSettings />
-					</>
-				)}
-			</div>
-		</div>
-	);
-}
+export const getServerSideProps: GetServerSideProps = async ({ locale, defaultLocale }) => ({
+	redirect: {
+		destination: `${locale && locale !== defaultLocale ? `/${locale}` : ''}/account/settings`,
+		permanent: false,
+	},
+});

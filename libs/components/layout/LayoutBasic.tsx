@@ -53,6 +53,8 @@ export default function Layout({
 	seo?: PageMetadata;
 }) {
 	const { t: translate } = useSiteTranslation('common');
+	const router = useRouter();
+	const standaloneAccount = area === 'account' && ['/account', '/account/settings'].includes(router.pathname);
 
 	if (area === 'admin') return <AdminLayout title={title}>{children}</AdminLayout>;
 
@@ -69,8 +71,8 @@ export default function Layout({
 				{translate('Skip to content')}
 			</a>
 			<Top />
-			<div className={area ? 'app-frame' : 'public-frame'}>
-				{area && <Sidebar area={area} />}
+			<div className={standaloneAccount ? 'app-frame account-frame' : area ? 'app-frame' : 'public-frame'}>
+				{area && !standaloneAccount && <Sidebar area={area} />}
 
 				<main id="main" className={area ? 'workspace-main' : 'public-main'}>
 					{children}
