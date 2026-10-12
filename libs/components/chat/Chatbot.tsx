@@ -44,7 +44,29 @@ export default function Chatbot() {
 	const transcript = useRef<HTMLDivElement>(null);
 	const lock = useRef(false);
 	useEffect(() => {
-		if (open) input.current?.focus();
+		if (open && !window.matchMedia('(max-width: 700px)').matches) input.current?.focus();
+	}, [open]);
+	useEffect(() => {
+		if (!open) return;
+		const element = widget.current;
+		const viewport = window.visualViewport;
+		const updateViewport = () => {
+			const height = viewport?.height ?? window.innerHeight;
+			const inset = Math.max(0, window.innerHeight - height - (viewport?.offsetTop ?? 0));
+			element?.style.setProperty('--chat-viewport-height', `${height}px`);
+			element?.style.setProperty('--chat-keyboard-inset', `${inset}px`);
+		};
+		updateViewport();
+		viewport?.addEventListener('resize', updateViewport);
+		viewport?.addEventListener('scroll', updateViewport);
+		window.addEventListener('resize', updateViewport);
+		return () => {
+			viewport?.removeEventListener('resize', updateViewport);
+			viewport?.removeEventListener('scroll', updateViewport);
+			window.removeEventListener('resize', updateViewport);
+			element?.style.removeProperty('--chat-viewport-height');
+			element?.style.removeProperty('--chat-keyboard-inset');
+		};
 	}, [open]);
 	useEffect(() => {
 		transcript.current?.scrollTo({ top: transcript.current.scrollHeight });
@@ -113,7 +135,7 @@ export default function Chatbot() {
 						</button>
 					</header>
 					<div className="chat-transcript" ref={transcript} role="log" aria-live="polite" aria-relevant="additions">
-						{
+						{messages.length === 0 && (
 							<div className="chat-welcome">
 								<p>
 									{user
@@ -129,20 +151,20 @@ export default function Chatbot() {
 									{['How do I find a creator?', 'How do I publish my work?', 'Find designers in Gwangju'].map(
 										(question) => (
 											<button
-												key={question}
+												key={translate(question)}
 												onClick={() => {
 													setDraft(question);
 													input.current?.focus();
 												}}
 											>
-												{question}
+												{translate(question)}
 											</button>
 										),
 									)}
 								</div>
 								<small>{translate('AI answers may be incomplete. Check the linked profiles and services.')}</small>
 							</div>
-						}
+						)}
 						{messages.map((message, index) => (
 							<div key={index} className={`chat-entry ${message.role}`}>
 								{message.role === 'user' && user ? (
