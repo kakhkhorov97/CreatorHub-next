@@ -1,34 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 
 export function createHeaderScrollController(initialY = 0) {
-	let previousY = Math.max(0, initialY);
-	let turnY = previousY;
-	let direction = 0;
-	let hidden = false;
-
+	let compact = initialY > 80;
 	return {
-		update(rawY: number, maximumY: number, headerHeight: number, pinned = false) {
-			// Safari can report positions outside the document during elastic scrolling.
-			if (!Number.isFinite(rawY) || rawY > maximumY) return hidden;
+		update(rawY: number, maximumY: number, pinned = false) {
+			// Ignore elastic overscroll and keep focused controls mounted.
+			if (pinned || !Number.isFinite(rawY) || rawY > maximumY) return compact;
 			const y = Math.max(0, rawY);
-			if (pinned || y <= 24) {
-				previousY = turnY = y;
-				direction = 0;
-				hidden = false;
-				return hidden;
-			}
-			const delta = y - previousY;
-			if (delta === 0) return hidden;
-			const nextDirection = delta > 0 ? 1 : -1;
-			if (nextDirection !== direction) {
-				direction = nextDirection;
-				turnY = previousY;
-			}
-			previousY = y;
-			const distance = Math.abs(y - turnY);
-			if (direction === 1 && distance >= 16 && y > headerHeight) hidden = true;
-			if (direction === -1 && distance >= 12) hidden = false;
-			return hidden;
+			if (y > 80) compact = true;
+			else if (y <= 24) compact = false;
+			return compact;
 		},
 	};
 }
@@ -36,7 +17,6 @@ export function createHeaderScrollController(initialY = 0) {
 export default function useHeaderScroll(pathname: string, route: string) {
 	const header = useRef<HTMLDivElement>(null);
 	const [compact, setCompact] = useState(false);
-	const [hidden, setHidden] = useState(false);
 
 	useEffect(() => {
 		const media = window.matchMedia('(max-width: 700px)');
@@ -54,11 +34,10 @@ export default function useHeaderScroll(pathname: string, route: string) {
 					focused instanceof Element &&
 					focused.matches(':focus-visible, input, textarea, select')) ||
 				Boolean(element.querySelector('details[open], [aria-expanded="true"]'));
-			setHidden(
+			setCompact(
 				controller.update(
 					window.scrollY,
 					Math.max(0, document.documentElement.scrollHeight - window.innerHeight),
-					element.offsetHeight,
 					pinned,
 				),
 			);
@@ -69,9 +48,8 @@ export default function useHeaderScroll(pathname: string, route: string) {
 		const configure = () => {
 			observer?.disconnect();
 			controller = createHeaderScrollController(window.scrollY);
-			setHidden(false);
 			if (media.matches) {
-				setCompact(false);
+				update();
 				return;
 			}
 			const target = pathname === '/' ? document.getElementById('homepage-search') : null;
@@ -98,5 +76,5 @@ export default function useHeaderScroll(pathname: string, route: string) {
 		};
 	}, [pathname, route]);
 
-	return { header, compact, hidden };
+	return { header, compact };
 }

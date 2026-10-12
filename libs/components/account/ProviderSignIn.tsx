@@ -1,3 +1,4 @@
+import { discardSocialChallenge, getSocialChallenge } from '../../auth/socialChallenge';
 import Script from 'next/script';
 import { SiKakaotalk } from 'react-icons/si';
 import { FaTelegramPlane } from 'react-icons/fa';
@@ -31,7 +32,9 @@ export default function ProviderSignIn({ onSetupChange }: { onSetupChange(setup:
 
 	async function prepare() {
 		setNonce('');
-		const value = await action.run(() => action.mutate('beginSocialLogin', { provider: 'TELEGRAM' }));
+		const value = await action.run(() =>
+			getSocialChallenge('TELEGRAM', () => action.mutate('beginSocialLogin', { provider: 'TELEGRAM' })),
+		);
 		if (value) setNonce(value);
 	}
 	useEffect(() => {
@@ -42,13 +45,14 @@ export default function ProviderSignIn({ onSetupChange }: { onSetupChange(setup:
 
 	function telegram() {
 		const sdk = (window as Window & { Telegram?: { Login: TelegramLogin } }).Telegram?.Login;
-		if (!sdk || !nonce || action.busy || callbackLock.current) return;
+		if (!sdk || !nonce || action.busy || action.retryAfter > 0 || callbackLock.current) return;
 		const currentNonce = nonce;
 		sdk.auth(
 			{ client_id: clientId, nonce: currentNonce, scope: ['profile'], lang: router.locale || 'en' },
 			(result) => {
 				if (callbackLock.current) return;
 				callbackLock.current = true;
+				discardSocialChallenge('TELEGRAM');
 				void action
 					.run(async () => {
 						if (!result?.id_token) throw new Error('Telegram sign-in was not completed. Please try again.');
@@ -104,7 +108,12 @@ export default function ProviderSignIn({ onSetupChange }: { onSetupChange(setup:
 				/>
 			) : (
 				<>
-					<Button secondary className="social-provider-button" disabled={action.busy} onClick={() => void kakao()}>
+					<Button
+						secondary
+						className="social-provider-button"
+						disabled={action.busy || action.retryAfter > 0}
+						onClick={() => void kakao()}
+					>
 						<SiKakaotalk
 							className="social-provider-icon social-provider-icon--kakao"
 							aria-hidden="true"
@@ -115,7 +124,7 @@ export default function ProviderSignIn({ onSetupChange }: { onSetupChange(setup:
 					<Button
 						secondary
 						className="social-provider-button"
-						disabled={action.busy || !ready || !nonce || scriptError || !configured}
+						disabled={action.busy || action.retryAfter > 0 || !ready || !nonce || scriptError || !configured}
 						onClick={telegram}
 					>
 						<FaTelegramPlane
@@ -125,25 +134,33 @@ export default function ProviderSignIn({ onSetupChange }: { onSetupChange(setup:
 						/>
 						{t('Continue with')} Telegram
 					</Button>
-					{configured && !ready && !scriptError && <small role="status">{t('Loading Telegram sign-in…')}</small>}
+
 					{configured && ready && !nonce && !action.busy && (
-						<Button secondary onClick={() => void prepare()}>
+						<Button secondary disabled={action.retryAfter > 0} onClick={() => void prepare()}>
 							{t('Try again')}
 						</Button>
 					)}
 				</>
 			)}
-			{scriptError && (
-				<p className="field-error" role="alert">
-					{t('Telegram sign-in could not load. Refresh the page and try again.')}
-				</p>
-			)}
-			{!configured && <small>{t('Telegram sign-in is not configured yet.')}</small>}
-			{action.error && (
-				<p className="field-error" role="alert">
-					{t(action.error)}
-				</p>
-			)}
+			<div className="provider-feedback" aria-live="polite">
+				{action.retryAfter > 0 ? (
+					<p role="status">
+						{t('Please wait {{seconds}} seconds before trying again.', { seconds: action.retryAfter })}
+					</p>
+				) : scriptError ? (
+					<p className="field-error" role="alert">
+						{t('Telegram sign-in could not load. Refresh the page and try again.')}
+					</p>
+				) : action.error ? (
+					<p className="field-error" role="alert">
+						{t(action.error)}
+					</p>
+				) : configured && !ready ? (
+					<p role="status">{t('Loading Telegram sign-in…')}</p>
+				) : !configured ? (
+					<p>{t('Telegram sign-in is not configured yet.')}</p>
+				) : null}
+			</div>
 		</div>
 	);
 }

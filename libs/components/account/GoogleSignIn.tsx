@@ -1,3 +1,4 @@
+import { discardSocialChallenge, getSocialChallenge } from '../../auth/socialChallenge';
 import Script from 'next/script';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
@@ -40,7 +41,9 @@ export default function GoogleSignIn({ onSetupChange }: { onSetupChange(setup: b
 	async function prepare() {
 		setRetry(false);
 		setNonce('');
-		const challenge = await action.run(() => action.mutate('beginSocialLogin', { provider: 'GOOGLE' }));
+		const challenge = await action.run(() =>
+			getSocialChallenge('GOOGLE', () => action.mutate('beginSocialLogin', { provider: 'GOOGLE' })),
+		);
 		if (challenge) setNonce(challenge);
 		else setRetry(true);
 	}
@@ -61,7 +64,8 @@ export default function GoogleSignIn({ onSetupChange }: { onSetupChange(setup: b
 		sessionStorage.removeItem('creatorhub.pendingEmail');
 	}
 	callback.current = (credential) => {
-		if (action.busy || pending) return;
+		if (action.busy || action.retryAfter > 0 || pending) return;
+		discardSocialChallenge('GOOGLE');
 		void action
 			.run(async () => {
 				const result = await action.mutate('loginGoogle', { input: { idToken: credential, nonce } });
@@ -91,6 +95,7 @@ export default function GoogleSignIn({ onSetupChange }: { onSetupChange(setup: b
 			callback: (response) => callback.current(response.credential),
 		});
 		let renderedWidth = 0;
+		let frame = 0;
 		const render = () => {
 			const width = Math.min(400, Math.floor(host.clientWidth || 280));
 			if (width === renderedWidth) return;
@@ -105,10 +110,14 @@ export default function GoogleSignIn({ onSetupChange }: { onSetupChange(setup: b
 			});
 		};
 		render();
-		const observer = new ResizeObserver(render);
+		const observer = new ResizeObserver(() => {
+			window.cancelAnimationFrame(frame);
+			frame = window.requestAnimationFrame(render);
+		});
 		observer.observe(host);
 		return () => {
 			observer.disconnect();
+			window.cancelAnimationFrame(frame);
 			host.replaceChildren();
 		};
 	}, [ready, nonce, pending]);
@@ -168,12 +177,16 @@ export default function GoogleSignIn({ onSetupChange }: { onSetupChange(setup: b
 						minLength={2}
 						maxLength={60}
 						error={errors.displayName}
-						disabled={action.busy}
+						disabled={action.busy || action.retryAfter > 0}
 					/>
 					<div className="auth-phone-group">
 						<div className="auth-phone-row">
 							<Field label={t('Country code')}>
-								<select value={countryCode} onChange={(e) => setCountryCode(e.target.value)} disabled={action.busy}>
+								<select
+									value={countryCode}
+									onChange={(e) => setCountryCode(e.target.value)}
+									disabled={action.busy || action.retryAfter > 0}
+								>
 									{['+82', '+1', '+44', '+61', '+81', '+86', '+91', '+33', '+49', '+998'].map((code) => (
 										<option key={code}>{code}</option>
 									))}
@@ -187,17 +200,17 @@ export default function GoogleSignIn({ onSetupChange }: { onSetupChange(setup: b
 								required
 								maxLength={40}
 								error={errors.phoneNumber}
-								disabled={action.busy}
+								disabled={action.busy || action.retryAfter > 0}
 							/>
 						</div>
 						<small>{t('For contact only. Continue signing in with Google.')}</small>
 					</div>
-					<Button type="submit" disabled={action.busy}>
+					<Button type="submit" disabled={action.busy || action.retryAfter > 0}>
 						{t(action.busy ? 'Please wait…' : 'Create account')}
 					</Button>
 					<Button
 						secondary
-						disabled={action.busy}
+						disabled={action.busy || action.retryAfter > 0}
 						onClick={() => {
 							setPending(null);
 							onSetupChange(false);
@@ -215,27 +228,34 @@ export default function GoogleSignIn({ onSetupChange }: { onSetupChange(setup: b
 							ref={container}
 							className="google-button"
 							aria-busy={action.busy}
-							style={{ pointerEvents: action.busy ? 'none' : undefined }}
+							style={{ pointerEvents: action.busy || action.retryAfter > 0 ? 'none' : undefined }}
 						/>
 					)}
-					{!ready && !scriptError && <p role="status">{t('Loading Google sign-in…')}</p>}
+
 					{retry && (
-						<Button secondary disabled={action.busy} onClick={() => void prepare()}>
+						<Button secondary disabled={action.busy || action.retryAfter > 0} onClick={() => void prepare()}>
 							{t('Try again')}
 						</Button>
 					)}
 				</>
 			)}
-			{scriptError && (
-				<p className="field-error" role="alert">
-					{t('Google sign-in could not load. Refresh the page and try again.')}
-				</p>
-			)}
-			{action.error && (
-				<p className="field-error" role="alert">
-					{t(action.error)}
-				</p>
-			)}
+			<div className="provider-feedback" aria-live="polite">
+				{action.retryAfter > 0 ? (
+					<p role="status">
+						{t('Please wait {{seconds}} seconds before trying again.', { seconds: action.retryAfter })}
+					</p>
+				) : scriptError ? (
+					<p className="field-error" role="alert">
+						{t('Google sign-in could not load. Refresh the page and try again.')}
+					</p>
+				) : action.error ? (
+					<p className="field-error" role="alert">
+						{t(action.error)}
+					</p>
+				) : !ready ? (
+					<p role="status">{t('Loading Google sign-in…')}</p>
+				) : null}
+			</div>
 		</div>
 	);
 }

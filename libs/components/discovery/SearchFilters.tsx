@@ -1,6 +1,7 @@
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { MagnifyingGlass } from 'phosphor-react';
-import { FormEvent } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
+import CategoryPicker from './CategoryPicker';
 import { useApi } from '../../hooks/useApi';
 import { DiscoveryInput } from '../../types/creatorhub';
 import { Button, optional, values } from '../common/UI';
@@ -20,20 +21,22 @@ export default function SearchFilters({
 
 	const categories = useApi('categories');
 	const cities = useApi('getCities');
+	const [category, setCategory] = useState(filters.categoryId || '');
+	useEffect(() => setCategory(filters.categoryId || ''), [filters.categoryId]);
 
 	function submit(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 		const fields = values(event.currentTarget);
 		onSearch({
 			query: optional(fields.query),
-			categoryId: optional(fields.categoryId),
+			categoryId: optional(category),
 			city: optional(fields.city),
 			remoteAvailable: fields.remoteAvailable ? true : undefined,
 			...(kind === 'services' && fields.budgetMax ? { budgetMax: Number(fields.budgetMax) } : {}),
 		});
 	}
 	return (
-		<form id={home ? 'homepage-search' : undefined} className="search-form segmented-search" onSubmit={submit}>
+		<form id={home ? 'homepage-search' : 'directory-search'} className="search-form segmented-search" onSubmit={submit}>
 			<div className="search-segments">
 				<label className="search-query">
 					<MagnifyingGlass size={23} />
@@ -56,9 +59,9 @@ export default function SearchFilters({
 						}
 					/>
 				</label>
-				<label className="search-segment">
+				<label className="search-segment desktop-category-filter">
 					<span>{translate('Category')}</span>
-					<select name="categoryId" key={filters.categoryId || 'all'} defaultValue={filters.categoryId || ''}>
+					<select name="categoryId" value={category} onChange={(event) => setCategory(event.target.value)}>
 						<option value="">{translate('All categories')}</option>
 						{categories.value?.map((category) => (
 							<option key={category._id} value={category._id}>
@@ -67,6 +70,7 @@ export default function SearchFilters({
 						))}
 					</select>
 				</label>
+				<CategoryPicker value={category} onChange={setCategory} />
 				<label className="search-segment">
 					<span>{translate('Location')}</span>
 					<select name="city" key={filters.city || 'korea'} defaultValue={filters.city || ''}>
@@ -96,7 +100,14 @@ export default function SearchFilters({
 						placeholder={translate('Max budget (₩)')}
 					/>
 				)}
-				<Button secondary type="reset" onClick={() => onSearch({})}>
+				<Button
+					secondary
+					type="reset"
+					onClick={() => {
+						setCategory('');
+						onSearch({});
+					}}
+				>
 					{translate('Reset')}
 				</Button>
 			</div>

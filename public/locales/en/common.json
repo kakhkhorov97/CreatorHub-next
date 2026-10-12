@@ -964,5 +964,8 @@
 	"No profile photo": "No profile photo",
 	"Manage how you sign in to CreatorHub.": "Manage how you sign in to CreatorHub.",
 	"Connected": "Connected",
-	"This is your only usable sign-in method, so it can't be removed.": "This is your only usable sign-in method, so it can't be removed."
+	"This is your only usable sign-in method, so it can't be removed.": "This is your only usable sign-in method, so it can't be removed.",
+	"Close categories": "Close categories",
+	"Please wait {{seconds}} seconds before trying again.": "Please wait {{seconds}} seconds before trying again.",
+	"Hi! What can I help you find?": "Hi! What can I help you find?"
 }

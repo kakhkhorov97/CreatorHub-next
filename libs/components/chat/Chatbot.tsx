@@ -137,11 +137,7 @@ export default function Chatbot() {
 					<div className="chat-transcript" ref={transcript} role="log" aria-live="polite" aria-relevant="additions">
 						{messages.length === 0 && (
 							<div className="chat-welcome">
-								<p>
-									{user
-										? translate('Hi {{name}}! I’m the CreatorHub AI assistant.', { name: user.displayName })
-										: translate('Hello! I’m the CreatorHub AI assistant.')}
-								</p>
+								<p>{translate('Hi! What can I help you find?')}</p>
 								<p>
 									{translate(
 										'I can help you discover creators, projects and services, and explain how to use CreatorHub. What would you like to do?',

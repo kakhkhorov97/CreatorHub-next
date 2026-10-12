@@ -964,5 +964,8 @@
 	"No profile photo": "Profil rasmi yo‘q",
 	"Manage how you sign in to CreatorHub.": "CreatorHub hisobiga kirish usullarini boshqaring.",
 	"Connected": "Ulangan",
-	"This is your only usable sign-in method, so it can't be removed.": "Bu foydalanishingiz mumkin bo'lgan yagona kirish usuli, shuning uchun uni olib tashlab bo'lmaydi."
+	"This is your only usable sign-in method, so it can't be removed.": "Bu foydalanishingiz mumkin bo'lgan yagona kirish usuli, shuning uchun uni olib tashlab bo'lmaydi.",
+	"Close categories": "Toifalarni yopish",
+	"Please wait {{seconds}} seconds before trying again.": "Qayta urinishdan oldin {{seconds}} soniya kuting.",
+	"Hi! What can I help you find?": "Salom! Nimani topishga yordam beray?"
 }

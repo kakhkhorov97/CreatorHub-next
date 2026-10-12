@@ -99,6 +99,8 @@ function harness(result) {
 			if (name === 'next-i18next') return { useTranslation: () => ({ t: (k) => k }) };
 			if (name === '../../auth')
 				return { safeReturnTo: (p) => p, authenticationDestination: (p) => p, saveSession: (s) => saved.push(s) };
+			if (name === '../../auth/socialChallenge')
+				return { getSocialChallenge: (_provider, load) => load(), discardSocialChallenge: () => {} };
 			if (name === '../../hooks/useApi') return { useAction: () => action };
 			if (name === '../../utils/authForm') return { validateAuthForm: () => ({}) };
 			if (name === '../common/UI') return { Button: () => null, Field: () => null, values: (f) => f.fields };

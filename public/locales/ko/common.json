@@ -964,5 +964,8 @@
 	"No profile photo": "프로필 사진 없음",
 	"Manage how you sign in to CreatorHub.": "CreatorHub 로그인 방법을 관리하세요.",
 	"Connected": "연결됨",
-	"This is your only usable sign-in method, so it can't be removed.": "이 계정에서 사용할 수 있는 유일한 로그인 방법이므로 삭제할 수 없습니다."
+	"This is your only usable sign-in method, so it can't be removed.": "이 계정에서 사용할 수 있는 유일한 로그인 방법이므로 삭제할 수 없습니다.",
+	"Close categories": "카테고리 닫기",
+	"Please wait {{seconds}} seconds before trying again.": "{{seconds}}초 후에 다시 시도해 주세요.",
+	"Hi! What can I help you find?": "안녕하세요! 무엇을 찾고 계신가요?"
 }

@@ -4,7 +4,7 @@ import { useReactiveVar } from '@apollo/client';
 import LanguageSelector from './LanguageSelector';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Bell, EnvelopeSimple, MagnifyingGlass, SignOut } from 'phosphor-react';
+import { Bell, EnvelopeSimple, List, MagnifyingGlass, SignOut } from 'phosphor-react';
 import { useEffect, useRef } from 'react';
 import useHeaderScroll from '../hooks/useHeaderScroll';
 import { userVar } from '../../apollo/store';
@@ -45,8 +45,11 @@ export default function Top() {
 		router.pathname === '/contact';
 	const profile = useApi('myCreatorProfile', {}, !user || user.role === 'USER');
 	const accountMenu = useRef<HTMLDetailsElement>(null);
+	const mobileMenu = useRef<HTMLDetailsElement>(null);
 	useEffect(() => {
 		const closeOutside = (event: PointerEvent) => {
+			if (event.target instanceof Node && mobileMenu.current && !mobileMenu.current.contains(event.target))
+				mobileMenu.current.open = false;
 			if (event.target instanceof Node && !accountMenu.current?.contains(event.target) && accountMenu.current)
 				accountMenu.current.open = false;
 		};
@@ -55,19 +58,80 @@ export default function Top() {
 	}, []);
 	useEffect(() => {
 		if (accountMenu.current) accountMenu.current.open = false;
+		if (mobileMenu.current) mobileMenu.current.open = false;
 	}, [router.asPath]);
-	const { header, compact, hidden } = useHeaderScroll(router.pathname, router.asPath);
+	const { header, compact } = useHeaderScroll(router.pathname, router.asPath);
+	function accountContent() {
+		if (!user) return null;
+		return (
+			<div>
+				<div className="mobile-account-tools">
+					<Link href="/inquiries">
+						{translate('Inbox')} {inbox.value || ''}
+					</Link>
+					<Link href="/notifications">
+						{translate('Notifications')} {count.value || ''}
+					</Link>
+				</div>
+				{user.role !== 'ADMIN' && (
+					<Link passHref href="/workspace">
+						{translate('Workspace')}
+					</Link>
+				)}
+				<Link passHref href="/account/settings">
+					{translate('Account settings')}
+				</Link>
+				<Link passHref href="/saved">
+					{translate('Saved projects')}
+				</Link>
+				{profile.value && (
+					<Link passHref href={`/creators/${profile.value.slug}`}>
+						{translate('My profile')}
+					</Link>
+				)}
+
+				<Link passHref href="/following">
+					{translate('Followers & Following')}
+				</Link>
+				{user.role === 'ADMIN' && (
+					<Link passHref href="/_admin">
+						{translate('Administration')}
+					</Link>
+				)}
+				<Button
+					secondary
+					className="signout-button"
+					disabled={action.busy}
+					onClick={() =>
+						action.run(async () => {
+							const sessionId = readSession()?.sessionId;
+							await action.mutate('logout');
+							clearSession(sessionId);
+							await action.client.clearStore();
+							await router.push('/');
+						})
+					}
+				>
+					<SignOut />
+					{translate('Sign out')}
+				</Button>
+			</div>
+		);
+	}
+
 	return (
 		<>
 			<div
 				ref={header}
-				className={`site-header ${compact ? 'is-compact' : ''} ${hidden ? 'is-scroll-hidden' : ''} ${
-					showNavigation ? 'has-navigation' : 'is-simple'
-				}`}
+				className={`site-header ${compact ? 'is-compact' : ''} ${showNavigation ? 'has-navigation' : 'is-simple'}`}
 			>
 				<header
 					className="top"
 					onKeyDown={(event) => {
+						if (event.key === 'Escape' && mobileMenu.current?.open) {
+							mobileMenu.current.open = false;
+							mobileMenu.current.querySelector('summary')?.focus();
+						}
 						if (event.key === 'Escape' && accountMenu.current?.open) {
 							accountMenu.current.open = false;
 							accountMenu.current.querySelector('summary')?.focus();
@@ -111,7 +175,39 @@ export default function Top() {
 						</form>
 					)}
 					<div className="header-actions">
+						<Link
+							href="/projects#directory-search"
+							className="mobile-search-link icon-button"
+							aria-label={translate('Search projects')}
+						>
+							<MagnifyingGlass size={22} />
+						</Link>
+						<details className="mobile-navigation" ref={mobileMenu}>
+							<summary aria-label={translate('Main navigation')}>
+								<List size={24} />
+							</summary>
+							<nav aria-label={translate('Main navigation')}>
+								{navigation.map(([href, text]) => (
+									<Link key={href} href={href} aria-current={router.pathname === href ? 'page' : undefined}>
+										{translate(text)}
+									</Link>
+								))}
+								{!user && (
+									<>
+										<Link href="/account/sign-in">{translate('Sign in')}</Link>
+										<Link href="/account/register">{translate('Sign up')}</Link>
+									</>
+								)}
+								{user && <div className="mobile-account-links">{accountContent()}</div>}
+								<LanguageSelector />
+							</nav>
+						</details>
 						<LanguageSelector />
+						{!user && (
+							<Link href="/account/sign-in" className="mobile-login-link">
+								{translate('Sign in')}
+							</Link>
+						)}
 						{user ? (
 							<>
 								<Link
@@ -138,58 +234,7 @@ export default function Top() {
 										<Picture avatar src={user.avatarUrl} alt={user.displayName} />
 										<span>{user.displayName}</span>
 									</summary>
-									<div>
-										<div className="mobile-account-tools">
-											<Link href="/inquiries">
-												{translate('Inbox')} {inbox.value || ''}
-											</Link>
-											<Link href="/notifications">
-												{translate('Notifications')} {count.value || ''}
-											</Link>
-										</div>
-										{user.role !== 'ADMIN' && (
-											<Link passHref href="/workspace">
-												{translate('Workspace')}
-											</Link>
-										)}
-										<Link passHref href="/account/settings">
-											{translate('Account settings')}
-										</Link>
-										<Link passHref href="/saved">
-											{translate('Saved projects')}
-										</Link>
-										{profile.value && (
-											<Link passHref href={`/creators/${profile.value.slug}`}>
-												{translate('My profile')}
-											</Link>
-										)}
-
-										<Link passHref href="/following">
-											{translate('Followers & Following')}
-										</Link>
-										{user.role === 'ADMIN' && (
-											<Link passHref href="/_admin">
-												{translate('Administration')}
-											</Link>
-										)}
-										<Button
-											secondary
-											className="signout-button"
-											disabled={action.busy}
-											onClick={() =>
-												action.run(async () => {
-													const sessionId = readSession()?.sessionId;
-													await action.mutate('logout');
-													clearSession(sessionId);
-													await action.client.clearStore();
-													await router.push('/');
-												})
-											}
-										>
-											<SignOut />
-											{translate('Sign out')}
-										</Button>
-									</div>
+									{accountContent()}
 								</details>
 							</>
 						) : (
@@ -206,6 +251,7 @@ export default function Top() {
 						)}
 					</div>
 				</header>
+
 				{discovery && (
 					<nav className="header-categories" aria-label={translate('Creative categories')}>
 						{categories.value?.map((category) => (

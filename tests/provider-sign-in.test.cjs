@@ -100,6 +100,8 @@ function harness(file, result, query = {}, attempt) {
 			if (name === 'next/script') return Script;
 			if (name === 'next/router') return { useRouter: () => router };
 			if (name === 'next-i18next') return { useTranslation: () => ({ t: (k) => k }) };
+			if (name === '../../auth/socialChallenge')
+				return { getSocialChallenge: (_provider, load) => load(), discardSocialChallenge: () => {} };
 			if (name === '../../hooks/useApi') return { useAction: () => action };
 			if (name === '../../auth')
 				return { safeReturnTo: (p) => (p.startsWith('/') && !p.startsWith('//') ? p : undefined) };
