@@ -1338,3 +1338,45 @@
 		font-weight: 700;
 	}
 }
+
+// Homepage, desktop: the header sits on top of the hero video until you scroll.
+@media (min-width: 701px) {
+	.site-header.over-hero {
+		background: transparent !important;
+		border-bottom: 0;
+		box-shadow: none;
+		transition: background $motion;
+	}
+	.site-header.over-hero .top {
+		background: transparent !important;
+		border-bottom: 1px solid rgba(245, 243, 236, 0.16);
+	}
+	.site-header.over-hero .brand {
+		color: $ivory;
+		border-color: rgba(245, 243, 236, 0.4);
+		background: transparent;
+	}
+	.site-header.over-hero .primary-nav a,
+	.site-header.over-hero .header-text-link,
+	.site-header.over-hero .user-menu summary,
+	.site-header.over-hero .guest-language-menu > summary {
+		color: $ivory;
+	}
+	.site-header.over-hero .primary-nav a:hover {
+		color: $lime;
+	}
+	.site-header.over-hero .guest-language-menu > summary {
+		background: rgba(245, 243, 236, 0.1);
+		border-color: rgba(245, 243, 236, 0.3);
+	}
+	.site-header.over-hero .desktop-auth-actions .button.secondary {
+		background: transparent;
+		border-color: rgba(245, 243, 236, 0.6);
+		color: $ivory;
+	}
+	// Pull the hero up under the transparent header.
+	.discovery-home .discovery-search-section {
+		margin-top: -132px;
+		padding-top: 184px;
+	}
+}

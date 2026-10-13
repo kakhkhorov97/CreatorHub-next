@@ -231,7 +231,9 @@ export default function Top() {
 		<>
 			<div
 				ref={header}
-				className={`site-header ${compact ? 'is-compact' : ''} ${showNavigation ? 'has-navigation' : 'is-simple'}`}
+				className={`site-header ${compact ? 'is-compact' : ''} ${showNavigation ? 'has-navigation' : 'is-simple'}${
+					router.pathname === '/' && !compact ? ' over-hero' : ''
+				}`}
 			>
 				<header
 					className="top"

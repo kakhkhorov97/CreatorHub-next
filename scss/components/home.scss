@@ -674,7 +674,7 @@
 	clip-path: inset(0 -100vmax);
 }
 .discovery-home .discovery-search-section::before {
-	display: none;
+	display: none !important;
 }
 .discovery-home .discovery-search-section::after {
 	background: linear-gradient(
