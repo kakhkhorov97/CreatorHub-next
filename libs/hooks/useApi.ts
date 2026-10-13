@@ -26,7 +26,12 @@ export function useApi<K extends QueryName>(
 	skip = false,
 	pollInterval = 0,
 ) {
-	const result = useQuery<Record<K, Operations[K]['result']>>(documents[name], { variables, skip, pollInterval });
+	const result = useQuery<Record<K, Operations[K]['result']>>(documents[name], {
+		variables,
+		skip,
+		pollInterval,
+		notifyOnNetworkStatusChange: true,
+	});
 	return { ...result, value: result.data ? unwrap(result.data[name]) : undefined };
 }
 

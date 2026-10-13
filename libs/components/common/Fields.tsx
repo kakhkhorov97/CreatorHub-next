@@ -16,6 +16,7 @@ export function Field({
 	children?: ReactNode;
 }) {
 	const { t: translate } = useSiteTranslation('common');
+	const numeric = /^budget/i.test(props.name || '');
 	const id = useId();
 	const describedBy =
 		[props['aria-describedby'], hint && `${id}-hint`, error && `${id}-error`].filter(Boolean).join(' ') || undefined;
@@ -35,6 +36,18 @@ export function Field({
 				<input
 					id={id}
 					{...props}
+					type={numeric ? 'text' : props.type}
+					inputMode={numeric ? 'numeric' : props.inputMode}
+					pattern={numeric ? '[0-9]{1,10}' : props.pattern}
+					maxLength={numeric ? 10 : props.maxLength}
+					onChange={(event) => {
+						if (numeric) event.currentTarget.value = event.currentTarget.value.replace(/[^0-9]/g, '');
+						if (numeric)
+							event.currentTarget.setCustomValidity(
+								Number(event.currentTarget.value) > 1000000000 ? translate('Maximum budget is 1,000,000,000 KRW.') : '',
+							);
+						props.onChange?.(event);
+					}}
 					aria-describedby={describedBy}
 					aria-invalid={error ? true : undefined}
 					onKeyDown={(event) => {

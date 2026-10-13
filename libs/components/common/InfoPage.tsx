@@ -1,3 +1,4 @@
+import { ArrowLeft } from 'phosphor-react';
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Layout from '../layout/LayoutBasic';
 import { Heading, LinkButton } from './UI';
@@ -109,7 +110,9 @@ export default function InfoPage({ kind }: { kind: 'help' | 'privacy' | 'terms' 
 								? translate('The page may have moved, or the address may be incorrect.')
 								: translate('This content may be private, removed, or temporarily unavailable.')}
 						</p>
-						<LinkButton href="/">{translate('Back to explore')}</LinkButton>
+						<LinkButton href="/" aria-label={translate('Back to explore')} title={translate('Back to explore')}>
+							<ArrowLeft size={22} aria-hidden />
+						</LinkButton>
 					</>
 				)}
 			</div>

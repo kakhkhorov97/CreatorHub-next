@@ -1,4 +1,5 @@
 import { useTranslation as useSiteTranslation } from 'next-i18next';
+import { CircleNotch } from 'phosphor-react';
 import React, { ReactNode, useEffect } from 'react';
 import { toast } from 'sonner';
 
@@ -32,12 +33,25 @@ export function Notice({
 	);
 }
 
-export function Feedback({ busy, error }: { busy?: boolean; error?: string }) {
+export function Feedback({
+	busy,
+	error,
+	busyLabel = 'Saving…',
+}: {
+	busy?: boolean;
+	error?: string;
+	busyLabel?: string;
+}) {
 	const { t: translate } = useSiteTranslation('common');
 
 	return (
 		<>
-			{busy && <p role="status">{translate('Saving…')}</p>}
+			{busy && (
+				<p className="saving-feedback" role="status">
+					<CircleNotch className="button-spinner" size={23} aria-hidden />
+					{translate(busyLabel)}
+				</p>
+			)}
 			{error && <Notice error>{translate(error)}</Notice>}
 		</>
 	);

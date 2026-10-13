@@ -161,7 +161,16 @@ export function ContactCreator({
 								<span aria-hidden="true">₩</span>
 								<input
 									name="budgetMin"
-									type="number"
+									type="text"
+									inputMode="numeric"
+									pattern="[0-9]{1,10}"
+									maxLength={10}
+									onInput={(event) => {
+										event.currentTarget.value = event.currentTarget.value.replace(/[^0-9]/g, '');
+										event.currentTarget.setCustomValidity(
+											Number(event.currentTarget.value) > 1000000000 ? t('Maximum budget is 1,000,000,000 KRW.') : '',
+										);
+									}}
 									min={0}
 									max={1000000000}
 									step={1}
@@ -172,7 +181,16 @@ export function ContactCreator({
 								<span aria-hidden="true">–</span>
 								<input
 									name="budgetMax"
-									type="number"
+									type="text"
+									inputMode="numeric"
+									pattern="[0-9]{1,10}"
+									maxLength={10}
+									onInput={(event) => {
+										event.currentTarget.value = event.currentTarget.value.replace(/[^0-9]/g, '');
+										event.currentTarget.setCustomValidity(
+											Number(event.currentTarget.value) > 1000000000 ? t('Maximum budget is 1,000,000,000 KRW.') : '',
+										);
+									}}
 									min={0}
 									max={1000000000}
 									step={1}
@@ -187,7 +205,7 @@ export function ContactCreator({
 						</Button>
 					</div>
 					{creator.availability === 'UNAVAILABLE' && <Notice>{t('This creator is not accepting inquiries.')}</Notice>}
-					<Feedback error={action.error} />
+					<Feedback error={action.error} busy={action.busy} busyLabel="Sending…" />
 					<div className="contact-creator-footer">
 						<p>{t('Your inquiry goes directly to their private inbox.')}</p>
 						<button type="button" onClick={onDismiss} disabled={action.busy}>

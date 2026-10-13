@@ -1,6 +1,5 @@
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
-import { Pause, Play, SpeakerHigh, SpeakerSlash } from 'phosphor-react';
 import { useEffect, useRef, useState } from 'react';
 import { useApi } from '../../hooks/useApi';
 import { useCreatorDirectory } from '../../hooks/useCreatorDirectory';
@@ -12,18 +11,14 @@ function Introduction() {
 	const { t: translate } = useSiteTranslation('common');
 
 	const ref = useRef<HTMLVideoElement>(null);
-	const pausedByUser = useRef(false);
 	const inView = useRef(false);
-	const [playing, setPlaying] = useState(false);
-	const [muted, setMuted] = useState(true);
 	const [error, setError] = useState(false);
 	useEffect(() => {
 		const video = ref.current;
 		if (!video) return;
 		const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 		const sync = () => {
-			if (inView.current && !document.hidden && !pausedByUser.current && !reduced.matches)
-				video.play().catch(() => setPlaying(false));
+			if (inView.current && !document.hidden && !reduced.matches) video.play().catch(() => {});
 			else video.pause();
 		};
 		const observer = new IntersectionObserver(
@@ -54,14 +49,6 @@ function Introduction() {
 					<br />
 					{translate('Start a conversation.')}
 				</p>
-				<span className="playback-status">
-					{muted ? <SpeakerSlash size={21} /> : <SpeakerHigh size={21} />}
-					{playing
-						? muted
-							? translate('Playing without sound')
-							: translate('Playing with sound')
-						: translate('Video paused')}
-				</span>
 			</div>
 			<figure>
 				<div className="intro-player">
@@ -69,42 +56,16 @@ function Introduction() {
 						ref={ref}
 						src="/videos/creatorhub-introduction.mp4"
 						poster="/videos/creatorhub-poster.png"
-						muted={muted}
+						muted
+						autoPlay
+						controls={false}
+						disablePictureInPicture
 						loop
 						playsInline
 						preload="metadata"
 						aria-label={translate('CreatorHub introduction')}
-						onPlay={() => setPlaying(true)}
-						onPause={() => setPlaying(false)}
 						onError={() => setError(true)}
 					/>
-					<div className="video-controls">
-						<button
-							type="button"
-							aria-label={playing ? translate('Pause introduction') : translate('Play introduction')}
-							onClick={() => {
-								const v = ref.current;
-								if (!v) return;
-								if (v.paused) {
-									pausedByUser.current = false;
-									v.play().catch(() => setError(true));
-								} else {
-									pausedByUser.current = true;
-									v.pause();
-								}
-							}}
-						>
-							{playing ? <Pause size={20} weight="fill" /> : <Play size={20} weight="fill" />}
-						</button>
-						<button
-							type="button"
-							aria-label={muted ? translate('Turn sound on') : translate('Mute introduction')}
-							aria-pressed={!muted}
-							onClick={() => setMuted(!muted)}
-						>
-							{muted ? <SpeakerSlash size={20} /> : <SpeakerHigh size={20} />}
-						</button>
-					</div>
 				</div>
 				<figcaption>
 					{error ? (

@@ -1,7 +1,7 @@
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useEffect, useId, useRef, useState } from 'react';
-import { CaretDown, CaretUp } from 'phosphor-react';
+import { CaretDown, CaretUp, Palette, Camera, VideoCamera, PenNib, Code, Layout, SquaresFour } from 'phosphor-react';
 import { useApi } from '../../hooks/useApi';
 import { QueryState } from '../common/UI';
 
@@ -58,6 +58,17 @@ export default function CategoryShortcuts() {
 				aria-label={translate('Project categories')}
 			>
 				{categories.value?.map((category, index) => {
+					const Icon =
+						(
+							{
+								'graphic-design': Palette,
+								photography: Camera,
+								'video-production': VideoCamera,
+								illustration: PenNib,
+								'web-development': Code,
+								'ui-ux-design': Layout,
+							} as Record<string, typeof Palette>
+						)[category.slug] || SquaresFour;
 					const hidden = collapsed && index >= rowCount;
 					return (
 						<Link
@@ -68,7 +79,7 @@ export default function CategoryShortcuts() {
 							aria-hidden={hidden || undefined}
 							style={hidden ? { visibility: 'hidden' } : undefined}
 						>
-							{translate(category.name)}
+							<Icon size={23} aria-hidden /> <span>{translate(category.name)}</span>
 						</Link>
 					);
 				})}

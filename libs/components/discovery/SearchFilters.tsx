@@ -1,5 +1,5 @@
 import { useTranslation as useSiteTranslation } from 'next-i18next';
-import { CaretDown, MagnifyingGlass } from 'phosphor-react';
+import { CaretDown, MagnifyingGlass, ArrowCounterClockwise } from 'phosphor-react';
 import { FormEvent, useEffect, useState } from 'react';
 import CategoryPicker from './CategoryPicker';
 import { useApi } from '../../hooks/useApi';
@@ -11,9 +11,11 @@ export default function SearchFilters({
 	home = false,
 	filters,
 	onSearch,
+	loading = false,
 }: {
 	kind: 'projects' | 'creators' | 'services';
 	home?: boolean;
+	loading?: boolean;
 	filters: DiscoveryInput;
 	onSearch: (input: DiscoveryInput) => void;
 }) {
@@ -21,11 +23,34 @@ export default function SearchFilters({
 
 	const categories = useApi('categories');
 	const cities = useApi('getCities');
+	const [searched, setSearched] = useState(false);
 	const [category, setCategory] = useState(filters.categoryId || '');
 	useEffect(() => setCategory(filters.categoryId || ''), [filters.categoryId]);
 
+	useEffect(() => {
+		if (!searched || loading) return;
+		const frame = requestAnimationFrame(() => {
+			if (window.innerWidth <= 700) {
+				const form = document.getElementById(home ? 'homepage-search' : 'directory-search');
+				const result = form?.parentElement?.querySelector('.search-result-status');
+				if (result)
+					window.scrollTo({
+						top:
+							result.getBoundingClientRect().top +
+							window.scrollY -
+							(document.querySelector('.site-header')?.getBoundingClientRect().height || 0) -
+							16,
+						behavior: 'auto',
+					});
+			}
+			setSearched(false);
+		});
+		return () => cancelAnimationFrame(frame);
+	}, [searched, loading, home]);
 	function submit(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
+		if (loading) return;
+		setSearched(true);
 		const fields = values(event.currentTarget);
 		onSearch({
 			query: optional(fields.query),
@@ -88,7 +113,9 @@ export default function SearchFilters({
 					</select>
 					<CaretDown className="location-caret" size={16} aria-hidden="true" />
 				</label>
-				<Button type="submit">{translate('Search')} </Button>
+				<Button type="submit" loading={loading} loadingLabel={translate('Searching…')}>
+					{translate('Search')}
+				</Button>
 			</div>
 			<div className="filters">
 				<label className="checkbox">
@@ -99,7 +126,16 @@ export default function SearchFilters({
 					<input
 						className="budget-filter"
 						name="budgetMax"
-						type="number"
+						type="text"
+						inputMode="numeric"
+						pattern="[0-9]{1,10}"
+						maxLength={10}
+						onInput={(event) => {
+							event.currentTarget.value = event.currentTarget.value.replace(/[^0-9]/g, '');
+							event.currentTarget.setCustomValidity(
+								Number(event.currentTarget.value) > 1000000000 ? translate('Maximum budget is 1,000,000,000 KRW.') : '',
+							);
+						}}
 						min={0}
 						max={1000000000}
 						aria-label={translate('Maximum budget in won')}
@@ -109,12 +145,15 @@ export default function SearchFilters({
 				<Button
 					secondary
 					type="reset"
+					className="search-reset"
+					aria-label={translate('Reset')}
+					title={translate('Reset')}
 					onClick={() => {
 						setCategory('');
 						onSearch({});
 					}}
 				>
-					{translate('Reset')}
+					<ArrowCounterClockwise size={21} aria-hidden />
 				</Button>
 			</div>
 		</form>

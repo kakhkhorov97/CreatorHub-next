@@ -1,4 +1,5 @@
 import { useTranslation as useSiteTranslation } from 'next-i18next';
+import ContactForm from './ContactForm';
 import Link from 'next/link';
 import { useApi } from '../../hooks/useApi';
 import { koreaCopy } from '../../utils/korea';
@@ -37,18 +38,7 @@ export default function CompanyPage({ contact = false }: { contact?: boolean }) 
 								{translate('Visit FAQ →')}
 							</Link>
 						</section>
-						<section>
-							<h2>{translate('Contact the CreatorHub team')}</h2>
-							<p>
-								{translate(
-									koreaCopy(
-										site.value?.contactText ||
-											'Find us in Gwangju, Korea. Our public contact details will be added soon.',
-									),
-								)}
-							</p>
-							{site.value?.contactEmail && <a href={`mailto:${site.value.contactEmail}`}>{site.value.contactEmail}</a>}
-						</section>
+						<ContactForm />
 					</div>
 				) : (
 					<div className="company-body">
@@ -86,7 +76,7 @@ export default function CompanyPage({ contact = false }: { contact?: boolean }) 
 							<h2>{translate('Content transparency')}</h2>
 							<p>
 								{translate(
-									'Illustrative creator profiles, concept projects and event concepts are fictional. AI-generated images are identified in their project descriptions; no real client commission is implied.',
+									'Illustrative creator profiles, concept projects and event concepts are fictional. No real client commission is implied.',
 								)}
 							</p>
 							<Link passHref href="/contact">

@@ -1,6 +1,7 @@
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { useReactiveVar } from '@apollo/client';
 import { useRouter } from 'next/router';
+import { useEffect, useRef, useState } from 'react';
 import { Heart } from 'phosphor-react';
 import { userVar } from '../../../apollo/store';
 import { useAction, useApi } from '../../hooks/useApi';
@@ -14,7 +15,13 @@ export default function LikeButton({ projectId, ownerId }: { projectId: string; 
 	const action = useAction();
 	const count = useApi('getProjectLikeCount', { projectId }, !projectId);
 	const mine = useApi('getMyProjectLike', { projectId }, !projectId || !user);
-	const liked = !!user && mine.value === true;
+	const sequence = useRef(0);
+	const [optimistic, setOptimistic] = useState<{ liked: boolean; count: number } | null>(null);
+	useEffect(() => {
+		sequence.current++;
+		setOptimistic(null);
+	}, [projectId, user?._id]);
+	const liked = optimistic?.liked ?? (!!user && mine.value === true);
 	const own = !!user && ownerId === user._id;
 	const unavailable = !!user && (mine.loading || !!mine.error);
 	return (
@@ -32,13 +39,29 @@ export default function LikeButton({ projectId, ownerId }: { projectId: string; 
 						return;
 					}
 					action.run(async () => {
-						await action.mutate('setProjectLike', { projectId, liked: !liked });
-						await Promise.all([mine.refetch(), count.refetch()]);
+						const current = ++sequence.current;
+						const previous = optimistic;
+						setOptimistic({
+							liked: !liked,
+							count: Math.max(0, (optimistic?.count ?? count.value ?? 0) + (liked ? -1 : 1)),
+						});
+						try {
+							await action.mutate('setProjectLike', { projectId, liked: !liked });
+						} catch (error) {
+							setOptimistic(previous);
+							throw error;
+						}
+						// Keep the visible state while refreshing cached counters in the background.
+						void Promise.all([mine.refetch(), count.refetch()])
+							.then(() => {
+								if (sequence.current === current) setOptimistic(null);
+							})
+							.catch(() => {});
 					});
 				}}
 			>
 				<Heart size={23} weight={liked ? 'fill' : 'regular'} />
-				<span aria-live="polite">{count.value ?? '—'}</span>
+				<span aria-live="polite">{optimistic?.count ?? count.value ?? '—'}</span>
 			</button>
 			<Feedback error={action.error} />
 			{(mine.error || count.error) && (

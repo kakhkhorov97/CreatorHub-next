@@ -1,3 +1,4 @@
+import { ArrowLeft } from 'phosphor-react';
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -141,8 +142,14 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 	}
 	return (
 		<div className={`auth-page${auth ? ' has-pattern' : ''}${auth ? ' is-compact-auth' : ''}`}>
-			<Link passHref className="back-link" href="/">
-				{translate('Back to explore')}
+			<Link
+				passHref
+				className="back-link"
+				href="/"
+				aria-label={translate('Back to explore')}
+				title={translate('Back to explore')}
+			>
+				<ArrowLeft size={22} aria-hidden />
 			</Link>
 			<div className={auth ? 'auth-layout has-artwork' : 'auth-layout'}>
 				<section className="auth-panel panel">
@@ -315,8 +322,13 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 								</LinkButton>
 							</>
 						) : (
-							<Link passHref href={authHref('/account/sign-in')}>
-								{translate('Back to sign in')}
+							<Link
+								passHref
+								href={authHref('/account/sign-in')}
+								aria-label={translate('Back to sign in')}
+								title={translate('Back to sign in')}
+							>
+								<ArrowLeft size={22} aria-hidden />
 							</Link>
 						)}
 					</p>

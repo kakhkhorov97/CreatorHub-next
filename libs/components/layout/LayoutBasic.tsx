@@ -56,7 +56,8 @@ export default function Layout({
 }) {
 	const { t: translate } = useSiteTranslation('common');
 	const router = useRouter();
-	const standaloneAccount = area === 'account' && ['/account', '/account/settings'].includes(router.pathname);
+	const standaloneAccount =
+		area === 'account' && ['/account', '/account/settings', '/notifications'].includes(router.pathname);
 
 	if (area === 'admin') return <AdminLayout title={title}>{children}</AdminLayout>;
 
@@ -88,9 +89,13 @@ export default function Layout({
 
 				<main id="main" className={area ? 'workspace-main' : 'public-main'}>
 					{area === 'account' && router.pathname !== '/account' && (
-						<Link className="mobile-account-back" href="/account">
-							<ArrowLeft size={18} aria-hidden />
-							{translate('Back to My page')}
+						<Link
+							className="mobile-account-back"
+							href="/account"
+							aria-label={translate('Back to My page')}
+							title={translate('Back to My page')}
+						>
+							<ArrowLeft size={22} aria-hidden />
 						</Link>
 					)}
 					{children}

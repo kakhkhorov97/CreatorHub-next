@@ -2,6 +2,7 @@ import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useState } from 'react';
 import { Empty, QueryState } from '../libs/components/common/UI';
+import HeroBackdrop from '../libs/components/discovery/HeroBackdrop';
 import CategoryShortcuts from '../libs/components/discovery/CategoryShortcuts';
 import HomeSections from '../libs/components/discovery/HomeSections';
 import SearchFilters from '../libs/components/discovery/SearchFilters';
@@ -26,6 +27,7 @@ function Home() {
 			<div className="discovery-full discovery-home">
 				<section id="projects">
 					<div className="discovery-search-section">
+						<HeroBackdrop />
 						<div className="discovery-hero">
 							<h1>{translate(site.value?.homeHeading || 'Find your next creative collaborator.')}</h1>
 							<p>
@@ -36,7 +38,7 @@ function Home() {
 								)}
 							</p>
 						</div>
-						<SearchFilters kind="projects" home filters={filters} onSearch={setFilters} />
+						<SearchFilters loading={projects.loading} kind="projects" home filters={filters} onSearch={setFilters} />
 					</div>
 					<CategoryShortcuts />
 					<div className="home-section-heading">
@@ -48,6 +50,11 @@ function Home() {
 							{translate('View all projects →')}
 						</Link>
 					</div>
+					<p className="search-result-status" role="status">
+						{projects.loading
+							? translate('Searching…')
+							: translate('Results on this page: {{count}}', { count: projects.rows.length })}
+					</p>
 					<QueryState loading={projects.loading} error={projects.error} retry={() => projects.refetch()} />
 					{!projects.loading && !projects.error && !projects.rows.length && (
 						<Empty title={translate('No matches yet')}>{translate('Try another search or clear your filters.')}</Empty>

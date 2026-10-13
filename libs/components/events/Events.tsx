@@ -1,6 +1,7 @@
+import Image from 'next/image';
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
-import { ArrowUpRight, MapPin } from 'phosphor-react';
+import { ArrowUpRight, MapPin, CalendarBlank } from 'phosphor-react';
 import { useCardNavigation } from '../../hooks/useCardNavigation';
 import { usePaged } from '../../hooks/usePaged';
 import { CreativeEvent } from '../../types/creatorhub';
@@ -15,6 +16,13 @@ export function eventTime(value: string, locale = 'en') {
 	);
 }
 
+export function eventImage(title: string) {
+	return /editorial/i.test(title)
+		? '/concepts/frame-tokyo.png'
+		: /portfolio/i.test(title)
+		? '/concepts/morrow-cafe.png'
+		: '/concepts/copenhagen-reading-room.png';
+}
 function EventCard({ event }: { event: CreativeEvent }) {
 	const { t: translate, i18n } = useSiteTranslation('common');
 
@@ -22,6 +30,18 @@ function EventCard({ event }: { event: CreativeEvent }) {
 	const openCard = useCardNavigation(`/events/${event._id}`);
 	return (
 		<article className="event-card" onClick={openCard}>
+			{event.isDemo ? (
+				<img
+					className="event-cover"
+					src={eventImage(event.title)}
+					alt={translate('Event concept image')}
+					loading="lazy"
+				/>
+			) : (
+				<div className="event-cover event-cover-placeholder" aria-hidden>
+					<CalendarBlank size={48} />
+				</div>
+			)}
 			<div className="event-date" aria-hidden="true">
 				<span>{d.toLocaleDateString(i18n.language, { month: 'short', timeZone: 'Asia/Seoul' })}</span>
 				<strong>
@@ -29,14 +49,20 @@ function EventCard({ event }: { event: CreativeEvent }) {
 				</strong>
 				<span>{new Intl.DateTimeFormat(i18n.language, { year: 'numeric', timeZone: 'Asia/Seoul' }).format(d)}</span>
 			</div>
-			<div>
+			<div className="event-card-copy">
 				{event.isDemo && <span className="demo-label">{translate('Fictional event concept')}</span>}
 				<h3>
 					<Link passHref href={`/events/${event._id}`}>
 						{event.title}
 					</Link>
 				</h3>
-				<time dateTime={event.startsAt}>{eventTime(event.startsAt, i18n.language)}</time>
+				<time className="event-time" dateTime={event.startsAt}>
+					<CalendarBlank size={18} aria-hidden />
+					<span className="event-date-full">{eventTime(event.startsAt, i18n.language)}</span>
+					<span className="event-date-short">
+						{new Intl.DateTimeFormat(i18n.language, { dateStyle: 'medium', timeZone: 'Asia/Seoul' }).format(d)}
+					</span>
+				</time>
 				<p className="event-location">
 					<MapPin size={18} />
 					{koreaCopy(event.location)}

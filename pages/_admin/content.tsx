@@ -108,7 +108,7 @@ function ContentForm() {
 					/>
 					<Feedback {...action} />
 					{saved && <Notice notify>{translate('Website content saved. The public pages now use this copy.')}</Notice>}
-					<Button type="submit" disabled={action.busy}>
+					<Button type="submit" disabled={action.busy} loading={action.busy} loadingLabel={translate('Saving…')}>
 						{translate('Save website content')}
 					</Button>
 				</form>

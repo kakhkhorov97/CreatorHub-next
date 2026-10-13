@@ -18,7 +18,6 @@ const account = [
 	['/following?tab=following', 'Following', Users],
 	['/account/settings', 'Account settings', Gear],
 	['/saved', 'Saved projects', BookmarkSimple],
-	['/notifications', 'Notifications', Bell],
 	['/workspace', 'Workspace', House],
 ] as const;
 

@@ -171,3 +171,29 @@ test('workflow help skips database retrieval and overload retries only once', as
 		else delete process.env.GEMINI_MODEL;
 	}
 });
+
+test('chat burst limits isolate visitors and return the remaining delay', () => {
+	const { quotaStatus } = require('../libs/server/chat.cjs');
+	const now = Date.parse('2099-01-01T12:00:00Z');
+	for (let i = 0; i < 8; i++) assert.equal(quotaStatus('visitor-one', now).allowed, true);
+	assert.equal(quotaStatus('visitor-one', now + 15000).retryAfter, 45);
+	assert.equal(quotaStatus('visitor-two', now + 15000).allowed, true);
+	assert.equal(quotaStatus('visitor-one', now + 61000).allowed, true);
+});
+test('daily chat limit reports the actual reset rather than a one-minute retry', () => {
+	const { quotaStatus } = require('../libs/server/chat.cjs');
+	const old = process.env.CHAT_DAILY_LIMIT;
+	process.env.CHAT_DAILY_LIMIT = '1';
+	try {
+		const now = Date.parse('2099-01-03T23:50:00Z');
+		assert.equal(quotaStatus('daily-a', now).allowed, true);
+		const blocked = quotaStatus('daily-b', now);
+		assert.equal(blocked.allowed, false);
+		assert.equal(blocked.retryAfter, 600);
+		assert.match(blocked.error, /daily/);
+		assert.equal(quotaStatus('daily-b', now + 601000).allowed, true);
+	} finally {
+		if (old === undefined) delete process.env.CHAT_DAILY_LIMIT;
+		else process.env.CHAT_DAILY_LIMIT = old;
+	}
+});

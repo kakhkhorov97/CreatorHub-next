@@ -31,8 +31,13 @@ function ProjectsPage() {
 			<div className="discovery-full">
 				<section>
 					{<Heading title={title} />}
-					<SearchFilters kind={kind} home={false} filters={filters} onSearch={setFilters} />
+					<SearchFilters loading={result.loading} kind={kind} home={false} filters={filters} onSearch={setFilters} />
 
+					<p className="search-result-status" role="status">
+						{result.loading
+							? translate('Searching…')
+							: translate('Results on this page: {{count}}', { count: result.rows.length })}
+					</p>
 					<QueryState loading={result.loading} error={result.error} retry={() => result.refetch()} />
 					{!result.loading && !result.error && !result.rows.length && (
 						<Empty title={translate('No matches yet')}>{translate('Try another search or clear your filters.')}</Empty>

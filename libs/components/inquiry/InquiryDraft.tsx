@@ -144,7 +144,7 @@ export function Draft({
 								type="date"
 								defaultValue={inquiry?.desiredDeadline?.slice(0, 10) || ''}
 							/>
-							<Feedback error={action.error} />
+							<Feedback error={action.error} busy={action.busy} busyLabel="Sending…" />
 							<Button type="submit" disabled={action.busy}>
 								{action.busy ? translate('Sending…') : translate('Send inquiry')}
 							</Button>

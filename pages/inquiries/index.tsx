@@ -1,3 +1,4 @@
+import { ArrowLeft } from 'phosphor-react';
 import { useMessagingRefresh } from '../../libs/messaging/MessagingProvider';
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { useReactiveVar } from '@apollo/client';
@@ -121,8 +122,14 @@ export function Inbox({ selectedId = '' }: { selectedId?: string }) {
 							{selected.value &&
 								(selected.value.status === 'DRAFT' ? (
 									<div className="inbox-draft">
-										<Link passHref className="mobile-inbox-back" href="/inquiries">
-											{translate('Back to inbox')}
+										<Link
+											passHref
+											className="mobile-inbox-back"
+											href="/inquiries"
+											aria-label={translate('Back to inbox')}
+											title={translate('Back to inbox')}
+										>
+											<ArrowLeft size={22} aria-hidden />
 										</Link>
 										<Draft
 											key={selectedId}

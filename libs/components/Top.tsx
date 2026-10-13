@@ -17,6 +17,7 @@ import {
 	ChatCircle,
 	User,
 	CaretRight,
+	X,
 } from 'phosphor-react';
 import { useEffect, useRef } from 'react';
 import useHeaderScroll from '../hooks/useHeaderScroll';
@@ -115,7 +116,7 @@ export default function Top() {
 			</Link>
 		);
 	}
-	function accountContent(mobile = false) {
+	function accountContent(mobile = false, avatar = true) {
 		if (!user) return null;
 		return (
 			<div className="account-dropdown">
@@ -134,7 +135,7 @@ export default function Top() {
 						</Link>
 					</div>
 					{mobile && menuLink('/inquiries', 'Inbox', EnvelopeSimple, inbox.value || 0, true)}
-					{mobile && menuLink('/notifications', 'Notifications', Bell, count.value || 0, true)}
+					{avatar && menuLink('/notifications', 'Notifications', Bell, count.value || 0)}
 					{menuLink('/following', 'Followers & Following', Users)}
 				</div>
 				{mobile && (
@@ -149,8 +150,8 @@ export default function Top() {
 					{mobile && menuLink('/events', 'Events', CalendarBlank, 0, true)}
 					{mobile && menuLink('/contact', 'Contact us', ChatCircle, 0, true)}
 				</div>
-				{mobile && (
-					<div className="menu-language menu-mobile-only">
+				{avatar && (
+					<div className="menu-language">
 						<LanguageSelector />
 					</div>
 				)}
@@ -209,7 +210,7 @@ export default function Top() {
 							</summary>
 							<nav aria-label={translate('Main navigation')}>
 								{user ? (
-									accountContent(true)
+									accountContent(true, false)
 								) : (
 									<div className="guest-menu">
 										<div className="guest-auth-actions">
@@ -234,7 +235,12 @@ export default function Top() {
 								)}
 							</nav>
 						</details>
-						<LanguageSelector />
+						{!user && (
+							<details className="guest-language-menu">
+								<summary aria-label={translate('Website language')}>{translate('Website language')}</summary>
+								<LanguageSelector />
+							</details>
+						)}
 						{!user && (
 							<Link href={authHref} className="mobile-login-link">
 								{translate(authLabel)}
@@ -252,15 +258,6 @@ export default function Top() {
 									<span>{translate('Inbox')}</span>
 									{!!inbox.value && <span className="inbox-badge">{inbox.value > 99 ? '99+' : inbox.value}</span>}
 								</Link>
-								<Link
-									passHref
-									href="/notifications"
-									className="icon-button"
-									aria-label={`Notifications, ${count.value || 0} unread`}
-								>
-									<Bell size={23} />
-									{!!count.value && <span className="dot" />}
-								</Link>
 								<details
 									className="user-menu"
 									ref={accountMenu}
@@ -270,6 +267,7 @@ export default function Top() {
 								>
 									<summary aria-label={`${translate('Account menu')}: ${user.displayName}`}>
 										<Picture avatar src={user.avatarUrl} alt={user.displayName} />
+										<X className="account-menu-close" size={24} aria-hidden />
 										<span>{user.displayName}</span>
 									</summary>
 									{accountContent(true)}

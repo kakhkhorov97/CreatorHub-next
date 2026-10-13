@@ -36,6 +36,7 @@ test('successful email signup opens confirmation, preserves return path and does
 			removeItem: (k) => saved.delete(k),
 		},
 		require: (name) => {
+			if (name === 'phosphor-react') return { ArrowLeft: () => null };
 			if (name === 'react') return { ...React, useEffect: () => {}, useState: (initial) => [initial, () => {}] };
 			if (name === 'react/jsx-runtime') return jsx;
 			if (name === 'next-i18next') return { useTranslation: () => ({ t: (k) => k }) };

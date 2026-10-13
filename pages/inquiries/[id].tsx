@@ -1,3 +1,4 @@
+import { ArrowLeft } from 'phosphor-react';
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -14,8 +15,14 @@ export default function InquiryPage() {
 			<Guard>
 				{router.pathname === '/inquiries/new' ? (
 					<>
-						<Link passHref className="back-link" href="/inquiries?inbox=sent">
-							{translate('Back to inbox')}
+						<Link
+							passHref
+							className="back-link"
+							href="/inquiries?inbox=sent"
+							aria-label={translate('Back to inbox')}
+							title={translate('Back to inbox')}
+						>
+							<ArrowLeft size={22} aria-hidden />
 						</Link>
 						<Draft
 							creatorId={typeof router.query.creatorId === 'string' ? router.query.creatorId : ''}

@@ -1,3 +1,11 @@
+import Image from 'next/image';
+import {
+	ServiceProcess,
+	isConceptService,
+	conceptImage,
+	conceptCopy,
+} from '../../libs/components/discovery/ConceptDetails';
+import { ArrowLeft } from 'phosphor-react';
 import { socialPageProps, SocialPageProps } from '../../libs/server/socialMetadata';
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
@@ -16,10 +24,17 @@ function ServiceDetail({ seo }: SocialPageProps) {
 	const s = result.value;
 	const creators = useCreatorDirectory(s ? [s.creatorId] : []);
 	const creator = s && creators[s.creatorId];
+	const demo = !!s && isConceptService(creator?.slug, s.description);
 	return (
 		<Layout seo={seo} title={s?.title || translate('Service')}>
-			<Link passHref href="/services" className="back-link">
-				{translate('Back to services')}
+			<Link
+				passHref
+				href="/services"
+				className="back-link"
+				aria-label={translate('Back to services')}
+				title={translate('Back to services')}
+			>
+				<ArrowLeft size={22} aria-hidden />
 			</Link>
 			<QueryState loading={result.loading} error={result.error} retry={() => result.refetch()} />
 			{s && (
@@ -31,16 +46,32 @@ function ServiceDetail({ seo }: SocialPageProps) {
 							{creator.identity.displayName}
 						</Link>
 					)}
-					<div className="detail-layout">
+					<div className="detail-layout service-detail-layout">
 						<section className="prose">
 							<h2>{translate('About this service')}</h2>
-							<p>{s.description}</p>
+							<p className="preserve-lines">{demo ? conceptCopy(s.description) : s.description}</p>
+							{demo && (
+								<figure className="concept-gallery">
+									<Image
+										width={1600}
+										height={1000}
+										sizes="(max-width: 700px) 100vw, 65vw"
+										src={conceptImage(s.title)}
+										alt={translate('Supporting concept study')}
+										loading="lazy"
+									/>
+									<figcaption>
+										{translate('Concept service. The examples illustrate a possible creative brief.')}
+									</figcaption>
+								</figure>
+							)}
 							<h2>{translate('What’s included')}</h2>
 							<ul>
 								{s.deliverables.map((d) => (
 									<li key={d}>{d}</li>
 								))}
 							</ul>
+							<ServiceProcess demo={demo} />
 						</section>
 						<aside className="panel service-summary">
 							<h2>{s.pricingType === 'STARTING_AT' ? `From ${money(s.startingPrice)}` : translate('Custom quote')}</h2>

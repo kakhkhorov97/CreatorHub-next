@@ -42,6 +42,7 @@ export function Conversation({
 	const messages = useInquiryHistory(inquiry._id, inquiry.version);
 	const user = useReactiveVar(userVar)!;
 	const [body, setBody] = useState('');
+	const [pendingMessage, setPendingMessage] = useState<string | null>(null);
 	const [detailsOpen, setDetailsOpen] = useState(false);
 	const followMessages = useRef(true);
 	const messagePane = useRef<HTMLDivElement>(null);
@@ -54,7 +55,7 @@ export function Conversation({
 			pane.scrollTop = scrollAnchor.current.top + pane.scrollHeight - scrollAnchor.current.height;
 			scrollAnchor.current = null;
 		} else if (followMessages.current) pane.scrollTop = pane.scrollHeight;
-	}, [messages.rows.length, messages.rows[messages.rows.length - 1]?._id]);
+	}, [messages.rows.length, messages.rows[messages.rows.length - 1]?._id, pendingMessage]);
 	useEffect(() => {
 		if (!messages.hasOlder || messages.loadingOlder || messages.error || !olderSentinel.current) return;
 		const observer = new IntersectionObserver(
@@ -100,8 +101,10 @@ export function Conversation({
 	useMessagingEvents((event) => {
 		if (event.type !== 'sync' && event.change.inquiryId === inquiry._id)
 			liveVersion.current = Math.max(liveVersion.current, event.change.version);
-		if (event.type === 'conversation' && event.change.inquiryId === inquiry._id && event.change.message)
+		if (event.type === 'conversation' && event.change.inquiryId === inquiry._id && event.change.message) {
 			messages.append(event.change.message, event.change.version);
+			if (event.change.message.clientMessageKey === key.current) setPendingMessage(null);
+		}
 	});
 	useMessagingRefresh(
 		(event) =>
@@ -218,6 +221,13 @@ export function Conversation({
 								{m.senderId === user._id && <small>{m.readAt ? translate('Read') : translate('Sent')}</small>}
 							</article>
 						))}
+						{pendingMessage && (
+							<article className="message mine pending-message">
+								<strong>{translate('You')}</strong>
+								<p>{pendingMessage}</p>
+								<small role="status">{translate('Sending…')}</small>
+							</article>
+						)}
 					</div>
 					{active ? (
 						<form
@@ -227,17 +237,23 @@ export function Conversation({
 								if (!body.trim() || messaging.state !== 'connected' || roomError) return;
 								action.run(async () => {
 									key.current ??= crypto.randomUUID();
-									const message = await messaging.send({
-										...input,
-										expectedVersion: liveVersion.current,
-										clientMessageKey: key.current,
-										body: body.trim(),
-									});
-									messages.append(message, inquiry.version);
-									key.current = null;
-									setBody('');
+									setPendingMessage(body.trim());
 									followMessages.current = true;
-									// Live events update the version, list and badges without duplicate queries.
+									try {
+										const message = await messaging.send({
+											...input,
+											expectedVersion: liveVersion.current,
+											clientMessageKey: key.current,
+											body: body.trim(),
+										});
+										messages.append(message, inquiry.version);
+										key.current = null;
+										setBody('');
+										followMessages.current = true;
+										// Live events update the version, list and badges without duplicate queries.
+									} finally {
+										setPendingMessage(null);
+									}
 								});
 							}}
 						>
@@ -276,9 +292,17 @@ export function Conversation({
 					) : (
 						<Notice>
 							{translate('This conversation is')} {label(inquiry.status).toLowerCase()}.
+							<Link
+								className="back-link"
+								href="/inquiries"
+								aria-label={translate('Back to inbox')}
+								title={translate('Back to inbox')}
+							>
+								<ArrowLeft size={22} aria-hidden />
+							</Link>
 						</Notice>
 					)}
-					<Feedback {...action} />
+					<Feedback {...action} busyLabel="Sending…" />
 					{action.error && (
 						<Button
 							secondary

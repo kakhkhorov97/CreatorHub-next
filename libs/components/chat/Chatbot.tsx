@@ -43,6 +43,15 @@ export default function Chatbot() {
 	const [draft, setDraft] = useState('');
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState('');
+	const [retryUntil, setRetryUntil] = useState(0);
+	const [retrySeconds, setRetrySeconds] = useState(0);
+	useEffect(() => {
+		if (!retryUntil) return;
+		const update = () => setRetrySeconds(Math.max(0, Math.ceil((retryUntil - Date.now()) / 1000)));
+		update();
+		const timer = window.setInterval(update, 1000);
+		return () => window.clearInterval(timer);
+	}, [retryUntil]);
 	const input = useRef<HTMLTextAreaElement>(null);
 	const trigger = useRef<HTMLButtonElement>(null);
 	const transcript = useRef<HTMLDivElement>(null);
@@ -119,7 +128,7 @@ export default function Chatbot() {
 		event.preventDefault();
 		const version = generation.current;
 		const message = draft.trim();
-		if (!message || lock.current) return;
+		if (!message || lock.current || Date.now() < retryUntil) return;
 		lock.current = true;
 		setBusy(true);
 		setError('');
@@ -135,6 +144,14 @@ export default function Chatbot() {
 			});
 			const result = await response.json();
 			if (version !== generation.current) return;
+			if (response.status === 429) {
+				const seconds = Math.max(
+					1,
+					Math.min(86400, Number(response.headers.get('Retry-After')) || result.retryAfter || 60),
+				);
+				setRetryUntil(Date.now() + seconds * 1000);
+				setRetrySeconds(seconds);
+			}
 			if (!response.ok) throw new Error(result.error || 'The assistant could not respond.');
 			setMessages([...next, { role: 'assistant', text: result.reply, links: result.links }]);
 		} catch (failure) {
@@ -272,7 +289,7 @@ export default function Chatbot() {
 					</div>
 					{error && (
 						<p className="chat-error" role="alert">
-							{translate(error)}{' '}
+							{translate(error, { seconds: retrySeconds })}{' '}
 							<Link passHref href="/faq">
 								{translate('Visit FAQ')}
 							</Link>
@@ -303,7 +320,18 @@ export default function Chatbot() {
 							placeholder={translate('Ask about CreatorHub…')}
 							required
 						/>
-						<Button type="submit" disabled={busy || !draft.trim()} aria-label={translate('Send message')}>
+						<Button
+							type="submit"
+							disabled={busy || retrySeconds > 0 || !draft.trim()}
+							title={
+								retrySeconds
+									? translate('Please wait {{seconds}} seconds before sending another message.', {
+											seconds: retrySeconds,
+									  })
+									: undefined
+							}
+							aria-label={translate('Send message')}
+						>
 							<PaperPlaneRight size={21} />
 						</Button>
 					</form>

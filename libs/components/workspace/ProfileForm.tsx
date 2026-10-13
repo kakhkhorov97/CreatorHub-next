@@ -145,7 +145,7 @@ export function ProfileForm({ profile, refresh }: { profile?: CreatorProfile; re
 					</Button>
 					<Feedback {...action} />
 					{message && <Notice notify>{message}</Notice>}
-					<Button type="submit" disabled={action.busy}>
+					<Button type="submit" loading={action.busy} loadingLabel={translate('Saving…')} disabled={action.busy}>
 						{profile?.status === 'PUBLISHED' ? translate('Submit changes for approval') : translate('Save draft')}
 					</Button>
 				</section>

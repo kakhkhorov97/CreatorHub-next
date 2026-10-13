@@ -1,3 +1,4 @@
+import { ArrowLeft } from 'phosphor-react';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -145,8 +146,13 @@ export default function EmailConfirmation({ verifyLink = false }: { verifyLink?:
 						</>
 					)}
 					{emailChange ? (
-						<Link className="confirmation-sign-in" href="/account/sign-in-methods">
-							{translate('Back to account settings')}
+						<Link
+							className="confirmation-sign-in"
+							href="/account/sign-in-methods"
+							aria-label={translate('Back to account settings')}
+							title={translate('Back to account settings')}
+						>
+							<ArrowLeft size={22} aria-hidden />
 						</Link>
 					) : showEmailForm ? (
 						<form
@@ -191,8 +197,13 @@ export default function EmailConfirmation({ verifyLink = false }: { verifyLink?:
 							{translate('If verification is needed, a new link will be sent.')}
 						</p>
 					)}
-					<Link className="confirmation-sign-in" href={signInHref}>
-						{translate('Back to sign in')}
+					<Link
+						className="confirmation-sign-in"
+						href={signInHref}
+						aria-label={translate('Back to sign in')}
+						title={translate('Back to sign in')}
+					>
+						<ArrowLeft size={22} aria-hidden />
 					</Link>
 				</>
 			)}

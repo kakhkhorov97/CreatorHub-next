@@ -1,3 +1,5 @@
+import { ProjectConceptDetails, conceptCopy } from '../../libs/components/discovery/ConceptDetails';
+import { ArrowLeft } from 'phosphor-react';
 import { socialPageProps, SocialPageProps } from '../../libs/server/socialMetadata';
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { useReactiveVar } from '@apollo/client';
@@ -38,8 +40,14 @@ function ProjectDetail({ seo }: SocialPageProps) {
 	}
 	return (
 		<Layout seo={seo} title={p?.title || translate('Project')}>
-			<Link passHref href="/" className="back-link">
-				{translate('Back to explore')}
+			<Link
+				passHref
+				href="/"
+				className="back-link"
+				aria-label={translate('Back to explore')}
+				title={translate('Back to explore')}
+			>
+				<ArrowLeft size={22} aria-hidden />
 			</Link>
 			<QueryState loading={result.loading} error={result.error} retry={() => result.refetch()} />
 			{p && (
@@ -49,6 +57,8 @@ function ProjectDetail({ seo }: SocialPageProps) {
 							<Button
 								danger={saved.active}
 								secondary
+								loading={action.busy}
+								loadingLabel={translate('Saving…')}
 								disabled={action.busy || saved.loading}
 								onClick={() => engage('setProjectSaved', !saved.active)}
 							>
@@ -70,7 +80,10 @@ function ProjectDetail({ seo }: SocialPageProps) {
 							<p className="lead">{p.summary}</p>
 							<div className="prose">
 								<h2>{translate('About the project')}</h2>
-								<p>{p.description}</p>
+								<p className="preserve-lines">
+									{p.coverImageUrl?.includes('/demo-media/') ? conceptCopy(p.description) : p.description}
+								</p>
+								{p.coverImageUrl?.includes('/demo-media/') && <ProjectConceptDetails title={p.title} />}
 							</div>
 							<div className="project-media">
 								{p.media

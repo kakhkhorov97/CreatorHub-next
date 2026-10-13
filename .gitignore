@@ -60,3 +60,7 @@ uploads.tar.gz
 # Next.js static export and macOS resource files
 /out/
 **/._*
+
+# Local AI assistant instructions and settings
+/CLAUDE.md
+/.claude/

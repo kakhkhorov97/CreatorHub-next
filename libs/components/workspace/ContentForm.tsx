@@ -1,3 +1,4 @@
+import { ArrowLeft } from 'phosphor-react';
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -339,7 +340,12 @@ export function EditorForm({
 				)}
 				<Feedback {...action} />
 				{message && <Notice notify>{message}</Notice>}
-				<Button type="submit" disabled={action.busy || uploading}>
+				<Button
+					type="submit"
+					loading={action.busy}
+					loadingLabel={translate('Saving…')}
+					disabled={action.busy || uploading}
+				>
 					{status === 'PUBLISHED' || status === 'ACTIVE'
 						? translate('Submit changes for approval')
 						: translate('Save draft')}
@@ -394,8 +400,14 @@ export function EditorForm({
 						{translate('View public {{kind}}', { kind: translate(kind) })}
 					</Link>
 				)}
-				<Link passHref href={`/workspace/${kind}s`}>
-					{translate('Back to {{kind}}', { kind: translate(kind === 'project' ? 'Projects' : 'Services') })}
+				<Link
+					passHref
+					href={`/workspace/${kind}s`}
+					className="back-link"
+					aria-label={translate('Back to {{kind}}', { kind: translate(kind === 'project' ? 'Projects' : 'Services') })}
+					title={translate('Back to {{kind}}', { kind: translate(kind === 'project' ? 'Projects' : 'Services') })}
+				>
+					<ArrowLeft size={22} aria-hidden />
 				</Link>
 			</aside>
 		</form>

@@ -44,8 +44,13 @@ export function QueryState({
 		);
 	return loading ? (
 		<div className="loading" role="status">
-			<span />
-			{translate('Loading…')}
+			<span className="loading-spinner" aria-hidden />
+			<strong>{translate('Loading…')}</strong>
+			<div className="loading-preview" aria-hidden>
+				<i />
+				<i />
+				<i />
+			</div>
 		</div>
 	) : null;
 }

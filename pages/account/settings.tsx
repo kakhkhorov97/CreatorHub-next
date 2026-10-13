@@ -74,7 +74,7 @@ function AccountForm() {
 					<Feedback {...action} />
 					{saved && <Notice notify>{translate('Account updated.')}</Notice>}
 					<div className="account-save-actions">
-						<Button type="submit" disabled={action.busy}>
+						<Button type="submit" disabled={action.busy} loading={action.busy} loadingLabel={translate('Saving…')}>
 							{translate('Save changes')}
 						</Button>
 					</div>

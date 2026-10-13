@@ -172,7 +172,7 @@ function EventContent() {
 					</label>
 					<Feedback {...action} />
 					{saved && <Notice notify>{translate('Event saved.')}</Notice>}
-					<Button type="submit" disabled={action.busy}>
+					<Button type="submit" disabled={action.busy} loading={action.busy} loadingLabel={translate('Saving…')}>
 						{translate('Save event')}
 					</Button>
 				</form>

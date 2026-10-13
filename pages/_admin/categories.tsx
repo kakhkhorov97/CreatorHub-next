@@ -147,7 +147,7 @@ function CategoryContent() {
 					/>
 					<Feedback {...action} />
 					{saved && <Notice notify>{translate('Category saved.')}</Notice>}
-					<Button type="submit" disabled={action.busy}>
+					<Button type="submit" disabled={action.busy} loading={action.busy} loadingLabel={translate('Saving…')}>
 						{translate('Save changes')}
 					</Button>
 				</form>

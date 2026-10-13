@@ -61,6 +61,7 @@ export function ProjectCard({
 					danger={isSaved}
 					className="icon-button"
 					aria-label={isSaved ? `Remove ${project.title} from saved projects` : `Save ${project.title}`}
+					loading={action.busy}
 					disabled={action.busy}
 					onClick={() => {
 						if (!user) {
@@ -74,13 +75,13 @@ export function ProjectCard({
 						});
 					}}
 				>
-					<BookmarkSimple size={21} weight={isSaved ? 'fill' : 'regular'} />
+					{!action.busy && <BookmarkSimple size={21} weight={isSaved ? 'fill' : 'regular'} />}
 				</Button>
 			</div>
 			<div className="project-reactions">
 				<LikeButton projectId={project._id} ownerId={creator?.userId} />
 			</div>
-			<Feedback error={action.error} />
+			<Feedback busy={action.busy} error={action.error} />
 		</article>
 	);
 }

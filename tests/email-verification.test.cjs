@@ -102,7 +102,7 @@ function harness(token, result = true, purpose = undefined) {
 function text(node) {
 	if (typeof node === 'string') return node;
 	if (!node || typeof node !== 'object') return '';
-	return React.Children.toArray(node.props?.children).map(text).join(' ');
+	return React.Children.toArray([node.props?.['aria-label'], node.props?.children]).map(text).join(' ');
 }
 test('email link verifies automatically once across repeated effects and shows success', async () => {
 	const h = harness('a'.repeat(64));
