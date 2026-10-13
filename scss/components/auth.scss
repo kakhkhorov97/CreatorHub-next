@@ -21,7 +21,7 @@
 	height: 46px;
 }
 .auth-panel .field-error {
-	color: #b42318;
+	color: $danger;
 	font-size: 14px;
 	line-height: 1.5;
 	overflow-wrap: anywhere;
@@ -265,7 +265,7 @@
 	margin: 8px 0 0;
 	border: 1px solid #dadce0;
 	border-radius: 4px;
-	background: #fff;
+	background: $paper-white;
 	color: #202124;
 	font-weight: 500;
 }

@@ -115,8 +115,8 @@
 	}
 }
 .event-card {
-	background: #fff;
-	color: #202722;
+	background: $paper-white;
+	color: $ink-text;
 	border: 1px solid var(--catalog-border);
 	border-radius: 12px;
 	min-width: 0;
@@ -130,7 +130,7 @@
 	border-color: #739783;
 }
 .event-card:focus-within {
-	border-color: #245c46;
+	border-color: $forest;
 }
 @media (hover: hover) {
 	.event-card:hover {
@@ -156,7 +156,7 @@
 		gap: 6px;
 		text-align: left;
 		background: #edf3ee;
-		color: #194332;
+		color: $forest-hover;
 		padding: 6px 8px;
 		border-radius: 6px;
 	}
@@ -165,7 +165,7 @@
 	}
 	.event-date span {
 		font-size: 12px;
-		color: #194332;
+		color: $forest-hover;
 	}
 	.event-date span:last-child {
 		display: none;
@@ -180,7 +180,7 @@
 		display: block;
 		font-size: 12px;
 		line-height: 1.5;
-		color: #5d665f;
+		color: $muted-text;
 	}
 	.event-card .event-location {
 		align-items: flex-start;
@@ -230,7 +230,7 @@
 	gap: 0;
 	padding: 0;
 	overflow: hidden;
-	background: #fff;
+	background: $paper-white;
 	border: 1px solid #d5dcd2;
 	border-radius: 14px;
 	height: 100%;

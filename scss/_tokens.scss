@@ -17,8 +17,10 @@ $danger-bg: #fbedec;
 $alert-badge: #c2414f;
 
 // Fonts
-$font-heading: 'Bricolage Grotesque', 'Pretendard', Arial, Helvetica, sans-serif;
-$font-body: 'Hanken Grotesk', 'Pretendard', Arial, Helvetica, sans-serif;
+// --font-bricolage / --font-hanken are set by next/font in pages/_app.tsx.
+// Pretendard (Korean) is self-hosted from public/fonts/pretendard.
+$font-heading: var(--font-bricolage), 'Bricolage Grotesque', 'Pretendard Variable', Arial, Helvetica, sans-serif;
+$font-body: var(--font-hanken), 'Hanken Grotesk', 'Pretendard Variable', Arial, Helvetica, sans-serif;
 
 // Radius
 $radius-image: 14px;

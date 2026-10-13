@@ -175,7 +175,7 @@
 	text-align: center;
 }
 .email-confirmation .confirmation-icon {
-	color: #245c46;
+	color: $forest;
 	margin-bottom: 18px;
 }
 .email-confirmation .confirmation-address {
@@ -215,7 +215,7 @@
 	padding: 8px 2px;
 	border: 0;
 	background: transparent;
-	color: #245c46;
+	color: $forest;
 	font: inherit;
 	font-weight: 600;
 	text-decoration: underline;
@@ -409,7 +409,7 @@
 	align-items: center;
 	gap: 16px;
 	padding: 20px;
-	background: #fff;
+	background: $paper-white;
 	border: 1px solid #c7ccc7;
 	border-radius: 12px;
 }
@@ -430,13 +430,13 @@
 .account-overview-identity p {
 	margin: 4px 0 0;
 	font-size: 14px;
-	color: #245c46;
+	color: $forest;
 }
 .account-overview-identity > a {
 	display: flex;
 	align-items: center;
 	gap: 8px;
-	color: #194332;
+	color: $forest-hover;
 	min-height: 44px;
 }
 .account-connections {
@@ -445,14 +445,14 @@
 	margin: 20px 0;
 	border: 1px solid #c7ccc7;
 	border-radius: 12px;
-	background: #fff;
+	background: $paper-white;
 }
 .account-connections > a {
 	display: grid;
 	grid-template-columns: 1fr auto;
 	gap: 8px;
 	padding: 20px;
-	color: #202722;
+	color: $ink-text;
 	text-decoration: none;
 }
 .account-connections > a + a {
@@ -464,7 +464,7 @@
 .account-connections span {
 	grid-column: 1;
 	font-size: 14px;
-	color: #5d665f;
+	color: $muted-text;
 	line-height: 1.5;
 }
 .account-connections svg {
@@ -473,7 +473,7 @@
 }
 .account-overview-links {
 	border: 1px solid #c7ccc7;
-	background: #fff;
+	background: $paper-white;
 	border-radius: 12px;
 	overflow: hidden;
 }
@@ -484,22 +484,22 @@
 	gap: 16px;
 	min-height: 60px;
 	padding: 16px 20px;
-	color: #202722;
+	color: $ink-text;
 	text-decoration: none;
 }
 .account-overview-links > a + a {
-	border-top: 1px solid #d9d7cf;
+	border-top: 1px solid $line-color;
 }
 .account-overview-links p {
 	font-size: 14px;
 	line-height: 1.5;
-	color: #5d665f;
+	color: $muted-text;
 	margin: 6px 0 0;
 }
 .account-overview-links svg,
 .account-connections svg {
 	flex-shrink: 0;
-	color: #245c46;
+	color: $forest;
 }
 .account-overview-links > a:hover,
 .account-connections > a:hover {
@@ -518,18 +518,18 @@
 }
 .account-security-link p {
 	font-size: 14px;
-	color: #5d665f;
+	color: $muted-text;
 }
 .account-security-link a {
 	display: inline-flex;
 	align-items: center;
 	min-height: 44px;
-	color: #194332;
+	color: $forest-hover;
 }
 .account-delete-section {
 	margin-top: 32px;
 	padding: 16px;
-	border-top: 1px solid #d9d7cf;
+	border-top: 1px solid $line-color;
 }
 .account-delete-section summary {
 	cursor: pointer;
@@ -538,7 +538,7 @@
 	font-weight: 600;
 }
 .account-delete-section p {
-	color: #5d665f;
+	color: $muted-text;
 	font-size: 14px;
 }
 @media (max-width: 700px) {
@@ -553,7 +553,7 @@
 	}
 	.account-overview-identity > a {
 		width: 100%;
-		border-top: 1px solid #d9d7cf;
+		border-top: 1px solid $line-color;
 		padding-top: 8px;
 	}
 	.account-connections > a {

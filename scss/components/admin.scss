@@ -1,13 +1,13 @@
 // Admin area.
 .admin-shell {
-	--admin-ink: #202722;
-	--admin-muted: #5d665f;
-	--admin-line: #d9d7cf;
-	--admin-blue: #245c46;
-	background: #f7f5f0;
+	--admin-ink: #{$ink-text};
+	--admin-muted: #{$muted-text};
+	--admin-line: #{$line-color};
+	--admin-blue: #{$forest};
+	background: $ivory;
 	color: var(--admin-ink);
 	min-height: 100vh;
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: $font-body;
 	font-size: 14px;
 	line-height: 1.5;
 	*,
@@ -62,16 +62,16 @@
 		background: var(--admin-blue);
 		border: 1px solid var(--admin-blue);
 		font-weight: 600;
-		color: #fff;
+		color: $paper-white;
 		cursor: pointer;
 		line-height: 1.4;
 		white-space: normal;
 	}
 	.button:hover {
-		background: #194332;
+		background: $forest-hover;
 	}
 	.button.secondary {
-		background: #fff;
+		background: $paper-white;
 		color: #213e2e;
 		border-color: #b7c1b2;
 	}
@@ -79,9 +79,9 @@
 		background: #edf0e8;
 	}
 	.button.danger {
-		background: #b52b31;
-		border-color: #b52b31;
-		color: #fff;
+		background: $danger;
+		border-color: $danger;
+		color: $paper-white;
 	}
 	.button:disabled {
 		opacity: 0.55;
@@ -104,7 +104,7 @@
 		width: 100%;
 		border: 1px solid #b7c1b2;
 		border-radius: 6px;
-		background: #fff;
+		background: $paper-white;
 		color: var(--admin-ink);
 		padding: 10px 11px;
 		font: inherit;
@@ -114,7 +114,7 @@
 		resize: vertical;
 	}
 	.field input::placeholder {
-		color: #5d665f;
+		color: $muted-text;
 		opacity: 1;
 	}
 	.field small,
@@ -180,7 +180,7 @@
 	.status.removed,
 	.status.deleted {
 		background: #fce8e9;
-		color: #922e35;
+		color: $danger;
 	}
 	.loading {
 		padding: 20px;
@@ -195,7 +195,7 @@
 		gap: 24px;
 	}
 	.panel {
-		background: #fff;
+		background: $paper-white;
 		border: 1px solid var(--admin-line);
 		border-radius: 8px;
 		padding: 22px;
@@ -237,7 +237,7 @@
 	margin-bottom: 40px;
 }
 .admin-brand a {
-	color: #fff;
+	color: $paper-white;
 	font-size: 24px;
 	font-weight: 700;
 	letter-spacing: -0.025em;
@@ -276,7 +276,7 @@
 }
 .admin-sidebar nav a[aria-current='page'] {
 	background: #315d48;
-	color: #fff;
+	color: $paper-white;
 }
 .admin-sidebar nav .pending-approval-badge {
 	margin-left: auto;
@@ -290,7 +290,7 @@
 	display: flex;
 	align-items: center;
 	gap: 10px;
-	color: #d9d7cf;
+	color: $line-color;
 }
 .admin-sidebar-bottom p {
 	font-size: 11px;
@@ -305,8 +305,8 @@
 .admin-topbar {
 	height: 80px;
 	padding: 0 36px;
-	background: #fff;
-	border-bottom: 1px solid #d9d7cf;
+	background: $paper-white;
+	border-bottom: 1px solid $line-color;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -317,10 +317,10 @@
 	align-items: center;
 	gap: 12px;
 	font-size: 13px;
-	color: #5d665f;
+	color: $muted-text;
 }
 .admin-topbar-title strong {
-	color: #202722;
+	color: $ink-text;
 	font-weight: 600;
 }
 .admin-topbar-divider {
@@ -339,7 +339,7 @@
 .admin-account small {
 	display: block;
 	font-size: 10px;
-	color: #5d665f;
+	color: $muted-text;
 }
 .admin-account button,
 .admin-menu,
@@ -371,7 +371,7 @@
 	margin: 8px 0 26px;
 }
 .admin-page-heading p {
-	color: #5d665f;
+	color: $muted-text;
 	margin: 0;
 	max-width: 70ch;
 	font-size: 14px;
@@ -390,18 +390,18 @@
 	margin: 0 0 28px;
 }
 .admin-metrics > a {
-	background: #fff;
-	border: 1px solid #d9d7cf;
+	background: $paper-white;
+	border: 1px solid $line-color;
 	border-radius: 8px;
 	padding: 20px 22px;
-	color: #202722;
+	color: $ink-text;
 }
 .admin-metrics > a:hover {
 	border-color: #b7c1b2;
 }
 .admin-metrics span {
 	font-size: 12px;
-	color: #5d665f;
+	color: $muted-text;
 	display: block;
 }
 .admin-metrics strong {
@@ -415,12 +415,12 @@
 	align-items: center;
 	justify-content: space-between;
 	font-size: 11px;
-	color: #245c46;
+	color: $forest;
 	margin-top: 12px;
 }
 .admin-panel {
-	background: #fff;
-	border: 1px solid #d9d7cf;
+	background: $paper-white;
+	border: 1px solid $line-color;
 	border-radius: 8px;
 	padding: 24px;
 	min-width: 0;
@@ -446,7 +446,7 @@
 	gap: 14px;
 	align-items: center;
 	padding: 14px 0;
-	border-bottom: 1px solid #d9d7cf;
+	border-bottom: 1px solid $line-color;
 }
 .admin-recent:last-child {
 	border-bottom: 0;
@@ -469,12 +469,12 @@
 .admin-recent small {
 	display: block;
 	font-size: 11px;
-	color: #5d665f;
+	color: $muted-text;
 	margin-top: 4px;
 }
 .admin-quick > p {
 	font-size: 13px;
-	color: #5d665f;
+	color: $muted-text;
 }
 .admin-quick > a {
 	display: flex;
@@ -483,14 +483,14 @@
 	font-size: 12px;
 	gap: 16px;
 	padding: 15px 0;
-	border-bottom: 1px solid #d9d7cf;
+	border-bottom: 1px solid $line-color;
 }
 .admin-note {
-	background: #f7f5f0;
+	background: $ivory;
 	border-radius: 6px;
 	padding: 14px;
 	font-size: 11px;
-	color: #5d665f;
+	color: $muted-text;
 	margin-top: 22px;
 	line-height: 1.6;
 }
@@ -522,15 +522,15 @@
 .admin-table th {
 	font-size: 11px;
 	font-weight: 600;
-	color: #5d665f;
-	background: #f7f5f0;
+	color: $muted-text;
+	background: $ivory;
 	padding: 13px 20px;
-	border-block: 1px solid #d9d7cf;
+	border-block: 1px solid $line-color;
 	white-space: nowrap;
 }
 .admin-table td {
 	padding: 16px 20px;
-	border-bottom: 1px solid #d9d7cf;
+	border-bottom: 1px solid $line-color;
 	font-size: 12px;
 	vertical-align: middle;
 }
@@ -564,12 +564,12 @@
 .admin-record-name small {
 	display: block;
 	font-size: 10px;
-	color: #5d665f;
+	color: $muted-text;
 	margin-top: 4px;
 }
 .admin-date {
 	white-space: nowrap;
-	color: #5d665f;
+	color: $muted-text;
 }
 .admin-pagination {
 	display: flex;
@@ -578,7 +578,7 @@
 	gap: 15px;
 	margin-top: 20px;
 	font-size: 12px;
-	color: #5d665f;
+	color: $muted-text;
 }
 .admin-pagination > div {
 	display: flex;
@@ -587,7 +587,7 @@
 .admin-empty {
 	padding: 45px 20px;
 	text-align: center;
-	color: #5d665f;
+	color: $muted-text;
 }
 .admin-editor-grid {
 	display: grid;
@@ -602,7 +602,7 @@
 }
 .admin-record-controls > p {
 	font-size: 13px;
-	color: #5d665f;
+	color: $muted-text;
 }
 .admin-detail-list {
 	font-size: 12px;
@@ -610,7 +610,7 @@
 }
 .admin-detail-list dt {
 	font-size: 11px;
-	color: #5d665f;
+	color: $muted-text;
 	margin-top: 14px;
 }
 .admin-detail-list dd {
@@ -629,13 +629,13 @@
 }
 .admin-media-row {
 	padding: 16px;
-	background: #f7f5f0;
-	border: 1px solid #d9d7cf;
+	background: $ivory;
+	border: 1px solid $line-color;
 	border-radius: 6px;
 	margin: 12px 0;
 }
 .admin-categories {
-	border: 1px solid #d9d7cf;
+	border: 1px solid $line-color;
 	border-radius: 6px;
 	padding: 16px;
 	margin: 16px 0;
@@ -707,7 +707,7 @@
 		display: flex;
 	}
 	.admin-close {
-		color: #fff;
+		color: $paper-white;
 	}
 	.admin-scrim {
 		display: block;
@@ -784,7 +784,7 @@
 .admin-table-hint {
 	display: none;
 	font-size: 11px;
-	color: #5d665f;
+	color: $muted-text;
 }
 @media (max-width: 760px) {
 	.admin-sidebar {
@@ -798,20 +798,20 @@
 	}
 }
 .admin-shell .admin-layout .table-wrap {
-	background: #fff;
-	border: 1px solid #d9d7cf;
+	background: $paper-white;
+	border: 1px solid $line-color;
 	border-radius: 8px;
 }
 .admin-shell .admin-layout table th {
-	background: #f7f5f0;
-	color: #5d665f;
+	background: $ivory;
+	color: $muted-text;
 	font-size: 11px;
 	font-weight: 600;
-	border-bottom: 1px solid #d9d7cf;
+	border-bottom: 1px solid $line-color;
 }
 .admin-shell .admin-layout table td {
 	font-size: 12px;
-	border-bottom: 1px solid #d9d7cf;
+	border-bottom: 1px solid $line-color;
 }
 .admin-shell .admin-layout table tr:last-child td {
 	border-bottom: 0;

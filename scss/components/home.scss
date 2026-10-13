@@ -25,7 +25,7 @@
 	min-height: 58px;
 	background: white;
 	overflow: hidden;
-	border-color: #d9d7cf;
+	border-color: $line-color;
 }
 .discovery-home .search-bar .button {
 	border-radius: 0 36px 36px 0;
@@ -153,7 +153,7 @@
 	margin-bottom: 36px;
 }
 .discovery-search-section .discovery-hero p {
-	color: #5d665f;
+	color: $muted-text;
 }
 .discovery-home .discovery-search-section .segmented-search {
 	margin-bottom: 0;
@@ -166,7 +166,7 @@
 	display: flex;
 	align-items: center;
 	gap: 0;
-	border: 1px solid #d9d7cf;
+	border: 1px solid $line-color;
 	border-radius: 10px;
 	padding: 8px;
 	background: white;
@@ -188,7 +188,7 @@
 	padding: 4px 0;
 }
 .search-query input::placeholder {
-	color: #5d665f;
+	color: $muted-text;
 }
 .search-segment {
 	display: flex;
@@ -334,9 +334,9 @@
 		padding: 10px 12px;
 		font-size: 14px;
 		text-align: left;
-		border: 1px solid #d9d7cf;
+		border: 1px solid $line-color;
 		border-radius: 8px;
-		background: #fff;
+		background: $paper-white;
 	}
 	.category-picker-trigger span {
 		overflow: hidden;
@@ -356,8 +356,8 @@
 		max-height: min(76dvh, 640px);
 		border: 0;
 		border-radius: 16px 16px 0 0;
-		background: #fff;
-		color: #202722;
+		background: $paper-white;
+		color: $ink-text;
 	}
 	.category-sheet::backdrop {
 		background: rgba(20, 27, 23, 0.45);
@@ -403,7 +403,7 @@
 		font-size: 15px;
 	}
 	.category-sheet-options button[aria-pressed='true'] {
-		color: #245c46;
+		color: $forest;
 		font-weight: 600;
 	}
 	.discovery-full {
@@ -459,9 +459,9 @@
 		grid-column: 1 / -1;
 		min-height: 44px;
 		padding: 0 10px;
-		border: 1px solid #d9d7cf;
+		border: 1px solid $line-color;
 		border-radius: 8px;
-		background: #fff;
+		background: $paper-white;
 	}
 	.segmented-search .search-query input {
 		min-height: 44px;
@@ -472,11 +472,11 @@
 	}
 	.segmented-search .search-segment {
 		width: 100%;
-		border: 1px solid #d9d7cf;
+		border: 1px solid $line-color;
 		border-radius: 8px;
 		padding: 0 8px;
 		min-width: 0;
-		background: #fff;
+		background: $paper-white;
 	}
 	.segmented-search .search-segment > span {
 		display: none;
@@ -520,8 +520,8 @@
 		min-height: 46px;
 		border: 1px solid var(--control-border);
 		border-radius: 8px;
-		background: #fff;
-		color: #202722;
+		background: $paper-white;
+		color: $ink-text;
 	}
 	.segmented-search .category-picker-trigger {
 		padding: 0 12px;
@@ -545,7 +545,7 @@
 		border: 0;
 		border-radius: 8px;
 		background: transparent;
-		color: #202722;
+		color: $ink-text;
 		font-size: 16px;
 		line-height: 1.3;
 		font-weight: 400;
@@ -565,7 +565,7 @@
 		border-color: var(--control-border);
 	}
 	.segmented-search .search-query input::placeholder {
-		color: #5d665f;
+		color: $muted-text;
 		opacity: 1;
 	}
 }
@@ -644,7 +644,7 @@
 	.home-introduction figure {
 		margin: 16px 0 0;
 		padding: 6px;
-		background: #fff;
+		background: $paper-white;
 		border-radius: 14px;
 	}
 	.intro-player {

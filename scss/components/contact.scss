@@ -110,7 +110,7 @@
 	display: flex;
 	align-items: center;
 	gap: 12px;
-	background: #f7f5f0;
+	background: $ivory;
 	padding: 18px 28px;
 	border-bottom: 1px solid $line;
 }
@@ -165,7 +165,7 @@
 }
 .contact-creator-form input::placeholder,
 .contact-creator-form textarea::placeholder {
-	color: #5d665f;
+	color: $muted-text;
 	opacity: 1;
 }
 .inquiry-deadline {
@@ -293,10 +293,10 @@
 	}
 }
 .contact-creator-form textarea[aria-invalid='true'] {
-	border-color: #b91c1c;
+	border-color: $danger;
 }
 .contact-creator-form textarea[aria-invalid='true']:focus-visible {
-	outline-color: #b91c1c;
+	outline-color: $danger;
 }
 .inquiry-message-help {
 	display: flex;
@@ -309,7 +309,7 @@
 	color: $muted;
 }
 .inquiry-message-error {
-	color: #b91c1c;
+	color: $danger;
 }
 .inquiry-message-count {
 	font-variant-numeric: tabular-nums;
@@ -365,7 +365,7 @@
 .contact-page .contact-form-panel {
 	grid-column: 1/-1;
 	padding: 28px;
-	background: #fff;
+	background: $paper-white;
 	border: 1px solid #d3dcd1;
 	border-radius: 14px;
 }
@@ -379,7 +379,7 @@
 	align-items: center;
 	gap: 9px;
 	margin-bottom: 20px;
-	color: #245d46;
+	color: $forest;
 }
 .contact-honeypot {
 	position: absolute;
@@ -390,7 +390,7 @@
 }
 .contact-success {
 	padding: 24px 0;
-	color: #245d46;
+	color: $forest;
 }
 .contact-success h3 {
 	color: #1e3628;

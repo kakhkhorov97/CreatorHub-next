@@ -24,9 +24,9 @@
 }
 .button.danger,
 .button.secondary.danger {
-	background: #a1332a;
+	background: $danger;
 	color: white;
-	border-color: #a1332a;
+	border-color: $danger;
 }
 .button.danger:hover:not(:disabled) {
 	background: #7d281f;
@@ -68,23 +68,23 @@
 	font-size: 13px;
 }
 .button.danger {
-	background: #b52b31;
-	border-color: #b52b31;
+	background: $danger;
+	border-color: $danger;
 	color: white;
 }
 .admin-shell .button.danger {
-	background: #b52b31;
-	border-color: #b52b31;
+	background: $danger;
+	border-color: $danger;
 	color: white;
 }
 .button.danger:hover {
-	background: #92212a;
-	border-color: #92212a;
+	background: $danger;
+	border-color: $danger;
 	color: white;
 }
 .admin-shell .button.danger:hover {
-	background: #92212a;
-	border-color: #92212a;
+	background: $danger;
+	border-color: $danger;
 	color: white;
 }
 .engagement-feedback h2 {
@@ -111,7 +111,7 @@
 	margin: 0;
 }
 .field input[aria-invalid='true'] {
-	border-color: #b42318;
+	border-color: $danger;
 }
 @media (max-width: 700px) {
 	.site-header .desktop-auth-actions > .button:first-child {
@@ -163,22 +163,22 @@
 	}
 }
 .site-header .desktop-auth-actions .button {
-	background: #245c46;
-	color: #fff;
+	background: $forest;
+	color: $paper-white;
 }
 .site-header .desktop-auth-actions .button:hover {
-	background: #194332;
+	background: $forest-hover;
 }
 .button:not(.secondary):not(.danger):active:not(:disabled) {
 	background: #143728;
-	color: #fff;
+	color: $paper-white;
 }
 .public-main .panel {
-	background: #fff;
+	background: $paper-white;
 	border-color: var(--catalog-border);
 }
 .workspace-main .panel {
-	background: #fff;
+	background: $paper-white;
 	border-color: var(--catalog-border);
 }
 @media (max-width: 700px) {
@@ -199,9 +199,9 @@
 }
 .site-header .desktop-auth-actions .button.secondary,
 .guest-auth-actions .button.secondary {
-	background: #fff;
-	color: #245c46;
-	border: 1px solid #245c46;
+	background: $paper-white;
+	color: $forest;
+	border: 1px solid $forest;
 }
 .site-header .desktop-auth-actions .button.secondary:hover,
 .guest-auth-actions .button.secondary:hover {

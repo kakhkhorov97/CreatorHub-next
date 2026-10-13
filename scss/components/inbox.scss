@@ -146,7 +146,7 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	background: #245c46;
+	background: $forest;
 	color: white;
 	border-radius: 12px;
 	font-size: 11px;
@@ -170,7 +170,7 @@
 }
 .inbox-page-heading p {
 	margin: 0;
-	color: #5d665f;
+	color: $muted-text;
 	font-size: 14px;
 }
 .messaging-shell {
@@ -198,13 +198,13 @@
 	display: flex;
 	gap: 12px;
 	padding: 16px;
-	border-bottom: 1px solid #d9d7cf;
+	border-bottom: 1px solid $line-color;
 	color: $ink;
 	text-decoration: none;
 	cursor: pointer;
 }
 .conversation-preview:hover {
-	background: #f7f5f0;
+	background: $ivory;
 }
 .conversation-preview.selected {
 	background: #edf0e8;
@@ -235,7 +235,7 @@
 .preview-top time {
 	font-size: 11px;
 	white-space: nowrap;
-	color: #5d665f;
+	color: $muted-text;
 	font-variant-numeric: tabular-nums;
 }
 .preview-copy p {
@@ -253,7 +253,7 @@
 	font-weight: 700;
 }
 .preview-brief {
-	color: #5d665f;
+	color: $muted-text;
 }
 .preview-meta {
 	display: flex;
@@ -261,7 +261,7 @@
 	gap: 7px;
 	margin-top: 10px;
 	font-size: 11px;
-	color: #5d665f;
+	color: $muted-text;
 }
 .preview-meta > span:first-child {
 	white-space: nowrap;
@@ -279,7 +279,7 @@
 	height: 7px;
 	flex-shrink: 0;
 	border-radius: 50%;
-	background: #245c46;
+	background: $forest;
 	margin-left: auto;
 }
 .inbox-conversation {
@@ -295,10 +295,10 @@
 	height: 100%;
 	padding: 30px;
 	text-align: center;
-	background: #f7f5f0;
+	background: $ivory;
 }
 .inbox-welcome > svg {
-	color: #5d665f;
+	color: $muted-text;
 	margin-bottom: 18px;
 }
 .inbox-welcome h2 {
@@ -311,7 +311,7 @@
 }
 .inbox-welcome span {
 	font-size: 13px;
-	color: #5d665f;
+	color: $muted-text;
 }
 .mobile-inbox-back {
 	display: none;
@@ -392,7 +392,7 @@
 }
 .inbox-list-heading span {
 	font-size: 11px;
-	color: #5d665f;
+	color: $muted-text;
 }
 .inbox-more-sentinel {
 	min-height: 1px;
@@ -421,7 +421,7 @@
 .inbox-row {
 	border-radius: 12px;
 	margin: 6px;
-	background: #fff;
+	background: $paper-white;
 }
 .inbox-row:hover,
 .inbox-row.active {
@@ -435,7 +435,7 @@
 	margin: 6px 8px;
 	border-radius: 12px;
 	border: 1px solid transparent;
-	background: #fff;
+	background: $paper-white;
 }
 .conversation-preview:hover,
 .conversation-preview.selected {

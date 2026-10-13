@@ -1,12 +1,12 @@
 @import './tokens';
 
 // Legacy names keep their old values until steps 3-4 migrate usages to the tokens.
-$background: #f7f5f0;
-$paper: #ffffff;
-$ink: #202722;
-$muted: #5d665f;
-$line: #d9d7cf;
-$coral: #245c46;
-$coral-hover: #194332;
+$background: $ivory;
+$paper: $paper-white;
+$ink: $ink-text;
+$muted: $muted-text;
+$line: $line-color;
+$coral: $forest;
+$coral-hover: $forest-hover;
 
 $stone: #edeae2;

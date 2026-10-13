@@ -299,7 +299,7 @@
 .site-header .top .primary-nav a:hover,
 .site-header .top .primary-nav a.active {
 	background: #edf0e8;
-	color: #194332;
+	color: $forest-hover;
 }
 .site-header .header-categories {
 	background: $coral;
@@ -322,12 +322,12 @@
 	outline-offset: 3px;
 }
 .site-header .user-menu .signout-button {
-	color: #b52b31;
+	color: $danger;
 	background: #fff0f0;
 }
 .site-header .user-menu .signout-button:hover {
 	background: #fce0e2;
-	color: #922e35;
+	color: $danger;
 }
 .header-text-link {
 	position: relative;
@@ -408,7 +408,7 @@
 	width: 190px;
 	padding: 8px;
 	background: white;
-	color: #b91c1c;
+	color: $danger;
 	font-size: 12px;
 }
 @media (max-width: 700px) {
@@ -631,7 +631,7 @@
 		justify-content: center;
 		min-height: 44px;
 		padding: 8px 12px;
-		border: 1px solid #d9d7cf;
+		border: 1px solid $line-color;
 		border-radius: 8px;
 		font-size: 14px;
 		text-decoration: none;
@@ -645,7 +645,7 @@
 		display: none;
 	}
 	.mobile-account-links {
-		border-top: 1px solid #d9d7cf;
+		border-top: 1px solid $line-color;
 		margin-top: 8px;
 		padding-top: 8px;
 	}
@@ -685,8 +685,8 @@
 		width: min(280px, calc(100vw - 24px));
 		max-height: calc(100dvh - 84px);
 		overflow-y: auto;
-		background: #fff;
-		border: 1px solid #d9d7cf;
+		background: $paper-white;
+		border: 1px solid $line-color;
 		border-radius: 12px;
 		padding: 8px;
 		z-index: 4;
@@ -701,7 +701,7 @@
 	}
 	.mobile-navigation nav > a[aria-current='page'] {
 		background: #edf0e8;
-		color: #245c46;
+		color: $forest;
 		border-radius: 6px;
 	}
 	.mobile-navigation nav > .language-selector {
@@ -733,16 +733,16 @@
 .language-trigger:active,
 .language-menu button:active {
 	background: var(--pressed-surface);
-	color: #194332;
+	color: $forest-hover;
 }
 @media (max-width: 700px) {
 	.site-header .header-actions > .mobile-login-link {
-		border-color: #245c46;
-		background: #245c46;
-		color: #fff;
+		border-color: $forest;
+		background: $forest;
+		color: $paper-white;
 	}
 	.site-header .header-actions > .mobile-login-link:hover {
-		background: #194332;
+		background: $forest-hover;
 	}
 	.site-header .header-actions > .mobile-login-link:active {
 		background: #143728;
@@ -762,13 +762,13 @@
 	}
 	.site-header .mobile-navigation nav > a[aria-current='page'] {
 		background: #e6efe9;
-		color: #194332;
+		color: $forest-hover;
 		font-weight: 600;
 	}
 	.site-header .mobile-navigation nav > .language-selector {
 		margin: 6px 0 0;
 		padding: 4px 2px 0;
-		border-top: 1px solid #d9d7cf;
+		border-top: 1px solid $line-color;
 	}
 	.site-header .mobile-navigation .language-trigger {
 		width: 100%;
@@ -814,9 +814,9 @@
 	padding: 0;
 	gap: 0;
 	border-radius: 14px;
-	background: #fff;
-	color: #202722;
-	border: 1px solid #d9d7cf;
+	background: $paper-white;
+	color: $ink-text;
+	border: 1px solid $line-color;
 	max-height: calc(100dvh - 100px);
 	overflow-y: auto;
 	overscroll-behavior: contain;
@@ -841,9 +841,9 @@
 	justify-content: center;
 	padding: 10px 8px;
 	min-height: 44px;
-	background: #245c46;
-	border: 1px solid #245c46;
-	color: #fff;
+	background: $forest;
+	border: 1px solid $forest;
+	color: $paper-white;
 	text-align: center;
 	font-size: 14px;
 	font-weight: 600;
@@ -852,8 +852,8 @@
 	border-radius: 8px;
 }
 .site-header .account-menu-shortcuts > a:hover {
-	background: #194332;
-	color: #fff;
+	background: $forest-hover;
+	color: $paper-white;
 }
 .site-header .menu-group {
 	padding: 8px 12px;
@@ -867,7 +867,7 @@
 	padding: 10px 8px;
 	font-size: 14px;
 	line-height: 1.4;
-	color: #202722;
+	color: $ink-text;
 	background: transparent;
 	border-radius: 8px;
 	text-decoration: none;
@@ -883,10 +883,10 @@
 .site-header a.menu-row:hover,
 .site-header a.menu-row[aria-current='page'] {
 	background: #e6efe9;
-	color: #194332;
+	color: $forest-hover;
 }
 .menu-count {
-	color: #194332;
+	color: $forest-hover;
 	font-weight: 700;
 	font-variant-numeric: tabular-nums;
 }
@@ -920,7 +920,7 @@
 	background: #fbefed;
 	border: 1px solid #f0d5d1;
 	border-radius: 8px;
-	color: #a1332a;
+	color: $danger;
 	font-weight: 600;
 }
 .site-header .menu-footer .signout-button:hover:not(:disabled) {
@@ -929,7 +929,7 @@
 }
 .site-header .menu-row:focus-visible,
 .site-header .account-menu-shortcuts > a:focus-visible {
-	outline: 2px solid #245c46;
+	outline: 2px solid $forest;
 	outline-offset: 2px;
 }
 @media (min-width: 701px) {
@@ -988,7 +988,7 @@
 		gap: 8px;
 		min-height: 44px;
 		margin-bottom: 8px;
-		color: #245c46;
+		color: $forest;
 		font-size: 14px;
 		text-decoration: none;
 	}
@@ -1020,7 +1020,7 @@
 	position: absolute;
 	right: 0;
 	top: 100%;
-	background: #fff;
+	background: $paper-white;
 	padding: 12px;
 	border: 1px solid #ccd4cc;
 	border-radius: 12px;
