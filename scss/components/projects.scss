@@ -528,3 +528,115 @@
 		min-height: 2.7em;
 	}
 }
+
+// Editorial Gallery project cards (redesign step 5). Kept last in this file on purpose.
+.grid.projects {
+	grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+	gap: 44px 28px;
+}
+.grid.projects .project-card,
+.grid .project-card {
+	position: relative;
+	background: transparent;
+	border: 0;
+	border-radius: 0;
+	overflow: visible;
+	transform: none;
+}
+.grid .project-card:hover,
+.grid .project-card:active {
+	background: transparent;
+	border-color: transparent;
+	transform: none;
+}
+.grid .project-card:focus-within {
+	outline: 2px solid $forest;
+	outline-offset: 6px;
+	border-radius: $radius-image;
+}
+.grid .project-card .cover-link {
+	display: block;
+	border-radius: $radius-image;
+	overflow: hidden;
+}
+.grid .project-card .cover-link .picture,
+.grid.projects .project-card .picture {
+	width: 100%;
+	aspect-ratio: 4 / 3;
+	object-fit: cover;
+	border-radius: 0;
+	transition: transform 300ms ease;
+}
+.grid .project-card:hover .cover-link .picture {
+	transform: scale(1.02);
+}
+.grid .project-card .card-caption {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 14px 0 0;
+}
+.grid .project-card .card-title {
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 1.35;
+	color: $ink-text;
+}
+.grid .project-card .creator-line {
+	margin-top: 8px;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-size: 14px;
+	color: $ink-text;
+}
+.grid .project-card .creator-line .avatar {
+	width: 30px;
+	height: 30px;
+}
+.grid .project-card .creator-line small {
+	display: block;
+	color: $muted-text;
+	font-size: 13px;
+}
+.grid .project-card .card-caption .icon-button {
+	flex: none;
+	border-radius: 50%;
+	border-color: $line-color;
+	background: $paper-white;
+}
+// Save shows on hover and keyboard focus; touch screens always show it.
+@media (hover: hover) {
+	.grid .project-card .card-caption .icon-button:not(.danger) {
+		opacity: 0;
+		transition: opacity $motion;
+	}
+	.grid .project-card:hover .card-caption .icon-button,
+	.grid .project-card:focus-within .card-caption .icon-button {
+		opacity: 1;
+	}
+}
+.grid .project-card .project-reactions {
+	padding: 6px 0 0;
+}
+.grid .project-card > .notice {
+	margin-inline: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+	.grid .project-card .cover-link .picture {
+		transition: none;
+	}
+	.grid .project-card:hover .cover-link .picture {
+		transform: none;
+	}
+}
+@media (max-width: 700px) {
+	.grid.projects {
+		grid-template-columns: 1fr;
+		gap: 28px;
+	}
+	.grid .project-card .card-caption {
+		padding: 10px 0 0;
+	}
+}

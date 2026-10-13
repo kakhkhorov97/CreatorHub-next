@@ -1029,5 +1029,20 @@
 	"Please wait {{seconds}} seconds before sending another message.": "다음 메시지를 보내기 전에 {{seconds}}초 기다려주세요.",
 	"The assistant has reached its daily limit. Please try tomorrow or visit Help.": "도우미의 일일 한도에 도달했습니다. 내일 다시 시도하거나 도움말을 확인해주세요.",
 	"The assistant is busy. Please try again in a minute.": "도우미가 혼잡합니다. 1분 후 다시 시도해주세요.",
-	"Illustrative creator profiles, concept projects and event concepts are fictional. No real client commission is implied.": "예시 크리에이터 프로필, 콘셉트 프로젝트와 행사는 가상의 콘텐츠입니다. 실제 고객의 의뢰를 의미하지 않습니다."
+	"Illustrative creator profiles, concept projects and event concepts are fictional. No real client commission is implied.": "예시 크리에이터 프로필, 콘셉트 프로젝트와 행사는 가상의 콘텐츠입니다. 실제 고객의 의뢰를 의미하지 않습니다.",
+	"All work": "전체 작업",
+	"Background: fictional studio scenes": "배경: 가상의 작업실 장면",
+	"Play background video": "배경 영상 재생",
+	"Pause background video": "배경 영상 일시정지",
+	"Browse portfolios by discipline and city, follow the people whose work you like, and send them a private message when you have a project in mind.": "분야와 도시별로 포트폴리오를 둘러보고, 마음에 드는 작업을 한 크리에이터를 팔로우하고, 프로젝트가 생기면 비공개 메시지를 보내세요.",
+	"Open workspace →": "워크스페이스 열기 →",
+	"Your projects, services and profile": "내 프로젝트, 서비스, 프로필",
+	"{{count}} unread notifications": "읽지 않은 알림 {{count}}개",
+	"Profile status": "프로필 상태",
+	"Quick actions": "빠른 작업",
+	"My services": "내 서비스",
+	"Your work": "내 작업",
+	"Close help": "도움말 닫기",
+	"Open help": "도움말 열기",
+	"Answers are generated automatically and may be incomplete. Check the linked profiles and services.": "답변은 자동으로 생성되며 불완전할 수 있습니다. 연결된 프로필과 서비스를 확인하세요."
 }

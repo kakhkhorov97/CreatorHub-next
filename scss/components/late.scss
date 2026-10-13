@@ -240,3 +240,196 @@
 .service-detail-layout .service-summary {
 	background: #edf3e9;
 }
+
+// Editorial Gallery site-wide finish (redesign step 7). Loaded last on purpose.
+.button {
+	border-radius: $radius-pill;
+}
+.icon-button.button {
+	border-radius: 50%;
+}
+
+// Page headings in the display face.
+.page-heading h1 {
+	font-family: $font-heading;
+	font-size: clamp(40px, 4.4vw, 64px);
+	font-weight: 800;
+	letter-spacing: -0.04em;
+	line-height: 1;
+}
+
+// Directory search bars: rounded like the homepage.
+.segmented-search .search-segments {
+	border-radius: $radius-pill;
+	border-color: $line-color;
+}
+.segmented-search .search-segments > .button {
+	border-radius: $radius-pill;
+}
+// Result counts stay for screen readers only.
+.search-result-status:not(:empty) {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+
+// Language button without the browser's disclosure arrow.
+.site-header .guest-language-menu > summary {
+	list-style: none;
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	min-height: 40px;
+	padding: 0 14px;
+	border: 1px solid $line-color;
+	border-radius: $radius-pill;
+	background: $paper-white;
+	cursor: pointer;
+}
+.site-header .guest-language-menu > summary::-webkit-details-marker {
+	display: none;
+}
+.site-header .guest-language-menu > summary::before {
+	content: '';
+	width: 16px;
+	height: 16px;
+	background: currentColor;
+	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18'/%3E%3C/svg%3E")
+		center / contain no-repeat;
+}
+
+// Help chat launcher: plain, no "AI" styling.
+.chat-trigger {
+	background: $ink-text !important;
+	color: $ivory !important;
+	border-radius: $radius-pill !important;
+	box-shadow: none !important;
+}
+
+// Sign in and sign up.
+.auth-panel.panel,
+.auth-layout .panel {
+	border: 0;
+	border-radius: $radius-panel-lg;
+}
+.social-provider-button {
+	border-radius: $radius-pill !important;
+}
+.social-provider-button:has(.social-provider-icon--kakao) {
+	background: #fee500 !important;
+	border-color: #fee500 !important;
+	color: rgba(0, 0, 0, 0.85) !important;
+}
+
+// Cards and panels share one corner size.
+.creator-card,
+.service-card {
+	border: 0;
+	border-radius: $radius-panel;
+	background: $paper-white;
+}
+
+// Editorial Gallery detail pages (redesign step 7).
+.detail-layout h1,
+.profile-header h1 {
+	font-family: $font-heading;
+	font-weight: 800;
+	letter-spacing: -0.035em;
+	line-height: 1.02;
+}
+.detail-layout h1 {
+	font-size: clamp(36px, 4.4vw, 64px);
+}
+.project-hero .picture,
+.project-hero img,
+.project-media .picture,
+.project-media img,
+.project-media video {
+	border-radius: $radius-panel;
+}
+.detail-sidebar > *:not(.button):not(a) {
+	border: 0;
+	border-radius: $radius-panel;
+	background: $paper-white;
+}
+.detail-sidebar .button {
+	width: 100%;
+	justify-content: center;
+}
+.prose,
+.prose-text {
+	font-size: 17px;
+	line-height: 1.7;
+	max-width: 720px;
+}
+
+// Creator profile: white header card, 44px name.
+.profile-header {
+	padding: 32px;
+	border: 0;
+	border-radius: $radius-panel-lg;
+	background: $paper-white;
+}
+.profile-header h1 {
+	font-size: 44px;
+}
+.profile-header .avatar {
+	width: 120px;
+	height: 120px;
+}
+.tabs a[aria-current='page'],
+.tabs button[aria-selected='true'] {
+	color: $ink-text;
+	border-bottom-color: $ink-text;
+}
+.customer-review {
+	border: 0;
+	border-radius: 18px;
+	background: $paper-white;
+}
+
+// Events.
+.event-card {
+	border: 0;
+	border-radius: $radius-panel;
+	background: $paper-white;
+	overflow: hidden;
+}
+.event-cover,
+.event-detail-cover {
+	border-radius: $radius-image;
+}
+.event-date-short {
+	font-family: $font-heading;
+	font-weight: 800;
+	color: $forest;
+}
+
+// Inbox: one white frame with green sent messages.
+.conversation {
+	border-radius: $radius-panel;
+	overflow: hidden;
+}
+.message.mine {
+	background: $forest;
+	color: $ivory;
+}
+.message-form textarea {
+	border-radius: $radius-field;
+}
+
+@media (max-width: 700px) {
+	.profile-header {
+		padding: 20px;
+	}
+	.profile-header h1 {
+		font-size: 34px;
+	}
+	.profile-header .avatar {
+		width: 88px;
+		height: 88px;
+	}
+}

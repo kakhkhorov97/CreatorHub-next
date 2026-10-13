@@ -1029,5 +1029,20 @@
 	"Please wait {{seconds}} seconds before sending another message.": "Please wait {{seconds}} seconds before sending another message.",
 	"The assistant has reached its daily limit. Please try tomorrow or visit Help.": "The assistant has reached its daily limit. Please try tomorrow or visit Help.",
 	"The assistant is busy. Please try again in a minute.": "The assistant is busy. Please try again in a minute.",
-	"Illustrative creator profiles, concept projects and event concepts are fictional. No real client commission is implied.": "Illustrative creator profiles, concept projects and event concepts are fictional. No real client commission is implied."
+	"Illustrative creator profiles, concept projects and event concepts are fictional. No real client commission is implied.": "Illustrative creator profiles, concept projects and event concepts are fictional. No real client commission is implied.",
+	"All work": "All work",
+	"Background: fictional studio scenes": "Background: fictional studio scenes",
+	"Play background video": "Play background video",
+	"Pause background video": "Pause background video",
+	"Browse portfolios by discipline and city, follow the people whose work you like, and send them a private message when you have a project in mind.": "Browse portfolios by discipline and city, follow the people whose work you like, and send them a private message when you have a project in mind.",
+	"Open workspace →": "Open workspace →",
+	"Your projects, services and profile": "Your projects, services and profile",
+	"{{count}} unread notifications": "{{count}} unread notifications",
+	"Profile status": "Profile status",
+	"Quick actions": "Quick actions",
+	"My services": "My services",
+	"Your work": "Your work",
+	"Close help": "Close help",
+	"Open help": "Open help",
+	"Answers are generated automatically and may be incomplete. Check the linked profiles and services.": "Answers are generated automatically and may be incomplete. Check the linked profiles and services."
 }

@@ -1,9 +1,10 @@
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
-import { date, Empty, Heading, LinkButton, Picture, QueryState, Status } from '../../libs/components/common/UI';
+import { date, Empty, Heading, Picture, QueryState, Status } from '../../libs/components/common/UI';
 import Layout, { Guard } from '../../libs/components/layout/LayoutBasic';
 import ReviewStatus from '../../libs/components/review/ReviewStatus';
 import { useApi } from '../../libs/hooks/useApi';
+import { Briefcase, ListBullets, Plus, UserCircle } from 'phosphor-react';
 
 function Workspace() {
 	const { t: translate } = useSiteTranslation('common');
@@ -33,69 +34,55 @@ function Overview() {
 					</Link>
 				)}
 			</Heading>
-			<section className="panel next-steps">
-				<h2>{translate('Next steps')}</h2>
-				<p className="muted">{translate('Keep building your presence on CreatorHub.')}</p>
-				<div className="steps">
-					<div>
-						<h3>{translate('Creator profile')}</h3>
-						{profile.value ? (
-							<>
-								<Status value={profile.value.status} />
-								<p>{profile.value.headline}</p>
-							</>
-						) : (
-							<p>{translate('Create your profile to start sharing your work.')}</p>
-						)}
-						<Link passHref href="/workspace/profile">
-							{profile.value ? translate('Edit profile') : translate('Create profile')}
-						</Link>
-					</div>
-					<div>
-						<h3>{translate('Portfolio')}</h3>
-						<p>{translate('Add your work and make it visible to potential clients.')}</p>
-						<Link passHref href="/workspace/projects">
-							{translate('Manage projects')}
-						</Link>
-					</div>
-					<div>
-						<h3>{translate('Services')}</h3>
-						<p>{translate('Describe what you offer and what’s included.')}</p>
-						<Link passHref href="/workspace/services">
-							{translate('Manage services')}
-						</Link>
-					</div>
-				</div>
-				<div className="actions">
-					<LinkButton href="/workspace/projects/new">{translate('New project')}</LinkButton>
-					<LinkButton secondary href="/workspace/services/new">
-						{translate('Add service')}
-					</LinkButton>
-				</div>
+			<section className="workspace-summary" aria-label={translate('Creator profile')}>
+				{profile.value ? (
+					<p className="workspace-status">
+						{translate('Profile status')}: <Status value={profile.value.status} />
+					</p>
+				) : (
+					<p className="workspace-status">{translate('Create your profile to start sharing your work.')}</p>
+				)}
+				<nav className="workspace-actions" aria-label={translate('Quick actions')}>
+					<Link href="/workspace/projects/new" className="is-primary">
+						<Plus size={20} aria-hidden />
+						<span>{translate('New project')}</span>
+					</Link>
+					<Link href="/workspace/services/new">
+						<Briefcase size={20} aria-hidden />
+						<span>{translate('New service')}</span>
+					</Link>
+					<Link href="/workspace/profile">
+						<UserCircle size={20} aria-hidden />
+						<span>{profile.value ? translate('Edit profile') : translate('Create profile')}</span>
+					</Link>
+					<Link href="/workspace/services">
+						<ListBullets size={20} aria-hidden />
+						<span>{translate('My services')}</span>
+					</Link>
+				</nav>
 			</section>
 			{profile.value && (
 				<div className="grid two">
 					<section className="panel">
 						<div className="row">
-							<h2>{translate('Recent projects')}</h2>
+							<h2>{translate('Your work')}</h2>
 							<Link passHref href="/workspace/projects">
 								{translate('View all')}
 							</Link>
 						</div>
 						<QueryState loading={projects.loading} error={projects.error} />
-						{projects.value?.map((p) => (
-							<div className="list-row" key={p._id}>
-								<div className="creator-line">
-									<Picture src={p.coverImageUrl} />
+						<div className="workspace-work">
+							{projects.value?.map((p) => (
+								<Link passHref href={`/workspace/projects/${p._id}`} className="workspace-work-item" key={p._id}>
+									<span className="workspace-work-image">
+										<Picture src={p.coverImageUrl} alt="" />
+										<Status value={p.status} />
+									</span>
 									<strong>{p.title}</strong>
-								</div>
-								<Status value={p.status} />
-								<time title={translate('Last updated')}>{date(p.updatedAt)}</time>
-								<Link passHref href={`/workspace/projects/${p._id}`}>
-									{translate('Edit')}
+									<time title={translate('Last updated')}>{date(p.updatedAt)}</time>
 								</Link>
-							</div>
-						))}
+							))}
+						</div>
 						{!projects.loading && !projects.value?.length && <Empty title={translate('No projects yet')} />}
 					</section>
 					<section className="panel">

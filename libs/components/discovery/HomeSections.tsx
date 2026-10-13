@@ -3,9 +3,8 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { useApi } from '../../hooks/useApi';
 import { useCreatorDirectory } from '../../hooks/useCreatorDirectory';
-import { Empty, LinkButton, QueryState } from '../common/UI';
+import { Empty, LinkButton, Picture, QueryState } from '../common/UI';
 import { EventsSection } from '../events/Events';
-import { ProjectCard } from './Cards';
 
 function Introduction() {
 	const { t: translate } = useSiteTranslation('common');
@@ -43,12 +42,16 @@ function Introduction() {
 			<div className="intro-copy">
 				<h2 id="intro-title">{translate('Meet CreatorHub')}</h2>
 				<p>
-					{translate('Discover creative work.')}
-					<br />
-					{translate('Connect with creators.')}
-					<br />
-					{translate('Start a conversation.')}
+					{translate(
+						'Browse portfolios by discipline and city, follow the people whose work you like, and send them a private message when you have a project in mind.',
+					)}
 				</p>
+				<div className="intro-actions">
+					<LinkButton href="/account/register">{translate('Join CreatorHub')}</LinkButton>
+					<Link passHref className="intro-secondary" href="/about">
+						{translate('About CreatorHub')}
+					</Link>
+				</div>
 			</div>
 			<figure>
 				<div className="intro-player">
@@ -67,13 +70,11 @@ function Introduction() {
 						onError={() => setError(true)}
 					/>
 				</div>
-				<figcaption>
-					{error ? (
+				{error && (
+					<figcaption>
 						<a href="/videos/creatorhub-introduction.mp4">{translate('Open the introduction video')}</a>
-					) : (
-						translate('CreatorHub introduction')
-					)}
-				</figcaption>
+					</figcaption>
+				)}
 			</figure>
 		</section>
 	);
@@ -90,7 +91,7 @@ export default function HomeSections({
 
 	const recent = useApi(
 		'getProjects',
-		{ input: { sort: 'RECENT', limit: 6, excludeProjectIds: popularIds } },
+		{ input: { sort: 'RECENT', limit: 4, excludeProjectIds: popularIds } },
 		loadingPopular,
 	);
 	const cats = useApi('categories');
@@ -114,35 +115,20 @@ export default function HomeSections({
 						{translate('New published projects will appear here.')}
 					</Empty>
 				)}
-				<div className="grid projects">
+				<div className="recent-grid">
 					{recent.value?.map((p) => (
-						<ProjectCard key={p._id} project={p} creator={directory[p.creatorId]} />
+						<Link passHref key={p._id} href={`/projects/${p._id}`} className="recent-item">
+							<Picture src={p.coverImageUrl} alt="" />
+							<span className="recent-title">{p.title}</span>
+							{directory[p.creatorId] && (
+								<span className="recent-creator">{directory[p.creatorId].identity.displayName}</span>
+							)}
+						</Link>
 					))}
 				</div>
 			</section>
 
 			<EventsSection home />
-			<section className="home-about home-section">
-				<div>
-					<h2>{translate('Creative work brings us together.')}</h2>
-					<p>
-						{translate(
-							'CreatorHub is a place for independent creators and people looking for their next collaborator. Explore portfolios, find services, and start a private conversation about your project, across Korea.',
-						)}
-					</p>
-					<Link passHref href="/about">
-						{translate('More about CreatorHub →')}
-					</Link>
-				</div>
-				<div>
-					<h3>{translate('Make your next connection.')}</h3>
-					<p>{translate('Create an account to save work, follow creators, or publish your own portfolio.')}</p>
-					<LinkButton href="/account/register">{translate('Join CreatorHub')}</LinkButton>
-					<Link passHref className="home-contact-link" href="/contact">
-						{translate('Contact us →')}
-					</Link>
-				</div>
-			</section>
 		</>
 	);
 }

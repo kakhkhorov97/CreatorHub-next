@@ -424,9 +424,6 @@
 	.discovery-home .segmented-search {
 		margin-bottom: 0;
 	}
-	.category-section {
-		display: none;
-	}
 	.home-section {
 		margin-block: 28px;
 	}
@@ -662,4 +659,426 @@
 }
 .concept-gallery img {
 	height: auto;
+}
+
+// Editorial Gallery homepage (redesign step 5). Kept last in this file on purpose.
+.discovery-home .discovery-search-section {
+	background: $deep-forest !important;
+	box-shadow: 0 0 0 100vmax $deep-forest;
+	border-bottom: 0;
+	padding: 104px 0 88px;
+	margin-bottom: 0;
+	color: $ivory;
+	// clip-path keeps the full-bleed edges; overflow must stay visible for the video.
+	overflow: visible;
+	clip-path: inset(0 -100vmax);
+}
+.discovery-home .discovery-search-section::before {
+	display: none;
+}
+.discovery-home .discovery-search-section::after {
+	background: linear-gradient(
+		180deg,
+		rgba(15, 46, 34, 0.8) 0%,
+		rgba(15, 46, 34, 0.45) 45%,
+		rgba(15, 46, 34, 0.88) 100%
+	);
+}
+.discovery-home .hero-backdrop,
+.discovery-home .discovery-search-section::after {
+	// Exactly one screen wide, centred, so the video is not over-zoomed.
+	inset: 0 auto;
+	left: 50%;
+	width: 100vw;
+	transform: translateX(-50%);
+}
+.discovery-home .hero-backdrop {
+	opacity: 1;
+	background: url('/videos/creatorhub-hero-poster.jpg') center/cover;
+}
+.discovery-home .discovery-hero {
+	text-align: center;
+	max-width: 980px;
+	margin: 0 auto 36px;
+}
+.discovery-home .discovery-hero h1 {
+	font-family: $font-heading;
+	font-size: clamp(44px, 6vw, 88px);
+	font-weight: 800;
+	line-height: 0.98;
+	letter-spacing: -0.04em;
+	color: $ivory;
+	margin: 0 0 20px;
+}
+.discovery-home .discovery-search-section .discovery-hero p {
+	color: rgba(245, 243, 236, 0.86);
+	font-size: 19px;
+	line-height: 1.5;
+	max-width: 620px;
+	margin: 0 auto;
+}
+.discovery-home .discovery-search-section .segmented-search {
+	max-width: 920px;
+	margin: 0 auto;
+}
+.discovery-home .search-segments {
+	border: 0;
+	border-radius: $radius-pill;
+	padding: 8px;
+	background: $paper-white;
+}
+.discovery-home .search-query {
+	padding: 0 20px;
+	min-height: 60px;
+}
+.discovery-home .search-query input {
+	font-size: 17px;
+}
+.discovery-home .search-segment {
+	border-left: 1px solid $line-color;
+}
+.discovery-home .search-segments > .button {
+	min-height: 60px;
+	padding-inline: 34px;
+	border-radius: $radius-pill;
+	font-size: 16px;
+	font-weight: 700;
+}
+.discovery-home .segmented-search .filters {
+	justify-content: center;
+	margin-top: 18px;
+	gap: 12px;
+}
+.discovery-home .segmented-search .filters .checkbox {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	color: $ivory;
+	font-size: 15px;
+	cursor: pointer;
+}
+// The remote filter looks like an on/off switch on the homepage.
+.discovery-home .segmented-search .filters .checkbox input {
+	appearance: none;
+	width: 40px;
+	height: 24px;
+	margin: 0;
+	border-radius: $radius-pill;
+	background: rgba(245, 243, 236, 0.25);
+	border: 1px solid rgba(245, 243, 236, 0.4);
+	position: relative;
+	cursor: pointer;
+	transition: background $motion;
+}
+.discovery-home .segmented-search .filters .checkbox input::after {
+	content: '';
+	position: absolute;
+	top: 3px;
+	left: 3px;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background: $ivory;
+	transition: transform $motion;
+}
+.discovery-home .segmented-search .filters .checkbox input:checked {
+	background: $forest;
+	border-color: $lime;
+}
+.discovery-home .segmented-search .filters .checkbox input:checked::after {
+	transform: translateX(16px);
+	background: $lime;
+}
+.discovery-home .segmented-search .filters .checkbox input:focus-visible {
+	outline: 2px solid $lime;
+	outline-offset: 3px;
+}
+.discovery-home .segmented-search .filters .search-reset.button {
+	color: rgba(245, 243, 236, 0.75);
+}
+.hero-video-controls {
+	position: absolute;
+	right: 0;
+	bottom: 20px;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	font-size: 13px;
+	color: rgba(245, 243, 236, 0.7);
+	z-index: 1;
+}
+.hero-video-toggle {
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	border: 1px solid rgba(245, 243, 236, 0.45);
+	background: rgba(15, 46, 34, 0.5);
+	color: $ivory;
+	display: grid;
+	place-items: center;
+	cursor: pointer;
+}
+.hero-video-toggle:focus-visible {
+	outline: 2px solid $lime;
+	outline-offset: 3px;
+}
+
+// Category row: one scrolling line of text pills.
+.discovery-home .category-section {
+	margin: 0;
+	padding: 22px 0;
+	border-bottom: 1px solid $line-color;
+}
+.discovery-home .category-links,
+.category-section .category-links {
+	display: flex;
+	flex-wrap: nowrap;
+	gap: 8px;
+	overflow-x: auto;
+	scrollbar-width: none;
+	max-height: none;
+	padding: 2px;
+}
+.category-section .category-links::-webkit-scrollbar {
+	display: none;
+}
+.discovery-home .category-links a,
+.category-section .category-links a {
+	flex: none;
+	display: inline-flex;
+	padding: 9px 16px;
+	border-radius: $radius-pill;
+	background: $paper-white;
+	border: 1px solid $line-color;
+	color: $ink-text;
+	font-size: 14px;
+	font-weight: 500;
+	white-space: nowrap;
+	text-decoration: none;
+}
+.category-section .category-links a:hover {
+	border-color: $forest;
+}
+.category-section .category-links a.is-all {
+	background: $ink-text;
+	border-color: $ink-text;
+	color: $ivory;
+	font-weight: 600;
+}
+
+// Section headings.
+.discovery-home .home-section-heading,
+.home-section .home-section-heading {
+	align-items: flex-end;
+	margin-top: 72px;
+	margin-bottom: 32px;
+}
+.discovery-home .home-section-heading h2,
+.home-section .home-section-heading h2,
+.home-introduction h2 {
+	font-family: $font-heading;
+	font-size: 40px;
+	font-weight: 800;
+	letter-spacing: -0.03em;
+	line-height: 1.05;
+}
+.home-section-heading > a {
+	font-weight: 600;
+}
+
+// Meet CreatorHub: dark band.
+.home-introduction {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 48px;
+	margin: 72px 0;
+	padding: 56px;
+	border-radius: $radius-panel-lg;
+	background: $deep-forest;
+	color: $ivory;
+	border: 0;
+}
+.home-introduction .intro-copy {
+	flex: 1 1 380px;
+	display: flex;
+	flex-direction: column;
+	gap: 22px;
+}
+.home-introduction h2 {
+	color: $ivory;
+	font-size: 48px;
+	margin: 0;
+}
+.home-introduction .intro-copy p {
+	margin: 0;
+	max-width: 460px;
+	font-size: 17px;
+	line-height: 1.6;
+	color: rgba(245, 243, 236, 0.85);
+}
+.intro-actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 12px;
+}
+.intro-actions .button {
+	background: $lime;
+	color: $deep-forest;
+	border-radius: $radius-pill;
+	font-weight: 700;
+	padding-inline: 24px;
+}
+.intro-actions .button:hover {
+	background: #bcdd5a;
+	color: $deep-forest;
+}
+.intro-secondary {
+	display: inline-flex;
+	align-items: center;
+	min-height: 44px;
+	padding: 0 22px;
+	border-radius: $radius-pill;
+	border: 1.5px solid rgba(245, 243, 236, 0.5);
+	color: $ivory;
+	font-weight: 600;
+	text-decoration: none;
+}
+.home-introduction figure {
+	flex: 1.3 1 460px;
+	margin: 0;
+}
+.home-introduction .intro-player {
+	border-radius: 16px;
+	overflow: hidden;
+}
+.home-introduction video {
+	display: block;
+	width: 100%;
+	aspect-ratio: 16 / 9;
+	object-fit: cover;
+}
+.home-introduction figcaption a {
+	color: $ivory;
+}
+
+// Recently added: square thumbnails.
+.recent-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+	gap: 32px 22px;
+}
+.recent-item {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	color: $ink-text;
+	text-decoration: none;
+}
+.recent-item .picture {
+	width: 100%;
+	aspect-ratio: 1;
+	object-fit: cover;
+	border-radius: $radius-image;
+	margin-bottom: 8px;
+	transition: transform $motion;
+}
+.recent-item:hover .picture {
+	transform: scale(1.02);
+}
+.recent-title {
+	font-weight: 600;
+}
+.recent-creator {
+	font-size: 14px;
+	color: $muted-text;
+}
+
+@media (max-width: $bp-md) {
+	.discovery-home .discovery-search-section {
+		padding: 72px 0 64px;
+	}
+	.home-introduction {
+		padding: 32px;
+	}
+	.home-introduction h2 {
+		font-size: 36px;
+	}
+}
+@media (max-width: 700px) {
+	// Phones: no video, plain deep-forest hero.
+	.discovery-home .discovery-search-section {
+		padding: 36px 16px 32px;
+		margin-top: 0;
+	}
+	.discovery-home .hero-backdrop {
+		background: none;
+	}
+	.discovery-home .discovery-search-section::after {
+		display: none;
+	}
+	.discovery-home .discovery-hero {
+		text-align: left;
+		margin-bottom: 20px;
+	}
+	.discovery-home .discovery-hero h1 {
+		font-size: 44px;
+	}
+	.discovery-home .discovery-search-section .discovery-hero p {
+		font-size: 16px;
+		margin: 0;
+	}
+	.discovery-home .search-segments {
+		background: transparent;
+		padding: 0;
+		gap: 8px;
+		border-radius: 0;
+	}
+	.discovery-home .segmented-search .search-query,
+	.discovery-home .segmented-search .category-picker-trigger,
+	.discovery-home .segmented-search .location-filter {
+		background: $paper-white;
+		border-radius: $radius-pill;
+	}
+	.discovery-home .search-segments > .button {
+		width: 100%;
+		min-height: 52px;
+	}
+	.discovery-home .segmented-search .filters {
+		justify-content: flex-start;
+	}
+	.hero-video-controls {
+		display: none;
+	}
+	.discovery-home .category-section {
+		padding: 16px 0;
+	}
+	.discovery-home .home-section-heading,
+	.home-section .home-section-heading {
+		margin-top: 40px;
+		margin-bottom: 22px;
+	}
+	.discovery-home .home-section-heading h2,
+	.home-section .home-section-heading h2 {
+		font-size: 28px;
+	}
+	.home-introduction {
+		margin: 32px 0;
+		padding: 28px 22px;
+		border-radius: $radius-panel;
+		gap: 24px;
+	}
+	.home-introduction h2 {
+		font-size: 32px;
+	}
+	.home-introduction figure {
+		padding: 0;
+		background: none;
+	}
+	.recent-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 20px 12px;
+	}
 }

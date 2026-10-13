@@ -160,6 +160,73 @@ export default function Top() {
 		);
 	}
 
+	// Phone menu: one list for everything, with Workspace as its own row.
+	function phoneMenu() {
+		const notifications = count.value || 0;
+		return (
+			<div className="phone-menu">
+				{user ? (
+					<Link href="/account" className="phone-menu-identity">
+						<Picture avatar src={user.avatarUrl} alt="" />
+						<span>
+							<strong>{user.displayName}</strong>
+							<small>{translate('My page')}</small>
+						</span>
+						<span className="phone-menu-settings" aria-hidden>
+							{translate('Settings')}
+						</span>
+					</Link>
+				) : (
+					<div className="phone-menu-auth">
+						<LinkButton href="/account/sign-in">{translate('Sign in')}</LinkButton>
+						<LinkButton secondary href="/account/register">
+							{translate('Sign up')}
+						</LinkButton>
+					</div>
+				)}
+				<div className="phone-menu-main">
+					{[
+						['/projects', 'Projects'],
+						['/creators', 'Creators'],
+						['/services', 'Services'],
+						['/events', 'Events'],
+					].map(([href, text]) => (
+						<Link
+							key={href}
+							href={href}
+							aria-current={router.pathname === href || router.pathname.startsWith(href + '/') ? 'page' : undefined}
+						>
+							{translate(text)}
+							<CaretRight size={18} aria-hidden />
+						</Link>
+					))}
+				</div>
+				{user && (
+					<Link href={user.role === 'ADMIN' ? '/_admin' : '/workspace'} className="phone-menu-workspace">
+						<span className="phone-menu-workspace-icon" aria-hidden>
+							<SquaresFour size={20} />
+						</span>
+						<span>
+							<strong>{translate(user.role === 'ADMIN' ? 'Administration' : 'Workspace')}</strong>
+							<small>{translate('Your projects, services and profile')}</small>
+						</span>
+						<CaretRight size={18} aria-hidden />
+					</Link>
+				)}
+				<div className="phone-menu-links">
+					{user && menuLink('/notifications', 'Notifications', Bell, notifications)}
+					{user && menuLink('/saved', 'Saved projects', BookmarkSimple)}
+					{user && menuLink('/following', 'Followers & Following', Users)}
+					{menuLink('/contact', 'Contact us', ChatCircle)}
+				</div>
+				<div className="menu-language">
+					<LanguageSelector />
+				</div>
+				{user && <div className="menu-footer">{signOutButton()}</div>}
+			</div>
+		);
+	}
+
 	return (
 		<>
 			<div
@@ -205,35 +272,25 @@ export default function Top() {
 								if (event.currentTarget.open && accountMenu.current) accountMenu.current.open = false;
 							}}
 						>
-							<summary aria-label={translate('Main navigation')}>
-								<List size={24} />
-							</summary>
-							<nav aria-label={translate('Main navigation')}>
-								{user ? (
-									accountContent(true, false)
-								) : (
-									<div className="guest-menu">
-										<div className="guest-auth-actions">
-											<LinkButton href="/account/sign-in">{translate('Sign in')}</LinkButton>
-											<LinkButton secondary href="/account/register">
-												{translate('Sign up')}
-											</LinkButton>
-										</div>
-										<div className="menu-group">
-											{menuLink('/projects', 'Projects', Folder)}
-											{menuLink('/services', 'Services', SquaresFour)}
-											{menuLink('/creators', 'Creators', User)}
-										</div>
-										<div className="menu-group">
-											{menuLink('/events', 'Events', CalendarBlank, 0, true)}
-											{menuLink('/contact', 'Contact us', ChatCircle, 0, true)}
-										</div>
-										<div className="menu-language">
-											<LanguageSelector />
-										</div>
-									</div>
+							<summary
+								aria-label={
+									user && count.value
+										? `${translate('Main navigation')}, ${translate('{{count}} unread notifications', {
+												count: count.value,
+										  })}`
+										: translate('Main navigation')
+								}
+							>
+								<List size={22} />
+								<X className="phone-menu-close" size={22} aria-hidden />
+								{user && <Picture avatar src={user.avatarUrl} alt="" />}
+								{user && !!count.value && (
+									<span className="phone-menu-badge" aria-hidden>
+										{count.value > 99 ? '99+' : count.value}
+									</span>
 								)}
-							</nav>
+							</summary>
+							<nav aria-label={translate('Main navigation')}>{phoneMenu()}</nav>
 						</details>
 						{!user && (
 							<details className="guest-language-menu">

@@ -1,7 +1,7 @@
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { ArrowLeft, ArrowsIn, ArrowsOut, ChatCircle, PaperPlaneRight, UserCircle, X } from 'phosphor-react';
+import { ArrowLeft, ArrowsIn, ArrowsOut, ChatCircle, PaperPlaneRight, UserCircle, X, Question } from 'phosphor-react';
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useReactiveVar } from '@apollo/client';
@@ -204,7 +204,7 @@ export default function Chatbot() {
 							<ChatCircle size={22} weight="duotone" />
 						</span>
 						<div className="assistant-heading">
-							<h2 id="chat-title">{translate('CreatorHub Assistant')}</h2>
+							<h2 id="chat-title">{translate('Help')}</h2>
 							<p>{translate('Find creative work and get help')}</p>
 						</div>
 						{!mobile && (
@@ -244,7 +244,11 @@ export default function Chatbot() {
 										</button>
 									))}
 								</div>
-								<small>{translate('AI answers may be incomplete. Check the linked profiles and services.')}</small>
+								<small>
+									{translate(
+										'Answers are generated automatically and may be incomplete. Check the linked profiles and services.',
+									)}
+								</small>
 							</div>
 						)}
 						{messages.map((message, index) => (
@@ -342,11 +346,11 @@ export default function Chatbot() {
 				hidden={open}
 				className="chat-trigger"
 				aria-expanded={open}
-				aria-label={open ? translate('Close CreatorHub assistant') : translate('Open CreatorHub assistant')}
+				aria-label={open ? translate('Close help') : translate('Open help')}
 				onClick={() => (open ? close() : setOpen(true))}
 			>
-				<ChatCircle size={25} />
-				<span>{translate('Ask CreatorHub AI')}</span>
+				<Question size={22} weight="bold" />
+				<span>{translate('Help')}</span>
 			</button>
 		</div>,
 		document.body,

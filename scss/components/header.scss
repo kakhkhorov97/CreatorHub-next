@@ -1061,3 +1061,280 @@
 		flex: none;
 	}
 }
+
+// Editorial Gallery phone header and menu (redesign step 6). Kept last in this file on purpose.
+.phone-menu-close,
+.mobile-navigation .phone-menu-badge {
+	display: none;
+}
+@media (min-width: 701px) {
+	.site-header .mobile-navigation {
+		display: none;
+	}
+}
+@media (max-width: 700px) {
+	.site-header .top {
+		background: $ivory;
+		border-bottom: 1px solid $line-color;
+	}
+	// The avatar menu is merged into the single phone menu button.
+	.site-header .header-actions > .user-menu {
+		display: none !important;
+	}
+	.site-header .header-actions {
+		gap: 6px;
+	}
+	// Inbox: icon with an unread dot.
+	.site-header .header-actions > .header-text-link {
+		order: 1;
+		display: grid !important;
+		place-items: center;
+		position: relative;
+		width: 44px;
+		height: 44px;
+		padding: 0;
+		color: $ink-text;
+	}
+	.site-header .header-actions > .header-text-link > span:not(.inbox-badge) {
+		display: none;
+	}
+	.site-header .header-actions > .header-text-link .inbox-badge {
+		position: absolute;
+		top: 9px;
+		right: 8px;
+		width: 10px;
+		height: 10px;
+		min-width: 0;
+		padding: 0;
+		border-radius: 50%;
+		border: 2px solid $ivory;
+		background: $forest;
+		font-size: 0;
+		color: transparent;
+	}
+	.site-header .header-actions > .mobile-login-link {
+		order: 1;
+	}
+	// The open menu already has Sign in and Sign up, so hide the bar's link.
+	.site-header .header-actions:has(> .mobile-navigation[open]) > .mobile-login-link {
+		display: none !important;
+	}
+	.site-header .header-actions > .mobile-navigation {
+		order: 2;
+		display: block;
+	}
+	.site-header .mobile-navigation > summary {
+		position: relative;
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		height: 44px;
+		min-width: 44px;
+		padding: 0 12px;
+		box-sizing: border-box;
+		border: 1px solid $line-color;
+		border-radius: $radius-pill;
+		background: $paper-white;
+		color: $ink-text;
+		list-style: none;
+		cursor: pointer;
+	}
+	.site-header .mobile-navigation > summary:has(.avatar) {
+		padding: 0 5px 0 14px;
+	}
+	.site-header .mobile-navigation > summary .avatar {
+		width: 32px;
+		height: 32px;
+	}
+	.site-header .mobile-navigation[open] > summary > svg:first-child {
+		display: none;
+	}
+	.site-header .mobile-navigation[open] > summary .phone-menu-close {
+		display: block;
+	}
+	.site-header .mobile-navigation .phone-menu-badge {
+		display: grid;
+		place-items: center;
+		position: absolute;
+		top: -5px;
+		right: -5px;
+		min-width: 20px;
+		height: 20px;
+		padding: 0 5px;
+		box-sizing: border-box;
+		border-radius: $radius-pill;
+		background: $alert-badge;
+		border: 2px solid $ivory;
+		color: $paper-white;
+		font-size: 11px;
+		font-weight: 700;
+	}
+	// The open menu fills the screen below the header.
+	.site-header .mobile-navigation > nav {
+		position: fixed;
+		top: 61px;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		width: auto;
+		max-height: none;
+		margin: 0;
+		padding: 16px 20px 28px;
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+		background: $ivory;
+		overflow-y: auto;
+		z-index: 60;
+	}
+	.phone-menu {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+	.phone-menu-identity {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		padding: 14px;
+		border-radius: 18px;
+		background: $paper-white;
+		color: $ink-text;
+		text-decoration: none;
+	}
+	.phone-menu-identity .avatar {
+		width: 48px;
+		height: 48px;
+	}
+	.phone-menu-identity > span:nth-of-type(1) {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+	}
+	.phone-menu-identity strong {
+		font-size: 17px;
+	}
+	.phone-menu-identity small {
+		font-size: 13px;
+		color: $muted-text;
+	}
+	.phone-menu-settings {
+		font-size: 14px;
+		font-weight: 600;
+		color: $forest;
+	}
+	.phone-menu-auth {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 8px;
+	}
+	.phone-menu-auth .button {
+		border-radius: $radius-pill;
+	}
+	.phone-menu-main {
+		display: flex;
+		flex-direction: column;
+		border-top: 1px solid $line-color;
+	}
+	.site-header .phone-menu-main a {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 10px 0;
+		border-bottom: 1px solid $line-color;
+		font-family: $font-heading;
+		font-size: 26px;
+		font-weight: 800;
+		letter-spacing: -0.03em;
+		color: $ink-text;
+		text-decoration: none;
+	}
+	.site-header .phone-menu-main a svg {
+		color: $muted-text;
+	}
+	.site-header .phone-menu-main a[aria-current='page'] {
+		color: $forest;
+	}
+	.phone-menu-workspace {
+		display: flex;
+		align-items: center;
+		gap: 14px;
+		padding: 14px 16px;
+		border-radius: 18px;
+		background: #eef3e6;
+		border: 1px solid #cfe0c8;
+		color: $ink-text;
+		text-decoration: none;
+	}
+	.phone-menu-workspace-icon {
+		flex: none;
+		width: 44px;
+		height: 44px;
+		border-radius: 12px;
+		background: $forest;
+		color: $paper-white;
+		display: grid;
+		place-items: center;
+	}
+	.phone-menu-workspace > span:nth-of-type(2) {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+	}
+	.phone-menu-workspace strong {
+		font-family: $font-heading;
+		font-size: 22px;
+		font-weight: 800;
+		letter-spacing: -0.02em;
+	}
+	.phone-menu-workspace small {
+		font-size: 13px;
+		color: #3d5a46;
+	}
+	.phone-menu-workspace > svg {
+		color: $forest;
+	}
+	.phone-menu-links {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0 16px;
+	}
+	.site-header .phone-menu-links .menu-row {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		min-height: 48px;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		color: $ink-text;
+		font-size: 15px;
+		font-weight: 500;
+	}
+	.site-header .phone-menu-links .menu-row > svg:last-child {
+		display: none;
+	}
+	.site-header .phone-menu-links .menu-count {
+		min-width: 20px;
+		height: 20px;
+		padding: 0 6px;
+		border-radius: $radius-pill;
+		background: $alert-badge;
+		color: $paper-white;
+		font-size: 12px;
+		font-weight: 700;
+		display: grid;
+		place-items: center;
+	}
+	.site-header .phone-menu .menu-footer .signout-button {
+		width: 100%;
+		min-height: 48px;
+		justify-content: center;
+		border: 0;
+		border-radius: $radius-pill;
+		background: #f3e2e1;
+		color: $danger;
+		font-weight: 700;
+	}
+}

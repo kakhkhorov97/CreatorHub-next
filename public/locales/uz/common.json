@@ -1029,5 +1029,20 @@
 	"Please wait {{seconds}} seconds before sending another message.": "Yana xabar yuborishdan oldin {{seconds}} soniya kuting.",
 	"The assistant has reached its daily limit. Please try tomorrow or visit Help.": "Yordamchining kunlik limiti tugadi. Ertaga urinib ko‘ring yoki yordam sahifasini oching.",
 	"The assistant is busy. Please try again in a minute.": "Yordamchi band. Bir daqiqadan so‘ng qayta urinib ko‘ring.",
-	"Illustrative creator profiles, concept projects and event concepts are fictional. No real client commission is implied.": "Namunaviy ijodkor profillari, konsept loyihalar va tadbirlar xayoliy. Haqiqiy mijoz buyurtmasini anglatmaydi."
+	"Illustrative creator profiles, concept projects and event concepts are fictional. No real client commission is implied.": "Namunaviy ijodkor profillari, konsept loyihalar va tadbirlar xayoliy. Haqiqiy mijoz buyurtmasini anglatmaydi.",
+	"All work": "Barcha ishlar",
+	"Background: fictional studio scenes": "Fon: xayoliy studiya sahnalari",
+	"Play background video": "Fon videosini ijro etish",
+	"Pause background video": "Fon videosini to‘xtatish",
+	"Browse portfolios by discipline and city, follow the people whose work you like, and send them a private message when you have a project in mind.": "Portfoliolarni yo‘nalish va shahar bo‘yicha ko‘ring, ishlari yoqqan ijodkorlarni kuzating va loyihangiz bo‘lsa, ularga shaxsiy xabar yuboring.",
+	"Open workspace →": "Ish maydonini ochish →",
+	"Your projects, services and profile": "Loyihalaringiz, xizmatlaringiz va profilingiz",
+	"{{count}} unread notifications": "{{count}} ta o‘qilmagan bildirishnoma",
+	"Profile status": "Profil holati",
+	"Quick actions": "Tezkor amallar",
+	"My services": "Xizmatlarim",
+	"Your work": "Ishlaringiz",
+	"Close help": "Yordamni yopish",
+	"Open help": "Yordamni ochish",
+	"Answers are generated automatically and may be incomplete. Check the linked profiles and services.": "Javoblar avtomatik yaratiladi va to‘liq bo‘lmasligi mumkin. Havola qilingan profil va xizmatlarni tekshiring."
 }

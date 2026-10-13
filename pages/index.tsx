@@ -50,7 +50,7 @@ function Home() {
 							{translate('View all projects →')}
 						</Link>
 					</div>
-					<p className="search-result-status" role="status">
+					<p className="search-result-status sr-only" role="status">
 						{projects.loading
 							? translate('Searching…')
 							: translate('Results on this page: {{count}}', { count: projects.rows.length })}
