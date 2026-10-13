@@ -8,7 +8,14 @@ import { ArrowLeft } from 'phosphor-react';
 import type { ComponentType } from 'react';
 import { ReactNode, useEffect } from 'react';
 import { sessionReadyVar, userVar } from '../../../apollo/store';
-import { clearSession, finishSessionCheck, isAuthenticationError, readSession, watchSharedSession } from '../../auth';
+import {
+	clearSession,
+	finishSessionCheck,
+	isAuthenticationError,
+	publishSessionHint,
+	readSession,
+	watchSharedSession,
+} from '../../auth';
 import { documents } from '../../hooks/useApi';
 import AdminLayout from '../admin/AdminLayout';
 import { LinkButton, Notice } from '../common/UI';
@@ -21,6 +28,9 @@ export function SessionBootstrap() {
 	useEffect(() => {
 		let active = true;
 		const stopWatching = watchSharedSession();
+		// Before anything is awaited, so the header shows the saved account on the first
+		// client render instead of Sign in / Sign up while `me` is in flight.
+		publishSessionHint();
 		(async () => {
 			const session = readSession();
 			if (session) {

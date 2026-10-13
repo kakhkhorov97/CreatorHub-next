@@ -1,10 +1,29 @@
-import { sessionReadyVar, userVar } from '../../apollo/store';
+import { SessionHint, sessionHintVar, sessionReadyVar, userVar } from '../../apollo/store';
 import { AuthPayload } from '../types/creatorhub';
 const KEY = 'creatorhub.session';
 
-type Session = { accessToken: string; refreshToken: string; expiresAt: number; sessionId: string };
+type Session = {
+	accessToken: string;
+	refreshToken: string;
+	expiresAt: number;
+	sessionId: string;
+	// Display-only, so the header can show the account before `me` answers.
+	hint?: SessionHint;
+};
 let current: Session | null = null;
 let refreshPending: Promise<string | null> | null = null;
+
+// A damaged hint must never invalidate working credentials, so it is validated apart.
+function readHint(value: unknown): SessionHint | undefined {
+	const hint = value as SessionHint | undefined;
+	return hint && typeof hint.displayName === 'string' && typeof hint.role === 'string'
+		? {
+				displayName: hint.displayName,
+				avatarUrl: typeof hint.avatarUrl === 'string' ? hint.avatarUrl : undefined,
+				role: hint.role,
+		  }
+		: undefined;
+}
 
 export function readSession(): Session | null {
 	if (typeof window === 'undefined') return null;
@@ -18,7 +37,7 @@ export function readSession(): Session | null {
 			typeof saved.refreshToken === 'string' &&
 			typeof saved.sessionId === 'string' &&
 			Number.isFinite(saved.expiresAt)
-				? saved
+				? { ...saved, hint: readHint(saved.hint) }
 				: null;
 	} catch {
 		current = null;
@@ -27,14 +46,26 @@ export function readSession(): Session | null {
 }
 
 function writeSession(payload: AuthPayload, sessionId: string) {
+	const hint: SessionHint = {
+		displayName: payload.user.displayName,
+		avatarUrl: payload.user.avatarUrl ?? undefined,
+		role: payload.user.role,
+	};
 	current = {
 		accessToken: payload.accessToken,
 		refreshToken: payload.refreshToken,
 		expiresAt: Date.now() + payload.expiresIn * 1000,
 		sessionId,
+		hint,
 	};
 	if (typeof window !== 'undefined') localStorage.setItem(KEY, JSON.stringify(current));
+	sessionHintVar(hint);
 	userVar(payload.user);
+}
+
+/** Show the saved account in the header straight away, before `me` confirms it. */
+export function publishSessionHint() {
+	sessionHintVar(readSession()?.hint ?? null);
 }
 
 export function saveSession(payload: AuthPayload) {
@@ -48,6 +79,7 @@ export function clearSession(expectedSessionId?: string) {
 		localStorage.removeItem(KEY);
 		sessionStorage.removeItem(KEY);
 	}
+	sessionHintVar(null);
 	userVar(null);
 }
 
@@ -62,6 +94,7 @@ export function watchSharedSession() {
 		if (event.key === KEY && before?.sessionId === after?.sessionId) return;
 		// Reload clears private Apollo data and sockets before another account is shown.
 		userVar(null);
+		sessionHintVar(null);
 		sessionReadyVar(false);
 		window.location.reload();
 	};

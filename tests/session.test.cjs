@@ -4,7 +4,9 @@ const fs = require('fs');
 const vm = require('vm');
 const ts = require('typescript');
 function harness(memory = new Map(), requestLock) {
-	const store = { userVar: () => {}, sessionReadyVar: () => {} };
+	// Every write to the display-only identity, newest last.
+	const hints = [];
+	const store = { userVar: () => {}, sessionReadyVar: () => {}, sessionHintVar: (value) => hints.push(value) };
 	const ctx = {
 		exports: {},
 		require: () => store,
@@ -43,7 +45,7 @@ function harness(memory = new Map(), requestLock) {
 		}).outputText,
 		ctx,
 	);
-	return { api: ctx.exports, ctx, memory };
+	return { api: ctx.exports, ctx, memory, hints };
 }
 const payload = {
 	accessToken: 'test-access',
@@ -51,6 +53,31 @@ const payload = {
 	expiresIn: 900,
 	user: { _id: 'test-user' },
 };
+const identity = { displayName: 'Saved account', avatarUrl: 'https://cdn.test/avatar.png', role: 'CREATOR' };
+test('the saved account is kept for the header and dropped on sign out', () => {
+	const { api, memory, hints } = harness();
+	api.saveSession({ ...payload, user: { _id: 'test-user', ...identity } });
+	assert.deepEqual({ ...hints.at(-1) }, identity);
+	// Persisted, so a reload can show the account before `me` answers.
+	assert.deepEqual(JSON.parse(memory.get('creatorhub.session')).hint, identity);
+	const reopened = harness(memory);
+	reopened.api.publishSessionHint();
+	assert.deepEqual({ ...reopened.hints.at(-1) }, identity);
+	api.clearSession();
+	assert.equal(hints.at(-1), null);
+	api.publishSessionHint();
+	assert.equal(hints.at(-1), null);
+});
+test('a damaged saved account is ignored without discarding working credentials', () => {
+	const memory = new Map();
+	harness(memory).api.saveSession({ ...payload, user: { _id: 'test-user', ...identity } });
+	const stored = JSON.parse(memory.get('creatorhub.session'));
+	memory.set('creatorhub.session', JSON.stringify({ ...stored, hint: { displayName: 42, role: null } }));
+	const { api, hints } = harness(memory);
+	assert.equal(api.readSession().accessToken, 'test-access');
+	api.publishSessionHint();
+	assert.equal(hints.at(-1), null);
+});
 test('return path prevents external and protocol-relative redirects', () => {
 	const { api } = harness();
 	for (const path of ['https://evil.test', '//evil.test', '/\\evil.test', '/\n/evil.test', '/\t/evil.test', null])

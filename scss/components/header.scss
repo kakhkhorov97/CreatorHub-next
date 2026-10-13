@@ -1421,3 +1421,41 @@
 .site-header .phone-menu .menu-language {
 	padding-inline: 0;
 }
+
+// Saved account shown while the session check runs: the same shape as the account
+// menu summary, without a dropdown, so the header does not flash Sign in / Sign up.
+.site-header .user-menu-pending {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-size: 13px;
+}
+.site-header .user-menu-pending .avatar {
+	width: 36px;
+	height: 36px;
+	min-width: 36px;
+	min-height: 36px;
+	border: 1px solid #859088;
+}
+.site-header .phone-menu-identity[role='status'] {
+	cursor: default;
+}
+@media (max-width: 1100px) {
+	.site-header .user-menu-pending > span:not(.avatar) {
+		display: none;
+	}
+}
+@media (max-width: 700px) {
+	.site-header .user-menu-pending {
+		order: 1;
+		min-width: 44px;
+		min-height: 44px;
+		justify-content: center;
+	}
+	.site-header .user-menu-pending .avatar {
+		width: 28px;
+		height: 28px;
+		min-width: 28px;
+		min-height: 28px;
+	}
+}

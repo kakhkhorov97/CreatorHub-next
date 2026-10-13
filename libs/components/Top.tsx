@@ -21,7 +21,7 @@ import {
 } from 'phosphor-react';
 import { useEffect, useRef } from 'react';
 import useHeaderScroll from '../hooks/useHeaderScroll';
-import { userVar } from '../../apollo/store';
+import { sessionHintVar, sessionReadyVar, userVar } from '../../apollo/store';
 import { clearSession, readSession } from '../auth';
 import { useAction, useApi } from '../hooks/useApi';
 import { Button, LinkButton, Notice, Picture } from './common/UI';
@@ -38,6 +38,13 @@ export default function Top() {
 
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
+	// A saved account, shown while the session check runs so the header does not flash
+	// Sign in / Sign up. Bounded by sessionReadyVar: once the check is done without a
+	// user, the signed-out header is the truth. Display only, never role-gated UI.
+	const hint = useReactiveVar(sessionHintVar);
+	const sessionReady = useReactiveVar(sessionReadyVar);
+	const pending = !user && !sessionReady ? hint : null;
+	const signedOut = !user && !pending;
 	const signingIn = router.pathname === '/account/sign-in';
 	const registering = router.pathname === '/account/register';
 	const authHref = signingIn ? '/account/register' : '/account/sign-in';
@@ -176,6 +183,14 @@ export default function Top() {
 							{translate('Settings')}
 						</span>
 					</Link>
+				) : pending ? (
+					<div className="phone-menu-identity" role="status">
+						<Picture avatar src={pending.avatarUrl} alt="" />
+						<span>
+							<strong>{pending.displayName}</strong>
+							<small>{translate('Checking your session…')}</small>
+						</span>
+					</div>
 				) : (
 					<div className="phone-menu-auth">
 						<LinkButton href="/account/sign-in">{translate('Sign in')}</LinkButton>
@@ -285,7 +300,7 @@ export default function Top() {
 							>
 								<List size={22} />
 								<X className="phone-menu-close" size={22} aria-hidden />
-								{user && <Picture avatar src={user.avatarUrl} alt="" />}
+								{(user || pending) && <Picture avatar src={(user || pending)!.avatarUrl} alt="" />}
 								{user && !!count.value && (
 									<span className="phone-menu-badge" aria-hidden>
 										{count.value > 99 ? '99+' : count.value}
@@ -294,13 +309,13 @@ export default function Top() {
 							</summary>
 							<nav aria-label={translate('Main navigation')}>{phoneMenu()}</nav>
 						</details>
-						{!user && (
+						{signedOut && (
 							<details className="guest-language-menu">
 								<summary aria-label={translate('Website language')}>{translate('Website language')}</summary>
 								<LanguageSelector />
 							</details>
 						)}
-						{!user && (
+						{signedOut && (
 							<Link href={authHref} className="mobile-login-link">
 								{translate(authLabel)}
 							</Link>
@@ -332,6 +347,11 @@ export default function Top() {
 									{accountContent(true)}
 								</details>
 							</>
+						) : pending ? (
+							<div className="user-menu-pending" role="status" aria-label={translate('Checking your session…')}>
+								<Picture avatar src={pending.avatarUrl} alt="" />
+								<span>{pending.displayName}</span>
+							</div>
 						) : (
 							<>
 								<div className="desktop-auth-actions">
