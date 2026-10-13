@@ -1044,5 +1044,12 @@
 	"Your work": "Your work",
 	"Close help": "Close help",
 	"Open help": "Open help",
-	"Answers are generated automatically and may be incomplete. Check the linked profiles and services.": "Answers are generated automatically and may be incomplete. Check the linked profiles and services."
+	"Answers are generated automatically and may be incomplete. Check the linked profiles and services.": "Answers are generated automatically and may be incomplete. Check the linked profiles and services.",
+	"Like this work?": "Like this work?",
+	"Send {{name}} a private inquiry with your brief, deadline and budget.": "Send {{name}} a private inquiry with your brief, deadline and budget.",
+	"Send a private inquiry with your brief, deadline and budget.": "Send a private inquiry with your brief, deadline and budget.",
+	"What clients say": "What clients say",
+	"All reviews →": "All reviews →",
+	"Work with {{name}}": "Work with {{name}}",
+	"Choose a service or send a general inquiry with your brief, deadline and budget.": "Choose a service or send a general inquiry with your brief, deadline and budget."
 }

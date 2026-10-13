@@ -1044,5 +1044,12 @@
 	"Your work": "Ishlaringiz",
 	"Close help": "Yordamni yopish",
 	"Open help": "Yordamni ochish",
-	"Answers are generated automatically and may be incomplete. Check the linked profiles and services.": "Javoblar avtomatik yaratiladi va to‘liq bo‘lmasligi mumkin. Havola qilingan profil va xizmatlarni tekshiring."
+	"Answers are generated automatically and may be incomplete. Check the linked profiles and services.": "Javoblar avtomatik yaratiladi va to‘liq bo‘lmasligi mumkin. Havola qilingan profil va xizmatlarni tekshiring.",
+	"Like this work?": "Bu ish yoqdimi?",
+	"Send {{name}} a private inquiry with your brief, deadline and budget.": "{{name}}ga topshiriq, muddat va byudjet bilan shaxsiy so‘rov yuboring.",
+	"Send a private inquiry with your brief, deadline and budget.": "Topshiriq, muddat va byudjet bilan shaxsiy so‘rov yuboring.",
+	"What clients say": "Mijozlar fikri",
+	"All reviews →": "Barcha sharhlar →",
+	"Work with {{name}}": "{{name}} bilan ishlash",
+	"Choose a service or send a general inquiry with your brief, deadline and budget.": "Xizmatni tanlang yoki topshiriq, muddat va byudjet bilan umumiy so‘rov yuboring."
 }

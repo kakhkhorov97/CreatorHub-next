@@ -350,11 +350,6 @@
 .project-media video {
 	border-radius: $radius-panel;
 }
-.detail-sidebar > *:not(.button):not(a) {
-	border: 0;
-	border-radius: $radius-panel;
-	background: $paper-white;
-}
 .detail-sidebar .button {
 	width: 100%;
 	justify-content: center;
@@ -431,5 +426,135 @@
 	.profile-header .avatar {
 		width: 88px;
 		height: 88px;
+	}
+}
+
+// Detail sidebars: dark inquiry card plus white detail cards.
+.detail-sidebar .inquiry-card {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	padding: 26px;
+	border-radius: $radius-panel;
+	background: $deep-forest;
+	color: $ivory;
+}
+.detail-sidebar .inquiry-card h2 {
+	margin: 0;
+	font-family: $font-heading;
+	font-size: 24px;
+	font-weight: 800;
+	letter-spacing: -0.02em;
+	color: $ivory;
+}
+.detail-sidebar .inquiry-card p {
+	margin: 0;
+	font-size: 15px;
+	line-height: 1.55;
+	color: rgba(245, 243, 236, 0.8);
+}
+.detail-sidebar .inquiry-card .button {
+	background: $lime;
+	border-color: $lime;
+	color: $deep-forest;
+	font-weight: 700;
+}
+.detail-sidebar .inquiry-card .button:hover {
+	background: #bcdd5a;
+	color: $deep-forest;
+}
+.detail-sidebar .details-card {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	padding: 22px 24px;
+	border-radius: $radius-panel;
+	background: $paper-white;
+}
+.detail-sidebar .details-card h2 {
+	margin: 0;
+	font-family: $font-heading;
+	font-size: 20px;
+	font-weight: 800;
+}
+.detail-sidebar .details-card .service-card {
+	padding: 12px 0 0;
+	border-top: 1px solid $line-color;
+	border-radius: 0;
+}
+.detail-sidebar {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+// Creator profile reviews preview.
+.profile-reviews-preview {
+	margin-top: 40px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+.profile-reviews-heading {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+}
+.profile-reviews-heading h2 {
+	margin: 0;
+	font-family: $font-heading;
+	font-size: 30px;
+	font-weight: 800;
+	letter-spacing: -0.02em;
+}
+.profile-reviews-heading .text-link {
+	border: 0;
+	background: none;
+	padding: 0;
+	color: $forest;
+	font: inherit;
+	font-weight: 600;
+	cursor: pointer;
+}
+.profile-reviews-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+	gap: 16px;
+}
+.profile-reviews-grid .customer-review {
+	padding: 22px;
+}
+
+// Events: large green date.
+.event-card .event-date-short {
+	font-size: 40px;
+	line-height: 1;
+	letter-spacing: -0.03em;
+}
+
+// Admin overview: same corners and number font as the public site.
+.admin-metrics > a,
+.admin-panel {
+	border-radius: 16px;
+}
+.admin-metrics strong {
+	font-family: $font-heading;
+	font-weight: 800;
+	letter-spacing: -0.02em;
+}
+.admin-page-heading h1 {
+	font-family: $font-heading;
+	font-weight: 800;
+	letter-spacing: -0.03em;
+}
+
+// Creator profile work grid: two equal columns.
+.grid.two.profile-work {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 36px 24px;
+}
+@media (max-width: 700px) {
+	.grid.two.profile-work {
+		grid-template-columns: 1fr;
 	}
 }

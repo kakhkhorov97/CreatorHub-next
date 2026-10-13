@@ -1044,5 +1044,12 @@
 	"Your work": "내 작업",
 	"Close help": "도움말 닫기",
 	"Open help": "도움말 열기",
-	"Answers are generated automatically and may be incomplete. Check the linked profiles and services.": "답변은 자동으로 생성되며 불완전할 수 있습니다. 연결된 프로필과 서비스를 확인하세요."
+	"Answers are generated automatically and may be incomplete. Check the linked profiles and services.": "답변은 자동으로 생성되며 불완전할 수 있습니다. 연결된 프로필과 서비스를 확인하세요.",
+	"Like this work?": "이 작업이 마음에 드나요?",
+	"Send {{name}} a private inquiry with your brief, deadline and budget.": "{{name}}님에게 요청 내용, 마감일, 예산을 담아 비공개 문의를 보내세요.",
+	"Send a private inquiry with your brief, deadline and budget.": "요청 내용, 마감일, 예산을 담아 비공개 문의를 보내세요.",
+	"What clients say": "클라이언트 후기",
+	"All reviews →": "모든 후기 →",
+	"Work with {{name}}": "{{name}}님과 함께 작업하기",
+	"Choose a service or send a general inquiry with your brief, deadline and budget.": "서비스를 선택하거나 요청 내용, 마감일, 예산을 담아 일반 문의를 보내세요."
 }

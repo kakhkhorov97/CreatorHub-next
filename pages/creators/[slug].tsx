@@ -127,6 +127,27 @@ function CreatorDetail({ seo }: SocialPageProps) {
 										<Empty title={translate('No published projects yet')} />
 									)}
 									<Pager {...projects} />
+									{!!reviews.rows.length && (
+										<section className="profile-reviews-preview" aria-labelledby="profile-reviews-title">
+											<div className="profile-reviews-heading">
+												<h2 id="profile-reviews-title">{translate('What clients say')}</h2>
+												<button type="button" className="text-link" onClick={() => setTab('Reviews')}>
+													{translate('All reviews →')}
+												</button>
+											</div>
+											<div className="profile-reviews-grid">
+												{reviews.rows.slice(0, 2).map((review) => (
+													<article className="customer-review" key={review._id}>
+														<Rating value={review.rating} />
+														<p className="prose-text">{review.feedback}</p>
+														<small>
+															{review.authorName} · {new Date(review.createdAt).toLocaleDateString()}
+														</small>
+													</article>
+												))}
+											</div>
+										</section>
+									)}
 								</>
 							)}
 							{tab === 'Services' && (
@@ -167,29 +188,42 @@ function CreatorDetail({ seo }: SocialPageProps) {
 							)}
 						</section>
 						<aside className="detail-sidebar">
-							<h2>{translate('Services')}</h2>
-							{services.rows.slice(0, 2).map((s) => (
-								<ServiceCard key={s._id} service={s} />
-							))}
-							<h2>{translate('Skills')}</h2>
-							<div className="tags">
-								{creator.skills.map((skill) => (
-									<span key={skill}>{skill}</span>
-								))}
-							</div>
-							{!!creator.socialLinks.length && (
-								<>
-									<h2>{translate('External portfolio')}</h2>
-									{creator.socialLinks
-										.filter((l) => safeUrl(l.url))
-										.map((l) => (
-											<a className="external-link" key={l.url} href={l.url} target="_blank" rel="noreferrer">
-												{l.label}
-												<ArrowUpRight />
-											</a>
-										))}
-								</>
+							{user?._id !== creator.userId && (
+								<div className="inquiry-card">
+									<h2>{translate('Work with {{name}}', { name: creator.identity.displayName })}</h2>
+									<p>{translate('Choose a service or send a general inquiry with your brief, deadline and budget.')}</p>
+									<LinkButton href={`/inquiries/new?creatorId=${creator._id}`}>{translate('Send inquiry')}</LinkButton>
+								</div>
 							)}
+							{!!services.rows.length && (
+								<div className="details-card">
+									<h2>{translate('Services')}</h2>
+									{services.rows.slice(0, 2).map((s) => (
+										<ServiceCard key={s._id} service={s} />
+									))}
+								</div>
+							)}
+							<div className="details-card">
+								<h2>{translate('Skills')}</h2>
+								<div className="tags">
+									{creator.skills.map((skill) => (
+										<span key={skill}>{skill}</span>
+									))}
+								</div>
+								{!!creator.socialLinks.length && (
+									<>
+										<h2>{translate('External portfolio')}</h2>
+										{creator.socialLinks
+											.filter((l) => safeUrl(l.url))
+											.map((l) => (
+												<a className="external-link" key={l.url} href={l.url} target="_blank" rel="noreferrer">
+													{l.label}
+													<ArrowUpRight />
+												</a>
+											))}
+									</>
+								)}
+							</div>
 						</aside>
 					</div>
 				</>

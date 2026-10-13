@@ -100,21 +100,33 @@ function ProjectDetail({ seo }: SocialPageProps) {
 							<Comments projectId={id} />
 						</section>
 						<aside className="detail-sidebar">
-							<h2>{translate('Project details')}</h2>
-							<div className="tags">
-								{p.tags.map((t) => (
-									<span key={t}>{t}</span>
-								))}
+							<div className="inquiry-card">
+								<h2>{translate('Like this work?')}</h2>
+								<p>
+									{creator
+										? translate('Send {{name}} a private inquiry with your brief, deadline and budget.', {
+												name: creator.identity.displayName,
+										  })
+										: translate('Send a private inquiry with your brief, deadline and budget.')}
+								</p>
+								<LinkButton href={`/inquiries/new?creatorId=${p.creatorId}`}>{translate('Send inquiry')}</LinkButton>
 							</div>
-							<LikeButton projectId={id} ownerId={creator?.userId} />
-							<Feedback {...action} />
-							{safeUrl(p.externalUrl) && (
-								<a className="external-link" href={p.externalUrl!} target="_blank" rel="noreferrer">
-									{translate('Visit project')}
-									<ArrowUpRight />
-								</a>
-							)}
-							<LinkButton href={`/inquiries/new?creatorId=${p.creatorId}`}>{translate('Send inquiry')}</LinkButton>
+							<div className="details-card">
+								<h2>{translate('Project details')}</h2>
+								<div className="tags">
+									{p.tags.map((t) => (
+										<span key={t}>{t}</span>
+									))}
+								</div>
+								<LikeButton projectId={id} ownerId={creator?.userId} />
+								<Feedback {...action} />
+								{safeUrl(p.externalUrl) && (
+									<a className="external-link" href={p.externalUrl!} target="_blank" rel="noreferrer">
+										{translate('Visit project')}
+										<ArrowUpRight />
+									</a>
+								)}
+							</div>
 						</aside>
 					</div>
 				</>
