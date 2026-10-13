@@ -1,3 +1,4 @@
+// Admin area.
 .admin-shell {
 	--admin-ink: #202722;
 	--admin-muted: #5d665f;
@@ -277,22 +278,6 @@
 	background: #315d48;
 	color: #fff;
 }
-.pending-approval-badge {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	flex-shrink: 0;
-	min-width: 22px;
-	height: 22px;
-	padding: 0 6px;
-	border-radius: 11px;
-	background: #245c46;
-	color: #fff;
-	font-size: 12px;
-	font-weight: 700;
-	font-variant-numeric: tabular-nums;
-	line-height: 1;
-}
 .admin-sidebar nav .pending-approval-badge {
 	margin-left: auto;
 }
@@ -378,7 +363,6 @@
 	max-width: 1640px;
 	margin: auto;
 }
-
 .admin-page-heading {
 	display: flex;
 	justify-content: space-between;
@@ -797,7 +781,6 @@
 		transition: none;
 	}
 }
-
 .admin-table-hint {
 	display: none;
 	font-size: 11px;
@@ -814,7 +797,6 @@
 		display: block;
 	}
 }
-
 .admin-shell .admin-layout .table-wrap {
 	background: #fff;
 	border: 1px solid #d9d7cf;
@@ -833,4 +815,15 @@
 }
 .admin-shell .admin-layout table tr:last-child td {
 	border-bottom: 0;
+}
+// Account photos are shown as a preview.
+.admin-avatar-preview {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding-block: 8px;
+}
+.admin-avatar-preview p {
+	margin: 4px 0 0;
+	font-size: 14px;
 }

@@ -1,0 +1,312 @@
+@import '../variables';
+
+// Sign in and sign up.
+.auth-phone-group {
+	margin-bottom: 20px;
+}
+.auth-phone-row {
+	display: grid;
+	grid-template-columns: 110px minmax(0, 1fr);
+	gap: 12px;
+	margin-bottom: 7px;
+}
+.auth-phone-row .field {
+	margin-bottom: 0;
+}
+.auth-phone-row .field > span:first-child {
+	white-space: nowrap;
+}
+.auth-phone-row input,
+.auth-phone-row select {
+	height: 46px;
+}
+.auth-panel .field-error {
+	color: #b42318;
+	font-size: 14px;
+	line-height: 1.5;
+	overflow-wrap: anywhere;
+}
+.google-sign-in {
+	width: 100%;
+}
+.google-button {
+	min-width: 0;
+	min-height: 44px;
+	display: flex;
+	justify-content: center;
+}
+.google-sign-in form {
+	text-align: left;
+}
+.google-sign-in form > .button {
+	margin-top: 12px;
+}
+.google-sign-in form > .button.secondary {
+	margin-left: 10px;
+}
+.google-sign-in .field-error {
+	margin-top: 12px;
+}
+.auth-layout {
+	max-width: 1140px;
+	margin: 16px auto 40px;
+}
+.auth-layout.has-artwork {
+	display: grid;
+	grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+	align-items: stretch;
+	gap: 24px;
+}
+.auth-layout.has-artwork .auth-panel {
+	width: 100%;
+	max-width: 520px;
+	margin: 0;
+	padding: 36px;
+}
+.auth-artwork {
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	background: $stone;
+	border-radius: 12px;
+	overflow: hidden;
+}
+.auth-artwork-image {
+	flex: 1;
+	min-height: 450px;
+	background: url('/brand/auth-studio.jpg') center / cover no-repeat;
+}
+@media (max-width: 900px) {
+	.auth-layout.has-artwork {
+		display: block;
+	}
+	.auth-layout.has-artwork .auth-panel {
+		margin-inline: auto;
+	}
+	.auth-artwork {
+		display: none;
+	}
+}
+@media (max-width: 560px) {
+	.auth-layout.has-artwork .auth-panel {
+		padding: 24px 20px;
+	}
+}
+.auth-page.has-pattern::before {
+	content: '';
+	position: absolute;
+	inset: 0 calc(50% - 50vw);
+	background: url('/brand/discovery-pattern.png') center top / 100% 100% no-repeat;
+	opacity: 0.38;
+	pointer-events: none;
+	z-index: -1;
+}
+.auth-page {
+	position: relative;
+	isolation: isolate;
+}
+.auth-page.has-pattern::before {
+	background-size: 100% 380px;
+	opacity: 0.22;
+}
+@media (max-width: 900px) {
+	.auth-page.has-pattern::before {
+		background-size: 100% auto;
+		opacity: 0.2;
+	}
+}
+.provider-sign-in {
+	width: 100%;
+}
+.provider-sign-in > .social-provider-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	width: 100%;
+	max-width: 400px;
+	height: 40px;
+	min-height: 40px;
+	margin: 12px auto 0;
+	font-size: 14px;
+}
+.provider-sign-in > .field-error {
+	margin-top: 12px;
+}
+.provider-sign-in > .social-provider-button {
+	position: relative;
+	padding: 0 44px;
+}
+.social-provider-icon {
+	position: absolute;
+	left: 14px;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 20px;
+	height: 20px;
+	pointer-events: none;
+}
+.social-provider-icon--kakao {
+	color: #3c1e1e;
+}
+.social-provider-icon--telegram {
+	color: #229ed9;
+}
+// Sign-in and signup share compact spacing without shrinking touch controls.
+.auth-page.is-compact-auth .auth-layout {
+	max-width: 1000px;
+	margin: 12px auto 32px;
+}
+.auth-page.is-compact-auth .auth-layout.has-artwork .auth-panel {
+	box-sizing: border-box;
+	padding: 28px;
+}
+.auth-page.is-compact-auth .auth-panel h1 {
+	font-size: 28px;
+	line-height: 1.2;
+}
+.auth-page.is-compact-auth .auth-intro {
+	margin-bottom: 18px;
+	font-size: 14px;
+	line-height: 1.5;
+}
+.auth-page.is-compact-auth .field {
+	gap: 6px;
+	margin-bottom: 14px;
+}
+.auth-page.is-compact-auth .auth-phone-group {
+	margin-bottom: 14px;
+}
+.auth-page.is-compact-auth .auth-phone-row .field {
+	margin-bottom: 0;
+}
+.auth-page.is-compact-auth .auth-panel form > .button {
+	margin-top: 10px;
+}
+.auth-page.is-compact-auth .social-sign-in {
+	gap: 8px;
+	margin-top: 16px;
+}
+.auth-page.is-compact-auth .provider-sign-in > .social-provider-button {
+	margin-top: 8px;
+}
+.auth-page.is-compact-auth .auth-bottom {
+	margin-top: 18px;
+}
+.auth-page.is-compact-auth .auth-bottom > .button {
+	display: flex;
+	box-sizing: border-box;
+	width: 100%;
+	min-height: 42px;
+	margin-top: 10px;
+	padding: 10px 20px;
+	font-size: 14px;
+	font-weight: 600;
+}
+@media (max-width: 560px) {
+	.auth-page.is-compact-auth .auth-layout.has-artwork .auth-panel {
+		padding: 20px 18px;
+	}
+	.auth-page.is-compact-auth .auth-panel h1 {
+		font-size: 26px;
+	}
+}
+.provider-feedback {
+	min-height: 64px;
+	font-size: 13px;
+	line-height: 1.45;
+	padding-top: 8px;
+}
+.provider-feedback p,
+.auth-panel .provider-feedback .field-error {
+	margin: 0;
+}
+.google-button {
+	width: 100%;
+	height: 44px;
+	contain: inline-size;
+}
+.google-sign-in > .button {
+	min-height: 44px;
+}
+@media (max-width: 700px) {
+	.auth-page.is-compact-auth .auth-layout {
+		margin: 0 auto 20px;
+	}
+	.auth-page.is-compact-auth .auth-layout.has-artwork .auth-panel {
+		padding: 20px 16px;
+	}
+	.auth-page.is-compact-auth .auth-panel h1 {
+		font-size: 25px;
+	}
+	.auth-panel .social-sign-in {
+		min-width: 0;
+	}
+	.auth-panel .google-sign-in,
+	.auth-panel .provider-sign-in {
+		width: 100%;
+		min-width: 0;
+	}
+}
+// One reserved status strip follows all three providers, so script loading cannot split the buttons.
+.social-sign-in {
+	width: 100%;
+	max-width: 400px;
+	margin-inline: auto;
+}
+.social-sign-in .google-button {
+	height: 40px;
+	min-height: 40px;
+}
+.auth-panel .provider-sign-in > .social-provider-button {
+	height: 40px;
+	min-height: 40px;
+	margin: 8px 0 0;
+	border: 1px solid #dadce0;
+	border-radius: 4px;
+	background: #fff;
+	color: #202124;
+	font-weight: 500;
+}
+.auth-panel .provider-sign-in > .social-provider-button:first-child {
+	margin-top: 0;
+}
+.auth-panel .provider-sign-in > .social-provider-button:hover:not(:disabled) {
+	background: #f3f6fa;
+	border-color: #859088;
+}
+.auth-panel .provider-sign-in > .social-provider-button:active:not(:disabled) {
+	background: #e8edf4;
+}
+.social-provider-button:disabled {
+	opacity: 1;
+	background: #f0f2f4 !important;
+	color: #59636e !important;
+}
+.social-feedback {
+	min-height: 40px;
+	padding-top: 4px;
+	text-align: left;
+}
+.social-feedback .provider-feedback {
+	min-height: 0;
+	padding: 0;
+	font-size: 13px;
+	line-height: 1.5;
+}
+.social-feedback .provider-feedback:empty {
+	display: none;
+}
+.social-feedback .provider-feedback p {
+	margin: 0;
+}
+.social-feedback .provider-feedback + .provider-feedback:not(:empty) {
+	margin-top: 4px;
+}
+.social-sign-in .google-sign-in > button {
+	box-sizing: border-box;
+	width: 100%;
+	height: 40px;
+	min-height: 40px;
+}

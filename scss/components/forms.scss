@@ -1,0 +1,16 @@
+@import '../variables';
+
+// Global form controls (inputs, textareas, selects).
+input:not([type='checkbox']),
+select,
+textarea {
+	background-color: $paper;
+}
+input[type='checkbox'],
+input[type='radio'] {
+	accent-color: $coral;
+}
+input,
+textarea {
+	caret-color: #245d46;
+}

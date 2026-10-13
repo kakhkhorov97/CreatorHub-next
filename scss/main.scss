@@ -1,20 +1,23 @@
-// Keep the approved reference theme after the base styles, with current changes last.
+// Nestar base styles first, then the CreatorHub design layers.
 @import './app';
 @import './pc/main';
 @import './mobile/main';
-@import './reference';
-@import './admin';
-@import './changes';
 
-@import './creator-contact';
-
-@import './header-scroll';
-@import './sign-in-methods';
-
-@import './mobile-compact';
-
-@import './interface-refinements';
-
-@import 'account-navigation';
-
-@import 'feedback-polish';
+// Per-area styles. Later imports win ties, so keep this order.
+@import './components/base';
+@import './components/header';
+@import './components/footer';
+@import './components/home';
+@import './components/projects';
+@import './components/creators';
+@import './components/services';
+@import './components/events';
+@import './components/inbox';
+@import './components/forms';
+@import './components/contact';
+@import './components/workspace';
+@import './components/account';
+@import './components/auth';
+@import './components/help-chat';
+@import './components/admin';
+@import './components/late';

@@ -1,0 +1,106 @@
+@import '../variables';
+
+// Services.
+.service-card {
+	background: white;
+	border-color: $line;
+	border-radius: 7px;
+}
+.service-card {
+	cursor: pointer;
+	transition: transform 160ms ease, background-color 160ms ease;
+}
+.service-card:hover {
+	transform: translateY(-3px);
+}
+.service-card:hover {
+	background: #edf0e8;
+}
+.service-card:focus-within {
+	outline: 2px solid $coral;
+	outline-offset: 4px;
+}
+@media (prefers-reduced-motion: reduce) {
+	.service-card {
+		transition: none;
+	}
+	.service-card:hover {
+		transform: none;
+	}
+}
+@media (max-width: 700px) {
+	.service-card {
+		padding: 16px 0;
+		border: 0;
+		border-bottom: 1px solid #d9d7cf;
+		border-radius: 0;
+		background: transparent;
+		box-shadow: none;
+	}
+	.service-card .card-title {
+		font-size: 16px;
+	}
+	.service-card p {
+		font-size: 13px;
+		line-height: 1.5;
+		margin-bottom: 8px;
+	}
+	.service-card > p {
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+	.service-card ul {
+		font-size: 12px;
+		margin-block: 8px;
+		padding-left: 18px;
+	}
+}
+.service-card {
+	background: #fff;
+	color: #202722;
+	border: 1px solid var(--catalog-border);
+	border-radius: 12px;
+	min-width: 0;
+	transition: background-color 120ms ease, border-color 120ms ease;
+}
+.service-card {
+	padding: 20px;
+}
+.service-card:active {
+	background: var(--pressed-surface);
+	border-color: #739783;
+}
+.service-card:focus-within {
+	border-color: #245c46;
+}
+@media (hover: hover) {
+	.service-card:hover {
+		border-color: #739783;
+	}
+}
+@media (max-width: 700px) {
+	.service-card {
+		padding: 12px;
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		background: #fff;
+		border: 1px solid var(--catalog-border);
+		border-radius: 12px;
+	}
+	.service-card:active {
+		background: var(--pressed-surface);
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.service-card {
+		transition: none;
+	}
+}
+.service-summary {
+	background: #edf3e9;
+	color: #203e2d;
+	align-self: start;
+}

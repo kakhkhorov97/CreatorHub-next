@@ -1,4 +1,60 @@
-@import './variables';
+@import '../variables';
+
+// Contact page and the contact-creator dialog.
+.inquiry-details {
+	padding: 25px;
+}
+.company-page {
+	max-width: 1100px;
+	margin: 10px auto 40px;
+}
+.company-page > .company-heading {
+	max-width: 850px;
+	margin-bottom: 60px;
+}
+.company-body {
+	max-width: 72ch;
+}
+.company-body section {
+	padding: 28px 0;
+	border-top: 1px solid $line;
+}
+.company-body section h2 {
+	font-size: 26px;
+}
+.company-body p {
+	line-height: 1.8;
+	color: $muted;
+	margin: 16px 0 24px;
+}
+@media (max-width: 760px) {
+	.company-page > .company-heading {
+		margin-bottom: 32px;
+	}
+}
+.inquiry-recipient {
+	padding-bottom: 16px;
+	margin: 0 0 20px;
+	border-bottom: 1px solid $line;
+}
+.inquiry-recipient a {
+	color: $coral;
+}
+.inquiry-compose-layout {
+	display: grid;
+	grid-template-columns: minmax(0, 740px) 260px;
+	gap: 32px;
+	align-items: start;
+	max-width: 1040px;
+}
+.inquiry-compose-layout .publishing-panel {
+	position: static;
+}
+@media (max-width: 900px) {
+	.inquiry-compose-layout {
+		grid-template-columns: 1fr;
+	}
+}
 .contact-creator-dialog {
 	padding: 0;
 	border: 0;
@@ -235,16 +291,7 @@
 	.contact-creator-panel {
 		animation: contact-creator-enter 0.18s ease-out;
 	}
-	@keyframes contact-creator-enter {
-		from {
-			transform: translateY(8px);
-		}
-		to {
-			transform: translateY(0);
-		}
-	}
 }
-
 .contact-creator-form textarea[aria-invalid='true'] {
 	border-color: #b91c1c;
 }
@@ -267,12 +314,93 @@
 .inquiry-message-count {
 	font-variant-numeric: tabular-nums;
 }
-.pagination-notice {
-	text-align: center;
-	color: $muted;
-	font-size: 14px;
+.contact-page {
+	max-width: 760px;
+	margin: 8px auto 32px;
 }
-
-.pagination-error {
-	color: #b91c1c;
+.contact-page > .company-heading {
+	max-width: 65ch;
+	margin-bottom: 28px;
+}
+.contact-page .company-body {
+	max-width: none;
+}
+.contact-page .company-body section {
+	padding: 22px 0;
+}
+.contact-page .company-body h2 {
+	font-size: 22px;
+}
+.contact-page .company-body p {
+	margin: 10px 0 16px;
+	line-height: 1.65;
+}
+@media (max-width: 700px) {
+	.contact-page {
+		margin: 0 auto 24px;
+	}
+	.contact-page > .company-heading {
+		margin-bottom: 20px;
+	}
+	.contact-page .company-body section {
+		padding: 18px 0;
+	}
+	.contact-page .company-body h2 {
+		font-size: 20px;
+	}
+	.contact-page .company-body p {
+		font-size: 14px;
+		margin: 8px 0 14px;
+	}
+}
+.contact-page {
+	max-width: 900px;
+	margin: auto;
+}
+.contact-page .company-body {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 24px;
+}
+.contact-page .contact-form-panel {
+	grid-column: 1/-1;
+	padding: 28px;
+	background: #fff;
+	border: 1px solid #d3dcd1;
+	border-radius: 14px;
+}
+.contact-form-fields {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 18px;
+}
+.contact-email {
+	display: inline-flex;
+	align-items: center;
+	gap: 9px;
+	margin-bottom: 20px;
+	color: #245d46;
+}
+.contact-honeypot {
+	position: absolute;
+	left: -10000px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+.contact-success {
+	padding: 24px 0;
+	color: #245d46;
+}
+.contact-success h3 {
+	color: #1e3628;
+}
+@media (max-width: 700px) {
+	.contact-page .company-body,
+	.contact-form-fields {
+		grid-template-columns: 1fr;
+	}
+	.contact-page .contact-form-panel {
+		padding: 20px 16px;
+	}
 }

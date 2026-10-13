@@ -1,0 +1,345 @@
+@import '../variables';
+
+// Events.
+.event-list {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 28px;
+}
+.event-card {
+	display: flex;
+	align-items: flex-start;
+	gap: 18px;
+	border-top: 1px solid $line;
+	padding-top: 24px;
+}
+.event-card h3 {
+	font-size: 21px;
+	margin: 12px 0;
+}
+.event-card h3 a {
+	text-decoration: none;
+}
+.event-card time {
+	color: $muted;
+	font-size: 13px;
+}
+.event-card p {
+	font-size: 14px;
+	line-height: 1.65;
+}
+.event-card > div:last-child {
+	min-width: 0;
+}
+.event-card > div > a {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	color: $coral;
+}
+.event-date {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	min-width: 64px;
+	color: $coral;
+	background: #edf0e8;
+	border-radius: 12px;
+	padding: 14px 8px;
+	font-variant-numeric: tabular-nums;
+}
+.event-date strong {
+	font-size: 30px;
+	line-height: 1.2;
+}
+.event-date span {
+	font-size: 12px;
+}
+.event-location {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+.event-location svg {
+	flex-shrink: 0;
+}
+.event-facts {
+	display: grid;
+	grid-template-columns: 80px 1fr;
+	gap: 12px;
+	padding: 24px 0;
+	border-block: 1px solid $line;
+	margin: 28px 0;
+}
+.event-facts dt {
+	color: $muted;
+}
+.event-facts dd {
+	margin: 0;
+}
+@media (max-width: 1150px) {
+	.event-list {
+		grid-template-columns: 1fr;
+	}
+	.event-card {
+		gap: 24px;
+	}
+}
+@media (max-width: 560px) {
+	.event-card {
+		gap: 16px;
+	}
+	.event-date {
+		min-width: 55px;
+	}
+}
+.event-card {
+	cursor: pointer;
+	transition: background-color 160ms ease;
+}
+.event-card:hover {
+	background: #edf0e8;
+}
+.event-card:focus-within {
+	outline: 2px solid $coral;
+	outline-offset: 4px;
+}
+@media (prefers-reduced-motion: reduce) {
+	.event-card {
+		transition: none;
+	}
+}
+@media (max-width: 700px) {
+	.events-section .event-card h3 {
+		font-size: 16px;
+	}
+}
+.event-card {
+	background: #fff;
+	color: #202722;
+	border: 1px solid var(--catalog-border);
+	border-radius: 12px;
+	min-width: 0;
+	transition: background-color 120ms ease, border-color 120ms ease;
+}
+.event-card {
+	padding: 20px;
+}
+.event-card:active {
+	background: var(--pressed-surface);
+	border-color: #739783;
+}
+.event-card:focus-within {
+	border-color: #245c46;
+}
+@media (hover: hover) {
+	.event-card:hover {
+		border-color: #739783;
+	}
+}
+@media (max-width: 700px) {
+	.event-list {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 12px;
+	}
+	.event-card {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		padding: 14px 12px;
+	}
+	.event-date {
+		width: auto;
+		min-width: 0;
+		display: flex;
+		align-items: baseline;
+		gap: 6px;
+		text-align: left;
+		background: #edf3ee;
+		color: #194332;
+		padding: 6px 8px;
+		border-radius: 6px;
+	}
+	.event-date strong {
+		font-size: 22px;
+	}
+	.event-date span {
+		font-size: 12px;
+		color: #194332;
+	}
+	.event-date span:last-child {
+		display: none;
+	}
+	.events-section .event-card h3 {
+		font-size: 15px;
+		line-height: 1.35;
+		margin: 0 0 8px;
+		overflow-wrap: anywhere;
+	}
+	.event-card time {
+		display: block;
+		font-size: 12px;
+		line-height: 1.5;
+		color: #5d665f;
+	}
+	.event-card .event-location {
+		align-items: flex-start;
+	}
+	.event-card .event-location svg {
+		flex-shrink: 0;
+	}
+	.event-card p:not(.event-location) {
+		display: -webkit-box;
+		-webkit-line-clamp: 3;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+	.event-card > div > a {
+		font-size: 13px;
+		min-height: 44px;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.event-card {
+		transition: none;
+	}
+}
+.event-detail-cover {
+	margin: 24px 0;
+}
+.event-detail-cover img {
+	display: block;
+	width: 100%;
+	border-radius: 14px;
+	object-fit: cover;
+	aspect-ratio: 16/10;
+}
+.event-detail-cover figcaption {
+	font-size: 13px;
+	color: #506054;
+	margin-top: 9px;
+}
+.event-list {
+	display: grid !important;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 20px;
+}
+.event-list .event-card {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+	padding: 0;
+	overflow: hidden;
+	background: #fff;
+	border: 1px solid #d5dcd2;
+	border-radius: 14px;
+	height: 100%;
+}
+.event-cover {
+	width: 100%;
+	aspect-ratio: 4/3;
+	object-fit: cover;
+	display: block;
+}
+.event-cover-placeholder {
+	display: grid;
+	place-items: center;
+	background: #e4ecdf;
+	color: #366149;
+}
+.event-card .event-date {
+	display: none;
+}
+.event-card-copy {
+	padding: 18px;
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+}
+.event-card-copy > p:not(.event-location) {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
+	overflow: hidden;
+}
+.event-card-copy > a:last-child {
+	margin-top: auto;
+	padding-top: 12px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+.event-time,
+.event-location,
+.event-facts dt {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+}
+.event-time svg,
+.event-location svg,
+.event-facts svg {
+	flex: none;
+}
+@media (max-width: 700px) {
+	.event-list {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 12px;
+	}
+	.event-card-copy {
+		padding: 11px;
+	}
+	.event-card-copy > p:not(.event-location),
+	.event-card .demo-label {
+		display: none;
+	}
+	.event-time,
+	.event-location {
+		font-size: 11px;
+		line-height: 1.4;
+		margin: 8px 0;
+	}
+	.event-time svg,
+	.event-location svg {
+		width: 14px;
+		height: 14px;
+	}
+	.event-card-copy > a:last-child {
+		font-size: 12px;
+	}
+	.event-detail-cover img {
+		aspect-ratio: 4/3;
+	}
+}
+.event-date-short {
+	display: none;
+}
+.event-card .event-time {
+	display: flex;
+	gap: 8px;
+}
+@media (max-width: 700px) {
+	.event-date-short {
+		display: inline;
+	}
+	.event-date-full {
+		display: none;
+	}
+	.event-card .event-time {
+		font-size: 11px;
+		line-height: 1.4;
+	}
+	.event-card .event-location {
+		font-size: 11px;
+	}
+	.event-card h3 {
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+}
+.event-detail-cover img,
+.event-cover {
+	height: auto;
+}

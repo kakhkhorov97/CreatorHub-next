@@ -1,0 +1,242 @@
+@import '../variables';
+
+// Rules that must stay last in the cascade: at equal specificity they override
+// component rules from other areas. Move them into their components once their
+// specificity is fixed.
+.home-about h3 {
+	font-size: 25px;
+}
+.home-about p {
+	max-width: 58ch;
+	line-height: 1.75;
+	color: $muted;
+	margin: 18px 0 24px;
+}
+@media (max-width: 1150px) {
+	.event-card p {
+		max-width: 70ch;
+	}
+}
+@media (max-width: 560px) {
+	.event-card h3 {
+		font-size: 19px;
+	}
+}
+.button.danger,
+.button.secondary.danger {
+	background: #a1332a;
+	color: white;
+	border-color: #a1332a;
+}
+.button.danger:hover:not(:disabled) {
+	background: #7d281f;
+}
+.review-preview .picture {
+	max-width: 360px;
+	height: auto;
+	object-fit: contain;
+}
+.confirm.confirmation-prompt {
+	position: fixed;
+	z-index: 1000;
+	top: 16px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: min(460px, calc(100vw - 32px));
+	max-height: calc(100dvh - 32px);
+	overflow: auto;
+	margin: 0;
+	padding: 18px 20px;
+	background: white;
+	border: 1px solid $line;
+	border-radius: 10px;
+	box-shadow: none;
+	color: $ink;
+}
+.confirmation-prompt h2,
+.confirmation-prompt h3 {
+	margin: 0 0 8px;
+	font-size: 17px;
+}
+.confirmation-prompt p {
+	font-size: 14px;
+	margin: 0 0 14px;
+}
+.confirmation-prompt .button {
+	min-height: 34px;
+	padding: 7px 14px;
+	font-size: 13px;
+}
+.button.danger {
+	background: #b52b31;
+	border-color: #b52b31;
+	color: white;
+}
+.admin-shell .button.danger {
+	background: #b52b31;
+	border-color: #b52b31;
+	color: white;
+}
+.button.danger:hover {
+	background: #92212a;
+	border-color: #92212a;
+	color: white;
+}
+.admin-shell .button.danger:hover {
+	background: #92212a;
+	border-color: #92212a;
+	color: white;
+}
+.engagement-feedback h2 {
+	font-size: 19px;
+}
+.chat-start p {
+	margin: 10px 0 4px;
+}
+.chat-brief-heading h3 {
+	font-size: 17px;
+	margin: 0;
+}
+@media (max-width: 700px) {
+	.chat-heading-copy p {
+		font-size: 11px;
+	}
+}
+.chat-original-brief h3 {
+	font-size: 13px;
+	margin: 0 0 6px;
+}
+.chat-original-brief p {
+	font-size: 14px;
+	margin: 0;
+}
+.field input[aria-invalid='true'] {
+	border-color: #b42318;
+}
+@media (max-width: 700px) {
+	.site-header .desktop-auth-actions > .button:first-child {
+		background: $coral;
+		border-color: $coral;
+		color: $paper;
+	}
+	.public-main h1 {
+		font-size: 25px;
+		line-height: 1.2;
+	}
+	.workspace-main h1 {
+		font-size: 25px;
+		line-height: 1.2;
+	}
+	.public-main h2 {
+		font-size: 20px;
+		line-height: 1.3;
+	}
+	.workspace-main h2 {
+		font-size: 20px;
+		line-height: 1.3;
+	}
+	.public-main h3 {
+		font-size: 17px;
+	}
+	.workspace-main h3 {
+		font-size: 17px;
+	}
+	.public-main .button {
+		min-height: 44px;
+	}
+	.workspace-main .button {
+		min-height: 44px;
+	}
+	.discovery-hero p {
+		font-size: 14px;
+		line-height: 1.5;
+		margin: 0;
+	}
+	.home-section-heading p {
+		font-size: 13px;
+	}
+	.page-heading h1 {
+		font-size: 25px;
+	}
+	.project-card .cover-link .picture {
+		aspect-ratio: 4 / 3;
+	}
+}
+.site-header .desktop-auth-actions .button {
+	background: #245c46;
+	color: #fff;
+}
+.site-header .desktop-auth-actions .button:hover {
+	background: #194332;
+}
+.button:not(.secondary):not(.danger):active:not(:disabled) {
+	background: #143728;
+	color: #fff;
+}
+.public-main .panel {
+	background: #fff;
+	border-color: var(--catalog-border);
+}
+.workspace-main .panel {
+	background: #fff;
+	border-color: var(--catalog-border);
+}
+@media (max-width: 700px) {
+	.event-card p {
+		font-size: 13px;
+		line-height: 1.5;
+		margin: 8px 0;
+	}
+}
+.my-page > h1 {
+	font-size: 28px;
+	margin: 0 0 8px;
+}
+@media (max-width: 700px) {
+	.my-page > h1 {
+		font-size: 24px;
+	}
+}
+.site-header .desktop-auth-actions .button.secondary,
+.guest-auth-actions .button.secondary {
+	background: #fff;
+	color: #245c46;
+	border: 1px solid #245c46;
+}
+.site-header .desktop-auth-actions .button.secondary:hover,
+.guest-auth-actions .button.secondary:hover {
+	background: #edf3ed;
+}
+.public-main > .creator-line {
+	font-size: 19px;
+	font-weight: 600;
+	gap: 14px;
+	margin: 0 0 28px;
+}
+.detail-layout p {
+	line-height: 1.75;
+}
+.detail-process h2 {
+	margin: 32px 0 14px;
+	font-size: 23px;
+}
+.event-card h3 {
+	font-size: 19px;
+	line-height: 1.35;
+	min-height: 2.7em;
+}
+@media (max-width: 700px) {
+	.event-card h3 {
+		font-size: 14px;
+		margin: 8px 0;
+	}
+	.public-main > .creator-line {
+		font-size: 17px;
+	}
+	.detail-process h2 {
+		font-size: 20px;
+	}
+}
+.service-detail-layout .service-summary {
+	background: #edf3e9;
+}

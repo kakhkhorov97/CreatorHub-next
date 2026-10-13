@@ -1,7 +1,0 @@
-// Keep discovery controls mounted so mobile scrolling cannot change header height.
-@media (min-width: 701px) {
-	.site-header:not(.is-compact) .header-search,
-	.site-header:not(.is-compact) .header-categories {
-		display: none;
-	}
-}
