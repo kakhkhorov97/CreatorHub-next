@@ -5,6 +5,7 @@ import { Empty, Heading, Pager, QueryState } from '../../libs/components/common/
 import { ServiceCard } from '../../libs/components/discovery/Cards';
 import SearchFilters from '../../libs/components/discovery/SearchFilters';
 import { withLayoutBasic } from '../../libs/components/layout/LayoutBasic';
+import { useApi } from '../../libs/hooks/useApi';
 import { useCreatorDirectory } from '../../libs/hooks/useCreatorDirectory';
 import { usePaged } from '../../libs/hooks/usePaged';
 import { CreatorService, DiscoveryInput } from '../../libs/types/creatorhub';
@@ -25,6 +26,7 @@ function ServicesPage() {
 	const operation = 'getServices';
 	const result = usePaged(operation, { input: { ...filters } }, false, 12);
 	const directory = useCreatorDirectory(result.rows.map((row) => row.creatorId));
+	const categories = useApi('categories');
 	const title = 'Find creative services';
 	return (
 		<>
@@ -44,7 +46,12 @@ function ServicesPage() {
 					)}
 					<div className={`grid ${kind}`}>
 						{(result.rows as CreatorService[]).map((s) => (
-							<ServiceCard key={s._id} service={s} creator={directory[s.creatorId]} />
+							<ServiceCard
+								key={s._id}
+								service={s}
+								creator={directory[s.creatorId]}
+								category={categories.value?.find((item) => item._id === s.categoryId)?.name}
+							/>
 						))}
 					</div>
 					{!!result.rows.length && <Pager {...result} />}

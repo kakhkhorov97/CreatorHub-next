@@ -27,7 +27,7 @@
     "name": "adminDirectory",
     "kind": "query",
     "admin": true,
-    "document": "query adminDirectory($kind: AdminKind!, $input: AdminDirectoryInput! = {}) { adminDirectory(kind: $kind, input: $input) { list { _id  title  status  updatedAt  deletedAt  ownerName  projectTitle  user { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } creator { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } project { _id  createdAt  updatedAt  creatorId  categoryId  title  slug  summary  description  coverImageUrl  media { type  url  altText  sortOrder  } tags  externalUrl  status  publishedAt  deletedAt  } service { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } comment { _id  createdAt  updatedAt  clientCommentKey  userId  projectId  content  status  editedAt  deletedAt  } } metaCounter { total  } } }"
+    "document": "query adminDirectory($kind: AdminKind!, $input: AdminDirectoryInput! = {}) { adminDirectory(kind: $kind, input: $input) { list { _id  title  status  updatedAt  deletedAt  ownerName  projectTitle  user { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } creator { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  workImageUrls  identity { displayName  avatarUrl  } } project { _id  createdAt  updatedAt  creatorId  categoryId  title  slug  summary  description  coverImageUrl  media { type  url  altText  sortOrder  } tags  externalUrl  status  publishedAt  deletedAt  } service { _id  createdAt  updatedAt  creatorId  categoryId  title  description  imageUrl  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } comment { _id  createdAt  updatedAt  clientCommentKey  userId  projectId  content  status  editedAt  deletedAt  } } metaCounter { total  } } }"
   },
   {
     "name": "getSiteContent",
@@ -81,13 +81,13 @@
     "name": "creator",
     "kind": "query",
     "admin": false,
-    "document": "query creator($slug: String!) { creator(slug: $slug) { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } }"
+    "document": "query creator($slug: String!) { creator(slug: $slug) { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  workImageUrls  identity { displayName  avatarUrl  } } }"
   },
   {
     "name": "myCreatorProfile",
     "kind": "query",
     "admin": false,
-    "document": "query myCreatorProfile { myCreatorProfile { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } }"
+    "document": "query myCreatorProfile { myCreatorProfile { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  workImageUrls  identity { displayName  avatarUrl  } } }"
   },
   {
     "name": "getCities",
@@ -99,7 +99,7 @@
     "name": "getCreators",
     "kind": "query",
     "admin": false,
-    "document": "query getCreators($input: DiscoveryInput! = {}) { getCreators(input: $input) { list { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } metaCounter { total  } } }"
+    "document": "query getCreators($input: DiscoveryInput! = {}) { getCreators(input: $input) { list { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  workImageUrls  identity { displayName  avatarUrl  } } metaCounter { total  } } }"
   },
   {
     "name": "getProjects",
@@ -111,13 +111,13 @@
     "name": "getServices",
     "kind": "query",
     "admin": false,
-    "document": "query getServices($input: DiscoveryInput! = {}) { getServices(input: $input) { list { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } metaCounter { total  } } }"
+    "document": "query getServices($input: DiscoveryInput! = {}) { getServices(input: $input) { list { _id  createdAt  updatedAt  creatorId  categoryId  title  description  imageUrl  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } metaCounter { total  } } }"
   },
   {
     "name": "discoverCreators",
     "kind": "query",
     "admin": false,
-    "document": "query discoverCreators($input: AssistantInput!) { discoverCreators(input: $input) { mode  explanation  creators { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } projects { _id  createdAt  updatedAt  creatorId  categoryId  title  slug  summary  description  coverImageUrl  media { type  url  altText  sortOrder  } tags  externalUrl  status  publishedAt  deletedAt  } services { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } } }"
+    "document": "query discoverCreators($input: AssistantInput!) { discoverCreators(input: $input) { mode  explanation  creators { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  workImageUrls  identity { displayName  avatarUrl  } } projects { _id  createdAt  updatedAt  creatorId  categoryId  title  slug  summary  description  coverImageUrl  media { type  url  altText  sortOrder  } tags  externalUrl  status  publishedAt  deletedAt  } services { _id  createdAt  updatedAt  creatorId  categoryId  title  description  imageUrl  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } } }"
   },
   {
     "name": "getMyProjectLike",
@@ -225,13 +225,13 @@
     "name": "getService",
     "kind": "query",
     "admin": false,
-    "document": "query getService($serviceId: ID!) { getService(serviceId: $serviceId) { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } }"
+    "document": "query getService($serviceId: ID!) { getService(serviceId: $serviceId) { _id  createdAt  updatedAt  creatorId  categoryId  title  description  imageUrl  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } }"
   },
   {
     "name": "getMyServices",
     "kind": "query",
     "admin": false,
-    "document": "query getMyServices($input: PageInput! = {}) { getMyServices(input: $input) { list { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } metaCounter { total  } } }"
+    "document": "query getMyServices($input: PageInput! = {}) { getMyServices(input: $input) { list { _id  createdAt  updatedAt  creatorId  categoryId  title  description  imageUrl  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } metaCounter { total  } } }"
   },
   {
     "name": "me",
@@ -261,7 +261,7 @@
     "name": "adminUpdateCreator",
     "kind": "mutation",
     "admin": true,
-    "document": "mutation adminUpdateCreator($id: ID!, $input: UpdateCreatorInput!, $status: ProfileStatus) { adminUpdateCreator(id: $id, input: $input, status: $status) { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } }"
+    "document": "mutation adminUpdateCreator($id: ID!, $input: UpdateCreatorInput!, $status: ProfileStatus) { adminUpdateCreator(id: $id, input: $input, status: $status) { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  workImageUrls  identity { displayName  avatarUrl  } } }"
   },
   {
     "name": "adminCreateProject",
@@ -279,13 +279,13 @@
     "name": "adminCreateService",
     "kind": "mutation",
     "admin": true,
-    "document": "mutation adminCreateService($creatorId: ID!, $input: CreateServiceInput!) { adminCreateService(creatorId: $creatorId, input: $input) { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } }"
+    "document": "mutation adminCreateService($creatorId: ID!, $input: CreateServiceInput!) { adminCreateService(creatorId: $creatorId, input: $input) { _id  createdAt  updatedAt  creatorId  categoryId  title  description  imageUrl  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } }"
   },
   {
     "name": "adminUpdateService",
     "kind": "mutation",
     "admin": true,
-    "document": "mutation adminUpdateService($id: ID!, $input: UpdateServiceInput!, $status: ServiceStatus) { adminUpdateService(id: $id, input: $input, status: $status) { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } }"
+    "document": "mutation adminUpdateService($id: ID!, $input: UpdateServiceInput!, $status: ServiceStatus) { adminUpdateService(id: $id, input: $input, status: $status) { _id  createdAt  updatedAt  creatorId  categoryId  title  description  imageUrl  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } }"
   },
   {
     "name": "adminSetRemoved",
@@ -495,19 +495,19 @@
     "name": "createCreatorProfile",
     "kind": "mutation",
     "admin": false,
-    "document": "mutation createCreatorProfile($input: CreateCreatorInput!) { createCreatorProfile(input: $input) { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } }"
+    "document": "mutation createCreatorProfile($input: CreateCreatorInput!) { createCreatorProfile(input: $input) { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  workImageUrls  identity { displayName  avatarUrl  } } }"
   },
   {
     "name": "updateCreatorProfile",
     "kind": "mutation",
     "admin": false,
-    "document": "mutation updateCreatorProfile($input: UpdateCreatorInput!) { updateCreatorProfile(input: $input) { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } }"
+    "document": "mutation updateCreatorProfile($input: UpdateCreatorInput!) { updateCreatorProfile(input: $input) { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  workImageUrls  identity { displayName  avatarUrl  } } }"
   },
   {
     "name": "setCreatorProfileStatus",
     "kind": "mutation",
     "admin": false,
-    "document": "mutation setCreatorProfileStatus($status: ProfileStatus!) { setCreatorProfileStatus(status: $status) { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  identity { displayName  avatarUrl  } } }"
+    "document": "mutation setCreatorProfileStatus($status: ProfileStatus!) { setCreatorProfileStatus(status: $status) { _id  createdAt  updatedAt  userId  slug  headline  bio  city  remoteAvailable  availability  categoryIds  skills  socialLinks { label  url  } status  publishedAt  deletedAt  workImageUrls  identity { displayName  avatarUrl  } } }"
   },
   {
     "name": "deleteCreatorProfile",
@@ -669,19 +669,19 @@
     "name": "createService",
     "kind": "mutation",
     "admin": false,
-    "document": "mutation createService($input: CreateServiceInput!) { createService(input: $input) { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } }"
+    "document": "mutation createService($input: CreateServiceInput!) { createService(input: $input) { _id  createdAt  updatedAt  creatorId  categoryId  title  description  imageUrl  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } }"
   },
   {
     "name": "updateService",
     "kind": "mutation",
     "admin": false,
-    "document": "mutation updateService($serviceId: ID!, $input: UpdateServiceInput!) { updateService(serviceId: $serviceId, input: $input) { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } }"
+    "document": "mutation updateService($serviceId: ID!, $input: UpdateServiceInput!) { updateService(serviceId: $serviceId, input: $input) { _id  createdAt  updatedAt  creatorId  categoryId  title  description  imageUrl  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } }"
   },
   {
     "name": "setServiceStatus",
     "kind": "mutation",
     "admin": false,
-    "document": "mutation setServiceStatus($serviceId: ID!, $status: ServiceStatus!) { setServiceStatus(serviceId: $serviceId, status: $status) { _id  createdAt  updatedAt  creatorId  categoryId  title  description  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } }"
+    "document": "mutation setServiceStatus($serviceId: ID!, $status: ServiceStatus!) { setServiceStatus(serviceId: $serviceId, status: $status) { _id  createdAt  updatedAt  creatorId  categoryId  title  description  imageUrl  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } }"
   },
   {
     "name": "deleteService",

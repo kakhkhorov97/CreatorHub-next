@@ -289,7 +289,6 @@
 	"Notifications": "Notifications",
 	"Open AI finder": "Open AI finder",
 	"Open administration navigation": "Open administration navigation",
-	"Open cover": "Open cover",
 	"Open creator profile": "Open creator profile",
 	"Open submitted video": "Open submitted video",
 	"Open the introduction video": "Open the introduction video",
@@ -1052,5 +1051,14 @@
 	"What clients say": "What clients say",
 	"All reviews →": "All reviews →",
 	"Work with {{name}}": "Work with {{name}}",
-	"Choose a service or send a general inquiry with your brief, deadline and budget.": "Choose a service or send a general inquiry with your brief, deadline and budget."
+	"Choose a service or send a general inquiry with your brief, deadline and budget.": "Choose a service or send a general inquiry with your brief, deadline and budget.",
+	"{{days}} days": "{{days}} days",
+	"Scope agreed together": "Scope agreed together",
+	"Remote": "Remote",
+	"Upload service image": "Upload service image",
+	"Choose service image": "Choose service image",
+	"Service image": "Service image",
+	"Service image preview": "Service image preview",
+	"Optional. Without one, your newest published project cover is shown instead.": "Optional. Without one, your newest published project cover is shown instead.",
+	"Open image": "Open image"
 }

@@ -1,104 +1,168 @@
 @import '../variables';
 
-// Services.
-.service-card {
-	background: white;
-	border-color: $line;
-	border-radius: 7px;
+// Services: image cards (mockup .local/redesign-mockups/Services.dc.html).
+.grid.services {
+	grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr));
+	gap: 28px 24px;
 }
 .service-card {
+	display: flex;
+	flex-direction: column;
+	padding: 0;
+	border: 0;
+	border-radius: $radius-panel;
+	background: $paper-white;
+	color: $ink-text;
+	overflow: hidden;
+	min-width: 0;
 	cursor: pointer;
-	transition: transform 160ms ease, background-color 160ms ease;
+	transition: transform $motion;
 }
 .service-card:hover {
 	transform: translateY(-3px);
-}
-.service-card:hover {
-	background: #edf0e8;
+	background: $paper-white;
 }
 .service-card:focus-within {
-	outline: 2px solid $coral;
-	outline-offset: 4px;
+	outline: 2px solid $forest;
+	outline-offset: 3px;
 }
 @media (prefers-reduced-motion: reduce) {
-	.service-card {
-		transition: none;
-	}
+	.service-card,
 	.service-card:hover {
 		transform: none;
-	}
-}
-@media (max-width: 700px) {
-	.service-card {
-		padding: 16px 0;
-		border: 0;
-		border-bottom: 1px solid $line-color;
-		border-radius: 0;
-		background: transparent;
-		box-shadow: none;
-	}
-	.service-card .card-title {
-		font-size: 16px;
-	}
-	.service-card p {
-		font-size: 13px;
-		line-height: 1.5;
-		margin-bottom: 8px;
-	}
-	.service-card > p {
-		display: -webkit-box;
-		-webkit-line-clamp: 2;
-		-webkit-box-orient: vertical;
-		overflow: hidden;
-	}
-	.service-card ul {
-		font-size: 12px;
-		margin-block: 8px;
-		padding-left: 18px;
-	}
-}
-.service-card {
-	background: $paper-white;
-	color: $ink-text;
-	border: 1px solid var(--catalog-border);
-	border-radius: 12px;
-	min-width: 0;
-	transition: background-color 120ms ease, border-color 120ms ease;
-}
-.service-card {
-	padding: 20px;
-}
-.service-card:active {
-	background: var(--pressed-surface);
-	border-color: #739783;
-}
-.service-card:focus-within {
-	border-color: $forest;
-}
-@media (hover: hover) {
-	.service-card:hover {
-		border-color: #739783;
-	}
-}
-@media (max-width: 700px) {
-	.service-card {
-		padding: 12px;
-		min-width: 0;
-		display: flex;
-		flex-direction: column;
-		background: $paper-white;
-		border: 1px solid var(--catalog-border);
-		border-radius: 12px;
-	}
-	.service-card:active {
-		background: var(--pressed-surface);
-	}
-}
-@media (prefers-reduced-motion: reduce) {
-	.service-card {
 		transition: none;
 	}
 }
+.service-media {
+	position: relative;
+}
+.service-media .picture {
+	display: block;
+	width: 100%;
+	aspect-ratio: 16 / 10;
+	object-fit: cover;
+	border-radius: 0;
+}
+.service-media .picture.placeholder {
+	display: grid;
+	place-items: center;
+	background: $stone;
+	color: $muted-text;
+}
+.service-category {
+	position: absolute;
+	left: 14px;
+	top: 14px;
+	padding: 6px 12px;
+	border-radius: $radius-pill;
+	background: rgba(245, 243, 236, 0.92);
+	font-size: 13px;
+	font-weight: 600;
+}
+.service-media .avatar {
+	position: absolute;
+	left: 18px;
+	bottom: -22px;
+	width: 48px;
+	height: 48px;
+	min-width: 48px;
+	min-height: 48px;
+	border: 3px solid $paper-white;
+	background: $paper-white;
+}
+.service-body {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	flex: 1;
+	padding: 20px;
+	min-width: 0;
+}
+.service-card.with-avatar .service-body {
+	padding-top: 32px;
+}
+.service-by {
+	font-size: 14px;
+	color: $muted-text;
+	text-decoration: none;
+}
+.service-by:hover {
+	color: $ink-text;
+}
+.service-card .card-title {
+	font-family: $font-heading;
+	font-size: 22px;
+	font-weight: 800;
+	letter-spacing: -0.02em;
+	line-height: 1.15;
+	color: $ink-text;
+	text-decoration: none;
+	overflow-wrap: anywhere;
+}
+.service-body > p {
+	margin: 0;
+	font-size: 15px;
+	line-height: 1.5;
+	color: #3d4740;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+.service-card .card-bottom {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 12px;
+	margin-top: auto;
+	padding-top: 16px;
+	border-top: 1px solid $stone;
+}
+.service-card .card-bottom strong {
+	font-size: 17px;
+	font-weight: 700;
+}
+.service-card .card-bottom .muted {
+	font-size: 13px;
+}
+
+// Compact variant: a plain text row inside the creator-profile sidebar.
+.service-card.compact {
+	border-radius: 0;
+	background: transparent;
+	cursor: pointer;
+}
+.service-card.compact:hover {
+	transform: none;
+}
+// The sidebar frame in late.scss already supplies the row spacing and divider.
+.service-card.compact .service-body {
+	padding: 0;
+}
+.service-card.compact .card-title {
+	font-size: 17px;
+}
+.service-card.compact .card-bottom strong {
+	font-size: 15px;
+}
+
+@media (max-width: $bp-sm) {
+	.grid.services {
+		gap: 18px;
+	}
+	// Beats the older .grid.services .card-title phone rule in projects.scss.
+	.grid.services .service-card .card-title,
+	.service-card .card-title {
+		font-size: 19px;
+	}
+	.service-body {
+		padding: 16px;
+	}
+	.service-card.with-avatar .service-body {
+		padding-top: 30px;
+	}
+}
+
 .service-summary {
 	background: #edf3e9;
 	color: #203e2d;

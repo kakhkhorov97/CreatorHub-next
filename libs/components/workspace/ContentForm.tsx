@@ -48,6 +48,7 @@ export function EditorForm({
 	const [fields, setFields] = useState<Record<string, string>>({
 		description: item?.description || '',
 		coverImageUrl: p?.coverImageUrl || '',
+		imageUrl: s?.imageUrl || '',
 		deliverables: s?.deliverables.join('\n') || '',
 	});
 
@@ -97,6 +98,7 @@ export function EditorForm({
 					title: f.title,
 					categoryId: optional(f.categoryId),
 					description: optional(f.description),
+					imageUrl: optional(f.imageUrl),
 					pricingType: pricing,
 					startingPrice: pricing === 'STARTING_AT' ? Number(f.startingPrice) : undefined,
 					estimatedDays: f.estimatedDays ? Number(f.estimatedDays) : undefined,
@@ -303,6 +305,22 @@ export function EditorForm({
 					</>
 				) : (
 					<>
+						<h2>{translate('Service image')}</h2>
+						<p className="muted">
+							{translate('Optional. Without one, your newest published project cover is shown instead.')}
+						</p>
+						<ProjectUploader
+							cover
+							target="service"
+							disabled={action.busy || uploading}
+							onBusy={setUploading}
+							onUploaded={([file]) => {
+								setFields((previous) => ({ ...previous, imageUrl: file.url }));
+								setDirty(true);
+							}}
+						/>
+						<input type="hidden" name="imageUrl" value={fields.imageUrl || ''} />
+						{fields.imageUrl && <Picture src={fields.imageUrl} alt={translate('Service image preview')} />}
 						<div className="form-grid">
 							<Field label={translate('Pricing')}>
 								<select value={pricing} onChange={(e) => setPricing(e.target.value as PricingType)}>

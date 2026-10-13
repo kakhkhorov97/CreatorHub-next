@@ -66,6 +66,7 @@ export interface CreatorProfile {
   status: ProfileStatus;
   publishedAt?: string | null;
   deletedAt?: string | null;
+  workImageUrls?: Array<string> | null;
   identity: CreatorIdentity;
 }
 export type CreatorAvailability = "AVAILABLE" | "BUSY" | "UNAVAILABLE";
@@ -112,6 +113,7 @@ export interface CreatorService {
   categoryId?: string | null;
   title: string;
   description?: string | null;
+  imageUrl?: string | null;
   pricingType: PricingType;
   startingPrice?: number | null;
   currency: Currency;
@@ -470,6 +472,7 @@ export interface CreateServiceInput {
   title: string;
   categoryId?: string | null;
   description?: string | null;
+  imageUrl?: string | null;
   pricingType?: PricingType | null;
   startingPrice?: number | null;
   estimatedDays?: number | null;
@@ -479,6 +482,7 @@ export interface UpdateServiceInput {
   title?: string | null;
   categoryId?: string | null;
   description?: string | null;
+  imageUrl?: string | null;
   pricingType?: PricingType | null;
   startingPrice?: number | null;
   estimatedDays?: number | null;

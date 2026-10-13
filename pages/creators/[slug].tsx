@@ -34,6 +34,7 @@ function CreatorDetail({ seo }: SocialPageProps) {
 	const projects = usePaged('getProjects', { input: { creatorId: creator?._id } }, !creator);
 	const services = usePaged('getServices', { input: { creatorId: creator?._id } }, !creator);
 	const reviews = usePaged('getCreatorFeedback', { creatorId: creator?._id || '' }, !creator);
+	const categories = useApi('categories');
 	const [tab, setTab] = useState('Work');
 	const user = useReactiveVar(userVar);
 	const action = useAction();
@@ -155,7 +156,11 @@ function CreatorDetail({ seo }: SocialPageProps) {
 									<QueryState loading={services.loading} error={services.error} />
 									<div className="grid two">
 										{services.rows.map((s) => (
-											<ServiceCard key={s._id} service={s} />
+											<ServiceCard
+												key={s._id}
+												service={s}
+												category={categories.value?.find((item) => item._id === s.categoryId)?.name}
+											/>
 										))}
 									</div>
 									{!services.loading && !services.rows.length && <Empty title={translate('No active services yet')} />}
@@ -199,7 +204,7 @@ function CreatorDetail({ seo }: SocialPageProps) {
 								<div className="details-card">
 									<h2>{translate('Services')}</h2>
 									{services.rows.slice(0, 2).map((s) => (
-										<ServiceCard key={s._id} service={s} />
+										<ServiceCard key={s._id} service={s} compact />
 									))}
 								</div>
 							)}

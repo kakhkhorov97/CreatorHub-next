@@ -22,11 +22,11 @@ export default function ReviewPreview({ review }: { review: ContentReview }) {
 				.map(([key, value]) => (
 					<div key={key}>
 						<strong>{label(key.replace(/([A-Z])/g, ' $1'))}</strong>
-						{key === 'coverImageUrl' ? (
+						{key === 'coverImageUrl' || key === 'imageUrl' ? (
 							<>
-								<Picture src={String(value)} alt="Submitted cover" />
+								<Picture src={String(value)} alt="Submitted image" />
 								<a href={safeUrl(String(value))} target="_blank" rel="noreferrer">
-									{translate('Open cover')}
+									{translate('Open image')}
 								</a>
 							</>
 						) : key === 'categoryId' || key === 'categoryIds' ? (

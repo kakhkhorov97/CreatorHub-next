@@ -12,6 +12,7 @@ export default function Finder({ compact = false }: { compact?: boolean }) {
 	const [request, setRequest] = useState('');
 	const [submitted, setSubmitted] = useState('');
 	const result = useApi('discoverCreators', { input: { request: submitted } }, submitted.length < 3);
+	const categories = useApi('categories');
 	return (
 		<section className={compact ? 'finder panel' : 'finder'}>
 			<h2>{compact ? translate('AI creator finder') : translate('Find the right creator')}</h2>
@@ -49,7 +50,14 @@ export default function Finder({ compact = false }: { compact?: boolean }) {
 							<CreatorCard key={c._id} creator={c} />
 						))}
 						{!compact && result.value.projects.map((p) => <ProjectCard key={p._id} project={p} />)}
-						{!compact && result.value.services.map((s) => <ServiceCard key={s._id} service={s} />)}
+						{!compact &&
+							result.value.services.map((s) => (
+								<ServiceCard
+									key={s._id}
+									service={s}
+									category={categories.value?.find((item) => item._id === s.categoryId)?.name}
+								/>
+							))}
 					</div>
 					{compact && (
 						<Link passHref href="/ai-finder">

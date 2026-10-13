@@ -91,6 +91,7 @@ type CreatorProfile {
   status: ProfileStatus!
   publishedAt: DateTime
   deletedAt: DateTime
+  workImageUrls: [String!]
   identity: CreatorIdentity!
 }
 
@@ -161,6 +162,7 @@ type CreatorService {
   categoryId: ID
   title: String!
   description: String
+  imageUrl: String
   pricingType: PricingType!
   startingPrice: Int
   currency: Currency!
@@ -758,6 +760,7 @@ input CreateServiceInput {
   title: String!
   categoryId: ID
   description: String
+  imageUrl: String
   pricingType: PricingType
   startingPrice: Int
   estimatedDays: Int
@@ -768,6 +771,7 @@ input UpdateServiceInput {
   title: String
   categoryId: ID
   description: String
+  imageUrl: String
   pricingType: PricingType
   startingPrice: Int
   estimatedDays: Int

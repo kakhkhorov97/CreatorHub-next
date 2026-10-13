@@ -289,7 +289,6 @@
 	"Notifications": "Bildirishnomalar",
 	"Open AI finder": "AI qidiruvini ochish",
 	"Open administration navigation": "Administrator menyusini ochish",
-	"Open cover": "Muqovani ochish",
 	"Open creator profile": "Ijodkor profilini ochish",
 	"Open submitted video": "Yuborilgan videoni ochish",
 	"Open the introduction video": "Tanishtiruv videosini ochish",
@@ -1052,5 +1051,14 @@
 	"What clients say": "Mijozlar fikri",
 	"All reviews →": "Barcha sharhlar →",
 	"Work with {{name}}": "{{name}} bilan ishlash",
-	"Choose a service or send a general inquiry with your brief, deadline and budget.": "Xizmatni tanlang yoki topshiriq, muddat va byudjet bilan umumiy so‘rov yuboring."
+	"Choose a service or send a general inquiry with your brief, deadline and budget.": "Xizmatni tanlang yoki topshiriq, muddat va byudjet bilan umumiy so‘rov yuboring.",
+	"{{days}} days": "{{days}} kun",
+	"Scope agreed together": "Hajmi birgalikda kelishiladi",
+	"Remote": "Masofadan",
+	"Upload service image": "Xizmat rasmini yuklash",
+	"Choose service image": "Xizmat rasmini tanlang",
+	"Service image": "Xizmat rasmi",
+	"Service image preview": "Xizmat rasmi ko‘rinishi",
+	"Optional. Without one, your newest published project cover is shown instead.": "Majburiy emas. Bo‘lmasa, eng yangi e’lon qilingan loyiha muqovasi ko‘rsatiladi.",
+	"Open image": "Rasmni ochish"
 }

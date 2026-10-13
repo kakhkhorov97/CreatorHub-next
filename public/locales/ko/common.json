@@ -289,7 +289,6 @@
 	"Notifications": "알림",
 	"Open AI finder": "AI 검색 열기",
 	"Open administration navigation": "관리자 메뉴 열기",
-	"Open cover": "커버 열기",
 	"Open creator profile": "크리에이터 프로필 열기",
 	"Open submitted video": "제출된 영상 열기",
 	"Open the introduction video": "소개 영상 열기",
@@ -1052,5 +1051,14 @@
 	"What clients say": "클라이언트 후기",
 	"All reviews →": "모든 후기 →",
 	"Work with {{name}}": "{{name}}님과 함께 작업하기",
-	"Choose a service or send a general inquiry with your brief, deadline and budget.": "서비스를 선택하거나 요청 내용, 마감일, 예산을 담아 일반 문의를 보내세요."
+	"Choose a service or send a general inquiry with your brief, deadline and budget.": "서비스를 선택하거나 요청 내용, 마감일, 예산을 담아 일반 문의를 보내세요.",
+	"{{days}} days": "{{days}}일",
+	"Scope agreed together": "범위는 함께 협의",
+	"Remote": "원격",
+	"Upload service image": "서비스 이미지 업로드",
+	"Choose service image": "서비스 이미지 선택",
+	"Service image": "서비스 이미지",
+	"Service image preview": "서비스 이미지 미리보기",
+	"Optional. Without one, your newest published project cover is shown instead.": "선택 사항입니다. 없으면 가장 최근에 공개된 프로젝트 커버가 대신 표시됩니다.",
+	"Open image": "이미지 열기"
 }
