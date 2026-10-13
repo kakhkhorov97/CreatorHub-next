@@ -220,7 +220,7 @@ export default function Top() {
 					{menuLink('/contact', 'Contact us', ChatCircle)}
 				</div>
 				<div className="menu-language">
-					<LanguageSelector />
+					<LanguageSelector variant="buttons" />
 				</div>
 				{user && <div className="menu-footer">{signOutButton()}</div>}
 			</div>

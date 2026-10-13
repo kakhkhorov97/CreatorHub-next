@@ -9,8 +9,10 @@ const languages = [
 	{ locale: 'ko', name: '한국어' },
 	{ locale: 'uz', name: 'O‘zbekcha' },
 ];
+// Short names for the phone menu button row.
+const shortNames: Record<string, string> = { en: 'English', ko: '한국어', uz: 'O‘zbek' };
 
-export default function LanguageSelector() {
+export default function LanguageSelector({ variant = 'dropdown' }: { variant?: 'dropdown' | 'buttons' }) {
 	const router = useRouter();
 	const { t } = useTranslation('common');
 	const [busy, setBusy] = useState(false);
@@ -54,6 +56,33 @@ export default function LanguageSelector() {
 		} finally {
 			setBusy(false);
 		}
+	}
+
+	if (variant === 'buttons') {
+		return (
+			<div className="language-selector language-buttons">
+				<div role="group" aria-label={t('Website language')}>
+					{languages.map((language) => (
+						<button
+							key={language.locale}
+							type="button"
+							lang={language.locale}
+							aria-pressed={language.locale === current.locale}
+							aria-busy={busy}
+							disabled={busy}
+							onClick={() => chooseLanguage(language.locale)}
+						>
+							{shortNames[language.locale]}
+						</button>
+					))}
+				</div>
+				{error && (
+					<span className="language-error" role="alert">
+						{t('Could not change language. Try again.')}
+					</span>
+				)}
+			</div>
+		);
 	}
 
 	return (

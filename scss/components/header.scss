@@ -1380,3 +1380,44 @@
 		padding-top: 184px;
 	}
 }
+// Phone menu: three language buttons instead of the dropdown.
+.language-buttons {
+	width: 100%;
+	flex-shrink: 1;
+	[role='group'] {
+		display: flex;
+		width: 100%;
+		gap: 8px;
+	}
+	button {
+		flex: 1;
+		min-height: 44px;
+		padding: 0 10px;
+		border: 1px solid #dedad0;
+		border-radius: 999px;
+		background: #ffffff;
+		color: #15201a;
+		font: inherit;
+		font-size: 14px;
+		font-weight: 600;
+		cursor: pointer;
+		transition: background 200ms ease, color 200ms ease;
+	}
+	button[aria-pressed='true'] {
+		background: #15201a;
+		border-color: #15201a;
+		color: #f5f3ec;
+	}
+	button:focus-visible {
+		outline: 2px solid #1e5741;
+		outline-offset: 2px;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		button {
+			transition: none;
+		}
+	}
+}
+.site-header .phone-menu .menu-language {
+	padding-inline: 0;
+}

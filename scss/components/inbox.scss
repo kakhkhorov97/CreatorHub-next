@@ -415,8 +415,9 @@
 		white-space: nowrap;
 	}
 }
+// Inbox: one white frame, list on the left, conversation on the right.
 .inbox-shell {
-	background: #f1f4ed;
+	background: $ivory;
 }
 .inbox-row {
 	border-radius: 12px;
@@ -425,31 +426,46 @@
 }
 .inbox-row:hover,
 .inbox-row.active {
-	background: #e6eee1;
+	background: #eef3e6;
 }
 .messaging-shell {
-	background: #f4f7ef;
-	border-color: #ccd8c7;
+	background: $paper-white;
+	border: 0;
+	border-radius: 20px;
 }
 .conversation-preview {
-	margin: 6px 8px;
-	border-radius: 12px;
-	border: 1px solid transparent;
+	margin: 0;
+	border-radius: 0;
+	border: 0;
+	border-bottom: 1px solid #edeae2;
 	background: $paper-white;
+	padding: 16px 18px;
+	transition: background 200ms ease;
 }
-.conversation-preview:hover,
+.conversation-preview:hover {
+	background: #f7f6f1;
+}
 .conversation-preview.selected {
-	background: #e4edde;
-	border-color: #b9cdb5;
+	background: #eef3e6;
 }
-.conversation-preview.has-unread {
-	background: #edf4e7;
+.conversation-preview.has-unread .preview-top strong {
+	font-weight: 700;
 }
 .conversation-preview .avatar {
-	width: 46px;
-	height: 46px;
-	flex-basis: 46px;
+	width: 44px;
+	height: 44px;
+	flex-basis: 44px;
 }
 .inbox-sidebar {
-	background: #f4f7ef;
+	background: $paper-white;
+	border-right: 1px solid #edeae2;
+}
+.preview-unread {
+	width: 8px;
+	height: 8px;
+}
+@media (prefers-reduced-motion: reduce) {
+	.conversation-preview {
+		transition: none;
+	}
 }

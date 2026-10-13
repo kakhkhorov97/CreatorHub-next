@@ -1,7 +1,7 @@
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { ArrowLeft, ArrowsIn, ArrowsOut, ChatCircle, PaperPlaneRight, UserCircle, X, Question } from 'phosphor-react';
+import { ArrowLeft, ArrowsIn, ArrowsOut, PaperPlaneRight, UserCircle, X, Question } from 'phosphor-react';
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useReactiveVar } from '@apollo/client';
@@ -201,11 +201,11 @@ export default function Chatbot() {
 							</button>
 						)}
 						<span className="assistant-avatar" aria-hidden="true">
-							<ChatCircle size={22} weight="duotone" />
+							<Question size={22} weight="bold" />
 						</span>
 						<div className="assistant-heading">
 							<h2 id="chat-title">{translate('Help')}</h2>
-							<p>{translate('Find creative work and get help')}</p>
+							<p>{translate('Find creative work and get answers')}</p>
 						</div>
 						{!mobile && (
 							<button
@@ -258,7 +258,7 @@ export default function Chatbot() {
 								) : (
 									<span className="assistant-avatar" aria-hidden="true">
 										{message.role === 'assistant' ? (
-											<ChatCircle size={18} weight="duotone" />
+											<Question size={18} weight="bold" />
 										) : (
 											<UserCircle size={22} />
 										)}
