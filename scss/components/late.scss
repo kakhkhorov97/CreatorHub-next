@@ -558,3 +558,26 @@
 		grid-template-columns: 1fr;
 	}
 }
+
+// Contact page form card: inner spacing and Editorial Gallery corners.
+.company-page.contact-page .company-body > .contact-form-panel {
+	padding: 40px;
+	border: 0;
+	border-radius: $radius-panel-lg;
+	background: $paper-white;
+}
+.company-page.contact-page .contact-form-panel h2 {
+	font-family: $font-heading;
+	font-weight: 800;
+	letter-spacing: -0.02em;
+}
+.company-page.contact-page .contact-form-panel input,
+.company-page.contact-page .contact-form-panel textarea {
+	border-radius: $radius-field;
+	border-color: #cfcac0;
+}
+@media (max-width: 700px) {
+	.company-page.contact-page .company-body > .contact-form-panel {
+		padding: 24px 18px;
+	}
+}

@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'next-i18next';
-import { CheckCircle, EnvelopeSimple, PaperPlaneTilt } from 'phosphor-react';
+import { CheckCircle, PaperPlaneTilt } from 'phosphor-react';
 import { Button, Field, TextArea, values } from './UI';
 export default function ContactForm() {
 	const { t } = useTranslation('common');
@@ -13,10 +13,6 @@ export default function ContactForm() {
 		<section className="contact-form-panel">
 			<h2>{t('Contact the CreatorHub team')}</h2>
 			<p>{t('Questions, feedback or a problem with your account? Send us a message.')}</p>
-			<a className="contact-email" href="mailto:creatorhub@gmail.com">
-				<EnvelopeSimple size={21} aria-hidden />
-				creatorhub@gmail.com
-			</a>
 			{sent ? (
 				<div className="contact-success" role="status">
 					<CheckCircle size={36} aria-hidden />
