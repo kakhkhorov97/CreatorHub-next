@@ -1,3 +1,6 @@
+@import './tokens';
+
+// Legacy names keep their old values until steps 3-4 migrate usages to the tokens.
 $background: #f7f5f0;
 $paper: #ffffff;
 $ink: #202722;

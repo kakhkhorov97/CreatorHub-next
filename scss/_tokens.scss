@@ -1,0 +1,38 @@
+// Editorial Gallery design tokens (see DESIGN.md).
+// Sass variables only: this file emits no CSS, so it is safe to import anywhere.
+// The matching CSS custom properties live in the :root block of app.scss.
+
+// Colors
+$ivory: #f5f3ec;
+$paper-white: #ffffff;
+$ink-text: #15201a;
+$muted-text: #5b645d;
+$line-color: #dedad0;
+$forest: #1e5741;
+$forest-hover: #174632;
+$deep-forest: #0f2e22;
+$lime: #cdeb6e; // only on dark-green surfaces
+$danger: #9e2b36;
+$danger-bg: #fbedec;
+$alert-badge: #c2414f;
+
+// Fonts
+$font-heading: 'Bricolage Grotesque', 'Pretendard', Arial, Helvetica, sans-serif;
+$font-body: 'Hanken Grotesk', 'Pretendard', Arial, Helvetica, sans-serif;
+
+// Radius
+$radius-image: 14px;
+$radius-pill: 999px;
+$radius-field: 12px;
+$radius-field-sm: 10px;
+$radius-panel: 20px;
+$radius-panel-lg: 24px;
+
+// Breakpoints (max-width, desktop-first like the existing styles)
+$bp-lg: 1200px;
+$bp-md: 900px;
+$bp-sm: 600px;
+$bp-xs: 400px;
+
+// Motion (disable under prefers-reduced-motion)
+$motion: 200ms ease;
