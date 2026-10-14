@@ -261,7 +261,7 @@
 	"Name": "이름",
 	"Need another verification email?": "인증 이메일이 다시 필요하세요?",
 	"Need help using CreatorHub?": "CreatorHub 이용에 도움이 필요하세요?",
-	"New": "새 항목",
+	"New": "신규",
 	"New category": "새 카테고리",
 	"New event": "새 이벤트",
 	"New phone password": "새 전화번호 계정 비밀번호",
@@ -1060,5 +1060,18 @@
 	"Service image": "서비스 이미지",
 	"Service image preview": "서비스 이미지 미리보기",
 	"Optional. Without one, your newest published project cover is shown instead.": "선택 사항입니다. 없으면 가장 최근에 공개된 프로젝트 커버가 대신 표시됩니다.",
-	"Open image": "이미지 열기"
+	"Open image": "이미지 열기",
+	"Discussing": "협의 중",
+	"Today": "오늘",
+	"Yesterday": "어제",
+	"Next step": "다음 단계",
+	"Price": "가격",
+	"Deadline": "마감일",
+	"Search conversations": "대화 검색",
+	"Search by name or project": "이름 또는 프로젝트로 검색",
+	"Filter conversations": "대화 필터",
+	"{{count}} unread": "읽지 않음 {{count}}건",
+	"Project brief · sent {{date}}": "프로젝트 개요 · {{date}} 발송",
+	"No conversations match your search": "검색과 일치하는 대화가 없습니다",
+	"Try another name or project, or choose All.": "다른 이름이나 프로젝트로 검색하거나 전체를 선택하세요."
 }

@@ -42,6 +42,8 @@ export function socialPageProps(kind: Kind) {
 	return async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<SocialPageProps>> => {
 		const identifier = context.params?.[kind === 'creator' ? 'slug' : 'id'];
 		if (typeof identifier !== 'string' || !identifier) return { notFound: true };
+		// Clicks inside the site already render the title from client data; preview tags only matter on a full page load.
+		if (context.req.headers['x-nextjs-data'] || context.req.url?.startsWith('/_next/data/')) return { props: { seo: {} } };
 		let seo: PageMetadata;
 		try {
 			if (kind === 'project') {

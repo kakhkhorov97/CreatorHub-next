@@ -50,3 +50,32 @@ export function lines(value: string) {
 		.map((v) => v.trim())
 		.filter(Boolean);
 }
+
+// Media that Picture accepts: a seeded demo file, or an https URL (plus local uploads in development).
+export const mediaUrl = (value?: string | null) =>
+	value && /^\/demo-media\/[a-z0-9-]+\.(?:svg|png|jpg|webp)$/.test(value) ? value : safeUrl(value);
+
+// Inbox row stamp: the time today, the weekday within the past week, otherwise the date.
+export function conversationTime(value: string | null | undefined, locale: string) {
+	if (!value) return '';
+	const moment = new Date(value);
+	const days = Math.round((startOfDay(new Date()).getTime() - startOfDay(moment).getTime()) / 86400000);
+	if (days <= 0) return new Intl.DateTimeFormat(locale, { hour: 'numeric', minute: '2-digit' }).format(moment);
+	if (days < 7) return new Intl.DateTimeFormat(locale, { weekday: 'short' }).format(moment);
+	return new Intl.DateTimeFormat(locale, { month: 'short', day: 'numeric' }).format(moment);
+}
+
+function startOfDay(value: Date) {
+	return new Date(value.getFullYear(), value.getMonth(), value.getDate());
+}
+
+// Day separators in a thread. The viewer's own day, so it matches the times on the messages.
+export const dayKey = (value: string) => startOfDay(new Date(value)).toDateString();
+
+export function dayLabel(value: string, locale: string) {
+	const today = startOfDay(new Date());
+	const key = dayKey(value);
+	if (key === today.toDateString()) return 'today';
+	if (key === new Date(today.getTime() - 86400000).toDateString()) return 'yesterday';
+	return new Intl.DateTimeFormat(locale, { weekday: 'short', month: 'short', day: 'numeric' }).format(new Date(value));
+}

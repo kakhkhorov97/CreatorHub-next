@@ -4,26 +4,68 @@ import { ConfirmationPrompt } from '../common/ConfirmationPrompt';
 import { EngagementFeedback } from './ServiceFeedback';
 import { useReactiveVar } from '@apollo/client';
 import Link from 'next/link';
-import { ArrowLeft, CaretDown, PaperPlaneTilt } from 'phosphor-react';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { ArrowLeft, ArrowRight, Info } from 'phosphor-react';
+import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { userVar } from '../../../apollo/store';
 import { useAction } from '../../hooks/useApi';
+import { useCreatorDirectory } from '../../hooks/useCreatorDirectory';
 import { useInquiryHistory } from '../../hooks/useInquiryHistory';
+import { useServiceDirectory } from '../../hooks/useServiceDirectory';
 import { handleMessageKey } from '../../utils/messageKeyboard';
-import { Inquiry, InquiryOutcome } from '../../types/creatorhub';
+import { Inquiry, InquiryOutcome, InquiryStatus } from '../../types/creatorhub';
 import {
 	Button,
 	date,
+	dayKey,
+	dayLabel,
 	Feedback,
 	Field,
 	label,
+	mediaUrl,
 	money,
 	Notice,
 	Picture,
 	QueryState,
-	Status,
 	TextArea,
 } from '../common/UI';
+
+// New = waiting for the first reply, Discussing = under way, Closed = finished, declined or cancelled.
+function tone(status: InquiryStatus) {
+	if (status === 'DRAFT') return 'draft';
+	if (status === 'SENT') return 'new';
+	if (status === 'IN_DISCUSSION') return 'discussing';
+	return 'closed';
+}
+
+const shortLabels: Record<string, string> = {
+	draft: 'Draft',
+	new: 'New',
+	discussing: 'Discussing',
+	closed: 'Closed',
+};
+
+export function StatusPill({ status, short = false }: { status: InquiryStatus; short?: boolean }) {
+	const { t: translate } = useSiteTranslation('common');
+
+	const kind = tone(status);
+	return (
+		<span className={`inbox-pill ${kind}`}>
+			<span className="inbox-pill-dot" aria-hidden />
+			{translate(short ? shortLabels[kind] : label(status))}
+		</span>
+	);
+}
+
+function DaySeparator({ value }: { value: string }) {
+	const { t: translate, i18n } = useSiteTranslation('common');
+
+	const day = dayLabel(value, i18n.language);
+	return (
+		<div className="chat-day">
+			{day === 'today' ? translate('Today') : day === 'yesterday' ? translate('Yesterday') : day}
+		</div>
+	);
+}
 
 export function Conversation({
 	inquiry,
@@ -128,6 +170,24 @@ export function Conversation({
 			.catch(() => {});
 	}, [inquiry._id, inquiry.version, inquiry.unreadCount, messages.loading, messages.error, messages.observedVersion]);
 
+	// The counterpart is the creator only when you are the client; a client has no public profile.
+	const directory = useCreatorDirectory(isClient ? [inquiry.creatorId] : []);
+	const creator = isClient ? directory[inquiry.creatorId] : undefined;
+	const services = useServiceDirectory([inquiry.serviceId]);
+	const cover = inquiry.serviceId ? mediaUrl(services[inquiry.serviceId]?.imageUrl) : undefined;
+	const snapshot = inquiry.serviceSnapshot;
+	const budget =
+		inquiry.budgetMin != null || inquiry.budgetMax != null
+			? `${inquiry.budgetMin != null ? money(inquiry.budgetMin) : translate('Not specified')} – ${
+					inquiry.budgetMax != null ? money(inquiry.budgetMax) : translate('Not specified')
+			  }`
+			: translate('Not specified');
+	const stop =
+		inquiry.status === 'SENT' ? (isClient ? ('cancelInquiry' as const) : ('declineInquiry' as const)) : null;
+	const canClose = active && (isClient || inquiry.status === 'IN_DISCUSSION');
+	const time = (value: string) =>
+		new Intl.DateTimeFormat(i18n.language, { hour: 'numeric', minute: '2-digit' }).format(new Date(value));
+
 	return (
 		<>
 			<div className="chat-thread">
@@ -139,25 +199,32 @@ export function Conversation({
 						<Picture avatar src={inquiry.counterpartyAvatarUrl} alt="" />
 						<div className="chat-heading-copy">
 							<h2>{inquiry.counterpartyName || translate('Member')}</h2>
-							<p>{inquiry.subject || translate('Private inquiry')}</p>
+							<p>
+								<span className="chat-heading-subject">{inquiry.subject || translate('Private inquiry')}</span>
+								{creator?.city && <span className="chat-heading-city">{creator.city}</span>}
+								{creator && (
+									<Link className="chat-heading-profile" href={`/creators/${creator.slug}`}>
+										{translate('View profile')}
+									</Link>
+								)}
+							</p>
 							{messaging.state !== 'connected' && (
 								<small role="status">{translate('Reconnecting to messages… Your draft is kept.')}</small>
 							)}
 						</div>
+						<StatusPill status={inquiry.status} />
 						<button
 							type="button"
 							className={`chat-details-toggle ${detailsOpen ? 'active' : ''}`}
 							aria-expanded={detailsOpen}
 							aria-controls={`inquiry-details-${inquiry._id}`}
+							aria-label={translate('Project details')}
+							title={translate('Project details')}
 							onClick={() => setDetailsOpen(!detailsOpen)}
 						>
-							{translate('Details')} <CaretDown size={16} />
+							<Info size={18} aria-hidden />
 						</button>
 					</div>
-					<section className="chat-original-brief" aria-label={translate('Original inquiry')}>
-						<h3>{translate('Original inquiry')}</h3>
-						<p className="prose-text">{inquiry.brief}</p>
-					</section>
 					<QueryState
 						loading={false}
 						error={roomError ? new Error(roomError) : undefined}
@@ -192,40 +259,58 @@ export function Conversation({
 						<div ref={olderSentinel} className="chat-older-sentinel">
 							<QueryState loading={messages.loadingOlder} />
 						</div>
-						<div className="chat-start">
-							<span>{date(inquiry.submittedAt)}</span>
-							<p>{isClient ? translate('You sent an inquiry') : translate('You received an inquiry')}</p>
-						</div>
+						<article className="chat-brief" aria-label={translate('Original inquiry')}>
+							{cover && <img className="chat-brief-cover" src={cover} alt="" loading="lazy" />}
+							<div className="chat-brief-copy">
+								<span className="chat-brief-label">
+									{translate('Project brief · sent {{date}}', { date: date(inquiry.submittedAt) })}
+								</span>
+								<h3>{inquiry.subject || translate('Private inquiry')}</h3>
+								<p className="prose-text">{inquiry.brief}</p>
+								<div className="chat-brief-chips">
+									<span>
+										{translate('Budget')} {budget}
+									</span>
+									<span>
+										{translate('Deadline')} {date(inquiry.desiredDeadline)}
+									</span>
+								</div>
+							</div>
+						</article>
 						{!messages.loading && !messages.error && !messages.rows.length && (
 							<p className="chat-no-replies">
 								{translate('No replies yet.')}{' '}
 								{active ? translate('Start the conversation below.') : translate('This conversation is closed.')}
 							</p>
 						)}
-						{messages.rows.map((m) => (
-							<article key={m._id} className={`message ${m.senderId === user._id ? 'mine' : ''}`}>
-								<div className="row">
-									<strong>
-										{m.senderId === user._id ? translate('You') : inquiry.counterpartyName || translate('Member')}
-									</strong>
-									<time dateTime={m.createdAt}>
-										{new Intl.DateTimeFormat(i18n.language, {
-											month: 'short',
-											day: 'numeric',
-											hour: 'numeric',
-											minute: '2-digit',
-										}).format(new Date(m.createdAt))}
-									</time>
-								</div>
-								<p>{m.body}</p>
-								{m.senderId === user._id && <small>{m.readAt ? translate('Read') : translate('Sent')}</small>}
-							</article>
-						))}
+						{messages.rows.map((m, index) => {
+							const previous = messages.rows[index - 1];
+							const mine = m.senderId === user._id;
+							return (
+								<Fragment key={m._id}>
+									{(!previous || dayKey(previous.createdAt) !== dayKey(m.createdAt)) && (
+										<DaySeparator value={m.createdAt} />
+									)}
+									<article className={`message ${mine ? 'mine' : ''}`}>
+										<strong className="message-author">
+											{mine ? translate('You') : inquiry.counterpartyName || translate('Member')}
+										</strong>
+										<p>{m.body}</p>
+										<div className="message-meta">
+											<time dateTime={m.createdAt}>{time(m.createdAt)}</time>
+											{mine && <small>{m.readAt ? translate('Read') : translate('Sent')}</small>}
+										</div>
+									</article>
+								</Fragment>
+							);
+						})}
 						{pendingMessage && (
 							<article className="message mine pending-message">
-								<strong>{translate('You')}</strong>
+								<strong className="message-author">{translate('You')}</strong>
 								<p>{pendingMessage}</p>
-								<small role="status">{translate('Sending…')}</small>
+								<div className="message-meta">
+									<small role="status">{translate('Sending…')}</small>
+								</div>
 							</article>
 						)}
 					</div>
@@ -280,10 +365,12 @@ export function Conversation({
 							/>
 							<Button
 								type="submit"
+								className="chat-send"
+								aria-label={action.busy ? translate('Sending…') : translate('Send message')}
+								loading={action.busy}
 								disabled={action.busy || !body.trim() || messaging.state !== 'connected' || !!roomError}
 							>
-								<PaperPlaneTilt size={19} />
-								{action.busy ? translate('Sending…') : translate('Send')}
+								<ArrowRight size={20} aria-hidden />
 							</Button>
 							<small className="chat-key-hint" id={`message-hint-${inquiry._id}`}>
 								{translate('Enter to send · Shift+Enter for a new line')}
@@ -291,7 +378,7 @@ export function Conversation({
 						</form>
 					) : (
 						<Notice>
-							{translate('This conversation is')} {label(inquiry.status).toLowerCase()}.
+							{translate('This conversation is')} {translate(label(inquiry.status)).toLowerCase()}.
 							<Link
 								className="back-link"
 								href="/inquiries"
@@ -317,58 +404,62 @@ export function Conversation({
 						</Button>
 					)}
 				</section>
-				<aside className="inquiry-details" id={`inquiry-details-${inquiry._id}`} hidden={!detailsOpen}>
-					<div className="chat-brief-heading">
-						<h3>{translate('Original inquiry')}</h3>
-						<Status value={inquiry.status} />
-					</div>
-					<dl>
-						<dt>{translate('Project brief')}</dt>
-						<dd className="prose-text">{inquiry.brief}</dd>
-						<dt>{translate('Budget')}</dt>
-						<dd>
-							{inquiry.budgetMin != null || inquiry.budgetMax != null
-								? `${inquiry.budgetMin != null ? money(inquiry.budgetMin) : 'Not specified'} – ${
-										inquiry.budgetMax != null ? money(inquiry.budgetMax) : 'Not specified'
-								  }`
-								: translate('Not specified')}
-						</dd>
-						<dt>{translate('Submitted')}</dt>
-						<dd>{date(inquiry.submittedAt)}</dd>
-						<dt>{translate('Desired deadline')}</dt>
-						<dd>{date(inquiry.desiredDeadline)}</dd>
-						{inquiry.serviceSnapshot && (
-							<>
-								<dt>{translate('Selected service at submission')}</dt>
-								<dd>
-									<strong>{inquiry.serviceSnapshot.title}</strong>
-									<p>
-										{inquiry.serviceSnapshot.pricingType === 'STARTING_AT'
-											? money(inquiry.serviceSnapshot.startingPrice)
+				<aside
+					className={`inquiry-details ${detailsOpen ? 'open' : ''}`}
+					id={`inquiry-details-${inquiry._id}`}
+					aria-label={translate('Project details')}
+				>
+					<div className="room-card">
+						{cover && <img className="room-cover" src={cover} alt="" loading="lazy" />}
+						<div className="room-card-body">
+							<span className="room-kind">{translate(snapshot ? 'Service' : 'Project details')}</span>
+							<h3>{snapshot?.title || inquiry.subject || translate('Private inquiry')}</h3>
+							{snapshot && (
+								<div className="room-row">
+									<span>{translate('Price')}</span>
+									<b>
+										{snapshot.pricingType === 'STARTING_AT'
+											? money(snapshot.startingPrice)
 											: translate('Custom quote')}
-									</p>
-									<ul>
-										{inquiry.serviceSnapshot.deliverables.map((d) => (
-											<li key={d}>{d}</li>
-										))}
-									</ul>
-								</dd>
-							</>
-						)}
-					</dl>
-					{inquiry.outcome && (
-						<p>
-							{translate('Outcome:')} {label(inquiry.outcome)}
-						</p>
-					)}
-					{active && (
-						<div className="stack-actions">
-							{inquiry.status === 'SENT' && (
-								<Button secondary onClick={() => setFinish(isClient ? 'cancelInquiry' : 'declineInquiry')}>
+									</b>
+								</div>
+							)}
+							<div className="room-row">
+								<span>{translate('Budget')}</span>
+								<b>{budget}</b>
+							</div>
+							<div className="room-row">
+								<span>{translate('Deadline')}</span>
+								<b>{date(inquiry.desiredDeadline)}</b>
+							</div>
+							<div className="room-row">
+								<span>{translate('Status')}</span>
+								<StatusPill status={inquiry.status} />
+							</div>
+							{inquiry.outcome && (
+								<div className="room-row">
+									<span>{translate('Outcome:')}</span>
+									<b>{translate(label(inquiry.outcome))}</b>
+								</div>
+							)}
+							{!!snapshot?.deliverables.length && (
+								<ul className="room-deliverables">
+									{snapshot.deliverables.map((d) => (
+										<li key={d}>{d}</li>
+									))}
+								</ul>
+							)}
+						</div>
+					</div>
+					{(stop || canClose) && (
+						<div className="room-card room-next">
+							<b>{translate('Next step')}</b>
+							{stop && (
+								<Button secondary onClick={() => setFinish(stop)}>
 									{isClient ? translate('Cancel inquiry') : translate('Decline inquiry')}
 								</Button>
 							)}
-							{(isClient || inquiry.status === 'IN_DISCUSSION') && (
+							{canClose && (
 								<Button secondary onClick={() => setFinish('closeInquiry')}>
 									{translate('Close inquiry')}
 								</Button>

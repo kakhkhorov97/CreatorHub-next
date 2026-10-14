@@ -1060,5 +1060,18 @@
 	"Service image": "Service image",
 	"Service image preview": "Service image preview",
 	"Optional. Without one, your newest published project cover is shown instead.": "Optional. Without one, your newest published project cover is shown instead.",
-	"Open image": "Open image"
+	"Open image": "Open image",
+	"Discussing": "Discussing",
+	"Today": "Today",
+	"Yesterday": "Yesterday",
+	"Next step": "Next step",
+	"Price": "Price",
+	"Deadline": "Deadline",
+	"Search conversations": "Search conversations",
+	"Search by name or project": "Search by name or project",
+	"Filter conversations": "Filter conversations",
+	"{{count}} unread": "{{count}} unread",
+	"Project brief · sent {{date}}": "Project brief · sent {{date}}",
+	"No conversations match your search": "No conversations match your search",
+	"Try another name or project, or choose All.": "Try another name or project, or choose All."
 }

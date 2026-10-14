@@ -91,7 +91,7 @@ export default function HomeSections({
 
 	const recent = useApi(
 		'getProjects',
-		{ input: { sort: 'RECENT', limit: 4, excludeProjectIds: popularIds } },
+		{ input: { sort: 'RECENT', limit: 5, excludeProjectIds: popularIds } },
 		loadingPopular,
 	);
 	const cats = useApi('categories');

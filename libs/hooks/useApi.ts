@@ -32,7 +32,8 @@ export function useApi<K extends QueryName>(
 		pollInterval,
 		notifyOnNetworkStatusChange: true,
 	});
-	return { ...result, value: result.data ? unwrap(result.data[name]) : undefined };
+	// Keep showing cached data while Apollo refreshes it in the background; only report loading when nothing is on screen.
+	return { ...result, loading: result.loading && !result.data, value: result.data ? unwrap(result.data[name]) : undefined };
 }
 
 export function useAction() {

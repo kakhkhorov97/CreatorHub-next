@@ -1060,5 +1060,18 @@
 	"Service image": "Xizmat rasmi",
 	"Service image preview": "Xizmat rasmi ko‘rinishi",
 	"Optional. Without one, your newest published project cover is shown instead.": "Majburiy emas. Bo‘lmasa, eng yangi e’lon qilingan loyiha muqovasi ko‘rsatiladi.",
-	"Open image": "Rasmni ochish"
+	"Open image": "Rasmni ochish",
+	"Discussing": "Muhokamada",
+	"Today": "Bugun",
+	"Yesterday": "Kecha",
+	"Next step": "Keyingi qadam",
+	"Price": "Narx",
+	"Deadline": "Muddat",
+	"Search conversations": "Suhbatlarni qidirish",
+	"Search by name or project": "Ism yoki loyiha bo‘yicha qidirish",
+	"Filter conversations": "Suhbatlarni filtrlash",
+	"{{count}} unread": "{{count}} o‘qilmagan",
+	"Project brief · sent {{date}}": "Loyiha haqida ma’lumot · {{date}} yuborilgan",
+	"No conversations match your search": "Qidiruvga mos suhbat yo‘q",
+	"Try another name or project, or choose All.": "Boshqa ism yoki loyihani qidiring yoki «Barchasi»ni tanlang."
 }

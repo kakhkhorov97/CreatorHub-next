@@ -257,11 +257,7 @@ export default function Chatbot() {
 									<Picture avatar src={user.avatarUrl} alt="" />
 								) : (
 									<span className="assistant-avatar" aria-hidden="true">
-										{message.role === 'assistant' ? (
-											<Question size={18} weight="bold" />
-										) : (
-											<UserCircle size={22} />
-										)}
+										{message.role === 'assistant' ? <Question size={18} weight="bold" /> : <UserCircle size={22} />}
 									</span>
 								)}
 								<div className={`chat-message ${message.role}`}>
@@ -350,7 +346,7 @@ export default function Chatbot() {
 				onClick={() => (open ? close() : setOpen(true))}
 			>
 				<Question size={22} weight="bold" />
-				<span>{translate('Help')}</span>
+				<span>{translate('Ask AI')}</span>
 			</button>
 		</div>,
 		document.body,

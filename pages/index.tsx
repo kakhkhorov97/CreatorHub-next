@@ -19,7 +19,7 @@ function Home() {
 
 	const [filters, setFilters] = useState<DiscoveryInput>({});
 	const site = useApi('getSiteContent');
-	const projects = usePaged('getProjects', { input: { ...filters, sort: 'POPULAR' } }, false, 6);
+	const projects = usePaged('getProjects', { input: { ...filters, sort: 'POPULAR' } }, false, 8);
 	const creators = useCreatorDirectory(projects.rows.map((project) => project.creatorId));
 
 	return (

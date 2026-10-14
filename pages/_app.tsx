@@ -10,6 +10,7 @@ import { Toaster } from 'sonner';
 import { useApollo } from '../apollo/client';
 import Chatbot from '../libs/components/chat/Chatbot';
 import { SessionBootstrap } from '../libs/components/layout/LayoutBasic';
+import RouteProgress from '../libs/components/layout/RouteProgress';
 import '../scss/main.scss';
 import { theme } from '../scss/MaterialTheme';
 
@@ -30,6 +31,7 @@ function App({ Component, pageProps }: AppProps) {
 			<ThemeProvider theme={theme}>
 				<CssBaseline />
 				<MessagingProvider>
+					<RouteProgress />
 					<SessionBootstrap />
 					<PostHogPageViews />
 					<Component {...pageProps} />
