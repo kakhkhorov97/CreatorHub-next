@@ -243,9 +243,12 @@ LIVE_DATA_AVAILABLE: ${context.available}`;
 	const controller = new AbortController();
 	const timeout = setTimeout(() => controller.abort(), 25000);
 	try {
-		let response;
-		for (let attempt = 0; attempt < 2; attempt++) {
-			response = await fetcher(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+		// A busy or rate-limited model gets one second try: the fallback model when one is set
+		// (its quota and load are separate), otherwise the same model once more after an overload.
+		const fallback = process.env.GEMINI_FALLBACK_MODEL ?? 'gemini-3.5-flash-lite';
+		const second = fallback && fallback !== model && /^[a-zA-Z0-9._-]+$/.test(fallback) ? fallback : null;
+		const request = (name) =>
+			fetcher(`https://generativelanguage.googleapis.com/v1beta/models/${name}:generateContent`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
 				signal: controller.signal,
@@ -256,9 +259,11 @@ LIVE_DATA_AVAILABLE: ${context.available}`;
 					safetySettings: [{ category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_LOW_AND_ABOVE' }],
 				}),
 			});
-			if (response.status !== 503 || attempt === 1) break;
-			// One retry for transient provider overload, within the shared 25 second deadline.
+		let response = await request(model);
+		if (!response.ok && second && [429, 500, 503].includes(response.status)) response = await request(second);
+		else if (!response.ok && response.status === 503) {
 			await new Promise((resolve) => setTimeout(resolve, 400));
+			response = await request(model);
 		}
 		if (!response.ok)
 			return {

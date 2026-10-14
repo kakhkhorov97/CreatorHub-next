@@ -61,6 +61,7 @@ function harness(failure) {
 				};
 			if (name === '../../hooks/useApi') return { useApi: () => api, useAction: () => action };
 			if (name === '../../utils/authForm') return { validateAuthForm: () => ({}) };
+			if (name === '../../utils/errors') return { readableError: (error) => error.message };
 			if (name === '../common/UI')
 				return { Button, Field, Password: Field, QueryState: () => null, values: (form) => form.fields };
 			throw Error(name);

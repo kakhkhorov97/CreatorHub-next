@@ -36,11 +36,16 @@ export default function ProviderSignIn({
 	const callbackLock = useRef(false);
 	const configured = Number.isSafeInteger(clientId) && clientId > 0;
 
+	const preparing = useRef(false);
 	async function prepare() {
+		// Ignore a second start while one is running (React can run mount effects twice).
+		if (preparing.current) return;
+		preparing.current = true;
 		setNonce('');
 		const value = await action.run(() =>
 			getSocialChallenge('TELEGRAM', () => action.mutate('beginSocialLogin', { provider: 'TELEGRAM' })),
 		);
+		preparing.current = false;
 		if (value) setNonce(value);
 	}
 	useEffect(() => {

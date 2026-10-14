@@ -11,13 +11,14 @@ import { useApollo } from '../apollo/client';
 import Chatbot from '../libs/components/chat/Chatbot';
 import { SessionBootstrap } from '../libs/components/layout/LayoutBasic';
 import RouteProgress from '../libs/components/layout/RouteProgress';
+import AppErrorBoundary from '../libs/components/common/AppErrorBoundary';
 import '../scss/main.scss';
 import { theme } from '../scss/MaterialTheme';
 
 const bricolage = Bricolage_Grotesque({ subsets: ['latin'], weight: ['700', '800'], display: 'swap' });
 const hanken = Hanken_Grotesk({ subsets: ['latin'], weight: ['400', '500', '600', '700'], display: 'swap' });
 
-function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps, router }: AppProps) {
 	const client = useApollo();
 	return (
 		<ApolloProvider client={client}>
@@ -34,7 +35,9 @@ function App({ Component, pageProps }: AppProps) {
 					<RouteProgress />
 					<SessionBootstrap />
 					<PostHogPageViews />
-					<Component {...pageProps} />
+					<AppErrorBoundary key={router.pathname}>
+						<Component {...pageProps} />
+					</AppErrorBoundary>
 					<Toaster richColors closeButton position="top-right" />
 					<Chatbot />
 				</MessagingProvider>

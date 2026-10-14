@@ -1,3 +1,4 @@
+import { readableError } from '../../utils/errors';
 import { discardSocialChallenge, getSocialChallenge } from '../../auth/socialChallenge';
 import Script from 'next/script';
 import { useRouter } from 'next/router';
@@ -19,7 +20,7 @@ type GoogleIdentity = {
 	}): void;
 	renderButton(
 		container: HTMLElement,
-		options: { type: string; theme: string; size: string; text: string; width: number },
+		options: { type: string; theme: string; size: string; text: string; width: number; locale?: string },
 	): void;
 };
 const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
@@ -43,13 +44,21 @@ export default function GoogleSignIn({
 	const [countryCode, setCountryCode] = useState('+82');
 	const [scriptError, setScriptError] = useState(false);
 	const [retry, setRetry] = useState(false);
+	// Google renders nothing in some in-app browsers (KakaoTalk, Instagram, Line). Notice that instead of showing a blank gap.
+	const [unavailable, setUnavailable] = useState(false);
 
+	const preparing = useRef(false);
 	async function prepare() {
+		// React can start this twice on mount. A second call while the first runs must not mark Google as failed.
+		if (preparing.current) return;
+		preparing.current = true;
 		setRetry(false);
+		setUnavailable(false);
 		setNonce('');
 		const challenge = await action.run(() =>
 			getSocialChallenge('GOOGLE', () => action.mutate('beginSocialLogin', { provider: 'GOOGLE' })),
 		);
+		preparing.current = false;
 		if (challenge) setNonce(challenge);
 		else setRetry(true);
 	}
@@ -113,20 +122,25 @@ export default function GoogleSignIn({
 				size: 'large',
 				text: 'continue_with',
 				width,
+				locale: router.locale || 'en',
 			});
 		};
 		render();
+		const check = window.setTimeout(() => {
+			if (!host.querySelector('iframe, div[role="button"]')) setUnavailable(true);
+		}, 6000);
 		const observer = new ResizeObserver(() => {
 			window.cancelAnimationFrame(frame);
 			frame = window.requestAnimationFrame(render);
 		});
 		observer.observe(host);
 		return () => {
+			window.clearTimeout(check);
 			observer.disconnect();
 			window.cancelAnimationFrame(frame);
 			host.replaceChildren();
 		};
-	}, [ready, nonce, pending]);
+	}, [ready, nonce, pending, router.locale]);
 
 	const feedback = (
 		<div className="provider-feedback" aria-live="polite">
@@ -140,6 +154,10 @@ export default function GoogleSignIn({
 				<p className="field-error" role="alert">
 					{t(action.error)}
 				</p>
+			) : unavailable ? (
+				<p className="field-error" role="alert">
+					{t('Google sign-in is not available in this browser. Open CreatorHub in Safari or Chrome, or use another option.')}
+				</p>
 			) : !ready ? (
 				<p role="status">{t('Loading Google sign-in…')}</p>
 			) : null}
@@ -149,7 +167,7 @@ export default function GoogleSignIn({
 		if (onFeedbackChange) onFeedbackChange(feedback);
 		// The parent setter is stable; feedback depends only on these status values.
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [onFeedbackChange, action.retryAfter, action.error, scriptError, ready, t]);
+	}, [onFeedbackChange, action.retryAfter, action.error, scriptError, ready, unavailable, t]);
 	if (!clientId) return <p className="muted">{t('Google sign-in is not configured yet.')}</p>;
 	return (
 		<div className="google-sign-in">
@@ -186,7 +204,7 @@ export default function GoogleSignIn({
 								});
 								await finish(session);
 							} catch (error) {
-								const message = error instanceof Error ? error.message : 'Something went wrong. Please try again.';
+								const message = error ? readableError(error) : 'Something went wrong. Please try again.';
 								if (/phone|displayName/i.test(message)) {
 									setErrors({ [/phone/i.test(message) ? 'phoneNumber' : 'displayName']: message });
 									return;
@@ -260,7 +278,7 @@ export default function GoogleSignIn({
 						/>
 					)}
 
-					{retry && (
+					{(retry || unavailable) && (
 						<Button secondary disabled={action.busy || action.retryAfter > 0} onClick={() => void prepare()}>
 							{t('Try again')}
 						</Button>

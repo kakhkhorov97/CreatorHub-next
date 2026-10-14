@@ -5,6 +5,7 @@ import * as adminQueries from '../../apollo/admin/query';
 import * as mutations from '../../apollo/user/mutation';
 import * as queries from '../../apollo/user/query';
 import { retrySeconds } from '../auth/socialChallenge';
+import { readableError } from '../utils/errors';
 import { Operations } from '../types/creatorhub';
 export const documents = { ...queries, ...mutations, ...adminQueries, ...adminMutations };
 
@@ -63,8 +64,7 @@ export function useAction() {
 		try {
 			return await action();
 		} catch (e) {
-			const message = e instanceof Error ? e.message : 'Something went wrong. Please try again.';
-			setError(message);
+			setError(e ? readableError(e) : 'Something went wrong. Please try again.');
 			const seconds = retrySeconds(e);
 			if (seconds) {
 				setRetryUntil(Date.now() + seconds * 1000);

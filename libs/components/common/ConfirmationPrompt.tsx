@@ -26,7 +26,11 @@ export function ConfirmationPrompt({
 		const background = Array.from(document.body.children).filter((element) => element !== panel.current);
 		const wasInert = background.map((element) => element.hasAttribute('inert'));
 		background.forEach((element) => element.setAttribute('inert', ''));
-		panel.current?.querySelector<HTMLButtonElement>('button')?.focus();
+		// Start on the safe choice when the prompt marks one, so Enter never confirms a destructive action by accident.
+		(
+			panel.current?.querySelector<HTMLButtonElement>('[data-autofocus]') ||
+			panel.current?.querySelector<HTMLButtonElement>('button')
+		)?.focus();
 		return () => {
 			background.forEach((element, index) => {
 				if (!wasInert[index]) element.removeAttribute('inert');

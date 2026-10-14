@@ -1,3 +1,4 @@
+import { readableError } from '../../utils/errors';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
@@ -69,7 +70,7 @@ export default function SocialSignup({
 							});
 							await finishSocialSession(action, router, session, destination);
 						} catch (error) {
-							const message = error instanceof Error ? error.message : 'Something went wrong. Please try again.';
+							const message = error ? readableError(error) : 'Something went wrong. Please try again.';
 							if (/phone|displayName/i.test(message)) {
 								setErrors({ [/phone/i.test(message) ? 'phoneNumber' : 'displayName']: message });
 								return;

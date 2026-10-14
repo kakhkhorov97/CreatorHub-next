@@ -1073,5 +1073,22 @@
 	"{{count}} unread": "{{count}} unread",
 	"Project brief · sent {{date}}": "Project brief · sent {{date}}",
 	"No conversations match your search": "No conversations match your search",
-	"Try another name or project, or choose All.": "Try another name or project, or choose All."
+	"Try another name or project, or choose All.": "Try another name or project, or choose All.",
+	"Creator profile deleted. Your account is unchanged, and you can apply again at any time.": "Creator profile deleted. Your account is unchanged, and you can apply again at any time.",
+	"Ask AI": "Ask AI",
+	"This reset link has expired or was already used. Links work once and expire after 30 minutes.": "This reset link has expired or was already used. Links work once and expire after 30 minutes.",
+	"This reset link is incomplete. Open the link from your email again.": "This reset link is incomplete. Open the link from your email again.",
+	"Request a new link": "Request a new link",
+	"Your account was created, but we could not send the confirmation email. Use Resend email below.": "Your account was created, but we could not send the confirmation email. Use Resend email below.",
+	"Not in your inbox? Check the spam and promotions folders.": "Not in your inbox? Check the spam and promotions folders.",
+	"Your account was created, but the verification email could not be sent. Request a new email.": "Your account was created, but the verification email could not be sent. Request a new email.",
+	"Enter a valid phone number with its country code, for example +82 10 1234 5678.": "Enter a valid phone number with its country code, for example +82 10 1234 5678.",
+	"Too many attempts. Please wait a minute and try again.": "Too many attempts. Please wait a minute and try again.",
+	"We could not reach CreatorHub. Check your connection and try again.": "We could not reach CreatorHub. Check your connection and try again.",
+	"Check the highlighted fields and try again.": "Check the highlighted fields and try again.",
+	"Google sign-in is not available in this browser. Open CreatorHub in Safari or Chrome, or use another option.": "Google sign-in is not available in this browser. Open CreatorHub in Safari or Chrome, or use another option.",
+	"Something went wrong": "Something went wrong",
+	"This page stopped working. Reload it to try again. Your account and saved work are safe.": "This page stopped working. Reload it to try again. Your account and saved work are safe.",
+	"Reload page": "Reload page",
+	"Go to the homepage": "Go to the homepage"
 }

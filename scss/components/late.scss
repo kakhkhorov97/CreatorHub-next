@@ -581,3 +581,29 @@
 		padding: 24px 18px;
 	}
 }
+
+// Crash fallback (AppErrorBoundary): replaces a blank page after a render error.
+.app-crash {
+	max-width: 520px;
+	margin: 96px auto;
+	padding: 0 16px;
+	text-align: center;
+
+	h1 {
+		font-family: var(--font-bricolage), sans-serif;
+		font-size: 32px;
+		margin: 0 0 12px;
+	}
+
+	p {
+		color: #5b645d;
+		margin: 0 0 24px;
+	}
+}
+
+.app-crash-actions {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 12px;
+}

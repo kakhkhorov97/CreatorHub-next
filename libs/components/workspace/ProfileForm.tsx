@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { userVar } from '../../../apollo/store';
 import { documents, useAction, useApi } from '../../hooks/useApi';
 import { CreatorAvailability, CreatorProfile, SocialLink } from '../../types/creatorhub';
+import { toast } from 'sonner';
 import { Button, Confirm, Feedback, Field, lines, Notice, optional, Status, TextArea, values } from '../common/UI';
 import ReviewStatus from '../review/ReviewStatus';
 
@@ -212,6 +213,10 @@ export function ProfileForm({ profile, refresh }: { profile?: CreatorProfile; re
 							await action.mutate('deleteCreatorProfile');
 							setRemove(false);
 							await refresh();
+							// The form remounts as a new application, so announce the result with a toast that outlives it.
+							toast.success(
+								translate('Creator profile deleted. Your account is unchanged, and you can apply again at any time.'),
+							);
 						})
 					}
 				>

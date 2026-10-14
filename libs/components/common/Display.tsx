@@ -173,7 +173,7 @@ export function Confirm({
 				<Button danger={danger} disabled={busy} onClick={onConfirm}>
 					{translate('Confirm')}
 				</Button>
-				<Button secondary disabled={busy} onClick={onCancel}>
+				<Button secondary disabled={busy} onClick={onCancel} data-autofocus>
 					{translate('Keep it')}
 				</Button>
 			</div>

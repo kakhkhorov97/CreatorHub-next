@@ -1073,5 +1073,22 @@
 	"{{count}} unread": "{{count}} o‘qilmagan",
 	"Project brief · sent {{date}}": "Loyiha haqida ma’lumot · {{date}} yuborilgan",
 	"No conversations match your search": "Qidiruvga mos suhbat yo‘q",
-	"Try another name or project, or choose All.": "Boshqa ism yoki loyihani qidiring yoki «Barchasi»ni tanlang."
+	"Try another name or project, or choose All.": "Boshqa ism yoki loyihani qidiring yoki «Barchasi»ni tanlang.",
+	"Creator profile deleted. Your account is unchanged, and you can apply again at any time.": "Ijodkor profili o‘chirildi. Hisobingiz o‘zgarmadi, istalgan vaqtda qayta ariza topshirishingiz mumkin.",
+	"Ask AI": "AI’dan so‘rash",
+	"This reset link has expired or was already used. Links work once and expire after 30 minutes.": "Bu tiklash havolasining muddati tugagan yoki u allaqachon ishlatilgan. Havolalar bir marta ishlaydi va 30 daqiqadan keyin eskiradi.",
+	"This reset link is incomplete. Open the link from your email again.": "Tiklash havolasi to‘liq emas. Elektron pochtangizdagi havolani qayta oching.",
+	"Request a new link": "Yangi havola so‘rash",
+	"Your account was created, but we could not send the confirmation email. Use Resend email below.": "Hisobingiz yaratildi, lekin tasdiqlash xatini yubora olmadik. Quyidagi «Xatni qayta yuborish» tugmasidan foydalaning.",
+	"Not in your inbox? Check the spam and promotions folders.": "Kiruvchi xatlarda yo‘qmi? Spam va reklama jildlarini tekshiring.",
+	"Your account was created, but the verification email could not be sent. Request a new email.": "Hisobingiz yaratildi, lekin tasdiqlash xati yuborilmadi. Yangi xat so‘rang.",
+	"Enter a valid phone number with its country code, for example +82 10 1234 5678.": "Mamlakat kodi bilan to‘g‘ri telefon raqamini kiriting, masalan +82 10 1234 5678.",
+	"Too many attempts. Please wait a minute and try again.": "Urinishlar juda ko‘p. Bir daqiqa kutib, qayta urinib ko‘ring.",
+	"We could not reach CreatorHub. Check your connection and try again.": "CreatorHub bilan bog‘lana olmadik. Internet aloqasini tekshirib, qayta urinib ko‘ring.",
+	"Check the highlighted fields and try again.": "Belgilangan maydonlarni tekshirib, qayta urinib ko‘ring.",
+	"Google sign-in is not available in this browser. Open CreatorHub in Safari or Chrome, or use another option.": "Bu brauzerda Google orqali kirish ishlamaydi. CreatorHub’ni Safari yoki Chrome’da oching yoki boshqa usuldan foydalaning.",
+	"Something went wrong": "Nimadir noto‘g‘ri ketdi",
+	"This page stopped working. Reload it to try again. Your account and saved work are safe.": "Bu sahifa ishlashdan to‘xtadi. Qayta urinish uchun sahifani yangilang. Hisobingiz va saqlangan ishlaringiz xavfsiz.",
+	"Reload page": "Sahifani yangilash",
+	"Go to the homepage": "Bosh sahifaga o‘tish"
 }

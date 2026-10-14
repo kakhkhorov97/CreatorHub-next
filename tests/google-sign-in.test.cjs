@@ -53,6 +53,10 @@ function harness(result) {
 		},
 		process: { env: { NEXT_PUBLIC_GOOGLE_CLIENT_ID: 'fixture.apps.googleusercontent.com' } },
 		window: {
+			setTimeout: () => 0,
+			clearTimeout: () => {},
+			requestAnimationFrame: () => 0,
+			cancelAnimationFrame: () => {},
 			google: {
 				accounts: {
 					id: {
@@ -103,6 +107,7 @@ function harness(result) {
 				return { getSocialChallenge: (_provider, load) => load(), discardSocialChallenge: () => {} };
 			if (name === '../../hooks/useApi') return { useAction: () => action };
 			if (name === '../../utils/authForm') return { validateAuthForm: () => ({}) };
+			if (name === '../../utils/errors') return { readableError: (error) => error.message };
 			if (name === '../common/UI') return { Button: () => null, Field: () => null, values: (f) => f.fields };
 			throw Error(name);
 		},
