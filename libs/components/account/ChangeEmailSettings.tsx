@@ -1,3 +1,4 @@
+import { readableError } from '../../utils/errors';
 import { useTranslation } from 'next-i18next';
 import { useState } from 'react';
 import { useAction, useApi } from '../../hooks/useApi';
@@ -65,7 +66,7 @@ export default function ChangeEmailSettings() {
 											input: { email: fields.email.trim(), currentPassword: fields.currentPassword },
 										});
 									} catch (error) {
-										const message = error instanceof Error ? error.message : 'Something went wrong. Please try again.';
+										const message = error ? readableError(error) : 'Something went wrong. Please try again.';
 										setErrors({ [/password/i.test(message) ? 'currentPassword' : 'email']: message });
 										return false;
 									}

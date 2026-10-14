@@ -22,6 +22,7 @@ export default function EmailConfirmation({ verifyLink = false }: { verifyLink?:
 	const [state, setState] = useState<VerificationState>('waiting');
 	const attemptedToken = useRef<string | null>(null);
 	const emailChange = router.query.purpose === 'email-change';
+	const sendFailed = router.query.sendFailed === '1';
 	const token = typeof router.query.token === 'string' ? router.query.token : '';
 	const returnTo = typeof router.query.returnTo === 'string' ? safeReturnTo(router.query.returnTo) : undefined;
 	const signInHref = returnTo ? `/account/sign-in?returnTo=${encodeURIComponent(returnTo)}` : '/account/sign-in';
@@ -137,12 +138,21 @@ export default function EmailConfirmation({ verifyLink = false }: { verifyLink?:
 						</>
 					) : (
 						<>
-							{email && (
-								<p className="confirmation-address">
-									{translate('We have sent a confirmation link to')} <strong>{email}</strong>.
+							{sendFailed && !resent ? (
+								<p className="field-error" role="alert">
+									{translate('Your account was created, but we could not send the confirmation email. Use Resend email below.')}
 								</p>
+							) : (
+								<>
+									{email && (
+										<p className="confirmation-address">
+											{translate('We have sent a confirmation link to')} <strong>{email}</strong>.
+										</p>
+									)}
+									<p className="auth-intro">{translate('Open the link to verify your account, then sign in.')}</p>
+									<p className="muted">{translate('Not in your inbox? Check the spam and promotions folders.')}</p>
+								</>
 							)}
-							<p className="auth-intro">{translate('Open the link to verify your account, then sign in.')}</p>
 						</>
 					)}
 					{emailChange ? (

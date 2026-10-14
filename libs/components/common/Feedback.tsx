@@ -21,8 +21,9 @@ export function Notice({
 					children,
 				)
 			)
-				toast.success(content as string);
-			else toast.info(content as string);
+				// The text doubles as the id, so a repeated effect updates one toast instead of stacking two.
+				toast.success(content as string, { id: content as string });
+			else toast.info(content as string, { id: content as string });
 		}
 	}, [children, content, error, notify]);
 	if (notify && !error && typeof children === 'string') return null;

@@ -137,9 +137,11 @@ test('chat limits request bursts', () => {
 // Appended regression cases for provider failure classification.
 test('workflow help skips database retrieval and overload retries only once', async () => {
 	const oldKey = process.env.GEMINI_API_KEY,
-		oldModel = process.env.GEMINI_MODEL;
+		oldModel = process.env.GEMINI_MODEL,
+		oldFallback = process.env.GEMINI_FALLBACK_MODEL;
 	process.env.GEMINI_API_KEY = 'test-key';
 	process.env.GEMINI_MODEL = 'test-model';
+	process.env.GEMINI_FALLBACK_MODEL = '';
 	try {
 		let calls = 0;
 		const result = await answer({ message: 'How do I upload my work?' }, async (url) => {
@@ -169,6 +171,44 @@ test('workflow help skips database retrieval and overload retries only once', as
 		else delete process.env.GEMINI_API_KEY;
 		if (oldModel) process.env.GEMINI_MODEL = oldModel;
 		else delete process.env.GEMINI_MODEL;
+		if (oldFallback === undefined) delete process.env.GEMINI_FALLBACK_MODEL;
+		else process.env.GEMINI_FALLBACK_MODEL = oldFallback;
+	}
+});
+
+test('a busy or rate-limited model falls back once to the lighter model, and real errors do not', async () => {
+	const saved = ['GEMINI_API_KEY', 'GEMINI_MODEL', 'GEMINI_FALLBACK_MODEL'].map((name) => [name, process.env[name]]);
+	process.env.GEMINI_API_KEY = 'test-key';
+	process.env.GEMINI_MODEL = 'main-model';
+	process.env.GEMINI_FALLBACK_MODEL = 'light-model';
+	try {
+		for (const status of [429, 500, 503]) {
+			const urls = [];
+			const result = await answer({ message: 'How do I upload my work?' }, async (url) => {
+				urls.push(url);
+				return urls.length === 1
+					? { ok: false, status, headers: { get: () => null } }
+					: { ok: true, json: async () => ({ candidates: [{ content: { parts: [{ text: 'Use the editor.' }] } }] }) };
+			});
+			assert.equal(result.status, 200);
+			assert.equal(result.reply, 'Use the editor.');
+			assert.deepEqual(
+				urls.map((url) => url.match(/models\/([^:]+)/)[1]),
+				['main-model', 'light-model'],
+			);
+		}
+		let attempts = 0;
+		const config = await answer({ message: 'How do I upload my work?' }, async () => {
+			attempts++;
+			return { ok: false, status: 404 };
+		});
+		assert.equal(attempts, 1);
+		assert.match(config.error, /not configured correctly/);
+	} finally {
+		for (const [name, value] of saved) {
+			if (value === undefined) delete process.env[name];
+			else process.env[name] = value;
+		}
 	}
 });
 

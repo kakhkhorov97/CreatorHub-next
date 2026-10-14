@@ -58,6 +58,8 @@ export function SocialButtons({
 	);
 }
 
+const PHONE_FORMAT = 'Enter a valid phone number with its country code, for example +82 10 1234 5678.';
+
 export default function Auth({ mode }: { mode: AuthMode }) {
 	const { t: translate } = useSiteTranslation('common');
 
@@ -70,13 +72,24 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 	const auth = mode === 'sign-in' || mode === 'register';
 	const registering = mode === 'register';
 	const returnTo = typeof router.query.returnTo === 'string' ? safeReturnTo(router.query.returnTo) : undefined;
-	const authHref = (path: string) => (returnTo ? `${path}?returnTo=${encodeURIComponent(returnTo)}` : path);
+	// The reset token only ever comes from the emailed link. It is never shown or typed.
+	const resetToken = typeof router.query.token === 'string' ? router.query.token : '';
+	const resetLinkBroken = mode === 'reset-password' && router.isReady && !/^[a-f0-9]{64}$/.test(resetToken);
+	const resetLinkUsed = mode === 'reset-password' && /invalid or expired token/i.test(action.error);
+	const authHref = (path: string) =>
+		returnTo ? `${path}${path.includes('?') ? '&' : '?'}returnTo=${encodeURIComponent(returnTo)}` : path;
 	useEffect(() => {
 		if (returnTo) sessionStorage.setItem('creatorhub.returnTo', returnTo);
 	}, [returnTo]);
 
 	useEffect(() => {
+		// The account exists even though the email failed, so continue to the page that can resend it.
+		if (registering && /verification email could not be sent/i.test(action.error)) {
+			void router.push(authHref('/account/check-email?sendFailed=1'));
+			return;
+		}
 		if (action.error) setFieldErrors({ [authSubmissionErrorField(action.error, mode)]: action.error });
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [action.error, mode]);
 
 	async function submit(form: HTMLFormElement) {
@@ -96,9 +109,16 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 						.trim()
 						.replace(/[\s()-]/g, '')
 						.replace(/^0/, '');
+			// Same shape the server accepts (E.164). The server also checks the number is real for its country.
+			if (!/^\+[1-9]\d{7,14}$/.test(f.phoneNumber.replace(/[\s()-]/g, ''))) {
+				setFieldErrors({ phoneNumber: PHONE_FORMAT });
+				form.querySelector<HTMLInputElement>('[name="phoneNumber"]')?.focus();
+				return;
+			}
 		}
 
 		setMessage('');
+		if (registering) sessionStorage.setItem('creatorhub.pendingEmail', f.email.trim());
 		await action.run(async () => {
 			if (auth) {
 				const payload = registering
@@ -135,8 +155,9 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 				await action.mutate('requestPasswordReset', { input: { email: f.email } });
 				setMessage('If this email has an account, a password reset link will be sent.');
 			} else if (mode === 'reset-password') {
-				await action.mutate('resetPassword', { input: { token: f.token, password: f.password } });
-				setMessage('Password changed. You can now sign in.');
+				await action.mutate('resetPassword', { input: { token: resetToken, password: f.password } });
+				// Leave the single-use link behind so it cannot be submitted a second time.
+				await router.replace('/account/sign-in?passwordChanged=1');
 			}
 		});
 	}
@@ -169,7 +190,19 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 							: translate('Choose a password you do not use for another account.')}
 					</p>
 
-					{!socialSetup && (
+					{(resetLinkBroken || resetLinkUsed) && (
+						<div className="notice error" role="alert">
+							<p>
+								{resetLinkUsed
+									? translate('This reset link has expired or was already used. Links work once and expire after 30 minutes.')
+									: translate('This reset link is incomplete. Open the link from your email again.')}
+							</p>
+							<LinkButton secondary href={authHref('/account/forgot-password')}>
+								{translate('Request a new link')}
+							</LinkButton>
+						</div>
+					)}
+					{!socialSetup && !resetLinkBroken && !resetLinkUsed && (
 						<form
 							noValidate
 							onInput={(event) => {
@@ -248,23 +281,13 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 												autoComplete="tel"
 												required
 												maxLength={40}
+												placeholder="10 1234 5678"
 												aria-describedby="signup-phone-hint"
 											/>
 										</div>
 										<small id="signup-phone-hint">{translate('For contact only. Sign in with your email.')}</small>
 									</div>
 								</>
-							)}
-							{mode === 'reset-password' && (
-								<Field
-									label={translate('Verification token')}
-									name="token"
-									error={fieldErrors.token}
-									required
-									minLength={64}
-									maxLength={64}
-									defaultValue={typeof router.query.token === 'string' ? router.query.token : ''}
-								/>
 							)}
 							{(auth || mode === 'reset-password') && (
 								<Password
