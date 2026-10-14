@@ -1,12 +1,10 @@
 import { useTranslation as useSiteTranslation } from 'next-i18next';
-import { Pause, Play } from 'phosphor-react';
 import { useEffect, useRef, useState } from 'react';
 
 export default function HeroBackdrop() {
 	const { t: translate } = useSiteTranslation('common');
 	const video = useRef<HTMLVideoElement>(null);
 	const [motion, setMotion] = useState(false);
-	const [paused, setPaused] = useState(false);
 
 	// Desktop only, and never for visitors who ask for reduced motion.
 	useEffect(() => {
@@ -17,12 +15,25 @@ export default function HeroBackdrop() {
 		return () => query.removeEventListener('change', update);
 	}, []);
 
+	// Browsers only autoplay muted video, and React sets `muted` too late for that check,
+	// so set it on the element and start playback ourselves. If a start is refused or
+	// interrupted, try again once the video can play or the tab becomes visible.
 	useEffect(() => {
 		const element = video.current;
-		if (!element) return;
-		if (paused) element.pause();
-		else element.play().catch(() => setPaused(true));
-	}, [paused, motion]);
+		if (!motion || !element) return;
+		element.muted = true;
+		element.defaultMuted = true;
+		const play = () => {
+			if (!document.hidden && element.paused) element.play().catch(() => {});
+		};
+		play();
+		element.addEventListener('canplay', play);
+		document.addEventListener('visibilitychange', play);
+		return () => {
+			element.removeEventListener('canplay', play);
+			document.removeEventListener('visibilitychange', play);
+		};
+	}, [motion]);
 
 	return (
 		<>
@@ -47,14 +58,6 @@ export default function HeroBackdrop() {
 			{motion && (
 				<div className="hero-video-controls">
 					<span>{translate('Background: fictional studio scenes')}</span>
-					<button
-						type="button"
-						className="hero-video-toggle"
-						aria-label={translate(paused ? 'Play background video' : 'Pause background video')}
-						onClick={() => setPaused((value) => !value)}
-					>
-						{paused ? <Play size={16} weight="fill" aria-hidden /> : <Pause size={16} weight="fill" aria-hidden />}
-					</button>
 				</div>
 			)}
 		</>

@@ -10,9 +10,21 @@ function unique<T extends { _id: string }>(rows: T[]) {
 
 export function useConversationList(userId: string) {
 	const client = useApolloClient();
-	const [rows, setRows] = useState<Inquiry[]>([]);
-	const [total, setTotal] = useState(0);
-	const [loading, setLoading] = useState(true);
+	// Opening a conversation is a new page, so start from the first page already in the Apollo cache
+	// (network-only results are still written there) and refresh in the background.
+	const [cached] = useState(() => {
+		try {
+			return client.readQuery<{ getInquiries: Operations['getInquiries']['result'] }>({
+				query: documents.getInquiries,
+				variables: { allConversations: true, input: { page: 1, limit: 20 } },
+			})?.getInquiries;
+		} catch {
+			return null;
+		}
+	});
+	const [rows, setRows] = useState<Inquiry[]>(cached?.list ?? []);
+	const [total, setTotal] = useState(cached?.metaCounter[0]?.total ?? 0);
+	const [loading, setLoading] = useState(!cached);
 	const [loadingMore, setLoadingMore] = useState(false);
 	const [error, setError] = useState<Error>();
 	const pages = useRef(1);

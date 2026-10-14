@@ -5,13 +5,12 @@ import Link from 'next/link';
 import { ArrowLeft, ChatsCircle, MagnifyingGlass } from 'phosphor-react';
 import { useEffect, useRef, useState } from 'react';
 import { userVar } from '../../apollo/store';
-import { conversationTime, Empty, mediaUrl, Picture, QueryState } from '../../libs/components/common/UI';
-import { Conversation, StatusPill } from '../../libs/components/inquiry/InquiryConversation';
+import { conversationTime, Empty, Picture, QueryState } from '../../libs/components/common/UI';
+import { Conversation, StatusDot } from '../../libs/components/inquiry/InquiryConversation';
 import { Draft } from '../../libs/components/inquiry/InquiryDraft';
 import Layout, { Guard } from '../../libs/components/layout/LayoutBasic';
 import { useApi } from '../../libs/hooks/useApi';
 import { useConversationList } from '../../libs/hooks/useInquiryHistory';
-import { useServiceDirectory } from '../../libs/hooks/useServiceDirectory';
 import { InquiryStatus } from '../../libs/types/creatorhub';
 
 // Frontend filters over the conversations already loaded, as approved for Inbox v2.
@@ -67,9 +66,46 @@ export function Inbox({ selectedId = '' }: { selectedId?: string }) {
 		await result.refresh();
 	};
 
+	// Phones show an open conversation as a full-screen panel sized to the visible viewport,
+	// so the input stays above the keyboard and the page behind it cannot scroll.
+	useEffect(() => {
+		if (!selectedId) return;
+		const phone = window.matchMedia('(max-width: 700px)');
+		const root = document.documentElement;
+		const viewport = window.visualViewport;
+		let lastHeight = 0;
+		const update = () => {
+			const height = viewport?.height ?? window.innerHeight;
+			const list = document.querySelector<HTMLElement>('.messaging-inbox .message-list');
+			const atBottom = list ? list.scrollHeight - list.scrollTop - list.clientHeight < 80 : false;
+			root.classList.toggle('inbox-chat-open', phone.matches);
+			root.style.setProperty('--inbox-chat-height', `${height}px`);
+			root.style.setProperty('--inbox-chat-top', `${viewport?.offsetTop ?? 0}px`);
+			// When the keyboard opens, keep the newest message in view above the input.
+			if (list && atBottom && height < lastHeight)
+				window.requestAnimationFrame(() => (list.scrollTop = list.scrollHeight));
+			lastHeight = height;
+		};
+		update();
+		phone.addEventListener('change', update);
+		viewport?.addEventListener('resize', update);
+		viewport?.addEventListener('scroll', update);
+		return () => {
+			phone.removeEventListener('change', update);
+			viewport?.removeEventListener('resize', update);
+			viewport?.removeEventListener('scroll', update);
+			root.classList.remove('inbox-chat-open');
+			root.style.removeProperty('--inbox-chat-height');
+			root.style.removeProperty('--inbox-chat-top');
+		};
+	}, [selectedId]);
+
+	// The list already holds the same fields as getInquiry, so open the chat from it at once
+	// and swap in the fresh copy when it arrives (saves a round trip before messages load).
+	const current = selected.value || result.rows.find((row) => row._id === selectedId);
+
 	const [filter, setFilter] = useState<Filter>('ALL');
 	const [search, setSearch] = useState('');
-	const services = useServiceDirectory(result.rows.map((i) => i.serviceId));
 	const term = search.trim().toLowerCase();
 	const rows = result.rows.filter((i) => {
 		const statuses = filters[filter];
@@ -111,7 +147,6 @@ export function Inbox({ selectedId = '' }: { selectedId?: string }) {
 						<QueryState loading={result.loading && !result.rows.length} error={result.error} retry={result.refresh} />
 						<nav aria-label={translate('Conversations')}>
 							{rows.map((i) => {
-								const service = i.serviceId ? mediaUrl(services[i.serviceId]?.imageUrl) : undefined;
 								return (
 									<Link
 										passHref
@@ -123,8 +158,7 @@ export function Inbox({ selectedId = '' }: { selectedId?: string }) {
 										}`}
 									>
 										<span className="preview-avatar">
-											<Picture avatar src={i.counterpartyAvatarUrl} alt="" />
-											{service && <img className="preview-service" src={service} alt="" loading="lazy" />}
+											<Picture avatar src={i.counterpartyAvatarUrl} alt="" sizes="40px" />
 										</span>
 										<div className="preview-copy">
 											<div className="preview-top">
@@ -141,11 +175,8 @@ export function Inbox({ selectedId = '' }: { selectedId?: string }) {
 												)}
 											</div>
 											<p className="preview-subject">{i.subject || translate('Untitled draft')}</p>
-											<div className="preview-meta">
-												<p className="preview-brief">{i.brief || translate('Continue writing your inquiry.')}</p>
-												<StatusPill status={i.status} short />
-											</div>
 										</div>
+										<StatusDot status={i.status} />
 									</Link>
 								);
 							})}
@@ -166,17 +197,31 @@ export function Inbox({ selectedId = '' }: { selectedId?: string }) {
 							<QueryState loading={result.loadingMore} />
 						</div>
 					</div>
+					<p className="inbox-legend" aria-hidden>
+						<span>
+							<span className="inbox-dot new" />
+							{translate('New')}
+						</span>
+						<span>
+							<span className="inbox-dot discussing" />
+							{translate('Discussing')}
+						</span>
+						<span>
+							<span className="inbox-dot closed" />
+							{translate('Closed')}
+						</span>
+					</p>
 				</aside>
 				<section className="inbox-conversation" aria-label={translate('Selected conversation')}>
 					{selectedId ? (
 						<>
 							<QueryState
-								loading={selected.loading && !selected.value}
-								error={selected.error}
+								loading={selected.loading && !current}
+								error={current ? undefined : selected.error}
 								retry={() => selected.refetch()}
 							/>
-							{selected.value &&
-								(selected.value.status === 'DRAFT' ? (
+							{current &&
+								(current.status === 'DRAFT' ? (
 									<div className="inbox-draft">
 										<Link
 											passHref
@@ -189,17 +234,17 @@ export function Inbox({ selectedId = '' }: { selectedId?: string }) {
 										</Link>
 										<Draft
 											key={selectedId}
-											inquiry={selected.value}
-											creatorId={selected.value.creatorId}
-											serviceId={selected.value.serviceId || undefined}
+											inquiry={current}
+											creatorId={current.creatorId}
+											serviceId={current.serviceId || undefined}
 											refresh={refresh}
 										/>
 									</div>
 								) : (
 									<Conversation
 										key={selectedId}
-										inquiry={selected.value}
-										isClient={selected.value.clientId === user._id}
+										inquiry={current}
+										isClient={current.clientId === user._id}
 										refresh={refresh}
 									/>
 								))}

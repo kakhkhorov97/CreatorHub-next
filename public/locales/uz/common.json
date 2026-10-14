@@ -1090,5 +1090,11 @@
 	"Something went wrong": "Nimadir noto‘g‘ri ketdi",
 	"This page stopped working. Reload it to try again. Your account and saved work are safe.": "Bu sahifa ishlashdan to‘xtadi. Qayta urinish uchun sahifani yangilang. Hisobingiz va saqlangan ishlaringiz xavfsiz.",
 	"Reload page": "Sahifani yangilash",
-	"Go to the homepage": "Bosh sahifaga o‘tish"
+	"Go to the homepage": "Bosh sahifaga o‘tish",
+	"Remove photo": "Rasmni o‘chirish",
+	"Profile photo removed.": "Profil rasmi o‘chirildi.",
+	"Saved": "Saqlangan",
+	"View my public profile": "Ommaviy profilimni ko‘rish",
+	"See all →": "Hammasini ko‘rish →",
+	"Projects you save appear here.": "Saqlagan loyihalaringiz shu yerda ko‘rinadi."
 }

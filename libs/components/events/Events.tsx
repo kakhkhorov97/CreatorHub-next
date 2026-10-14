@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { useTranslation as useSiteTranslation } from 'next-i18next';
+import { responsiveImage } from '../../utils/image';
 import Link from 'next/link';
 import { ArrowUpRight, MapPin, CalendarBlank } from 'phosphor-react';
 import { useCardNavigation } from '../../hooks/useCardNavigation';
@@ -33,7 +34,8 @@ function EventCard({ event }: { event: CreativeEvent }) {
 			{event.isDemo ? (
 				<img
 					className="event-cover"
-					src={eventImage(event.title)}
+					{...responsiveImage(eventImage(event.title))}
+					sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
 					alt={translate('Event concept image')}
 					loading="lazy"
 				/>

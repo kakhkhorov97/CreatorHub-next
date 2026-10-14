@@ -813,6 +813,7 @@ export interface Operations {
   setServiceStatus: { variables: { serviceId: string; status: ServiceStatus }; result: CreatorService };
   deleteService: { variables: { serviceId: string }; result: boolean };
   updateMe: { variables: { input: UpdateUserInput }; result: User };
+  removeMyAvatar: { variables: {  }; result: User };
   deleteMyAccount: { variables: {  }; result: boolean };
   setAccountSuspended: { variables: { userId: string; suspended: boolean }; result: User };
 }
