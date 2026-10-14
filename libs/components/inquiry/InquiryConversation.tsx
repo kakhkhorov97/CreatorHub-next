@@ -10,6 +10,7 @@ import { userVar } from '../../../apollo/store';
 import { useAction } from '../../hooks/useApi';
 import { useCreatorDirectory } from '../../hooks/useCreatorDirectory';
 import { useInquiryHistory } from '../../hooks/useInquiryHistory';
+import { responsiveImage } from '../../utils/image';
 import { useServiceDirectory } from '../../hooks/useServiceDirectory';
 import { handleMessageKey } from '../../utils/messageKeyboard';
 import { Inquiry, InquiryOutcome, InquiryStatus } from '../../types/creatorhub';
@@ -54,6 +55,15 @@ export function StatusPill({ status, short = false }: { status: InquiryStatus; s
 			{translate(short ? shortLabels[kind] : label(status))}
 		</span>
 	);
+}
+
+// Inbox list (option A): status as a coloured dot, with the word kept for screen readers and tooltips.
+export function StatusDot({ status }: { status: InquiryStatus }) {
+	const { t: translate } = useSiteTranslation('common');
+
+	const kind = tone(status);
+	const text = translate(shortLabels[kind]);
+	return <span className={`inbox-dot ${kind}`} role="img" aria-label={text} title={text} />;
 }
 
 function DaySeparator({ value }: { value: string }) {
@@ -182,8 +192,7 @@ export function Conversation({
 					inquiry.budgetMax != null ? money(inquiry.budgetMax) : translate('Not specified')
 			  }`
 			: translate('Not specified');
-	const stop =
-		inquiry.status === 'SENT' ? (isClient ? ('cancelInquiry' as const) : ('declineInquiry' as const)) : null;
+	const stop = inquiry.status === 'SENT' ? (isClient ? ('cancelInquiry' as const) : ('declineInquiry' as const)) : null;
 	const canClose = active && (isClient || inquiry.status === 'IN_DISCUSSION');
 	const time = (value: string) =>
 		new Intl.DateTimeFormat(i18n.language, { hour: 'numeric', minute: '2-digit' }).format(new Date(value));
@@ -201,7 +210,7 @@ export function Conversation({
 							<h2>{inquiry.counterpartyName || translate('Member')}</h2>
 							<p>
 								<span className="chat-heading-subject">{inquiry.subject || translate('Private inquiry')}</span>
-								{creator?.city && <span className="chat-heading-city">{creator.city}</span>}
+								{creator?.city && <span className="chat-heading-city">{translate(label(creator.city))}</span>}
 								{creator && (
 									<Link className="chat-heading-profile" href={`/creators/${creator.slug}`}>
 										{translate('View profile')}
@@ -260,7 +269,9 @@ export function Conversation({
 							<QueryState loading={messages.loadingOlder} />
 						</div>
 						<article className="chat-brief" aria-label={translate('Original inquiry')}>
-							{cover && <img className="chat-brief-cover" src={cover} alt="" loading="lazy" />}
+							{cover && (
+								<img className="chat-brief-cover" {...responsiveImage(cover)} sizes="96px" alt="" loading="lazy" />
+							)}
 							<div className="chat-brief-copy">
 								<span className="chat-brief-label">
 									{translate('Project brief · sent {{date}}', { date: date(inquiry.submittedAt) })}
@@ -410,7 +421,7 @@ export function Conversation({
 					aria-label={translate('Project details')}
 				>
 					<div className="room-card">
-						{cover && <img className="room-cover" src={cover} alt="" loading="lazy" />}
+						{cover && <img className="room-cover" {...responsiveImage(cover)} sizes="320px" alt="" loading="lazy" />}
 						<div className="room-card-body">
 							<span className="room-kind">{translate(snapshot ? 'Service' : 'Project details')}</span>
 							<h3>{snapshot?.title || inquiry.subject || translate('Private inquiry')}</h3>
@@ -418,9 +429,7 @@ export function Conversation({
 								<div className="room-row">
 									<span>{translate('Price')}</span>
 									<b>
-										{snapshot.pricingType === 'STARTING_AT'
-											? money(snapshot.startingPrice)
-											: translate('Custom quote')}
+										{snapshot.pricingType === 'STARTING_AT' ? money(snapshot.startingPrice) : translate('Custom quote')}
 									</b>
 								</div>
 							)}

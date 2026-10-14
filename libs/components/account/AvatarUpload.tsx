@@ -3,6 +3,7 @@ import { useReactiveVar } from '@apollo/client';
 import { useEffect, useRef, useState } from 'react';
 import { userVar } from '../../../apollo/store';
 import { useAction } from '../../hooks/useApi';
+import { toast } from 'sonner';
 import { Button, Feedback, Notice, Picture } from '../common/UI';
 
 export function AvatarUpload() {
@@ -29,9 +30,27 @@ export function AvatarUpload() {
 					<Picture avatar src={user.avatarUrl} alt="Your profile photo" />
 				)}
 				<div>
-					<Button secondary disabled={action.busy} onClick={() => input.current?.click()}>
-						{action.busy ? translate('Uploading…') : translate('Upload photo')}
-					</Button>
+					<div className="avatar-upload-buttons">
+						<Button secondary disabled={action.busy} onClick={() => input.current?.click()}>
+							{action.busy ? translate('Uploading…') : translate('Upload photo')}
+						</Button>
+						{user.avatarUrl && !preview && (
+							<Button
+								secondary
+								danger
+								disabled={action.busy}
+								onClick={() =>
+									action.run(async () => {
+										setSaved(false);
+										userVar(await action.mutate('removeMyAvatar'));
+										toast.success(translate('Profile photo removed.'));
+									})
+								}
+							>
+								{translate('Remove photo')}
+							</Button>
+						)}
+					</div>
 					<p className="muted">{translate('JPG, PNG or WebP. Up to 10 MB.')}</p>
 				</div>
 			</div>

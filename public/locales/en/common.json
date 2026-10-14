@@ -1090,5 +1090,11 @@
 	"Something went wrong": "Something went wrong",
 	"This page stopped working. Reload it to try again. Your account and saved work are safe.": "This page stopped working. Reload it to try again. Your account and saved work are safe.",
 	"Reload page": "Reload page",
-	"Go to the homepage": "Go to the homepage"
+	"Go to the homepage": "Go to the homepage",
+	"Remove photo": "Remove photo",
+	"Profile photo removed.": "Profile photo removed.",
+	"Saved": "Saved",
+	"View my public profile": "View my public profile",
+	"See all →": "See all →",
+	"Projects you save appear here.": "Projects you save appear here."
 }

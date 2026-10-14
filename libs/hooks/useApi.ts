@@ -21,6 +21,9 @@ export function unwrap<T>(value: T): ApiValue<T> {
 	) as ApiValue<T>;
 }
 
+const referenceData = new Set<QueryName>(['categories', 'getCities', 'getSiteContent']);
+const onAdminPage = () => typeof window !== 'undefined' && window.location.pathname.startsWith('/_admin');
+
 export function useApi<K extends QueryName>(
 	name: K,
 	variables: Operations[K]['variables'] = {} as Operations[K]['variables'],
@@ -32,9 +35,16 @@ export function useApi<K extends QueryName>(
 		skip,
 		pollInterval,
 		notifyOnNetworkStatusChange: true,
+		// Reference data barely changes, so public pages reuse the first answer of the visit
+		// instead of asking again on every page change. Admin pages, where it is edited, stay live.
+		...(referenceData.has(name) && !onAdminPage() ? { fetchPolicy: 'cache-first' as const } : {}),
 	});
 	// Keep showing cached data while Apollo refreshes it in the background; only report loading when nothing is on screen.
-	return { ...result, loading: result.loading && !result.data, value: result.data ? unwrap(result.data[name]) : undefined };
+	return {
+		...result,
+		loading: result.loading && !result.data,
+		value: result.data ? unwrap(result.data[name]) : undefined,
+	};
 }
 
 export function useAction() {

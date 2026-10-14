@@ -690,6 +690,7 @@ type Mutation {
   setServiceStatus(serviceId: ID!, status: ServiceStatus!): CreatorService!
   deleteService(serviceId: ID!): Boolean!
   updateMe(input: UpdateUserInput!): User!
+  removeMyAvatar: User!
   deleteMyAccount: Boolean!
   setAccountSuspended(userId: ID!, suspended: Boolean!): User!
 }

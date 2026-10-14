@@ -344,6 +344,8 @@ $room-surface: #faf9f5;
 	color: $muted-text;
 }
 .messaging-inbox .chat-heading-copy p > * + *::before {
+	// inline-block keeps the link underline off the separator.
+	display: inline-block;
 	content: '·';
 	margin-right: 6px;
 	color: $line-color;
@@ -870,5 +872,172 @@ $room-surface: #faf9f5;
 	.inbox-filters button,
 	.chat-details-toggle {
 		transition: none;
+	}
+}
+
+// Inbox sidebar, option A: one white panel, underline tabs, compact rows and a status dot.
+.messaging-inbox .inbox-sidebar {
+	padding: 20px;
+	border-radius: 24px;
+	background: $paper-white;
+}
+.messaging-inbox .inbox-list-heading h1 {
+	font-size: 30px;
+}
+.messaging-inbox .inbox-search {
+	min-height: 42px;
+	border: 0;
+	background: $ivory;
+}
+.messaging-inbox .inbox-filters {
+	gap: 18px;
+	padding: 0 4px;
+	border-radius: 0;
+	background: transparent;
+	border-bottom: 1px solid #edeae2;
+}
+.messaging-inbox .inbox-filters button {
+	flex: none;
+	min-height: 40px;
+	padding: 0;
+	border-radius: 0;
+	background: transparent;
+	font-size: 14px;
+	box-shadow: none;
+}
+.messaging-inbox .inbox-filters button[aria-pressed='true'] {
+	background: transparent;
+	color: $ink;
+	box-shadow: inset 0 -2px 0 $ink;
+}
+.messaging-inbox .inbox-filters button:focus-visible {
+	outline: 2px solid $forest;
+	outline-offset: 2px;
+}
+.messaging-inbox .inbox-list-scroll > nav {
+	gap: 2px;
+}
+.messaging-inbox .conversation-preview {
+	align-items: center;
+	gap: 10px;
+	padding: 10px 12px;
+	border-radius: 14px;
+}
+.messaging-inbox .conversation-preview:hover {
+	background: #faf9f5;
+}
+.messaging-inbox .conversation-preview.selected {
+	background: $ivory;
+	box-shadow: none;
+}
+.messaging-inbox .preview-avatar .avatar {
+	width: 38px;
+	height: 38px;
+	min-width: 38px;
+}
+.messaging-inbox .preview-copy {
+	gap: 1px;
+}
+.messaging-inbox .preview-top strong {
+	font-size: 14px;
+}
+.messaging-inbox .preview-subject {
+	font-size: 12px;
+	font-weight: 400;
+	color: $muted-text;
+}
+.messaging-inbox .conversation-preview.unread .preview-subject {
+	color: $ink;
+	font-weight: 600;
+}
+.inbox-dot {
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	flex: none;
+	background: #b9b4aa;
+}
+.inbox-dot.new {
+	background: #c98a1b;
+}
+.inbox-dot.discussing {
+	background: #2e7d4f;
+}
+.inbox-dot.draft {
+	background: transparent;
+	border: 1.5px solid #b9b4aa;
+}
+.inbox-legend {
+	display: flex;
+	gap: 14px;
+	margin: 0;
+	padding: 10px 4px 0;
+	border-top: 1px solid #edeae2;
+	font-size: 12px;
+	color: $muted-text;
+	flex: none;
+}
+.inbox-legend > span {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+@media (max-width: 700px) {
+	.messaging-inbox .inbox-sidebar {
+		padding: 16px 12px;
+		border-radius: 0;
+	}
+}
+
+.messaging-inbox .inbox-search input {
+	min-height: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	box-shadow: none;
+}
+
+// Phone conversation: a full-screen panel over the page (see Inbox in pages/inquiries).
+html.inbox-chat-open,
+html.inbox-chat-open body {
+	overflow: hidden;
+	overscroll-behavior: none;
+}
+html.inbox-chat-open .chat-widget {
+	display: none;
+}
+@media (max-width: 700px) {
+	// The chat header has its own back button, so the site header steps aside.
+	html.inbox-chat-open header.top {
+		display: none;
+	}
+	.messaging-inbox.has-selection .inbox-conversation {
+		position: fixed;
+		left: 0;
+		right: 0;
+		top: var(--inbox-chat-top, 0);
+		height: var(--inbox-chat-height, 100dvh);
+		z-index: 70;
+		display: flex;
+		flex-direction: column;
+		background: $paper-white;
+	}
+	.messaging-inbox.has-selection .inbox-conversation .chat-thread {
+		flex: 1;
+		height: auto;
+	}
+	.messaging-inbox.has-selection .inbox-conversation .conversation {
+		border-radius: 0;
+	}
+	.messaging-inbox.has-selection .message-form {
+		padding-bottom: max(10px, env(safe-area-inset-bottom));
+	}
+}
+@media (max-width: 700px) {
+	// Phones have no Enter/Shift+Enter keyboard, so the hint only takes space.
+	.messaging-inbox .chat-key-hint {
+		display: none;
 	}
 }

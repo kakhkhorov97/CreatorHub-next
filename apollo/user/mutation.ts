@@ -61,4 +61,5 @@ export const updateService = gql`mutation updateService($serviceId: ID!, $input:
 export const setServiceStatus = gql`mutation setServiceStatus($serviceId: ID!, $status: ServiceStatus!) { setServiceStatus(serviceId: $serviceId, status: $status) { _id  createdAt  updatedAt  creatorId  categoryId  title  description  imageUrl  pricingType  startingPrice  currency  estimatedDays  deliverables  status  deletedAt  } }`;
 export const deleteService = gql`mutation deleteService($serviceId: ID!) { deleteService(serviceId: $serviceId)  }`;
 export const updateMe = gql`mutation updateMe($input: UpdateUserInput!) { updateMe(input: $input) { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } }`;
+export const removeMyAvatar = gql`mutation removeMyAvatar { removeMyAvatar { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } }`;
 export const deleteMyAccount = gql`mutation deleteMyAccount { deleteMyAccount  }`;

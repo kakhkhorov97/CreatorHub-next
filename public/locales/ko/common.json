@@ -1090,5 +1090,11 @@
 	"Something went wrong": "문제가 발생했습니다",
 	"This page stopped working. Reload it to try again. Your account and saved work are safe.": "이 페이지가 응답하지 않습니다. 새로고침해 다시 시도해 주세요. 계정과 저장된 작업은 안전합니다.",
 	"Reload page": "페이지 새로고침",
-	"Go to the homepage": "홈으로 가기"
+	"Go to the homepage": "홈으로 가기",
+	"Remove photo": "사진 삭제",
+	"Profile photo removed.": "프로필 사진을 삭제했습니다.",
+	"Saved": "저장됨",
+	"View my public profile": "내 공개 프로필 보기",
+	"See all →": "모두 보기 →",
+	"Projects you save appear here.": "저장한 프로젝트가 여기에 표시됩니다."
 }

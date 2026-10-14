@@ -490,11 +490,12 @@
 	}
 }
 @media (max-width: 1099px) {
-	.chat-thread:has(> .inquiry-details:not([hidden])) .message-list,
-	.chat-thread:has(> .inquiry-details:not([hidden])) .message-form {
+	// Inbox v2 opens the details panel with .open (it no longer uses the hidden attribute).
+	.chat-thread:has(> .inquiry-details.open) .message-list,
+	.chat-thread:has(> .inquiry-details.open) .message-form {
 		visibility: hidden;
 	}
-	.chat-thread > .inquiry-details:not([hidden]) {
+	.chat-thread > .inquiry-details.open {
 		width: 100%;
 		border-left: 0;
 	}
