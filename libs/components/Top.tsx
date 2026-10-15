@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
 	Bell,
-	EnvelopeSimple,
+	PaperPlaneTilt,
 	List,
 	SignOut,
 	Users,
@@ -19,7 +19,6 @@ import {
 	User,
 	CaretRight,
 	X,
-	ChatCenteredText,
 } from 'phosphor-react';
 import { useEffect, useRef } from 'react';
 import useHeaderScroll from '../hooks/useHeaderScroll';
@@ -145,7 +144,7 @@ export default function Top() {
 							{translate(user.role === 'ADMIN' ? 'Administration' : 'Workspace')}
 						</Link>
 					</div>
-					{mobile && menuLink('/inquiries', 'Inbox', EnvelopeSimple, inbox.value || 0, true)}
+					{mobile && menuLink('/inquiries', 'Inbox', PaperPlaneTilt, inbox.value || 0, true)}
 					{avatar && menuLink('/notifications', 'Notifications', Bell, count.value || 0)}
 					{menuLink('/following', 'Followers & Following', Users)}
 				</div>
@@ -341,7 +340,7 @@ export default function Top() {
 									}
 									title={translate('Messages')}
 								>
-									<ChatCenteredText size={24} aria-hidden />
+									<PaperPlaneTilt size={23} aria-hidden />
 									{!!inbox.value && <span className="inbox-badge">{inbox.value > 99 ? '99+' : inbox.value}</span>}
 								</Link>
 								<details
