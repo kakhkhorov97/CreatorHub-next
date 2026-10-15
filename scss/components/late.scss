@@ -672,10 +672,13 @@
 // Avatars are always circles. The base .avatar had min-height: 38px, so any smaller size became
 // an egg, and flex rows could stretch or squeeze them. Photos are cropped; fallback icons centred.
 .avatar {
-	flex: none;
+	// Some row rules give the first span/img in a row flex: 1, which squashed or stretched avatars.
+	flex: none !important;
 	align-self: center;
-	min-width: 0;
-	min-height: 0;
+	// Older context rules set min-height/min-width (e.g. 43px) that beat a smaller height and made
+	// 30×43 eggs. Every avatar has an explicit size, so minimums are never needed.
+	min-width: 0 !important;
+	min-height: 0 !important;
 	max-width: none;
 	aspect-ratio: 1;
 	box-sizing: border-box;

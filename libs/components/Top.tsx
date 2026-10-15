@@ -19,7 +19,7 @@ import {
 	User,
 	CaretRight,
 	X,
-	ChatCircleDots,
+	ChatCenteredText,
 } from 'phosphor-react';
 import { useEffect, useRef } from 'react';
 import useHeaderScroll from '../hooks/useHeaderScroll';
@@ -341,7 +341,7 @@ export default function Top() {
 									}
 									title={translate('Messages')}
 								>
-									<ChatCircleDots size={24} aria-hidden />
+									<ChatCenteredText size={24} aria-hidden />
 									{!!inbox.value && <span className="inbox-badge">{inbox.value > 99 ? '99+' : inbox.value}</span>}
 								</Link>
 								<details

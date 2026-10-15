@@ -1138,7 +1138,27 @@
 .segmented-search .search-query input {
 	caret-color: $forest;
 }
-.segmented-search .search-query:focus-within {
-	outline: 2px solid $forest;
-	outline-offset: 2px;
+// One focus ring that follows the search bar's own rounded shape, instead of square outlines
+// on the segment and a second box on the input.
+.segmented-search .search-query input:focus,
+.segmented-search .search-query input:focus-visible {
+	outline: none;
+	box-shadow: none;
+	border-color: transparent;
+}
+.segmented-search .search-segments:has(.search-query input:focus) {
+	box-shadow: 0 0 0 3px rgba(30, 87, 65, 0.35);
+}
+// Over the dark hero a green ring would vanish; lime is the accent for dark surfaces.
+.discovery-home .segmented-search .search-segments:has(.search-query input:focus) {
+	box-shadow: 0 0 0 3px rgba(205, 235, 110, 0.9);
+}
+@media (max-width: 700px) {
+	// On phones the field is its own rounded box, so it carries the ring.
+	.segmented-search .search-segments:has(.search-query input:focus) {
+		box-shadow: none;
+	}
+	.segmented-search .search-query:focus-within {
+		box-shadow: 0 0 0 3px rgba(30, 87, 65, 0.35);
+	}
 }
