@@ -16,6 +16,7 @@ import Layout, { Guard } from '../../libs/components/layout/LayoutBasic';
 import { useAction } from '../../libs/hooks/useApi';
 import { usePaged } from '../../libs/hooks/usePaged';
 import { CreativeEvent, EventStatus } from '../../libs/types/creatorhub';
+import { FieldErrors, useFormValidation } from '../../libs/hooks/useFormValidation';
 
 export default function EventsAdmin() {
 	const { t: translate } = useSiteTranslation('common');
@@ -31,6 +32,7 @@ export default function EventsAdmin() {
 
 function EventContent() {
 	const { t: translate } = useSiteTranslation('common');
+	const validation = useFormValidation();
 
 	const result = usePaged('adminEvents', { input: { upcoming: false } }, false, 20);
 	const action = useAction();
@@ -95,10 +97,12 @@ function EventContent() {
 					<Pager {...result} />
 				</section>
 				<form
+					{...validation.form}
 					key={selected?._id || 'new'}
-					className="panel"
+					className="panel admin-event-form"
 					onSubmit={(e) => {
 						e.preventDefault();
+						if (!validation.validate(e.currentTarget)) return;
 						const f = values(e.currentTarget);
 						action.run(async () => {
 							const input = {
@@ -120,61 +124,65 @@ function EventContent() {
 						});
 					}}
 				>
-					<h2>{selected ? translate('Edit event') : translate('New event')}</h2>
-					<Field label={translate('Title')} name="title" required maxLength={160} defaultValue={selected?.title} />
-					<TextArea
-						label={translate('Description')}
-						name="description"
-						required
-						maxLength={3000}
-						defaultValue={selected?.description}
-					/>
-					<Field
-						label={translate('Starts, UTC')}
-						name="startsAt"
-						type="datetime-local"
-						required
-						defaultValue={dateInput(selected?.startsAt)}
-					/>
-					<Field
-						label={translate('Ends, UTC')}
-						name="endsAt"
-						type="datetime-local"
-						required
-						defaultValue={dateInput(selected?.endsAt)}
-					/>
-					<Field
-						label={translate('Location or online meeting')}
-						name="location"
-						required
-						maxLength={200}
-						defaultValue={selected?.location}
-					/>
-					<Field
-						label={translate('Event website, optional')}
-						name="eventUrl"
-						type="url"
-						pattern="https://.*"
-						maxLength={2000}
-						defaultValue={selected?.eventUrl || ''}
-						hint={translate('Use an HTTPS address. Fictional event concepts do not show registration links.')}
-					/>
-					<Field label={translate('Status')}>
-						<select name="status" defaultValue={selected?.status || 'DRAFT'}>
-							<option value="DRAFT">{translate('Draft')}</option>
-							<option value="PUBLISHED">{translate('Published')}</option>
-							<option value="ARCHIVED">{translate('Archived')}</option>
-						</select>
-					</Field>
-					<label className="checkbox">
-						<input name="isDemo" type="checkbox" defaultChecked={selected?.isDemo ?? false} />
-						{translate('Fictional event concept')}
-					</label>
-					<Feedback {...action} />
-					{saved && <Notice notify>{translate('Event saved.')}</Notice>}
-					<Button type="submit" disabled={action.busy} loading={action.busy} loadingLabel={translate('Saving…')}>
-						{translate('Save event')}
-					</Button>
+					<FieldErrors value={validation.errors}>
+						<h2>{selected ? translate('Edit event') : translate('New event')}</h2>
+						<Field label={translate('Title')} name="title" required maxLength={160} defaultValue={selected?.title} />
+						<TextArea
+							label={translate('Description')}
+							name="description"
+							required
+							maxLength={3000}
+							defaultValue={selected?.description}
+						/>
+						<Field
+							label={translate('Starts, UTC')}
+							name="startsAt"
+							type="datetime-local"
+							required
+							defaultValue={dateInput(selected?.startsAt)}
+						/>
+						<Field
+							label={translate('Ends, UTC')}
+							name="endsAt"
+							type="datetime-local"
+							required
+							defaultValue={dateInput(selected?.endsAt)}
+						/>
+						<Field
+							label={translate('Location or online meeting')}
+							name="location"
+							required
+							maxLength={200}
+							defaultValue={selected?.location}
+						/>
+						<Field
+							label={translate('Event website, optional')}
+							name="eventUrl"
+							type="url"
+							pattern="https://.*"
+							maxLength={2000}
+							defaultValue={selected?.eventUrl || ''}
+							hint={translate('Use an HTTPS address. Fictional event concepts do not show registration links.')}
+						/>
+						<Field label={translate('Status')}>
+							<select name="status" defaultValue={selected?.status || 'DRAFT'}>
+								<option value="DRAFT">{translate('Draft')}</option>
+								<option value="PUBLISHED">{translate('Published')}</option>
+								<option value="ARCHIVED">{translate('Archived')}</option>
+							</select>
+						</Field>
+						<label className="checkbox">
+							<input name="isDemo" type="checkbox" defaultChecked={selected?.isDemo ?? false} />
+							<span>{translate('Fictional event concept')}</span>
+						</label>
+						<Feedback {...action} />
+						{saved && <Notice notify>{translate('Event saved.')}</Notice>}
+						<div className="admin-event-form-actions">
+							<Button type="submit" disabled={action.busy} loading={action.busy} loadingLabel={translate('Saving…')}>
+								{translate('Save event')}
+							</Button>
+						</div>
+					</FieldErrors>
 				</form>
 			</div>
 		</>

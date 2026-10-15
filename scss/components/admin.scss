@@ -843,3 +843,31 @@
 	max-width: 100%;
 	box-sizing: border-box;
 }
+
+// Event editor: every control gets its own row, so the demo checkbox and Save never share a line
+// in the narrow side column.
+.admin-shell .admin-event-form {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: 4px;
+}
+.admin-shell .admin-event-form > .checkbox {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	margin: 6px 0 10px;
+	line-height: 1.4;
+}
+.admin-shell .admin-event-form > .checkbox > span {
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+.admin-shell .admin-event-form > .checkbox input {
+	margin: 1px 0 0;
+}
+.admin-event-form-actions {
+	display: flex;
+	justify-content: flex-start;
+	margin-top: 8px;
+}

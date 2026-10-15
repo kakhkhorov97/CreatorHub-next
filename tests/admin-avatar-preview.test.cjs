@@ -41,6 +41,11 @@ function harness(avatarUrl) {
 			if (name === 'next-i18next') return { useTranslation: () => ({ t: (key) => key }) };
 			if (name === 'next/link') return () => null;
 			if (name === '../../hooks/useApi') return api;
+			if (name === '../../hooks/useFormValidation')
+				return {
+					FieldErrors: ({ children }) => children,
+					useFormValidation: () => ({ errors: {}, validate: () => true, clear() {}, form: {} }),
+				};
 			if (name === './directoryConfig') return { labels: { USERS: 'Users' }, states: { USERS: ['ACTIVE'] } };
 			if (name === '../common/UI')
 				return new Proxy(

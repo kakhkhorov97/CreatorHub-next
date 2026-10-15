@@ -1,22 +1,34 @@
 import { useTranslation as useSiteTranslation } from 'next-i18next';
-import Link from 'next/link';
 import { useApi } from '../../hooks/useApi';
 import { QueryState } from '../common/UI';
 
-export default function CategoryShortcuts() {
+// Homepage category tabs filter the results in place and mirror the Category dropdown:
+// the selected category is pressed, and "All work" is pressed only when no category is chosen.
+export default function CategoryShortcuts({
+	selected,
+	onSelect,
+}: {
+	selected?: string;
+	onSelect: (categoryId?: string) => void;
+}) {
 	const { t: translate } = useSiteTranslation('common');
 	const categories = useApi('categories');
 	return (
 		<section className="category-section">
 			<QueryState loading={categories.loading} error={categories.error} retry={() => categories.refetch()} />
 			<nav className="category-links" aria-label={translate('Project categories')}>
-				<Link passHref href="/projects" className="is-all">
+				<button type="button" aria-pressed={!selected} onClick={() => onSelect(undefined)}>
 					{translate('All work')}
-				</Link>
+				</button>
 				{categories.value?.map((category) => (
-					<Link passHref key={category._id} href={`/projects?categoryId=${category._id}`}>
+					<button
+						type="button"
+						key={category._id}
+						aria-pressed={selected === category._id}
+						onClick={() => onSelect(category._id)}
+					>
 						{translate(category.name)}
-					</Link>
+					</button>
 				))}
 			</nav>
 		</section>

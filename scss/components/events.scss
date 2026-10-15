@@ -343,3 +343,8 @@
 .event-cover {
 	height: auto;
 }
+@media (min-width: 701px) {
+	.home-events .event-list > :nth-child(n + 4) {
+		display: none;
+	}
+}

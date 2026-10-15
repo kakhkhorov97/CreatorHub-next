@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useAction, useApi } from '../../hooks/useApi';
 import { Inquiry } from '../../types/creatorhub';
 import { Button, Confirm, date, Feedback, Field, QueryState, TextArea, values } from '../common/UI';
+import { FieldErrors, useFormValidation } from '../../hooks/useFormValidation';
 
 export function EngagementFeedback({
 	inquiry,
@@ -15,6 +16,7 @@ export function EngagementFeedback({
 	refresh: () => Promise<unknown>;
 }) {
 	const { t: translate } = useSiteTranslation('common');
+	const validation = useFormValidation();
 
 	const existing = useApi('getInquiryFeedback', { inquiryId: inquiry._id });
 	const action = useAction();
@@ -34,8 +36,10 @@ export function EngagementFeedback({
 				</>
 			) : isClient && inquiry.outcome === 'COMPLETED' && !existing.loading && !existing.error ? (
 				<form
+					{...validation.form}
 					onSubmit={(event) => {
 						event.preventDefault();
+						if (!validation.validate(event.currentTarget)) return;
 						const f = values(event.currentTarget);
 						action.run(async () => {
 							await action.mutate('createServiceFeedback', {
@@ -46,25 +50,27 @@ export function EngagementFeedback({
 						});
 					}}
 				>
-					<p>
-						{translate('How was the completed work? Your rating and feedback will appear on the creator’s profile.')}
-					</p>
-					<Field label={translate('Rating')}>
-						<select name="rating" required defaultValue="">
-							<option value="" disabled>
-								{translate('Choose a rating')}
-							</option>
-							{[5, 4, 3, 2, 1].map((n) => (
-								<option key={n} value={n}>
-									{n} {n === 1 ? translate('star') : translate('stars')}
+					<FieldErrors value={validation.errors}>
+						<p>
+							{translate('How was the completed work? Your rating and feedback will appear on the creator’s profile.')}
+						</p>
+						<Field label={translate('Rating')}>
+							<select name="rating" required defaultValue="">
+								<option value="" disabled>
+									{translate('Choose a rating')}
 								</option>
-							))}
-						</select>
-					</Field>
-					<TextArea label={translate('Your feedback')} name="feedback" required maxLength={2000} rows={3} />
-					<Button type="submit" disabled={action.busy}>
-						{translate('Post review')}
-					</Button>
+								{[5, 4, 3, 2, 1].map((n) => (
+									<option key={n} value={n}>
+										{n} {n === 1 ? translate('star') : translate('stars')}
+									</option>
+								))}
+							</select>
+						</Field>
+						<TextArea label={translate('Your feedback')} name="feedback" required maxLength={2000} rows={3} />
+						<Button type="submit" disabled={action.busy}>
+							{translate('Post review')}
+						</Button>
+					</FieldErrors>
 				</form>
 			) : isClient && inquiry.outcome === 'AGREED_TO_PROCEED' ? (
 				<>

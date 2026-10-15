@@ -10,12 +10,23 @@ export function authSubmissionErrorField(message: string, mode: string, resendin
 	return 'password';
 }
 
+// Same wording as the shared inline validation (libs/utils/formValidation.ts).
+const requiredMessages: Record<string, string> = {
+	displayName: 'Please enter your name.',
+	email: 'Please enter your email address.',
+	phoneNumber: 'Please enter your contact phone number.',
+	password: 'Please enter a password.',
+	confirmPassword: 'Please confirm your password.',
+	token: 'Please enter the verification code.',
+};
+
 export function validateAuthForm(form: HTMLFormElement, confirmPassword = false): AuthFieldErrors {
 	const errors: AuthFieldErrors = {};
 	for (const input of Array.from(form.elements)) {
 		if (!(input instanceof HTMLInputElement) || !input.name || input.disabled) continue;
-		if (input.validity.valueMissing) errors[input.name] = 'This field is required.';
-		else if (input.validity.typeMismatch && input.type === 'email') errors[input.name] = 'Enter a valid email address.';
+		if (input.validity.valueMissing) errors[input.name] = requiredMessages[input.name] || 'Please fill in this field.';
+		else if (input.validity.typeMismatch && input.type === 'email')
+			errors[input.name] = 'Please enter a valid email address.';
 		else if (input.validity.patternMismatch)
 			errors[input.name] = 'Use 6–30 characters with a letter, a number, and a symbol. Example: River7!Cloud.';
 		else if (
@@ -24,7 +35,7 @@ export function validateAuthForm(form: HTMLFormElement, confirmPassword = false)
 			(input.minLength > 0 && input.value.length < input.minLength) ||
 			(input.maxLength >= 0 && input.value.length > input.maxLength)
 		)
-			errors[input.name] = 'Check the length of this field.';
+			errors[input.name] = 'Please check the length of this entry.';
 	}
 	if (confirmPassword) {
 		const fields = new FormData(form);

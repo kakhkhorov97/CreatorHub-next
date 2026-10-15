@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { CheckCircle, PaperPlaneTilt } from 'phosphor-react';
+import { FieldErrors, useFormValidation } from '../../hooks/useFormValidation';
 import { Button, Field, TextArea, values } from './UI';
 export default function ContactForm() {
 	const { t } = useTranslation('common');
@@ -9,6 +10,7 @@ export default function ContactForm() {
 	const [sent, setSent] = useState(false);
 	const [error, setError] = useState('');
 	const [retryUntil, setRetryUntil] = useState(0);
+	const validation = useFormValidation();
 	return (
 		<section className="contact-form-panel">
 			<h2>{t('Contact the CreatorHub team')}</h2>
@@ -24,9 +26,10 @@ export default function ContactForm() {
 				</div>
 			) : (
 				<form
+					{...validation.form}
 					onSubmit={async (event) => {
 						event.preventDefault();
-						if (lock.current) return;
+						if (lock.current || !validation.validate(event.currentTarget)) return;
 						if (Date.now() < retryUntil) {
 							setError(t('Please wait before sending another message.'));
 							return;
@@ -62,35 +65,37 @@ export default function ContactForm() {
 						}
 					}}
 				>
-					<div className="contact-form-fields">
-						<Field
-							label="Your name"
-							name="name"
+					<FieldErrors value={validation.errors}>
+						<div className="contact-form-fields">
+							<Field
+								label="Your name"
+								name="name"
+								required
+								minLength={2}
+								maxLength={100}
+								autoComplete="name"
+								disabled={busy}
+							/>
+							<Field
+								label="Email address"
+								name="email"
+								type="email"
+								required
+								maxLength={254}
+								autoComplete="email"
+								disabled={busy}
+							/>
+						</div>
+						<TextArea
+							label="Your message"
+							name="message"
 							required
-							minLength={2}
-							maxLength={100}
-							autoComplete="name"
+							minLength={10}
+							maxLength={5000}
+							rows={5}
 							disabled={busy}
 						/>
-						<Field
-							label="Email address"
-							name="email"
-							type="email"
-							required
-							maxLength={254}
-							autoComplete="email"
-							disabled={busy}
-						/>
-					</div>
-					<TextArea
-						label="Your message"
-						name="message"
-						required
-						minLength={10}
-						maxLength={5000}
-						rows={5}
-						disabled={busy}
-					/>
+					</FieldErrors>
 					<label className="contact-honeypot" aria-hidden>
 						Website
 						<input name="website" tabIndex={-1} autoComplete="off" defaultValue="" />

@@ -1,9 +1,9 @@
 import { ProjectConceptDetails, conceptCopy } from '../../libs/components/discovery/ConceptDetails';
-import { ArrowLeft } from 'phosphor-react';
 import { socialPageProps, SocialPageProps } from '../../libs/server/socialMetadata';
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { useReactiveVar } from '@apollo/client';
 import Link from 'next/link';
+import { BackLink } from '../../libs/components/common/BackLink';
 import { useRouter } from 'next/router';
 import { ArrowUpRight } from 'phosphor-react';
 import { userVar } from '../../apollo/store';
@@ -40,15 +40,7 @@ function ProjectDetail({ seo }: SocialPageProps) {
 	}
 	return (
 		<Layout seo={seo} title={p?.title || translate('Project')}>
-			<Link
-				passHref
-				href="/"
-				className="back-link"
-				aria-label={translate('Back to explore')}
-				title={translate('Back to explore')}
-			>
-				<ArrowLeft size={22} aria-hidden />
-			</Link>
+			<BackLink href="/" label={translate('Back to explore')} />
 			<QueryState loading={result.loading} error={result.error} retry={() => result.refetch()} />
 			{p && (
 				<>

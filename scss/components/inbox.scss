@@ -368,13 +368,22 @@ $room-surface: #faf9f5;
 	width: 44px;
 	height: 44px;
 	flex: none;
+	min-width: 44px;
+	aspect-ratio: 1;
+	padding: 0;
+	box-sizing: border-box;
 	border-radius: 50%;
 	border: 1px solid $line-color;
 	background: $paper-white;
 	color: $ink;
 	place-items: center;
+	line-height: 0;
 	cursor: pointer;
 	transition: background $motion;
+}
+// The icon is the only content, so it must not sit on a text baseline.
+.chat-details-toggle svg {
+	display: block;
 }
 .chat-details-toggle:hover,
 .chat-details-toggle.active {

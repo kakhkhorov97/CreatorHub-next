@@ -6,6 +6,7 @@ import { useAction, useApi } from '../../hooks/useApi';
 import { useCreatorDirectory } from '../../hooks/useCreatorDirectory';
 import { Inquiry } from '../../types/creatorhub';
 import { Button, Confirm, Feedback, Field, Heading, Notice, optional, TextArea, values } from '../common/UI';
+import { FieldErrors, useFormValidation } from '../../hooks/useFormValidation';
 
 // Retained drafts can still be sent or removed. New inquiries are sent in one transaction.
 export function Draft({
@@ -20,6 +21,7 @@ export function Draft({
 	refresh?: () => Promise<unknown>;
 }) {
 	const { t: translate } = useSiteTranslation('common');
+	const validation = useFormValidation();
 
 	const action = useAction();
 	const router = useRouter();
@@ -49,8 +51,10 @@ export function Draft({
 							</p>
 						)}
 						<form
+							{...validation.form}
 							onSubmit={(event) => {
 								event.preventDefault();
+								if (!validation.validate(event.currentTarget)) return;
 								const f = values(event.currentTarget);
 								action.run(async () => {
 									if (f.budgetMin && f.budgetMax && Number(f.budgetMin) > Number(f.budgetMax))
@@ -90,64 +94,66 @@ export function Draft({
 								});
 							}}
 						>
-							<Field
-								label={translate('Subject')}
-								name="subject"
-								required
-								maxLength={150}
-								defaultValue={inquiry?.subject || ''}
-							/>
-							<TextArea
-								label={translate('Project brief')}
-								name="brief"
-								required
-								minLength={20}
-								maxLength={10000}
-								rows={7}
-								defaultValue={inquiry?.brief || ''}
-							/>
-							<Field label={translate('Service')}>
-								<select
-									name="serviceId"
-									value={selectedService}
-									onChange={(event) => setSelectedService(event.target.value)}
-								>
-									<option value="">{translate('General inquiry')}</option>
-									{services.value?.map((service) => (
-										<option key={service._id} value={service._id}>
-											{service.title}
-										</option>
-									))}
-								</select>
-							</Field>
-							<div className="form-row">
+							<FieldErrors value={validation.errors}>
 								<Field
-									label={translate('Minimum budget (KRW)')}
-									name="budgetMin"
-									type="number"
-									min={0}
-									max={1000000000}
-									defaultValue={inquiry?.budgetMin ?? ''}
+									label={translate('Subject')}
+									name="subject"
+									required
+									maxLength={150}
+									defaultValue={inquiry?.subject || ''}
 								/>
+								<TextArea
+									label={translate('Project brief')}
+									name="brief"
+									required
+									minLength={20}
+									maxLength={10000}
+									rows={7}
+									defaultValue={inquiry?.brief || ''}
+								/>
+								<Field label={translate('Service')}>
+									<select
+										name="serviceId"
+										value={selectedService}
+										onChange={(event) => setSelectedService(event.target.value)}
+									>
+										<option value="">{translate('General inquiry')}</option>
+										{services.value?.map((service) => (
+											<option key={service._id} value={service._id}>
+												{service.title}
+											</option>
+										))}
+									</select>
+								</Field>
+								<div className="form-row">
+									<Field
+										label={translate('Minimum budget (KRW)')}
+										name="budgetMin"
+										type="number"
+										min={0}
+										max={1000000000}
+										defaultValue={inquiry?.budgetMin ?? ''}
+									/>
+									<Field
+										label={translate('Maximum budget (KRW)')}
+										name="budgetMax"
+										type="number"
+										min={0}
+										max={1000000000}
+										defaultValue={inquiry?.budgetMax ?? ''}
+									/>
+								</div>
 								<Field
-									label={translate('Maximum budget (KRW)')}
-									name="budgetMax"
-									type="number"
-									min={0}
-									max={1000000000}
-									defaultValue={inquiry?.budgetMax ?? ''}
+									label={translate('Desired deadline')}
+									name="desiredDeadline"
+									type="date"
+									defaultValue={inquiry?.desiredDeadline?.slice(0, 10) || ''}
 								/>
-							</div>
-							<Field
-								label={translate('Desired deadline')}
-								name="desiredDeadline"
-								type="date"
-								defaultValue={inquiry?.desiredDeadline?.slice(0, 10) || ''}
-							/>
-							<Feedback error={action.error} busy={action.busy} busyLabel="Sending…" />
-							<Button type="submit" disabled={action.busy}>
-								{action.busy ? translate('Sending…') : translate('Send inquiry')}
-							</Button>
+								<Feedback error={action.error} busy={action.busy} busyLabel="Sending…" />
+								<Button type="submit" disabled={action.busy}>
+									{action.busy ? translate('Sending…') : translate('Send inquiry')}
+								</Button>
+							</FieldErrors>
 						</form>
 					</section>
 					<aside className="panel publishing">

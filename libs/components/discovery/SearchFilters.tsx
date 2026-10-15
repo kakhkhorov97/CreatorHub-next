@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useState } from 'react';
 import OptionSheet from './OptionSheet';
 import { useApi } from '../../hooks/useApi';
 import { DiscoveryInput } from '../../types/creatorhub';
+import { useFormValidation } from '../../hooks/useFormValidation';
 import { Button, optional, values } from '../common/UI';
 
 export default function SearchFilters({
@@ -21,6 +22,7 @@ export default function SearchFilters({
 }) {
 	const { t: translate } = useSiteTranslation('common');
 
+	const validation = useFormValidation();
 	const categories = useApi('categories');
 	const cities = useApi('getCities');
 	const [category, setCategory] = useState(filters.categoryId || '');
@@ -32,7 +34,7 @@ export default function SearchFilters({
 
 	function submit(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
-		if (loading) return;
+		if (loading || !validation.validate(event.currentTarget)) return;
 		const fields = values(event.currentTarget);
 		onSearch({
 			query: optional(fields.query),
@@ -43,7 +45,12 @@ export default function SearchFilters({
 		});
 	}
 	return (
-		<form id={home ? 'homepage-search' : 'directory-search'} className="search-form segmented-search" onSubmit={submit}>
+		<form
+			{...validation.form}
+			id={home ? 'homepage-search' : 'directory-search'}
+			className="search-form segmented-search"
+			onSubmit={submit}
+		>
 			<div className="search-segments">
 				<label className="search-query">
 					<MagnifyingGlass size={23} />
@@ -122,12 +129,19 @@ export default function SearchFilters({
 			</div>
 			<div className="filters">
 				<label className="checkbox">
-					<input type="checkbox" name="remoteAvailable" defaultChecked={filters.remoteAvailable || false} />
+					<input
+						type="checkbox"
+						name="remoteAvailable"
+						key={`remote-${!!filters.remoteAvailable}`}
+						defaultChecked={filters.remoteAvailable || false}
+					/>
 					{translate('Remote available')}
 				</label>
 				{kind === 'services' && (
 					<input
 						className="budget-filter"
+						key={`budget-${filters.budgetMax ?? ''}`}
+						defaultValue={filters.budgetMax ?? ''}
 						name="budgetMax"
 						type="text"
 						inputMode="numeric"
@@ -142,8 +156,15 @@ export default function SearchFilters({
 						min={0}
 						max={1000000000}
 						aria-label={translate('Maximum budget in won')}
+						aria-invalid={validation.errors.budgetMax ? true : undefined}
+						aria-describedby={validation.errors.budgetMax ? 'budget-filter-error' : undefined}
 						placeholder={translate('Max budget (₩)')}
 					/>
+				)}
+				{validation.errors.budgetMax && (
+					<small id="budget-filter-error" className="field-error budget-filter-error" role="alert">
+						{validation.errors.budgetMax}
+					</small>
 				)}
 				<Button
 					secondary
@@ -152,6 +173,7 @@ export default function SearchFilters({
 					aria-label={translate('Reset')}
 					title={translate('Reset')}
 					onClick={() => {
+						validation.clear();
 						setCategory('');
 						setCity('');
 						onSearch({});

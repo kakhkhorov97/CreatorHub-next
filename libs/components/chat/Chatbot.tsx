@@ -295,7 +295,8 @@ export default function Chatbot() {
 							</Link>
 						</p>
 					)}
-					<form onSubmit={submit}>
+					{/* Blank messages are ignored by submit(), so no browser validation popup. */}
+					<form noValidate onSubmit={submit}>
 						<label className="sr-only" htmlFor="chat-message">
 							{translate('Your message')}
 						</label>

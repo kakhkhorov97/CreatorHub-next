@@ -1,6 +1,7 @@
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { ArrowLeft, ArrowRight } from 'phosphor-react';
 import React, { ReactNode, useEffect, useRef } from 'react';
+import { readableError } from '../../utils/errors';
 import { label } from '../../utils/format';
 import { ConfirmationPrompt } from './ConfirmationPrompt';
 import { Button } from './Button';
@@ -34,7 +35,8 @@ export function QueryState({
 	if (error)
 		return (
 			<Notice error>
-				{translate(error.message)}{' '}
+				{/* Apollo joins every GraphQL error into one message; show the first readable reason once. */}
+				{translate(readableError(error))}{' '}
 				{retry && (
 					<Button secondary onClick={retry}>
 						{translate('Try again')}

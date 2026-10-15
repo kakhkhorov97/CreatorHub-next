@@ -81,9 +81,10 @@ function EventCard({ event }: { event: CreativeEvent }) {
 export function EventsSection({ home = false }: { home?: boolean }) {
 	const { t: translate } = useSiteTranslation('common');
 
-	const result = usePaged('getEvents', { input: { upcoming: true } }, false, home ? 3 : 12);
+	// The homepage asks for four: phones show all four, wider screens keep three (see events.scss).
+	const result = usePaged('getEvents', { input: { upcoming: true } }, false, home ? 4 : 12);
 	return (
-		<section className="home-section events-section">
+		<section className={`home-section events-section ${home ? 'home-events' : ''}`}>
 			<div className="home-section-heading">
 				<div>
 					<h2>{home ? translate('Creative events') : translate('Upcoming events')}</h2>

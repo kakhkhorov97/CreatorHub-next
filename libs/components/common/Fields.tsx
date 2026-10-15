@@ -1,12 +1,13 @@
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { Eye, EyeSlash } from 'phosphor-react';
 import React, { ReactNode, useId, useState } from 'react';
+import { useFieldErrorFor } from '../../hooks/useFormValidation';
 import { handleMessageKey } from '../../utils/messageKeyboard';
 
 export function Field({
 	label: text,
 	hint,
-	error,
+	error: explicitError,
 	children,
 	...props
 }: React.InputHTMLAttributes<HTMLInputElement> & {
@@ -16,6 +17,9 @@ export function Field({
 	children?: ReactNode;
 }) {
 	const { t: translate } = useSiteTranslation('common');
+	const childName = React.isValidElement(children) ? (children.props as { name?: string }).name : undefined;
+	const contextError = useFieldErrorFor(props.name || childName);
+	const error = explicitError || contextError;
 	const numeric = /^budget/i.test(props.name || '');
 	const id = useId();
 	const describedBy =
@@ -72,22 +76,32 @@ export function Field({
 
 export function TextArea({
 	label: text,
+	error: explicitError,
 	...props
-}: React.TextareaHTMLAttributes<HTMLTextAreaElement> & { label: string }) {
+}: React.TextareaHTMLAttributes<HTMLTextAreaElement> & { label: string; error?: string }) {
 	const { t: translate } = useSiteTranslation('common');
 	const id = useId();
+	const contextError = useFieldErrorFor(props.name);
+	const error = explicitError || contextError;
+	const describedBy = [props['aria-describedby'] || `${id}-shortcut`, error && `${id}-error`].filter(Boolean).join(' ');
 	return (
 		<label className="field" htmlFor={id}>
 			<span>{translate(text)}</span>
 			<textarea
 				id={id}
 				{...props}
-				aria-describedby={props['aria-describedby'] || `${id}-shortcut`}
+				aria-describedby={describedBy}
+				aria-invalid={error ? true : undefined}
 				onKeyDown={(event) => {
 					props.onKeyDown?.(event);
 					if (!event.defaultPrevented) handleMessageKey(event, !props.disabled);
 				}}
 			/>
+			{error && (
+				<small id={`${id}-error`} className="field-error" role="alert">
+					{translate(error)}
+				</small>
+			)}
 			{!props['aria-describedby'] && (
 				<small id={`${id}-shortcut`}>{translate('Enter to submit. Shift+Enter for a new line.')}</small>
 			)}
@@ -98,10 +112,12 @@ export function TextArea({
 export function Password({
 	label: text = 'Password',
 	showRequirements = true,
-	error,
+	error: explicitError,
 	...props
 }: React.InputHTMLAttributes<HTMLInputElement> & { label?: string; showRequirements?: boolean; error?: string }) {
 	const { t: translate } = useSiteTranslation('common');
+	const contextError = useFieldErrorFor(props.name);
+	const error = explicitError || contextError;
 
 	const [show, setShow] = useState(false);
 	const newPassword = props.autoComplete === 'new-password';

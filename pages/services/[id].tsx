@@ -5,10 +5,10 @@ import {
 	conceptImage,
 	conceptCopy,
 } from '../../libs/components/discovery/ConceptDetails';
-import { ArrowLeft } from 'phosphor-react';
 import { socialPageProps, SocialPageProps } from '../../libs/server/socialMetadata';
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import Link from 'next/link';
+import { BackLink } from '../../libs/components/common/BackLink';
 import { useRouter } from 'next/router';
 import { Heading, LinkButton, money, Picture, QueryState } from '../../libs/components/common/UI';
 import Layout from '../../libs/components/layout/LayoutBasic';
@@ -27,15 +27,7 @@ function ServiceDetail({ seo }: SocialPageProps) {
 	const demo = !!s && isConceptService(creator?.slug, s.description);
 	return (
 		<Layout seo={seo} title={s?.title || translate('Service')}>
-			<Link
-				passHref
-				href="/services"
-				className="back-link"
-				aria-label={translate('Back to services')}
-				title={translate('Back to services')}
-			>
-				<ArrowLeft size={22} aria-hidden />
-			</Link>
+			<BackLink href="/services" label={translate('Back to services')} />
 			<QueryState loading={result.loading} error={result.error} retry={() => result.refetch()} />
 			{s && (
 				<>

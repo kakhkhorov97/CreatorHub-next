@@ -47,8 +47,8 @@ test('required fields, malformed email and password mismatch remain attached to 
 		],
 	};
 	const errors = validateAuthForm(form, true);
-	assert.equal(errors.displayName, 'This field is required.');
-	assert.equal(errors.email, 'Enter a valid email address.');
+	assert.equal(errors.displayName, 'Please enter your name.');
+	assert.equal(errors.email, 'Please enter a valid email address.');
 	assert.equal(errors.confirmPassword, 'Passwords do not match. Please try again.');
 	assert.equal(form.elements[2].value, 'River7!Cloud');
 });

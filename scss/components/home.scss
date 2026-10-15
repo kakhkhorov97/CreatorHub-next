@@ -828,7 +828,8 @@
 	display: none;
 }
 .discovery-home .category-links a,
-.category-section .category-links a {
+.category-section .category-links a,
+.category-section .category-links button {
 	flex: none;
 	display: inline-flex;
 	padding: 9px 16px;
@@ -841,10 +842,22 @@
 	white-space: nowrap;
 	text-decoration: none;
 }
-.category-section .category-links a:hover {
+.category-section .category-links button {
+	cursor: pointer;
+	font-family: inherit;
+	line-height: inherit;
+	min-height: 40px;
+	align-items: center;
+}
+.category-section .category-links a:hover,
+.category-section .category-links button:hover {
 	border-color: $forest;
 }
-.category-section .category-links a.is-all {
+.category-section .category-links button:focus-visible {
+	outline: 2px solid $forest;
+	outline-offset: 2px;
+}
+.category-section .category-links button[aria-pressed='true'] {
 	background: $ink-text;
 	border-color: $ink-text;
 	color: $ivory;
@@ -1160,5 +1173,60 @@
 	}
 	.segmented-search .search-query:focus-within {
 		box-shadow: 0 0 0 3px rgba(30, 87, 65, 0.35);
+	}
+	// The homepage rule above is more specific than the phone reset, so it drew a lime oval
+	// around the whole stacked form. On phones each control on the dark hero gets its own ring.
+	.discovery-home .segmented-search .search-segments:has(.search-query input:focus) {
+		box-shadow: none;
+	}
+	.discovery-home .segmented-search .search-query:focus-within,
+	.discovery-home .segmented-search .option-sheet-trigger:focus-visible,
+	.discovery-home .segmented-search .search-submit:focus-visible {
+		outline: none;
+		box-shadow: 0 0 0 3px rgba(205, 235, 110, 0.9);
+	}
+}
+
+// Homepage search results (fix list 4): the active search stays visible with one clear control,
+// and every result on the page is shown (the popular grid trims to full rows on narrower screens).
+.active-search {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin: -16px 0 24px;
+}
+.active-search ul {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	min-width: 0;
+}
+.active-search li {
+	max-width: 100%;
+	padding: 6px 12px;
+	border: 1px solid $line-color;
+	border-radius: $radius-pill;
+	background: $paper-white;
+	font-size: 14px;
+	overflow-wrap: anywhere;
+}
+.active-search .clear-search {
+	gap: 6px;
+	min-height: 44px;
+}
+.discovery-home .grid.projects.is-search-results > :nth-child(n + 7) {
+	display: flex;
+}
+@media (max-width: 700px) {
+	.active-search {
+		margin-top: -12px;
+	}
+	.active-search .clear-search {
+		width: 100%;
 	}
 }
