@@ -1,19 +1,35 @@
 import { CaretDown, Check, X } from 'phosphor-react';
 import { useTranslation } from 'next-i18next';
 import { useEffect, useId, useRef, useState } from 'react';
-import { useApi } from '../../hooks/useApi';
 
-export default function CategoryPicker({
+export type SheetOption = { value: string; label: string };
+
+/**
+ * Phone version of a search select: a labelled trigger that opens a bottom sheet of options.
+ * Category and Location both use it, so they look and behave the same.
+ */
+export default function OptionSheet({
+	label,
+	title,
 	value = '',
+	allLabel,
+	options,
+	loading = false,
+	error = false,
+	onRetry,
 	onChange,
-	name,
 }: {
+	label: string;
+	title: string;
 	value?: string;
+	allLabel: string;
+	options: SheetOption[];
+	loading?: boolean;
+	error?: boolean;
+	onRetry?(): void;
 	onChange(value: string): void;
-	name?: string;
 }) {
 	const { t } = useTranslation('common');
-	const categories = useApi('categories');
 	const dialog = useRef<HTMLDialogElement>(null);
 	const [open, setOpen] = useState(false);
 	const titleId = useId();
@@ -25,17 +41,16 @@ export default function CategoryPicker({
 			document.body.style.overflow = previous;
 		};
 	}, [open]);
-	const selected = categories.value?.find((category) => category._id === value);
-	function choose(id: string) {
-		onChange(id);
+	const selected = options.find((option) => option.value === value);
+	function choose(next: string) {
+		onChange(next);
 		dialog.current?.close();
 	}
 	return (
-		<div className="mobile-category-picker">
-			{name && <input type="hidden" name={name} value={value} />}
+		<div className="mobile-option-sheet">
 			<button
 				type="button"
-				className="category-picker-trigger"
+				className="option-sheet-trigger"
 				aria-haspopup="dialog"
 				aria-expanded={open}
 				onClick={() => {
@@ -43,8 +58,9 @@ export default function CategoryPicker({
 					setOpen(true);
 				}}
 			>
-				<span>{t(selected?.name || 'All categories')}</span>
-				<CaretDown size={18} aria-hidden />
+				<span className="option-sheet-label">{label}</span>
+				<span className="option-sheet-value">{selected?.label || allLabel}</span>
+				<CaretDown size={16} aria-hidden />
 			</button>
 			<dialog
 				ref={dialog}
@@ -57,11 +73,11 @@ export default function CategoryPicker({
 			>
 				<div className="category-sheet-content">
 					<header>
-						<h2 id={titleId}>{t('Choose a category')}</h2>
+						<h2 id={titleId}>{title}</h2>
 						<button
 							type="button"
 							className="icon-button"
-							aria-label={t('Close categories')}
+							aria-label={t('Close')}
 							onClick={() => dialog.current?.close()}
 						>
 							<X size={22} />
@@ -69,23 +85,23 @@ export default function CategoryPicker({
 					</header>
 					<div className="category-sheet-options">
 						<button type="button" aria-pressed={!value} onClick={() => choose('')}>
-							<span>{t('All categories')}</span>
+							<span>{allLabel}</span>
 							{!value && <Check size={20} aria-hidden />}
 						</button>
-						{categories.value?.map((category) => (
+						{options.map((option) => (
 							<button
 								type="button"
-								key={category._id}
-								aria-pressed={category._id === value}
-								onClick={() => choose(category._id)}
+								key={option.value}
+								aria-pressed={option.value === value}
+								onClick={() => choose(option.value)}
 							>
-								<span>{t(category.name)}</span>
-								{category._id === value && <Check size={20} aria-hidden />}
+								<span>{option.label}</span>
+								{option.value === value && <Check size={20} aria-hidden />}
 							</button>
 						))}
-						{categories.loading && <p role="status">{t('Loading…')}</p>}
-						{categories.error && (
-							<button type="button" onClick={() => categories.refetch()}>
+						{loading && <p role="status">{t('Loading…')}</p>}
+						{error && onRetry && (
+							<button type="button" onClick={onRetry}>
 								{t('Try again')}
 							</button>
 						)}

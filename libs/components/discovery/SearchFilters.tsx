@@ -1,7 +1,7 @@
 import { useTranslation as useSiteTranslation } from 'next-i18next';
-import { CaretDown, MagnifyingGlass, ArrowCounterClockwise } from 'phosphor-react';
+import { MagnifyingGlass, ArrowCounterClockwise } from 'phosphor-react';
 import { FormEvent, useEffect, useState } from 'react';
-import CategoryPicker from './CategoryPicker';
+import OptionSheet from './OptionSheet';
 import { useApi } from '../../hooks/useApi';
 import { DiscoveryInput } from '../../types/creatorhub';
 import { Button, optional, values } from '../common/UI';
@@ -23,39 +23,21 @@ export default function SearchFilters({
 
 	const categories = useApi('categories');
 	const cities = useApi('getCities');
-	const [searched, setSearched] = useState(false);
 	const [category, setCategory] = useState(filters.categoryId || '');
 	useEffect(() => setCategory(filters.categoryId || ''), [filters.categoryId]);
+	const [city, setCity] = useState(filters.city || '');
+	useEffect(() => setCity(filters.city || ''), [filters.city]);
+	const categoryOptions = (categories.value || []).map((item) => ({ value: item._id, label: translate(item.name) }));
+	const cityOptions = (cities.value || []).map((item) => ({ value: item.key, label: translate(item.nameEn) }));
 
-	useEffect(() => {
-		if (!searched || loading) return;
-		const frame = requestAnimationFrame(() => {
-			if (window.innerWidth <= 700) {
-				const form = document.getElementById(home ? 'homepage-search' : 'directory-search');
-				const result = form?.parentElement?.querySelector('.search-result-status');
-				if (result)
-					window.scrollTo({
-						top:
-							result.getBoundingClientRect().top +
-							window.scrollY -
-							(document.querySelector('.site-header')?.getBoundingClientRect().height || 0) -
-							16,
-						behavior: 'auto',
-					});
-			}
-			setSearched(false);
-		});
-		return () => cancelAnimationFrame(frame);
-	}, [searched, loading, home]);
 	function submit(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 		if (loading) return;
-		setSearched(true);
 		const fields = values(event.currentTarget);
 		onSearch({
 			query: optional(fields.query),
 			categoryId: optional(category),
-			city: optional(fields.city),
+			city: optional(city),
 			remoteAvailable: fields.remoteAvailable ? true : undefined,
 			...(kind === 'services' && fields.budgetMax ? { budgetMax: Number(fields.budgetMax) } : {}),
 		});
@@ -84,36 +66,57 @@ export default function SearchFilters({
 						}
 					/>
 				</label>
-				<label className="search-segment desktop-category-filter">
+				{/* Computers: two native selects. Phones: the same two fields as matching bottom sheets. */}
+				<label className="search-segment desktop-search-filter">
 					<span>{translate('Category')}</span>
 					<select name="categoryId" value={category} onChange={(event) => setCategory(event.target.value)}>
 						<option value="">{translate('All categories')}</option>
-						{categories.value?.map((category) => (
-							<option key={category._id} value={category._id}>
-								{translate(category.name)}
+						{categoryOptions.map((option) => (
+							<option key={option.value} value={option.value}>
+								{option.label}
 							</option>
 						))}
 					</select>
 				</label>
-				<CategoryPicker value={category} onChange={setCategory} />
-				<label className="search-segment location-filter">
+				<label className="search-segment desktop-search-filter">
 					<span>{translate('Location')}</span>
-					<select
-						aria-label={translate('Location')}
-						name="city"
-						key={filters.city || 'korea'}
-						defaultValue={filters.city || ''}
-					>
+					<select name="city" value={city} onChange={(event) => setCity(event.target.value)}>
 						<option value="">{translate('All Korea')}</option>
-						{cities.value?.map((city) => (
-							<option key={city.key} value={city.key}>
-								{translate(city.nameEn)}
+						{cityOptions.map((option) => (
+							<option key={option.value} value={option.value}>
+								{option.label}
 							</option>
 						))}
 					</select>
-					<CaretDown className="location-caret" size={16} aria-hidden="true" />
 				</label>
-				<Button type="submit" loading={loading} loadingLabel={translate('Searching…')}>
+				<OptionSheet
+					label={translate('Category')}
+					title={translate('Choose a category')}
+					allLabel={translate('All categories')}
+					value={category}
+					options={categoryOptions}
+					loading={categories.loading}
+					error={!!categories.error}
+					onRetry={() => categories.refetch()}
+					onChange={setCategory}
+				/>
+				<OptionSheet
+					label={translate('Location')}
+					title={translate('Choose a location')}
+					allLabel={translate('All Korea')}
+					value={city}
+					options={cityOptions}
+					loading={cities.loading}
+					error={!!cities.error}
+					onRetry={() => cities.refetch()}
+					onChange={setCity}
+				/>
+				<Button
+					type="submit"
+					className="search-submit"
+					loading={loading}
+					aria-label={loading ? translate('Searching…') : undefined}
+				>
 					{translate('Search')}
 				</Button>
 			</div>
@@ -150,6 +153,7 @@ export default function SearchFilters({
 					title={translate('Reset')}
 					onClick={() => {
 						setCategory('');
+						setCity('');
 						onSearch({});
 					}}
 				>

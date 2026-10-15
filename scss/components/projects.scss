@@ -640,3 +640,47 @@
 		padding: 10px 0 0;
 	}
 }
+
+// Like: in the sidebar on computers; right after the work (before comments) when the sidebar stacks.
+.like-inline {
+	display: none;
+}
+@media (max-width: 900px) {
+	.like-inline {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		margin: 24px 0 8px;
+		padding: 12px 0 0;
+		border-top: 1px solid $line-color;
+	}
+	.detail-sidebar .like-sidebar {
+		display: none;
+	}
+}
+
+// Phone Projects page (item 21): one card per row, so no reserved second title line,
+// even spacing inside the caption, and a readable filter row.
+@media (max-width: 700px) {
+	.grid.projects .project-card .card-title {
+		min-height: 0;
+	}
+	.grid.projects .project-card .creator-line {
+		margin-top: 6px;
+	}
+	.grid.projects .project-card .card-caption {
+		gap: 8px;
+		padding-top: 12px;
+	}
+	.grid.projects {
+		gap: 32px;
+	}
+	.segmented-search .filters {
+		margin-top: 12px;
+		font-size: 14px;
+	}
+	.segmented-search .filters .checkbox {
+		min-height: 44px;
+		font-size: 14px;
+	}
+}

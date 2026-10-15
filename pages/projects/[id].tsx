@@ -97,6 +97,10 @@ function ProjectDetail({ seo }: SocialPageProps) {
 										),
 									)}
 							</div>
+							{/* Phones stack the sidebar under the comments, so Like also sits right after the work. */}
+							<div className="like-inline">
+								<LikeButton projectId={id} ownerId={creator?.userId} />
+							</div>
 							<Comments projectId={id} />
 						</section>
 						<aside className="detail-sidebar">
@@ -118,7 +122,9 @@ function ProjectDetail({ seo }: SocialPageProps) {
 										<span key={t}>{t}</span>
 									))}
 								</div>
-								<LikeButton projectId={id} ownerId={creator?.userId} />
+								<div className="like-sidebar">
+									<LikeButton projectId={id} ownerId={creator?.userId} />
+								</div>
 								<Feedback {...action} />
 								{safeUrl(p.externalUrl) && (
 									<a className="external-link" href={p.externalUrl!} target="_blank" rel="noreferrer">
