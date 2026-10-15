@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'next-i18next';
-import { CaretDown, Check } from 'phosphor-react';
+import { CaretDown, Check, Globe } from 'phosphor-react';
 import LanguageFlag from './LanguageFlag';
 
 const languages = [
@@ -12,7 +12,8 @@ const languages = [
 // Short names for the phone menu button row.
 const shortNames: Record<string, string> = { en: 'English', ko: '한국어', uz: 'O‘zbek' };
 
-export default function LanguageSelector({ variant = 'dropdown' }: { variant?: 'dropdown' | 'buttons' }) {
+// 'compact' is the navbar button: a globe and the current language code (EN / KO / UZ).
+export default function LanguageSelector({ variant = 'dropdown' }: { variant?: 'dropdown' | 'buttons' | 'compact' }) {
 	const router = useRouter();
 	const { t } = useTranslation('common');
 	const [busy, setBusy] = useState(false);
@@ -87,7 +88,7 @@ export default function LanguageSelector({ variant = 'dropdown' }: { variant?: '
 
 	return (
 		<div
-			className="language-selector"
+			className={`language-selector${variant === 'compact' ? ' language-compact' : ''}`}
 			ref={container}
 			onBlur={(event) => {
 				if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setOpen(false);
@@ -118,9 +119,18 @@ export default function LanguageSelector({ variant = 'dropdown' }: { variant?: '
 					}
 				}}
 			>
-				<LanguageFlag locale={current.locale} />
-				<span lang={current.locale}>{current.name}</span>
-				<CaretDown size={12} aria-hidden="true" />
+				{variant === 'compact' ? (
+					<>
+						<Globe size={16} aria-hidden="true" />
+						<span aria-hidden="true">{current.locale.toUpperCase()}</span>
+					</>
+				) : (
+					<>
+						<LanguageFlag locale={current.locale} />
+						<span lang={current.locale}>{current.name}</span>
+						<CaretDown size={12} aria-hidden="true" />
+					</>
+				)}
 			</button>
 			{open && (
 				<div id={menuId} className="language-menu" role="menu" aria-label={t('Website language')}>

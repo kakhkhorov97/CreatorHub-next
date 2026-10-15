@@ -276,31 +276,6 @@
 	white-space: nowrap;
 }
 
-// Language button without the browser's disclosure arrow.
-.site-header .guest-language-menu > summary {
-	list-style: none;
-	display: inline-flex;
-	align-items: center;
-	gap: 8px;
-	min-height: 40px;
-	padding: 0 14px;
-	border: 1px solid $line-color;
-	border-radius: $radius-pill;
-	background: $paper-white;
-	cursor: pointer;
-}
-.site-header .guest-language-menu > summary::-webkit-details-marker {
-	display: none;
-}
-.site-header .guest-language-menu > summary::before {
-	content: '';
-	width: 16px;
-	height: 16px;
-	background: currentColor;
-	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18'/%3E%3C/svg%3E")
-		center / contain no-repeat;
-}
-
 // Help chat launcher: plain, no "AI" styling.
 .chat-trigger {
 	background: $ink-text !important;
@@ -639,35 +614,37 @@
 	color: $ivory;
 }
 
-// Language: a round globe button; the menu still lists the language names.
-.site-header .guest-language-menu > summary {
-	justify-content: center;
-	width: 40px;
+// Language (navbar, signed out): a pill with a globe and the current code (EN / KO / UZ).
+// One click opens the menu with the full language names.
+.site-header .guest-language-menu > .language-selector {
+	position: relative;
+	top: auto;
+	right: auto;
+	padding: 0;
+	border: 0;
+	background: transparent;
+}
+.site-header .language-compact .language-trigger {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
 	height: 40px;
 	min-height: 40px;
-	padding: 0;
+	padding: 0 12px;
+	border: 1px solid $line-color;
+	border-radius: $radius-pill;
+	background: $paper-white;
+	color: $ink;
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: 0.02em;
+}
+.site-header.over-hero .language-compact .language-trigger {
+	border-color: rgba(245, 243, 236, 0.3);
+	background: rgba(245, 243, 236, 0.1);
+	color: $ivory;
 }
 
-// Messages: icon only, same 40px footprint as the globe, with the unread badge on the corner.
-.site-header .header-actions > .header-messages {
-	display: inline-grid;
-	place-items: center;
-	width: 40px;
-	height: 40px;
-	padding: 0;
-	border-radius: 50%;
-}
-.site-header .header-actions > .header-messages:hover {
-	background: rgba(21, 32, 26, 0.06);
-}
-.site-header.over-hero .header-actions > .header-messages:hover {
-	background: rgba(245, 243, 236, 0.12);
-}
-.site-header .header-messages .inbox-badge {
-	position: absolute;
-	top: -2px;
-	right: -4px;
-}
 
 // Avatars are always circles. The base .avatar had min-height: 38px, so any smaller size became
 // an egg, and flex rows could stretch or squeeze them. Photos are cropped; fallback icons centred.

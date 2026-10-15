@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
 	Bell,
-	PaperPlaneTilt,
+	EnvelopeSimple,
 	List,
 	SignOut,
 	Users,
@@ -144,7 +144,7 @@ export default function Top() {
 							{translate(user.role === 'ADMIN' ? 'Administration' : 'Workspace')}
 						</Link>
 					</div>
-					{mobile && menuLink('/inquiries', 'Inbox', PaperPlaneTilt, inbox.value || 0, true)}
+					{mobile && menuLink('/inquiries', 'Inbox', EnvelopeSimple, inbox.value || 0, true)}
 					{avatar && menuLink('/notifications', 'Notifications', Bell, count.value || 0)}
 					{menuLink('/following', 'Followers & Following', Users)}
 				</div>
@@ -315,12 +315,9 @@ export default function Top() {
 							<nav aria-label={translate('Main navigation')}>{phoneMenu()}</nav>
 						</details>
 						{signedOut && (
-							<details className="guest-language-menu">
-								<summary aria-label={translate('Website language')} title={translate('Website language')}>
-									<span className="sr-only">{translate('Website language')}</span>
-								</summary>
-								<LanguageSelector />
-							</details>
+							<div className="guest-language-menu">
+								<LanguageSelector variant="compact" />
+							</div>
 						)}
 						{signedOut && (
 							<Link href={authHref} className="mobile-login-link">
@@ -329,20 +326,23 @@ export default function Top() {
 						)}
 						{user ? (
 							<>
-								<Link
-									passHref
-									href="/inquiries"
-									className="header-text-link header-messages"
-									aria-label={
-										inbox.value
-											? `${translate('Messages')}, ${translate('{{count}} unread', { count: inbox.value })}`
-											: translate('Messages')
-									}
-									title={translate('Messages')}
-								>
-									<PaperPlaneTilt size={23} aria-hidden />
-									{!!inbox.value && <span className="inbox-badge">{inbox.value > 99 ? '99+' : inbox.value}</span>}
-								</Link>
+								{/* No inbox shortcut while you are already in the inbox. */}
+								{!router.pathname.startsWith('/inquiries') && (
+									<Link
+										passHref
+										href="/inquiries"
+										className="header-text-link"
+										aria-label={
+											inbox.value
+												? `${translate('Inbox')}, ${translate('{{count}} unread', { count: inbox.value })}`
+												: translate('Inbox')
+										}
+									>
+										<EnvelopeSimple size={23} aria-hidden />
+										<span>{translate('Inbox')}</span>
+										{!!inbox.value && <span className="inbox-badge">{inbox.value > 99 ? '99+' : inbox.value}</span>}
+									</Link>
+								)}
 								<details
 									className="user-menu"
 									ref={accountMenu}
