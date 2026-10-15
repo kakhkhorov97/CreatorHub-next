@@ -2,7 +2,7 @@
 
 CreatorHub is a portfolio discovery website for finding creators, exploring projects and services, and starting private project inquiries. Members can save and like projects, follow creators and write comments. Creators submit their profiles and content for administrator approval.
 
-The frontend adapts the Nestar-next structure with Next.js Pages Router, React, TypeScript, Apollo Client, MUI and SCSS. The backend is a separate NestJS repository.
+The frontend uses Next.js Pages Router, React, TypeScript, Apollo Client, MUI and SCSS. The backend is a separate NestJS repository.
 
 ## Run locally
 
@@ -84,3 +84,7 @@ When Nginx on the same server proxies this application, set the server-only `TRU
 Tabs in one browser profile now share the signed-in account through localStorage. Signing in, switching accounts or signing out reloads other open tabs to clear cached private data and messaging sockets. Token rotation uses the browser Web Locks API, so simultaneous tab requests do not reuse a refresh token. Production requires HTTPS and a current browser with Web Locks support. Previously saved per-tab sessions are retired; sign in once after this update. Social callback state and return paths remain per-tab.
 
 Production service and proxy templates, backup commands and rollback instructions are in the backend repository's `deploy/` directory. They still require installation and verification on the VPS.
+
+## Project origins
+
+CreatorHub began with instructor-provided Nestar course starter code, which was adapted for the creator discovery and collaboration workflows described in this repository.
