@@ -19,7 +19,15 @@ function createClient() {
 						});
 						subscription = forward(operation).subscribe(observer);
 					})
-					.catch((error) => observer.error(error));
+					.catch((error) => {
+						if (cancelled) return;
+						// The refresh already cleared an expired sign-in. Continue as a visitor so public pages
+						// still load; private queries then answer UNAUTHENTICATED and show the sign-in prompt.
+						if (!readSession()) {
+							operation.setContext({ creatorhubSessionId: undefined, headers: {} });
+							subscription = forward(operation).subscribe(observer);
+						} else observer.error(error);
+					});
 				return () => {
 					cancelled = true;
 					subscription?.unsubscribe();

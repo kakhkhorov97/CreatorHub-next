@@ -827,3 +827,19 @@
 	margin: 4px 0 0;
 	font-size: 14px;
 }
+
+// Wide tables scroll inside their own box. position: relative keeps absolutely positioned
+// children (screen-reader labels) inside it; without it they stretched the whole page on phones
+// and the browser zoomed out.
+.admin-table-scroll,
+.admin-shell .table-wrap {
+	position: relative;
+	max-width: 100%;
+	overflow-x: auto;
+}
+.admin-shell .admin-layout > *,
+.admin-shell .admin-layout .panel {
+	min-width: 0;
+	max-width: 100%;
+	box-sizing: border-box;
+}

@@ -208,24 +208,30 @@
 }
 .creator-card .work-strip {
 	display: grid;
-	grid-template-columns: repeat(3, minmax(0, 1fr));
+	grid-template-columns: repeat(2, minmax(0, 1fr));
 	gap: 6px;
 }
-.creator-card .work-strip[data-count='1'] {
-	grid-template-columns: minmax(0, 1fr);
-}
-.creator-card .work-strip[data-count='2'] {
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-.creator-card .work-strip .picture {
+.creator-card .work-strip .picture,
+.creator-card .work-slot-empty {
 	display: block;
 	width: 100%;
-	aspect-ratio: 1;
+	aspect-ratio: 4 / 3;
 	object-fit: cover;
 	border-radius: $radius-field-sm;
 }
-.creator-card .work-strip[data-count='1'] .picture {
-	aspect-ratio: 16 / 10;
+.creator-card .work-slot-empty {
+	background: #efece4;
+}
+.creator-card .work-strip {
+	position: relative;
+}
+.creator-card .work-strip-note {
+	position: absolute;
+	inset: 0;
+	display: grid;
+	place-items: center;
+	font-size: 13px;
+	color: $muted-text;
 }
 .creator-card .creator-top {
 	display: flex;

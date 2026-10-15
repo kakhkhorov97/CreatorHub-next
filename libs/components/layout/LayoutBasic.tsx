@@ -66,8 +66,8 @@ export default function Layout({
 }) {
 	const { t: translate } = useSiteTranslation('common');
 	const router = useRouter();
-	const standaloneAccount =
-		area === 'account' && ['/account', '/account/settings', '/notifications'].includes(router.pathname);
+	// Account pages have no sidebar: My page and the avatar menu link to all of them.
+	const standaloneAccount = area === 'account';
 
 	if (area === 'admin') return <AdminLayout title={title}>{children}</AdminLayout>;
 
@@ -84,17 +84,7 @@ export default function Layout({
 				{translate('Skip to content')}
 			</a>
 			<Top />
-			<div
-				className={
-					standaloneAccount
-						? 'app-frame account-frame account-area'
-						: area === 'account'
-						? 'app-frame account-area'
-						: area
-						? 'app-frame'
-						: 'public-frame'
-				}
-			>
+			<div className={standaloneAccount ? 'app-frame account-frame account-area' : area ? 'app-frame' : 'public-frame'}>
 				{area && !standaloneAccount && <Sidebar area={area} />}
 
 				<main id="main" className={area ? 'workspace-main' : 'public-main'}>

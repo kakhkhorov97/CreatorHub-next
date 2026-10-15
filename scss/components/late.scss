@@ -607,3 +607,215 @@
 	justify-content: center;
 	gap: 12px;
 }
+
+// Desktop navbar: an underline on hover instead of a filled box. Every link carries the same
+// 2px bottom border (transparent until hover or current), so nothing moves.
+.site-header .top .primary-nav a,
+.site-header .top .primary-nav a:hover,
+.site-header .top .primary-nav a.active {
+	background: transparent;
+	text-decoration: none;
+	border-radius: 0;
+	border-bottom: 2px solid transparent;
+}
+.site-header .top .primary-nav a:hover {
+	color: $ink;
+	border-bottom-color: currentColor;
+}
+.site-header .top .primary-nav a.active {
+	color: $forest;
+	border-bottom-color: $forest;
+}
+.site-header .top .primary-nav a:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+.site-header.over-hero .top .primary-nav a:hover,
+.site-header.over-hero .top .primary-nav a.active {
+	color: $ivory;
+	border-bottom-color: $ivory;
+}
+.site-header.over-hero .top .primary-nav a {
+	color: $ivory;
+}
+
+// Language: a round globe button; the menu still lists the language names.
+.site-header .guest-language-menu > summary {
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	min-height: 40px;
+	padding: 0;
+}
+
+// Messages: icon only, same 40px footprint as the globe, with the unread badge on the corner.
+.site-header .header-actions > .header-messages {
+	display: inline-grid;
+	place-items: center;
+	width: 40px;
+	height: 40px;
+	padding: 0;
+	border-radius: 50%;
+}
+.site-header .header-actions > .header-messages:hover {
+	background: rgba(21, 32, 26, 0.06);
+}
+.site-header.over-hero .header-actions > .header-messages:hover {
+	background: rgba(245, 243, 236, 0.12);
+}
+.site-header .header-messages .inbox-badge {
+	position: absolute;
+	top: -2px;
+	right: -4px;
+}
+
+// Avatars are always circles. The base .avatar had min-height: 38px, so any smaller size became
+// an egg, and flex rows could stretch or squeeze them. Photos are cropped; fallback icons centred.
+.avatar {
+	flex: none;
+	align-self: center;
+	min-width: 0;
+	min-height: 0;
+	max-width: none;
+	aspect-ratio: 1;
+	box-sizing: border-box;
+	border-radius: 50%;
+	object-fit: cover;
+}
+.avatar.placeholder {
+	display: inline-grid;
+	place-items: center;
+	overflow: hidden;
+}
+.avatar.placeholder svg {
+	width: 70%;
+	height: 70%;
+}
+
+// Phone menu (item 23): one avatar in the closed button, a clean close button when open,
+// a tidy profile row, smaller main links, a compact Workspace card, and a locked page behind.
+@media (max-width: 700px) {
+	.site-header .mobile-navigation > summary,
+	.site-header .mobile-navigation > summary:has(.avatar) {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 6px;
+		height: 44px;
+		min-width: 44px;
+		padding: 0 4px 0 12px;
+		border: 1px solid $line-color;
+		border-radius: $radius-pill;
+		background: $paper-white;
+	}
+	.site-header .mobile-navigation:not([open]) > summary:has(.avatar) {
+		width: auto;
+		max-width: none;
+	}
+	.site-header .mobile-navigation > summary:not(:has(.avatar)) {
+		width: 44px;
+		padding: 0;
+	}
+	.site-header .mobile-navigation > summary .avatar {
+		width: 34px;
+		height: 34px;
+	}
+	// Open: hide the avatar and the list icon, show only a centred X in a 44px circle.
+	.site-header .mobile-navigation[open] > summary {
+		width: 44px;
+		padding: 0;
+	}
+	.site-header .mobile-navigation[open] > summary .avatar,
+	.site-header .mobile-navigation[open] > summary .phone-menu-badge {
+		display: none;
+	}
+	.site-header .mobile-navigation > nav {
+		padding-bottom: calc(40px + env(safe-area-inset-bottom));
+		overscroll-behavior: contain;
+	}
+
+	.site-header .phone-menu-identity {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		padding: 12px 14px;
+	}
+	.site-header .phone-menu-identity-main {
+		flex: 1;
+		min-width: 0;
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		color: $ink-text;
+		text-decoration: none;
+	}
+	.site-header .phone-menu-identity .avatar {
+		width: 48px;
+		height: 48px;
+	}
+	.site-header .phone-menu-identity-text {
+		flex: 1;
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+	}
+	.site-header .phone-menu-identity-text strong {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.site-header .phone-menu-settings {
+		flex: none;
+		display: inline-flex;
+		align-items: center;
+		min-height: 40px;
+		padding: 0 14px;
+		border: 1px solid $line-color;
+		border-radius: $radius-pill;
+		text-decoration: none;
+	}
+
+	.site-header .phone-menu-main a {
+		min-height: 48px;
+		padding: 8px 0;
+		font-size: 21px;
+	}
+	.site-header .phone-menu-workspace {
+		gap: 12px;
+		padding: 10px 12px;
+		border-radius: 16px;
+	}
+	.site-header .phone-menu-workspace-icon {
+		width: 36px;
+		height: 36px;
+		border-radius: 10px;
+	}
+	.site-header .phone-menu-workspace strong {
+		font-size: 17px;
+	}
+	.site-header .phone-menu-workspace small {
+		font-size: 12px;
+	}
+	.site-header .phone-menu-links .menu-row {
+		align-items: center;
+		line-height: 1.3;
+	}
+	.site-header .phone-menu-links .menu-row > span {
+		min-width: 0;
+		overflow-wrap: anywhere;
+	}
+	.site-header .phone-menu-links .menu-row > svg:first-child {
+		flex: none;
+	}
+}
+// While the phone menu is open the page behind stays still and the Help button steps aside.
+html:has(.site-header .mobile-navigation[open]),
+html:has(.site-header .mobile-navigation[open]) body {
+	overflow: hidden;
+}
+@media (max-width: 700px) {
+	body:has(.site-header .mobile-navigation[open]) .chat-widget {
+		display: none;
+	}
+}

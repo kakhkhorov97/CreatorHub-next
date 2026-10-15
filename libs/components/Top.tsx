@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import { useMessagingRefresh } from '../messaging/MessagingProvider';
 import { useTranslation as useSiteTranslation } from 'next-i18next';
 import { useReactiveVar } from '@apollo/client';
@@ -18,6 +19,7 @@ import {
 	User,
 	CaretRight,
 	X,
+	ChatCircleDots,
 } from 'phosphor-react';
 import { useEffect, useRef } from 'react';
 import useHeaderScroll from '../hooks/useHeaderScroll';
@@ -97,6 +99,8 @@ export default function Top() {
 						clearSession(sessionId);
 						await action.client.clearStore();
 						await router.push('/');
+						// Only after the server ended the session and the header shows the signed-out state.
+						toast.success(translate('You’ve been signed out.'));
 					})
 				}
 			>
@@ -173,20 +177,22 @@ export default function Top() {
 		return (
 			<div className="phone-menu">
 				{user ? (
-					<Link href="/account" className="phone-menu-identity">
-						<Picture avatar src={user.avatarUrl} alt="" />
-						<span>
-							<strong>{user.displayName}</strong>
-							<small>{translate('My page')}</small>
-						</span>
-						<span className="phone-menu-settings" aria-hidden>
+					<div className="phone-menu-identity">
+						<Link href="/account" className="phone-menu-identity-main">
+							<Picture avatar src={user.avatarUrl} alt="" sizes="48px" />
+							<span className="phone-menu-identity-text">
+								<strong>{user.displayName}</strong>
+								<small>{translate('My page')}</small>
+							</span>
+						</Link>
+						<Link href="/account/settings" className="phone-menu-settings">
 							{translate('Settings')}
-						</span>
-					</Link>
+						</Link>
+					</div>
 				) : pending ? (
 					<div className="phone-menu-identity" role="status">
 						<Picture avatar src={pending.avatarUrl} alt="" />
-						<span>
+						<span className="phone-menu-identity-text">
 							<strong>{pending.displayName}</strong>
 							<small>{translate('Checking your session…')}</small>
 						</span>
@@ -311,7 +317,9 @@ export default function Top() {
 						</details>
 						{signedOut && (
 							<details className="guest-language-menu">
-								<summary aria-label={translate('Website language')}>{translate('Website language')}</summary>
+								<summary aria-label={translate('Website language')} title={translate('Website language')}>
+									<span className="sr-only">{translate('Website language')}</span>
+								</summary>
 								<LanguageSelector />
 							</details>
 						)}
@@ -325,11 +333,15 @@ export default function Top() {
 								<Link
 									passHref
 									href="/inquiries"
-									className="header-text-link"
-									aria-label={`Inbox, ${inbox.value || 0} unread conversations`}
+									className="header-text-link header-messages"
+									aria-label={
+										inbox.value
+											? `${translate('Messages')}, ${translate('{{count}} unread', { count: inbox.value })}`
+											: translate('Messages')
+									}
+									title={translate('Messages')}
 								>
-									<EnvelopeSimple size={23} />
-									<span>{translate('Inbox')}</span>
+									<ChatCircleDots size={24} aria-hidden />
 									{!!inbox.value && <span className="inbox-badge">{inbox.value > 99 ? '99+' : inbox.value}</span>}
 								</Link>
 								<details

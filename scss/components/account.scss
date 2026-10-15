@@ -964,3 +964,50 @@
 		display: none;
 	}
 }
+
+// Account pages without the sidebar: content centred with a sensible width.
+.account-frame .workspace-main {
+	width: 100%;
+	max-width: 1180px;
+	margin-inline: auto;
+	border-left: 0;
+}
+
+// Delete account: a quiet red text action at the bottom, separated by a line, not a red box.
+.account-delete-section.danger-zone {
+	margin-top: 40px;
+	padding: 20px 0 0;
+	border: 0;
+	border-top: 1px solid $line-color;
+	border-radius: 0;
+	background: transparent;
+}
+.account-delete-section.danger-zone summary {
+	display: inline-flex;
+	align-items: center;
+	min-height: 44px;
+	font-family: $font-body;
+	font-size: 14px;
+	font-weight: 600;
+	color: $danger;
+	list-style: none;
+}
+.account-delete-section.danger-zone summary::-webkit-details-marker {
+	display: none;
+}
+.account-delete-section.danger-zone summary:hover {
+	text-decoration: underline;
+	text-underline-offset: 4px;
+}
+.account-delete-section.danger-zone .button.danger {
+	border: 1px solid $danger;
+	background: transparent;
+	color: $danger;
+	min-height: 44px;
+	padding: 0 18px;
+	font-size: 14px;
+	width: auto;
+}
+.account-delete-section.danger-zone .button.danger:hover {
+	background: $danger-bg;
+}
