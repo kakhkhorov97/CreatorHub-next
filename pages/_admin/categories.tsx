@@ -14,6 +14,7 @@ import {
 import Layout, { Guard } from '../../libs/components/layout/LayoutBasic';
 import { useAction, useApi } from '../../libs/hooks/useApi';
 import { Category } from '../../libs/types/creatorhub';
+import { FieldErrors, useFormValidation } from '../../libs/hooks/useFormValidation';
 
 export default function Categories() {
 	const { t: translate } = useSiteTranslation('common');
@@ -29,6 +30,7 @@ export default function Categories() {
 
 function CategoryContent() {
 	const { t: translate } = useSiteTranslation('common');
+	const validation = useFormValidation();
 
 	const result = useApi('adminCategories');
 	const [selected, setSelected] = useState<Category | null>(null);
@@ -94,11 +96,13 @@ function CategoryContent() {
 					</div>
 				</section>
 				<form
+					{...validation.form}
 					ref={editorRef}
 					key={selected?._id || 'new'}
 					className="panel"
 					onSubmit={(e) => {
 						e.preventDefault();
+						if (!validation.validate(e.currentTarget)) return;
 						const f = values(e.currentTarget);
 						action.run(async () => {
 							const input = {
@@ -115,41 +119,43 @@ function CategoryContent() {
 						});
 					}}
 				>
-					<h2>{selected ? translate('Edit category') : translate('New category')}</h2>
-					<Field label={translate('Name')} name="name" required maxLength={80} defaultValue={selected?.name} />
-					<Field
-						label={translate('Slug')}
-						name="slug"
-						required
-						minLength={2}
-						maxLength={80}
-						pattern="[a-z0-9]+(-[a-z0-9]+)*"
-						defaultValue={selected?.slug}
-					/>
-					<TextArea
-						label={translate('Description')}
-						name="description"
-						maxLength={500}
-						defaultValue={selected?.description || ''}
-					/>
-					<label className="checkbox">
-						<input type="checkbox" name="isActive" defaultChecked={selected?.isActive ?? true} />
-						{translate('Active')}
-					</label>
-					<Field
-						label={translate('Sort order')}
-						name="sortOrder"
-						type="number"
-						required
-						min={0}
-						max={10000}
-						defaultValue={selected?.sortOrder ?? 0}
-					/>
-					<Feedback {...action} />
-					{saved && <Notice notify>{translate('Category saved.')}</Notice>}
-					<Button type="submit" disabled={action.busy} loading={action.busy} loadingLabel={translate('Saving…')}>
-						{translate('Save changes')}
-					</Button>
+					<FieldErrors value={validation.errors}>
+						<h2>{selected ? translate('Edit category') : translate('New category')}</h2>
+						<Field label={translate('Name')} name="name" required maxLength={80} defaultValue={selected?.name} />
+						<Field
+							label={translate('Slug')}
+							name="slug"
+							required
+							minLength={2}
+							maxLength={80}
+							pattern="[a-z0-9]+(-[a-z0-9]+)*"
+							defaultValue={selected?.slug}
+						/>
+						<TextArea
+							label={translate('Description')}
+							name="description"
+							maxLength={500}
+							defaultValue={selected?.description || ''}
+						/>
+						<label className="checkbox">
+							<input type="checkbox" name="isActive" defaultChecked={selected?.isActive ?? true} />
+							{translate('Active')}
+						</label>
+						<Field
+							label={translate('Sort order')}
+							name="sortOrder"
+							type="number"
+							required
+							min={0}
+							max={10000}
+							defaultValue={selected?.sortOrder ?? 0}
+						/>
+						<Feedback {...action} />
+						{saved && <Notice notify>{translate('Category saved.')}</Notice>}
+						<Button type="submit" disabled={action.busy} loading={action.busy} loadingLabel={translate('Saving…')}>
+							{translate('Save changes')}
+						</Button>
+					</FieldErrors>
 				</form>
 			</div>
 		</>

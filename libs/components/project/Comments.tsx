@@ -6,9 +6,11 @@ import { userVar } from '../../../apollo/store';
 import { useAction } from '../../hooks/useApi';
 import { usePaged } from '../../hooks/usePaged';
 import { Button, Confirm, date, Feedback, LinkButton, Pager, QueryState, TextArea } from '../common/UI';
+import { FieldErrors, useFormValidation } from '../../hooks/useFormValidation';
 
 export function Comments({ projectId }: { projectId: string }) {
 	const { t: translate } = useSiteTranslation('common');
+	const validation = useFormValidation();
 
 	const comments = usePaged('getProjectComments', { projectId });
 	const user = useReactiveVar(userVar);
@@ -79,8 +81,10 @@ export function Comments({ projectId }: { projectId: string }) {
 			<Pager {...comments} />
 			{user ? (
 				<form
+					{...validation.form}
 					onSubmit={(e) => {
 						e.preventDefault();
+						if (!validation.validate(e.currentTarget)) return;
 						action.run(async () => {
 							if (edit) await action.mutate('editProjectComment', { commentId: edit, input: { content } });
 							else {
@@ -96,34 +100,36 @@ export function Comments({ projectId }: { projectId: string }) {
 						});
 					}}
 				>
-					<TextArea
-						label={edit ? translate('Edit comment') : translate('Add a comment')}
-						required
-						minLength={1}
-						maxLength={2000}
-						value={content}
-						onChange={(e) => {
-							setContent(e.target.value);
-							key.current = null;
-						}}
-					/>
-					<div className="actions">
-						<Button type="submit" disabled={action.busy || !content.trim()}>
-							{edit ? translate('Save comment') : translate('Post comment')}
-						</Button>
-						{edit && (
-							<Button
-								secondary
-								onClick={() => {
-									setEdit(null);
-									setContent('');
-								}}
-							>
-								{translate('Cancel edit')}
+					<FieldErrors value={validation.errors}>
+						<TextArea
+							label={edit ? translate('Edit comment') : translate('Add a comment')}
+							required
+							minLength={1}
+							maxLength={2000}
+							value={content}
+							onChange={(e) => {
+								setContent(e.target.value);
+								key.current = null;
+							}}
+						/>
+						<div className="actions">
+							<Button type="submit" disabled={action.busy || !content.trim()}>
+								{edit ? translate('Save comment') : translate('Post comment')}
 							</Button>
-						)}
-					</div>
-					<Feedback {...action} />
+							{edit && (
+								<Button
+									secondary
+									onClick={() => {
+										setEdit(null);
+										setContent('');
+									}}
+								>
+									{translate('Cancel edit')}
+								</Button>
+							)}
+						</div>
+						<Feedback {...action} />
+					</FieldErrors>
 				</form>
 			) : (
 				<LinkButton secondary href={`/account/sign-in?returnTo=/projects/${projectId}`}>

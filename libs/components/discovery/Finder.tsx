@@ -5,9 +5,11 @@ import { useState } from 'react';
 import { useApi } from '../../hooks/useApi';
 import { Button, Empty, Notice, QueryState, TextArea } from '../common/UI';
 import { CreatorCard, ProjectCard, ServiceCard } from './Cards';
+import { FieldErrors, useFormValidation } from '../../hooks/useFormValidation';
 
 export default function Finder({ compact = false }: { compact?: boolean }) {
 	const { t: translate } = useSiteTranslation('common');
+	const validation = useFormValidation();
 
 	const [request, setRequest] = useState('');
 	const [submitted, setSubmitted] = useState('');
@@ -18,23 +20,27 @@ export default function Finder({ compact = false }: { compact?: boolean }) {
 			<h2>{compact ? translate('AI creator finder') : translate('Find the right creator')}</h2>
 			<p className="muted">{translate('Describe what you’re looking for and we’ll help you find creators.')}</p>
 			<form
+				{...validation.form}
 				onSubmit={(e) => {
 					e.preventDefault();
+					if (!validation.validate(e.currentTarget)) return;
 					setSubmitted(request.trim());
 				}}
 			>
-				<TextArea
-					label={translate('Your project')}
-					placeholder={translate('Brand designer in Seoul under ₩1,000,000')}
-					minLength={3}
-					maxLength={1000}
-					required
-					value={request}
-					onChange={(e) => setRequest(e.target.value)}
-				/>
-				<Button type="submit" disabled={result.loading}>
-					{translate('Find creators')}
-				</Button>
+				<FieldErrors value={validation.errors}>
+					<TextArea
+						label={translate('Your project')}
+						placeholder={translate('Brand designer in Seoul under ₩1,000,000')}
+						minLength={3}
+						maxLength={1000}
+						required
+						value={request}
+						onChange={(e) => setRequest(e.target.value)}
+					/>
+					<Button type="submit" disabled={result.loading}>
+						{translate('Find creators')}
+					</Button>
+				</FieldErrors>
 			</form>
 			<QueryState loading={result.loading} error={result.error} retry={() => result.refetch()} />
 			{result.value && (

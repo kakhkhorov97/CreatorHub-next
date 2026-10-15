@@ -27,9 +27,11 @@ import {
 	values,
 } from '../common/UI';
 import { labels, states } from './directoryConfig';
+import { FieldErrors, useFormValidation } from '../../hooks/useFormValidation';
 
 export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: AdminEntry; onClose: () => void }) {
 	const { t: translate } = useSiteTranslation('common');
+	const validation = useFormValidation();
 
 	const action = useAction(),
 		cats = useApi('adminCategories'),
@@ -72,6 +74,7 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 
 	async function save(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault();
+		if (!validation.validate(e.currentTarget)) return;
 		const f = values(e.currentTarget),
 			selectedCategories = new FormData(e.currentTarget).getAll('categoryIds') as string[];
 		await action.run(async () => {
@@ -220,6 +223,7 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 						</>
 					) : (
 						<form
+							{...validation.form}
 							onSubmit={save}
 							onChange={() => {
 								setDirty(true);
@@ -227,346 +231,358 @@ export function Editor({ kind, entry, onClose }: { kind: AdminKind; entry?: Admi
 							}}
 							className="admin-edit-form"
 						>
-							{!record && (
-								<>
-									<Field
-										label={translate('Find creator')}
-										value={creatorFilter}
-										onChange={(e) => setCreatorFilter(e.target.value)}
-										placeholder={translate('Search profiles…')}
-									/>
-									<Field label={translate('Creator')}>
-										<select name="creatorId" required>
-											<option value="">{translate('Select a creator')}</option>
-											{creatorList.value?.map((r) => (
-												<option value={r._id} key={r._id}>
-													{r.ownerName} · {r.creator?.slug}
-												</option>
-											))}
-										</select>
-									</Field>
-									<QueryState loading={creatorList.loading} error={creatorList.error} />
-								</>
-							)}
-							{kind === 'USERS' && (
-								<>
-									<Field
-										label={translate('Display name')}
-										name="displayName"
-										required
-										minLength={2}
-										maxLength={60}
-										defaultValue={u?.displayName}
-									/>
-									<div className="admin-avatar-preview">
-										<Picture avatar src={u?.avatarUrl} alt={translate('Profile photo')} />
-										<div>
-											<strong>{translate('Profile photo')}</strong>
-											{!u?.avatarUrl && <p className="muted">{translate('No profile photo')}</p>}
-										</div>
-									</div>
-									<div className="form-grid">
-										<Field label={translate('Role')}>
-											<select name="role" defaultValue={u?.role}>
-												{['USER', 'CREATOR', 'ADMIN'].map((v) => (
-													<option key={v}>{v}</option>
-												))}
-											</select>
-										</Field>
-										<Field label={translate('Preferred language')}>
-											<select name="preferredLocale" defaultValue={u?.preferredLocale}>
-												<option value="en">{translate('English')}</option>
-												<option value="ko">{translate('Korean')}</option>
-											</select>
-										</Field>
-									</div>
-								</>
-							)}
-							{kind === 'CREATORS' && (
-								<>
-									<Field
-										label={translate('Profile slug')}
-										name="slug"
-										required
-										minLength={3}
-										maxLength={80}
-										pattern="[a-z0-9]+(-[a-z0-9]+)*"
-										defaultValue={c?.slug}
-									/>
-									<Field
-										label={translate('Headline')}
-										name="headline"
-										maxLength={120}
-										defaultValue={c?.headline || ''}
-									/>
-									<TextArea label={translate('Bio')} name="bio" rows={5} maxLength={3000} defaultValue={c?.bio || ''} />
-									<div className="form-grid">
-										<Field label={translate('City')}>
-											<select name="city" value={city} onChange={(e) => setCity(e.target.value)}>
-												<option value="">{translate('Select city')}</option>
-												{cities.value?.map((v) => (
-													<option key={v.key} value={v.key}>
-														{v.nameEn}
+							<FieldErrors value={validation.errors}>
+								{!record && (
+									<>
+										<Field
+											label={translate('Find creator')}
+											value={creatorFilter}
+											onChange={(e) => setCreatorFilter(e.target.value)}
+											placeholder={translate('Search profiles…')}
+										/>
+										<Field label={translate('Creator')}>
+											<select name="creatorId" required>
+												<option value="">{translate('Select a creator')}</option>
+												{creatorList.value?.map((r) => (
+													<option value={r._id} key={r._id}>
+														{r.ownerName} · {r.creator?.slug}
 													</option>
 												))}
 											</select>
 										</Field>
-										<Field label={translate('Availability')}>
-											<select name="availability" defaultValue={c?.availability}>
-												{['AVAILABLE', 'BUSY', 'UNAVAILABLE'].map((v) => (
-													<option key={v}>{v}</option>
+										<QueryState loading={creatorList.loading} error={creatorList.error} />
+									</>
+								)}
+								{kind === 'USERS' && (
+									<>
+										<Field
+											label={translate('Display name')}
+											name="displayName"
+											required
+											minLength={2}
+											maxLength={60}
+											defaultValue={u?.displayName}
+										/>
+										<div className="admin-avatar-preview">
+											<Picture avatar src={u?.avatarUrl} alt={translate('Profile photo')} />
+											<div>
+												<strong>{translate('Profile photo')}</strong>
+												{!u?.avatarUrl && <p className="muted">{translate('No profile photo')}</p>}
+											</div>
+										</div>
+										<div className="form-grid">
+											<Field label={translate('Role')}>
+												<select name="role" defaultValue={u?.role}>
+													{['USER', 'CREATOR', 'ADMIN'].map((v) => (
+														<option key={v}>{v}</option>
+													))}
+												</select>
+											</Field>
+											<Field label={translate('Preferred language')}>
+												<select name="preferredLocale" defaultValue={u?.preferredLocale}>
+													<option value="en">{translate('English')}</option>
+													<option value="ko">{translate('Korean')}</option>
+												</select>
+											</Field>
+										</div>
+									</>
+								)}
+								{kind === 'CREATORS' && (
+									<>
+										<Field
+											label={translate('Profile slug')}
+											name="slug"
+											required
+											minLength={3}
+											maxLength={80}
+											pattern="[a-z0-9]+(-[a-z0-9]+)*"
+											defaultValue={c?.slug}
+										/>
+										<Field
+											label={translate('Headline')}
+											name="headline"
+											maxLength={120}
+											defaultValue={c?.headline || ''}
+										/>
+										<TextArea
+											label={translate('Bio')}
+											name="bio"
+											rows={5}
+											maxLength={3000}
+											defaultValue={c?.bio || ''}
+										/>
+										<div className="form-grid">
+											<Field label={translate('City')}>
+												<select name="city" value={city} onChange={(e) => setCity(e.target.value)}>
+													<option value="">{translate('Select city')}</option>
+													{cities.value?.map((v) => (
+														<option key={v.key} value={v.key}>
+															{v.nameEn}
+														</option>
+													))}
+												</select>
+											</Field>
+											<Field label={translate('Availability')}>
+												<select name="availability" defaultValue={c?.availability}>
+													{['AVAILABLE', 'BUSY', 'UNAVAILABLE'].map((v) => (
+														<option key={v}>{v}</option>
+													))}
+												</select>
+											</Field>
+										</div>
+										<label className="admin-checkbox">
+											<input type="checkbox" name="remoteAvailable" defaultChecked={c?.remoteAvailable} />{' '}
+											{translate('Remote available')}
+										</label>
+										<fieldset className="admin-categories">
+											<legend>{translate('Categories, up to five')}</legend>
+											{cats.value?.map((cat) => (
+												<label key={cat._id}>
+													<input
+														type="checkbox"
+														name="categoryIds"
+														value={cat._id}
+														defaultChecked={c?.categoryIds.includes(cat._id)}
+													/>{' '}
+													{cat.name}
+													{!cat.isActive ? translate(' (inactive)') : ''}
+												</label>
+											))}
+										</fieldset>
+										<TextArea
+											label={translate('Skills, one per line')}
+											name="skills"
+											defaultValue={c?.skills.join('\n')}
+											maxLength={1100}
+										/>
+										<h3>{translate('Social links')}</h3>
+										{links.map((l, i) => (
+											<div className="admin-media-row" key={i}>
+												<Field
+													label={translate('Link label')}
+													required
+													maxLength={40}
+													value={l.label}
+													onChange={(e) =>
+														setLinks(links.map((v, n) => (n === i ? { ...v, label: e.target.value } : v)))
+													}
+												/>
+												<Field
+													label={translate('HTTPS URL')}
+													required
+													type="url"
+													pattern="https://.*"
+													maxLength={2048}
+													value={l.url}
+													onChange={(e) => setLinks(links.map((v, n) => (n === i ? { ...v, url: e.target.value } : v)))}
+												/>
+												<Button
+													danger
+													secondary
+													onClick={() => {
+														setLinks(links.filter((_, n) => n !== i));
+														setDirty(true);
+													}}
+												>
+													{translate('Remove link')}
+												</Button>
+											</div>
+										))}
+										<Button
+											secondary
+											disabled={links.length >= 8}
+											onClick={() => {
+												setLinks([...links, { label: '', url: '' }]);
+												setDirty(true);
+											}}
+										>
+											{translate('Add social link')}
+										</Button>
+									</>
+								)}
+								{['PROJECTS', 'SERVICES'].includes(kind) && (
+									<>
+										<Field
+											label={translate('Title')}
+											name="title"
+											required
+											maxLength={150}
+											defaultValue={p?.title || s?.title}
+										/>
+										{kind === 'PROJECTS' && (
+											<>
+												<Field
+													label={translate('Project slug')}
+													name="slug"
+													required
+													minLength={3}
+													maxLength={100}
+													pattern="[a-z0-9]+(-[a-z0-9]+)*"
+													defaultValue={p?.slug}
+												/>
+												<Field
+													label={translate('Summary')}
+													name="summary"
+													maxLength={300}
+													defaultValue={p?.summary || ''}
+												/>
+											</>
+										)}
+										<Field label={translate('Category')}>
+											<select name="categoryId" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
+												<option value="">{translate('Select category')}</option>
+												{cats.value?.map((v) => (
+													<option key={v._id} value={v._id}>
+														{v.name}
+														{!v.isActive ? translate(' (inactive)') : ''}
+													</option>
 												))}
 											</select>
 										</Field>
-									</div>
-									<label className="admin-checkbox">
-										<input type="checkbox" name="remoteAvailable" defaultChecked={c?.remoteAvailable} />{' '}
-										{translate('Remote available')}
-									</label>
-									<fieldset className="admin-categories">
-										<legend>{translate('Categories, up to five')}</legend>
-										{cats.value?.map((cat) => (
-											<label key={cat._id}>
-												<input
-													type="checkbox"
-													name="categoryIds"
-													value={cat._id}
-													defaultChecked={c?.categoryIds.includes(cat._id)}
-												/>{' '}
-												{cat.name}
-												{!cat.isActive ? translate(' (inactive)') : ''}
-											</label>
-										))}
-									</fieldset>
-									<TextArea
-										label={translate('Skills, one per line')}
-										name="skills"
-										defaultValue={c?.skills.join('\n')}
-										maxLength={1100}
-									/>
-									<h3>{translate('Social links')}</h3>
-									{links.map((l, i) => (
-										<div className="admin-media-row" key={i}>
-											<Field
-												label={translate('Link label')}
-												required
-												maxLength={40}
-												value={l.label}
-												onChange={(e) => setLinks(links.map((v, n) => (n === i ? { ...v, label: e.target.value } : v)))}
-											/>
-											<Field
-												label={translate('HTTPS URL')}
-												required
-												type="url"
-												pattern="https://.*"
-												maxLength={2048}
-												value={l.url}
-												onChange={(e) => setLinks(links.map((v, n) => (n === i ? { ...v, url: e.target.value } : v)))}
-											/>
-											<Button
-												danger
-												secondary
-												onClick={() => {
-													setLinks(links.filter((_, n) => n !== i));
-													setDirty(true);
-												}}
-											>
-												{translate('Remove link')}
-											</Button>
-										</div>
-									))}
-									<Button
-										secondary
-										disabled={links.length >= 8}
-										onClick={() => {
-											setLinks([...links, { label: '', url: '' }]);
-											setDirty(true);
-										}}
-									>
-										{translate('Add social link')}
-									</Button>
-								</>
-							)}
-							{['PROJECTS', 'SERVICES'].includes(kind) && (
-								<>
-									<Field
-										label={translate('Title')}
-										name="title"
-										required
-										maxLength={150}
-										defaultValue={p?.title || s?.title}
-									/>
-									{kind === 'PROJECTS' && (
-										<>
-											<Field
-												label={translate('Project slug')}
-												name="slug"
-												required
-												minLength={3}
-												maxLength={100}
-												pattern="[a-z0-9]+(-[a-z0-9]+)*"
-												defaultValue={p?.slug}
-											/>
-											<Field
-												label={translate('Summary')}
-												name="summary"
-												maxLength={300}
-												defaultValue={p?.summary || ''}
-											/>
-										</>
-									)}
-									<Field label={translate('Category')}>
-										<select name="categoryId" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
-											<option value="">{translate('Select category')}</option>
-											{cats.value?.map((v) => (
-												<option key={v._id} value={v._id}>
-													{v.name}
-													{!v.isActive ? translate(' (inactive)') : ''}
-												</option>
-											))}
-										</select>
-									</Field>
-									<TextArea
-										label={translate('Description')}
-										name="description"
-										rows={6}
-										maxLength={kind === 'PROJECTS' ? 20000 : 10000}
-										defaultValue={p?.description || s?.description || ''}
-									/>
-								</>
-							)}
-							{kind === 'PROJECTS' && (
-								<>
-									<Field
-										label={translate('Cover image URL')}
-										name="coverImageUrl"
-										maxLength={2048}
-										defaultValue={p?.coverImageUrl || ''}
-									/>
-									<p className="admin-help">
-										{translate(
-											"Existing concept images are retained. New media must use the creator account's storage folder.",
-										)}
-									</p>
-									<h3>{translate('Portfolio media')}</h3>
-									{media.map((m, i) => (
-										<div className="admin-media-row" key={i}>
-											<Field label={translate('Type')}>
-												<select
-													value={m.type}
+										<TextArea
+											label={translate('Description')}
+											name="description"
+											rows={6}
+											maxLength={kind === 'PROJECTS' ? 20000 : 10000}
+											defaultValue={p?.description || s?.description || ''}
+										/>
+									</>
+								)}
+								{kind === 'PROJECTS' && (
+									<>
+										<Field
+											label={translate('Cover image URL')}
+											name="coverImageUrl"
+											maxLength={2048}
+											defaultValue={p?.coverImageUrl || ''}
+										/>
+										<p className="admin-help">
+											{translate(
+												"Existing concept images are retained. New media must use the creator account's storage folder.",
+											)}
+										</p>
+										<h3>{translate('Portfolio media')}</h3>
+										{media.map((m, i) => (
+											<div className="admin-media-row" key={i}>
+												<Field label={translate('Type')}>
+													<select
+														value={m.type}
+														onChange={(e) =>
+															setMedia(
+																media.map((v, n) =>
+																	n === i ? { ...v, type: e.target.value as 'IMAGE' | 'VIDEO' } : v,
+																),
+															)
+														}
+													>
+														<option value="IMAGE">{translate('IMAGE')}</option>
+														<option value="VIDEO">{translate('VIDEO')}</option>
+													</select>
+												</Field>
+												<Field
+													label={translate('Media URL')}
+													required
+													maxLength={2048}
+													value={m.url}
+													onChange={(e) => setMedia(media.map((v, n) => (n === i ? { ...v, url: e.target.value } : v)))}
+												/>
+												<Field
+													label={translate('Alt text')}
+													required
+													maxLength={300}
+													value={m.altText}
 													onChange={(e) =>
-														setMedia(
-															media.map((v, n) => (n === i ? { ...v, type: e.target.value as 'IMAGE' | 'VIDEO' } : v)),
-														)
+														setMedia(media.map((v, n) => (n === i ? { ...v, altText: e.target.value } : v)))
 													}
+												/>
+												<Button
+													danger
+													secondary
+													onClick={() => {
+														setMedia(media.filter((_, n) => n !== i));
+														setDirty(true);
+													}}
 												>
-													<option value="IMAGE">{translate('IMAGE')}</option>
-													<option value="VIDEO">{translate('VIDEO')}</option>
+													{translate('Remove media')}
+												</Button>
+											</div>
+										))}
+										<Button
+											secondary
+											disabled={media.length >= 20}
+											onClick={() => {
+												setMedia([...media, { type: 'IMAGE', url: '', altText: '', sortOrder: media.length }]);
+												setDirty(true);
+											}}
+										>
+											{translate('Add media')}
+										</Button>
+										<TextArea
+											label={translate('Tags, one per line')}
+											name="tags"
+											defaultValue={p?.tags.join('\n')}
+											maxLength={450}
+										/>
+										<Field
+											label={translate('External project URL')}
+											type="url"
+											pattern="https://.*"
+											name="externalUrl"
+											maxLength={2048}
+											defaultValue={p?.externalUrl || ''}
+										/>
+									</>
+								)}
+								{kind === 'SERVICES' && (
+									<>
+										<div className="form-grid">
+											<Field label={translate('Pricing')}>
+												<select name="pricingType" defaultValue={s?.pricingType || 'CUSTOM_QUOTE'}>
+													<option value="CUSTOM_QUOTE">{translate('Custom quote')}</option>
+													<option value="STARTING_AT">{translate('Starting at')}</option>
 												</select>
 											</Field>
 											<Field
-												label={translate('Media URL')}
-												required
-												maxLength={2048}
-												value={m.url}
-												onChange={(e) => setMedia(media.map((v, n) => (n === i ? { ...v, url: e.target.value } : v)))}
+												label={translate('Starting price, KRW')}
+												name="startingPrice"
+												type="number"
+												min={0}
+												max={1000000000}
+												defaultValue={s?.startingPrice ?? ''}
 											/>
 											<Field
-												label={translate('Alt text')}
-												required
-												maxLength={300}
-												value={m.altText}
-												onChange={(e) =>
-													setMedia(media.map((v, n) => (n === i ? { ...v, altText: e.target.value } : v)))
-												}
+												label={translate('Estimated days')}
+												name="estimatedDays"
+												type="number"
+												min={1}
+												max={365}
+												defaultValue={s?.estimatedDays ?? ''}
 											/>
-											<Button
-												danger
-												secondary
-												onClick={() => {
-													setMedia(media.filter((_, n) => n !== i));
-													setDirty(true);
-												}}
-											>
-												{translate('Remove media')}
-											</Button>
 										</div>
-									))}
-									<Button
-										secondary
-										disabled={media.length >= 20}
-										onClick={() => {
-											setMedia([...media, { type: 'IMAGE', url: '', altText: '', sortOrder: media.length }]);
-											setDirty(true);
-										}}
-									>
-										{translate('Add media')}
+										<TextArea
+											label={translate('Deliverables, one per line')}
+											name="deliverables"
+											rows={5}
+											defaultValue={s?.deliverables.join('\n')}
+											maxLength={3200}
+										/>
+									</>
+								)}
+								{record?.deletedAt && kind !== 'USERS' && (
+									<Notice>{translate('Restore this record before editing its details.')}</Notice>
+								)}
+								<p className="admin-help">{translate('Blank optional text fields keep their saved value.')}</p>
+								<Feedback {...action} />
+								{message && <Notice notify>{message}</Notice>}
+								<div className="actions">
+									<Button type="submit" disabled={action.busy || (!!record?.deletedAt && kind !== 'USERS')}>
+										{record ? translate('Save changes') : translate('Create draft')}
 									</Button>
-									<TextArea
-										label={translate('Tags, one per line')}
-										name="tags"
-										defaultValue={p?.tags.join('\n')}
-										maxLength={450}
-									/>
-									<Field
-										label={translate('External project URL')}
-										type="url"
-										pattern="https://.*"
-										name="externalUrl"
-										maxLength={2048}
-										defaultValue={p?.externalUrl || ''}
-									/>
-								</>
-							)}
-							{kind === 'SERVICES' && (
-								<>
-									<div className="form-grid">
-										<Field label={translate('Pricing')}>
-											<select name="pricingType" defaultValue={s?.pricingType || 'CUSTOM_QUOTE'}>
-												<option value="CUSTOM_QUOTE">{translate('Custom quote')}</option>
-												<option value="STARTING_AT">{translate('Starting at')}</option>
-											</select>
-										</Field>
-										<Field
-											label={translate('Starting price, KRW')}
-											name="startingPrice"
-											type="number"
-											min={0}
-											max={1000000000}
-											defaultValue={s?.startingPrice ?? ''}
-										/>
-										<Field
-											label={translate('Estimated days')}
-											name="estimatedDays"
-											type="number"
-											min={1}
-											max={365}
-											defaultValue={s?.estimatedDays ?? ''}
-										/>
-									</div>
-									<TextArea
-										label={translate('Deliverables, one per line')}
-										name="deliverables"
-										rows={5}
-										defaultValue={s?.deliverables.join('\n')}
-										maxLength={3200}
-									/>
-								</>
-							)}
-							{record?.deletedAt && kind !== 'USERS' && (
-								<Notice>{translate('Restore this record before editing its details.')}</Notice>
-							)}
-							<p className="admin-help">{translate('Blank optional text fields keep their saved value.')}</p>
-							<Feedback {...action} />
-							{message && <Notice notify>{message}</Notice>}
-							<div className="actions">
-								<Button type="submit" disabled={action.busy || (!!record?.deletedAt && kind !== 'USERS')}>
-									{record ? translate('Save changes') : translate('Create draft')}
-								</Button>
-								<Button secondary onClick={onClose}>
-									{translate('Cancel')}
-								</Button>
-							</div>
+									<Button secondary onClick={onClose}>
+										{translate('Cancel')}
+									</Button>
+								</div>
+							</FieldErrors>
 						</form>
 					)}
 				</section>

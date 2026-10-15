@@ -327,6 +327,7 @@ export function Conversation({
 					</div>
 					{active ? (
 						<form
+							noValidate
 							className="message-form"
 							onSubmit={(e) => {
 								e.preventDefault();

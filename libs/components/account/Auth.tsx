@@ -153,7 +153,7 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 				} else setMessage('Check your inbox to verify your email, then sign in.');
 			} else if (mode === 'forgot-password') {
 				await action.mutate('requestPasswordReset', { input: { email: f.email } });
-				setMessage('If this email has an account, a password reset link will be sent.');
+				setMessage('If an account exists for this email, you’ll receive a password reset link. Check your spam folder too.');
 			} else if (mode === 'reset-password') {
 				await action.mutate('resetPassword', { input: { token: resetToken, password: f.password } });
 				// Leave the single-use link behind so it cannot be submitted a second time.
@@ -321,7 +321,13 @@ export default function Auth({ mode }: { mode: AuthMode }) {
 							{mode === 'sign-in' && /verif/i.test(action.error) && (
 								<Link href={authHref('/account/verify-email')}>{translate('Verify email or resend')}</Link>
 							)}
-							{message && <Notice notify>{message}</Notice>}
+							{message && <Notice notify={mode !== 'forgot-password'}>{message}</Notice>}
+							{message && mode === 'forgot-password' && (
+								<p>
+									{translate('New to CreatorHub?')}{' '}
+									<Link href={authHref('/account/register')}>{translate('Create an account')}</Link>
+								</p>
+							)}
 							<Button type="submit" disabled={action.busy}>
 								{action.busy
 									? translate('Please wait…')

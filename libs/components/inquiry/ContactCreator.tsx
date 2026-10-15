@@ -6,6 +6,7 @@ import { X } from 'phosphor-react';
 import { CreatorProfile } from '../../types/creatorhub';
 import { useAction, useApi } from '../../hooks/useApi';
 import { Button, Feedback, Field, Notice, Picture, QueryState, TextArea, values } from '../common/UI';
+import { FieldErrors, useFormValidation } from '../../hooks/useFormValidation';
 
 export function ContactCreator({
 	creator,
@@ -17,6 +18,7 @@ export function ContactCreator({
 	onDismiss: () => void;
 }) {
 	const { t } = useTranslation('common');
+	const validation = useFormValidation();
 	const router = useRouter();
 	const action = useAction();
 	const services = useApi('getServices', { input: { creatorId: creator._id, limit: 50 } });
@@ -76,9 +78,11 @@ export function ContactCreator({
 					</div>
 				</div>
 				<form
+					{...validation.form}
 					className="contact-creator-form"
 					onSubmit={(event) => {
 						event.preventDefault();
+						if (!validation.validate(event.currentTarget)) return;
 						const fields = values(event.currentTarget);
 						if (fields.brief.trim().length < 20) {
 							setMessageTouched(true);
@@ -108,110 +112,115 @@ export function ContactCreator({
 						});
 					}}
 				>
-					<QueryState loading={services.loading} error={services.error} retry={() => services.refetch()} />
-					<Field label={t('Service Selection')}>
-						<select
-							name="serviceId"
-							value={selectedService}
-							onChange={(event) => setSelectedService(event.target.value)}
-							disabled={action.busy || services.loading}
-						>
-							<option value="">{t('General inquiry')}</option>
-							{services.value?.map((service) => (
-								<option key={service._id} value={service._id}>
-									{service.title}
-								</option>
-							))}
-						</select>
-					</Field>
-					<TextArea
-						label={t('Your Inquiry Message')}
-						name="brief"
-						value={brief}
-						onChange={(event) => setBrief(event.target.value)}
-						onBlur={() => setMessageTouched(true)}
-						onInvalid={(event) => {
-							event.preventDefault();
-							setMessageTouched(true);
-							event.currentTarget.focus();
-						}}
-						aria-invalid={messageInvalid}
-						aria-describedby={messageHelpId}
-						required
-						minLength={20}
-						maxLength={10000}
-						rows={6}
-						readOnly={action.busy}
-						placeholder={t('Describe your project, what you need, and when you would like to get started.')}
-					/>
-					<div id={messageHelpId} className="inquiry-message-help">
-						<span className={messageInvalid ? 'inquiry-message-error' : ''} aria-live="polite">
-							{messageInvalid ? t('Please enter at least 20 characters.') : t('At least 20 characters')}
-						</span>
-						<span className="inquiry-message-count">{brief.length.toLocaleString(router.locale)} / 10,000</span>
-					</div>
-					<details className="inquiry-deadline">
-						<summary>{t('Add a preferred deadline')}</summary>
-						<Field label={t('Desired deadline')} name="desiredDeadline" type="date" disabled={action.busy} />
-					</details>
-					<div className="contact-creator-bottom">
-						<fieldset className="inquiry-budget">
-							<legend>{t('Estimated Budget')}</legend>
-							<div className="inquiry-budget-inputs">
-								<span aria-hidden="true">₩</span>
-								<input
-									name="budgetMin"
-									type="text"
-									inputMode="numeric"
-									pattern="[0-9]{1,10}"
-									maxLength={10}
-									onInput={(event) => {
-										event.currentTarget.value = event.currentTarget.value.replace(/[^0-9]/g, '');
-										event.currentTarget.setCustomValidity(
-											Number(event.currentTarget.value) > 1000000000 ? t('Maximum budget is 1,000,000,000 KRW.') : '',
-										);
-									}}
-									min={0}
-									max={1000000000}
-									step={1}
-									placeholder={t('Minimum')}
-									aria-label={t('Minimum budget (KRW)')}
-									disabled={action.busy}
-								/>
-								<span aria-hidden="true">–</span>
-								<input
-									name="budgetMax"
-									type="text"
-									inputMode="numeric"
-									pattern="[0-9]{1,10}"
-									maxLength={10}
-									onInput={(event) => {
-										event.currentTarget.value = event.currentTarget.value.replace(/[^0-9]/g, '');
-										event.currentTarget.setCustomValidity(
-											Number(event.currentTarget.value) > 1000000000 ? t('Maximum budget is 1,000,000,000 KRW.') : '',
-										);
-									}}
-									min={0}
-									max={1000000000}
-									step={1}
-									placeholder={t('Maximum')}
-									aria-label={t('Maximum budget (KRW)')}
-									disabled={action.busy}
-								/>
-							</div>
-						</fieldset>
-						<Button type="submit" disabled={action.busy || !!services.error || creator.availability === 'UNAVAILABLE'}>
-							{action.busy ? t('Sending…') : t('Send Inquiry')}
-						</Button>
-					</div>
-					{creator.availability === 'UNAVAILABLE' && <Notice>{t('This creator is not accepting inquiries.')}</Notice>}
-					<Feedback error={action.error} busy={action.busy} busyLabel="Sending…" />
-					<div className="contact-creator-footer">
-						<p>{t('Your inquiry goes directly to their private inbox.')}</p>
-						<button type="button" onClick={onDismiss} disabled={action.busy}>
-							{t('Cancel')}
-						</button>
-					</div>
+					<FieldErrors value={validation.errors}>
+						<QueryState loading={services.loading} error={services.error} retry={() => services.refetch()} />
+						<Field label={t('Service Selection')}>
+							<select
+								name="serviceId"
+								value={selectedService}
+								onChange={(event) => setSelectedService(event.target.value)}
+								disabled={action.busy || services.loading}
+							>
+								<option value="">{t('General inquiry')}</option>
+								{services.value?.map((service) => (
+									<option key={service._id} value={service._id}>
+										{service.title}
+									</option>
+								))}
+							</select>
+						</Field>
+						<TextArea
+							label={t('Your Inquiry Message')}
+							name="brief"
+							value={brief}
+							onChange={(event) => setBrief(event.target.value)}
+							onBlur={() => setMessageTouched(true)}
+							onInvalid={(event) => {
+								event.preventDefault();
+								setMessageTouched(true);
+								event.currentTarget.focus();
+							}}
+							aria-invalid={messageInvalid}
+							aria-describedby={messageHelpId}
+							required
+							minLength={20}
+							maxLength={10000}
+							rows={6}
+							readOnly={action.busy}
+							placeholder={t('Describe your project, what you need, and when you would like to get started.')}
+						/>
+						<div id={messageHelpId} className="inquiry-message-help">
+							<span className={messageInvalid ? 'inquiry-message-error' : ''} aria-live="polite">
+								{messageInvalid ? t('Please enter at least 20 characters.') : t('At least 20 characters')}
+							</span>
+							<span className="inquiry-message-count">{brief.length.toLocaleString(router.locale)} / 10,000</span>
+						</div>
+						<details className="inquiry-deadline">
+							<summary>{t('Add a preferred deadline')}</summary>
+							<Field label={t('Desired deadline')} name="desiredDeadline" type="date" disabled={action.busy} />
+						</details>
+						<div className="contact-creator-bottom">
+							<fieldset className="inquiry-budget">
+								<legend>{t('Estimated Budget')}</legend>
+								<div className="inquiry-budget-inputs">
+									<span aria-hidden="true">₩</span>
+									<input
+										name="budgetMin"
+										type="text"
+										inputMode="numeric"
+										pattern="[0-9]{1,10}"
+										maxLength={10}
+										onInput={(event) => {
+											event.currentTarget.value = event.currentTarget.value.replace(/[^0-9]/g, '');
+											event.currentTarget.setCustomValidity(
+												Number(event.currentTarget.value) > 1000000000 ? t('Maximum budget is 1,000,000,000 KRW.') : '',
+											);
+										}}
+										min={0}
+										max={1000000000}
+										step={1}
+										placeholder={t('Minimum')}
+										aria-label={t('Minimum budget (KRW)')}
+										disabled={action.busy}
+									/>
+									<span aria-hidden="true">–</span>
+									<input
+										name="budgetMax"
+										type="text"
+										inputMode="numeric"
+										pattern="[0-9]{1,10}"
+										maxLength={10}
+										onInput={(event) => {
+											event.currentTarget.value = event.currentTarget.value.replace(/[^0-9]/g, '');
+											event.currentTarget.setCustomValidity(
+												Number(event.currentTarget.value) > 1000000000 ? t('Maximum budget is 1,000,000,000 KRW.') : '',
+											);
+										}}
+										min={0}
+										max={1000000000}
+										step={1}
+										placeholder={t('Maximum')}
+										aria-label={t('Maximum budget (KRW)')}
+										disabled={action.busy}
+									/>
+								</div>
+							</fieldset>
+							<Button
+								type="submit"
+								disabled={action.busy || !!services.error || creator.availability === 'UNAVAILABLE'}
+							>
+								{action.busy ? t('Sending…') : t('Send Inquiry')}
+							</Button>
+						</div>
+						{creator.availability === 'UNAVAILABLE' && <Notice>{t('This creator is not accepting inquiries.')}</Notice>}
+						<Feedback error={action.error} busy={action.busy} busyLabel="Sending…" />
+						<div className="contact-creator-footer">
+							<p>{t('Your inquiry goes directly to their private inbox.')}</p>
+							<button type="button" onClick={onDismiss} disabled={action.busy}>
+								{t('Cancel')}
+							</button>
+						</div>
+					</FieldErrors>
 				</form>
 			</section>
 		</dialog>

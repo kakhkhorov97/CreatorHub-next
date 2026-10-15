@@ -84,7 +84,36 @@ export default function Top() {
 		if (accountMenu.current) accountMenu.current.open = false;
 		if (mobileMenu.current) mobileMenu.current.open = false;
 	}, [router.asPath]);
+	// Close the menus as soon as a navigation starts, so an open menu never sits over the
+	// previous page while the next one loads, and the page scroll lock is released first.
+	useEffect(() => {
+		const close = () => {
+			if (accountMenu.current) accountMenu.current.open = false;
+			if (mobileMenu.current) mobileMenu.current.open = false;
+		};
+		router.events.on('routeChangeStart', close);
+		return () => router.events.off('routeChangeStart', close);
+	}, [router.events]);
 	const { header, compact } = useHeaderScroll(router.pathname, router.asPath);
+	// The phone menu covers the whole screen; its content starts at the header's real bottom edge,
+	// which differs between the full, compact and simple headers.
+	function syncPhoneMenu(open: boolean) {
+		const root = document.documentElement;
+		root.classList.toggle('phone-menu-open', open);
+		if (!open) {
+			root.style.removeProperty('--phone-menu-top');
+			return;
+		}
+		const bottom = header.current?.getBoundingClientRect().bottom ?? 0;
+		root.style.setProperty('--phone-menu-top', `${Math.max(0, Math.round(bottom))}px`);
+	}
+	useEffect(
+		() => () => {
+			document.documentElement.classList.remove('phone-menu-open');
+			document.documentElement.style.removeProperty('--phone-menu-top');
+		},
+		[],
+	);
 	function signOutButton() {
 		return (
 			<Button
@@ -292,6 +321,7 @@ export default function Top() {
 							ref={mobileMenu}
 							onToggle={(event) => {
 								if (event.currentTarget.open && accountMenu.current) accountMenu.current.open = false;
+								syncPhoneMenu(event.currentTarget.open);
 							}}
 						>
 							<summary

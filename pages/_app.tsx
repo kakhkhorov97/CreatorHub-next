@@ -3,6 +3,7 @@ import { MessagingProvider } from '../libs/messaging/MessagingProvider';
 import { ApolloProvider } from '@apollo/client';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import type { AppProps } from 'next/app';
+import Head from 'next/head';
 import { appWithTranslation } from 'next-i18next';
 import i18nConfig from '../next-i18next.config';
 import { Bricolage_Grotesque, Hanken_Grotesk } from 'next/font/google';
@@ -12,6 +13,7 @@ import Chatbot from '../libs/components/chat/Chatbot';
 import { SessionBootstrap } from '../libs/components/layout/LayoutBasic';
 import RouteProgress from '../libs/components/layout/RouteProgress';
 import AppErrorBoundary from '../libs/components/common/AppErrorBoundary';
+import { useScrollRestoration } from '../libs/hooks/useScrollRestoration';
 import '../scss/main.scss';
 import { theme } from '../scss/MaterialTheme';
 
@@ -20,8 +22,13 @@ const hanken = Hanken_Grotesk({ subsets: ['latin'], weight: ['400', '500', '600'
 
 function App({ Component, pageProps, router }: AppProps) {
 	const client = useApollo();
+	useScrollRestoration(router);
 	return (
 		<ApolloProvider client={client}>
+			<Head>
+				{/* An explicit initial scale keeps phones at 100% after a field is focused or the device rotates. */}
+				<meta key="viewport" name="viewport" content="width=device-width, initial-scale=1" />
+			</Head>
 			{/* Expose the font families on :root so portals (MUI dialogs, toasts) inherit them too. */}
 			<style jsx global>{`
 				:root {

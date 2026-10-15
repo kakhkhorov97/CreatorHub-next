@@ -706,5 +706,11 @@
     "kind": "mutation",
     "admin": true,
     "document": "mutation setAccountSuspended($userId: ID!, $suspended: Boolean!) { setAccountSuspended(userId: $userId, suspended: $suspended) { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } }"
+  },
+  {
+    "name": "removeMyAvatar",
+    "kind": "mutation",
+    "admin": false,
+    "document": "mutation removeMyAvatar { removeMyAvatar { _id  createdAt  updatedAt  displayName  avatarUrl  role  status  preferredLocale  lastLoginAt  deletedAt  } }"
   }
 ]

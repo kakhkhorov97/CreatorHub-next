@@ -9,6 +9,7 @@ import AccountSecurity from '../../libs/components/account/AccountSecurity';
 import { AvatarUpload } from '../../libs/components/account/AvatarUpload';
 import Layout, { Guard } from '../../libs/components/layout/LayoutBasic';
 import { useAction } from '../../libs/hooks/useApi';
+import { FieldErrors, useFormValidation } from '../../libs/hooks/useFormValidation';
 
 function AccountSettings() {
 	const { t: translate } = useSiteTranslation('common');
@@ -24,6 +25,7 @@ function AccountSettings() {
 
 function AccountForm() {
 	const { t: translate } = useSiteTranslation('common');
+	const validation = useFormValidation();
 
 	const user = useReactiveVar(userVar)!;
 	const action = useAction();
@@ -35,9 +37,11 @@ function AccountForm() {
 			<div className="account-settings-content">
 				<Heading title={translate('Account settings')} />
 				<form
+					{...validation.form}
 					className="panel editor-form"
 					onSubmit={(e) => {
 						e.preventDefault();
+						if (!validation.validate(e.currentTarget)) return;
 						const f = values(e.currentTarget);
 						action.run(async () => {
 							const updated = await action.mutate('updateMe', {
@@ -53,31 +57,33 @@ function AccountForm() {
 						});
 					}}
 				>
-					<h2>{translate('Your profile')}</h2>
-					<Field
-						label={translate('Display name')}
-						name="displayName"
-						defaultValue={user.displayName}
-						required
-						minLength={2}
-						maxLength={60}
-					/>
-					<AvatarUpload />
-					<Field label={translate('Preferred language')}>
-						<select name="preferredLocale" defaultValue={user.preferredLocale}>
-							<option value="uz">{translate('Uzbek')}</option>
-							<option value="en">{translate('English')}</option>
-							<option value="ko">{translate('Korean')}</option>
-						</select>
-					</Field>
-					<small>{translate('Your language preference is saved with your account.')}</small>
-					<Feedback {...action} />
-					{saved && <Notice notify>{translate('Account updated.')}</Notice>}
-					<div className="account-save-actions">
-						<Button type="submit" disabled={action.busy} loading={action.busy} loadingLabel={translate('Saving…')}>
-							{translate('Save changes')}
-						</Button>
-					</div>
+					<FieldErrors value={validation.errors}>
+						<h2>{translate('Your profile')}</h2>
+						<Field
+							label={translate('Display name')}
+							name="displayName"
+							defaultValue={user.displayName}
+							required
+							minLength={2}
+							maxLength={60}
+						/>
+						<AvatarUpload />
+						<Field label={translate('Preferred language')}>
+							<select name="preferredLocale" defaultValue={user.preferredLocale}>
+								<option value="uz">{translate('Uzbek')}</option>
+								<option value="en">{translate('English')}</option>
+								<option value="ko">{translate('Korean')}</option>
+							</select>
+						</Field>
+						<small>{translate('Your language preference is saved with your account.')}</small>
+						<Feedback {...action} />
+						{saved && <Notice notify>{translate('Account updated.')}</Notice>}
+						<div className="account-save-actions">
+							<Button type="submit" disabled={action.busy} loading={action.busy} loadingLabel={translate('Saving…')}>
+								{translate('Save changes')}
+							</Button>
+						</div>
+					</FieldErrors>
 				</form>
 				<AccountSecurity />
 				<details className="danger-zone account-delete-section">
