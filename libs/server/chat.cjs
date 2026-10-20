@@ -243,28 +243,57 @@ LIVE_DATA_AVAILABLE: ${context.available}`;
 	const controller = new AbortController();
 	const timeout = setTimeout(() => controller.abort(), 25000);
 	try {
-		// A busy or rate-limited model gets one second try: the fallback model when one is set
-		// (its quota and load are separate), otherwise the same model once more after an overload.
+		// Reserve time for one fallback when the primary model stalls or reports overload.
 		const fallback = process.env.GEMINI_FALLBACK_MODEL ?? 'gemini-3.5-flash-lite';
 		const second = fallback && fallback !== model && /^[a-zA-Z0-9._-]+$/.test(fallback) ? fallback : null;
-		const request = (name) =>
-			fetcher(`https://generativelanguage.googleapis.com/v1beta/models/${name}:generateContent`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
-				signal: controller.signal,
-				body: JSON.stringify({
-					systemInstruction: { parts: [{ text: system }] },
-					contents,
-					generationConfig: { temperature: 0.2, maxOutputTokens: 800 },
-					safetySettings: [{ category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_LOW_AND_ABOVE' }],
-				}),
-			});
-		let response = await request(model);
-		if (!response.ok && second && [429, 500, 503].includes(response.status)) response = await request(second);
-		else if (!response.ok && response.status === 503) {
-			await new Promise((resolve) => setTimeout(resolve, 400));
-			response = await request(model);
+		let primaryTimedOut = false;
+		const request = async (name, primaryLimit) => {
+			const attempt = new AbortController();
+			const abort = () => attempt.abort();
+			if (controller.signal.aborted) abort();
+			else controller.signal.addEventListener('abort', abort, { once: true });
+			const attemptTimeout = primaryLimit
+				? setTimeout(() => {
+						primaryTimedOut = true;
+						abort();
+				  }, primaryLimit)
+				: undefined;
+			try {
+				const response = await fetcher(
+					`https://generativelanguage.googleapis.com/v1beta/models/${name}:generateContent`,
+					{
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+						signal: attempt.signal,
+						body: JSON.stringify({
+							systemInstruction: { parts: [{ text: system }] },
+							contents,
+							generationConfig: { temperature: 0.2, maxOutputTokens: 800 },
+							safetySettings: [{ category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_LOW_AND_ABOVE' }],
+						}),
+					},
+				);
+				const data = response.ok ? await response.json() : null;
+				attempt.signal.throwIfAborted();
+				return { response, data };
+			} finally {
+				clearTimeout(attemptTimeout);
+				controller.signal.removeEventListener('abort', abort);
+			}
+		};
+		let result;
+		try {
+			result = await request(model, second ? 10000 : undefined);
+		} catch (error) {
+			if (!second || !primaryTimedOut || controller.signal.aborted) throw error;
 		}
+		if (second && (!result || (!result.response.ok && [429, 500, 503].includes(result.response.status))))
+			result = await request(second);
+		else if (!result.response.ok && result.response.status === 503) {
+			await new Promise((resolve) => setTimeout(resolve, 400));
+			result = await request(model);
+		}
+		const { response, data } = result;
 		if (!response.ok)
 			return {
 				status: response.status === 429 ? 429 : 503,
@@ -281,7 +310,6 @@ LIVE_DATA_AVAILABLE: ${context.available}`;
 						? 'The assistant model is not configured correctly. Please use Help for now.'
 						: 'The AI provider is busy right now. Please try again in a moment.',
 			};
-		const data = await response.json();
 		const text = data.candidates?.[0]?.content?.parts
 			?.map((part) => part.text || '')
 			.join('')
