@@ -685,6 +685,25 @@
 	}
 }
 
+// The save button is a true circle on every screen (desktop was 37x40 because of a 40px min-height).
+.grid .project-card .card-caption .save-button {
+	display: inline-grid;
+	place-items: center;
+	width: 40px;
+	min-width: 40px;
+	height: 40px;
+	min-height: 40px;
+	padding: 0;
+}
+@media (max-width: 700px) {
+	.grid .project-card .card-caption .save-button {
+		width: 44px;
+		min-width: 44px;
+		height: 44px;
+		min-height: 44px;
+	}
+}
+
 // Saved state: a green filled bookmark on the white circle. (It used the red "danger" style,
 // whose white icon vanished on the card's white button.)
 .grid .project-card .card-caption .save-button.is-saved {
