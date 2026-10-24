@@ -4,9 +4,9 @@ import { useReactiveVar } from '@apollo/client';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { BookmarkSimple } from 'phosphor-react';
-import { useState } from 'react';
 import { userVar } from '../../../apollo/store';
 import { useAction } from '../../hooks/useApi';
+import { markProjectSaved, useSavedProjectIds } from '../../hooks/useSavedProjects';
 import { CreatorProfile, PortfolioProject } from '../../types/creatorhub';
 import { Button, Feedback, label, Picture } from '../common/UI';
 import LikeButton from '../discovery/LikeButton';
@@ -24,7 +24,9 @@ export function ProjectCard({
 }) {
 	const { t: translate } = useSiteTranslation('common');
 
-	const [isSaved, setSaved] = useState(saved);
+	// The shared saved list decides once it has loaded; until then the page's own hint (the Saved page) is used.
+	const savedIds = useSavedProjectIds();
+	const isSaved = savedIds ? savedIds.has(project._id) : saved;
 	const action = useAction();
 	const user = useReactiveVar(userVar);
 	const router = useRouter();
@@ -58,8 +60,8 @@ export function ProjectCard({
 				</div>
 				<Button
 					secondary
-					danger={isSaved}
-					className="icon-button"
+					className={`icon-button save-button${isSaved ? ' is-saved' : ''}`}
+					aria-pressed={isSaved}
 					aria-label={isSaved ? `Remove ${project.title} from saved projects` : `Save ${project.title}`}
 					loading={action.busy}
 					disabled={action.busy}
@@ -70,7 +72,7 @@ export function ProjectCard({
 						}
 						action.run(async () => {
 							await action.mutate('setProjectSaved', { projectId: project._id, saved: !isSaved });
-							setSaved(!isSaved);
+							markProjectSaved(project._id, !isSaved);
 							onChange?.();
 						});
 					}}

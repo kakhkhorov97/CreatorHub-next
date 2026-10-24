@@ -608,7 +608,7 @@
 }
 // Save shows on hover and keyboard focus; touch screens always show it.
 @media (hover: hover) {
-	.grid .project-card .card-caption .icon-button:not(.danger) {
+	.grid .project-card .card-caption .icon-button:not(.is-saved) {
 		opacity: 0;
 		transition: opacity $motion;
 	}
@@ -683,4 +683,16 @@
 		min-height: 44px;
 		font-size: 14px;
 	}
+}
+
+// Saved state: a green filled bookmark on the white circle. (It used the red "danger" style,
+// whose white icon vanished on the card's white button.)
+.grid .project-card .card-caption .save-button.is-saved {
+	border-color: $forest;
+	background: $paper-white;
+	color: $forest;
+}
+.grid .project-card .card-caption .save-button.is-saved:hover:not(:disabled) {
+	background: #eef3e6;
+	color: $forest;
 }
