@@ -69,7 +69,7 @@ For integration and preview tools, set `CREATORHUB_BACKEND_PATH` to the backend 
 
 ## Deployment status
 
-Deployment preparation is in progress. Dependency security upgrades and live social-provider acceptance checks remain pending. Production requires HTTPS, separate development and production databases, verified email delivery and persistent uploads. Configure public environment variables before building, then use `npm run start` to serve the build on port 7007.
+Live at https://creatorhub.site. Releases go through the manual **Deploy CreatorHub** workflow in the backend repository, which restores the previous images if health checks fail. Dependency security upgrades and live social-provider acceptance checks remain pending. Production requires HTTPS, separate development and production databases, verified email delivery and persistent uploads. Configure public environment variables before building, then use `npm run start` to serve the build on port 7007.
 
 On a shared VPS, use separate CreatorHub directories and services, available assigned ports and a domain-specific reverse-proxy configuration. Do not replace another application's configuration or restart its services.
 
